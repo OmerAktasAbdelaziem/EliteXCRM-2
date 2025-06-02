@@ -36,4 +36,9 @@ class MoneyTrx extends Model
     {
         return $this->belongsTo(Bank::class);
     }
+    public function details()
+{
+    return $this->hasOne(MoneyTrxDetail::class, 'money_trx', 'id');
 }
+}
+

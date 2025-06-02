@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="col">
                                     <small class="form-label">Bonus</small>
-                                    <h3 class="text-white mb-3 credit">
+                                    <h3 class="text-white mb-3 bonus">
                                         $ {{number_format($finance['bonus'], 2, '.', ',');}}
                                     </h3>
                                 </div>

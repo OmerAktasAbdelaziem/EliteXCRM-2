@@ -13,7 +13,7 @@ use Illuminate\Support\Arr;
 use App\Models\AssetGroup;
 use App\Models\EmailLog;
 use App\Models\MoneyTrx;
-use App\Models\MoneyTrxDetails;
+use App\Models\MoneyTrxDetail;
 use App\Models\Action;
 use App\Models\Client;
 use App\Models\Asset;
@@ -378,6 +378,7 @@ class MainTPController extends Controller
 
     public function get_financial_data($broker_id)
     {
+        
         $finance = [];
         $finance['last_deposit_amount'] = 0.00;
         $finance['totalWithdrawal']     = 0.00;
@@ -394,26 +395,50 @@ class MainTPController extends Controller
         $client = Client::where('broker_id', $broker_id)->where('deleted', 0)->first();
     
         if ($client) {
-            $deposits = MoneyTrx::where('broker_id', $broker_id)
-                ->where('status', 'accepted')
-                ->where('type', 'deposit')
-                ->sum('amount');
+            $deposits = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'deposit')
+    ->sum('money_trx_details.amount');
+            
+        
     
             $finance['totalDeposit'] = $deposits;
     
-            $lastDeposit = MoneyTrx::where('broker_id', $broker_id)
-                ->where('status', 'accepted')
-                ->where('type', 'deposit')
-                ->orderBy('created_at', 'desc')
-                ->first();
+//            $lastDeposit = MoneyTrx::where('broker_id', $broker_id)
+//                ->where('status', 'accepted')
+//                ->where('type', 'deposit')
+//                ->orderBy('created_at', 'desc')
+//                ->first();
+            
+            $lastDeposit = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'deposit')
+    //->sum('money_trx_details.amount')
+    ->first();
+          // var_dump($lastDeposit->amount);die;
+            
+            
     
             $finance['last_deposit_amount'] = $lastDeposit ? $lastDeposit->amount : 0.00;
             $finance['ftd_amount'] = $finance['last_deposit_amount'];
     
-            $withdrawals = MoneyTrx::where('broker_id', $broker_id)
-                ->where('status', 'accepted')
-                ->where('type', 'withdraw')
-                ->sum('amount');
+//            $withdrawals = MoneyTrx::where('broker_id', $broker_id)
+//                ->where('status', 'accepted')
+//                ->where('type', 'withdraw')
+//                ->sum('amount');
+            
+            $withdrawals = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'withdraw')
+    ->sum('money_trx_details.amount');
+                    
+                    
+                    
+                
+           
     
             $finance['totalWithdrawal'] = $withdrawals;
     
@@ -423,23 +448,66 @@ class MainTPController extends Controller
     
             $closedOrdersPL = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl');
     
-            $creditIn = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'credit in')->sum('amount');
-            $creditOut = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'credit out')->sum('amount');
-    
+            //print_r($closedOrdersPL);die;
+            
+           // $creditIn = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'credit in')->sum('amount');
+            
+            $creditIn = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'credit in')
+    ->sum('money_trx_details.amount');
+                    
+                    
+         
+            
+           
+            
+            
+            
+           // $creditOut = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'credit out')->sum('amount');
+   
+            $creditOut = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'credit out')
+    ->sum('money_trx_details.amount');
+           // var_dump($creditOut);die;
+            
             $finance['credit'] = $creditIn - $creditOut;
     
     // if($_GET['test'] == 'yes'){
     //     echo "totalDeposit: ".$finance['totalDeposit']."  -  totalWithdrawal: ".$finance['totalWithdrawal']." - closedOrdersPL: ".$closedOrdersPL." - credit: ".$finance['credit']." - bonus:".$finance['bonus'];die;
     // }
-            $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + $closedOrdersPL + $finance['credit'] + $finance['bonus'];
+            $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + $closedOrdersPL + $finance['credit'] ;
+            
+            //echo $finance['totalDeposit'] ."+". $finance['totalWithdrawal'] ."+".  $closedOrdersPL ."+".$finance['credit'];die;
+            
             $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']);
     
-            $bonusIn = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'bonus in')->sum('amount');
-            $bonusOut = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'bonus out')->sum('amount');
+            //$bonusIn = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'bonus in')->sum('amount');
+            
+            $bonusIn = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'bonus in')
+    ->sum('money_trx_details.amount');
+            
+            //$bonusOut = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'bonus out')->sum('amount');
+    
+    $bonusOut = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'bonus out')
+    ->sum('money_trx_details.amount');
+    
     
             $finance['bonus'] = $bonusIn - $bonusOut;
     
             $finance['equity'] = $finance['balance'] + $finance['currentPL'] +  $finance['bonus'];
+          //  echo $finance['currentPL'];die;
+            
+            
             $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
         }
     
@@ -592,6 +660,10 @@ class MainTPController extends Controller
             'status'    => 'accepted',
         ]);
         $trx = MoneyTrx::create($inputs);
+       
+        $trxDetailsArray = array('money_trx'=>$trx->id,'type'=>$inputs['type'],'amount'=>$inputs['amount']);
+        $trxDetails = MoneyTrxDetail::create($trxDetailsArray);
+       
 
         $history_inputs = [
             'operation_id' => $trx->id,
@@ -805,6 +877,7 @@ class MainTPController extends Controller
 
     public function handle_request(Request $request,$id = null)
     {
+        //gohere request
         $moneyTrx = MoneyTrx::findOrFail($id??$request->id);
         $inputs = $request->only([
             'status',
@@ -818,36 +891,11 @@ class MainTPController extends Controller
         
           $credit = $finance['credit'] ?? 0;
           $bonus = $finance['bonus'] ?? 0;
+          $amount = $moneyTrx->amount;
          
          
-         
-        /*//   $currentBalance = $finance['totalDeposit'] - $finance['totalWithdrawal'];
-        //   //echo $currentBalance.'<br>';
-        //  // echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];
-        //  // echo "<br>$credit<br>$bonus";die;
           
-        //  // echo $currentBalance+$credit+$bonus;die;
-        //   $amount = $moneyTrx->amount;
-        // //  //echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];die;
-        //  //$amount = 1520;
-        //   $params = array();
-        //   if(($currentBalance-$amount) >= 0){//die('a');
-        //       $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$amount);
-        //       //$trxDetails = MoneyTrxDetails::create($inputs);
-        //   }else if(($currentBalance+$credit)-$amount >= 0){
-        //       $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
-        //       $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=> ($amount-$currentBalance));
-        //   }else if(($currentBalance+$credit+$bonus)-$amount > 0) {
-        //       $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
-        //       $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
-        //       $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
-        //   }*/
-       $moneyTrx->update($inputs);
-      if(!empty($params)){
-          MoneyTrxDetails::insert($params);
-         
-         $moneyTrx->update($inputs);
-      }
+      $moneyTrx->update($inputs);
          // print_r($params);die;  
          
         //     $user    = Auth::guard('client')->user();
@@ -873,6 +921,8 @@ class MainTPController extends Controller
                     'client_id' => $moneyTrx->client->id,
                     'text'      => 'deposit_accepted_notification',
                 ]);
+                $params = array('money_trx'=>$moneyTrx->id,'type'=>'deposit','amount'=>$amount);
+              MoneyTrxDetail::create($params);
             }
             if ($request->status == 'rejected') {
                 Notification::create([
@@ -887,6 +937,34 @@ class MainTPController extends Controller
                     'client_id' => $moneyTrx->client->id,
                     'text'      => 'withdraw_accepted_notification',
                 ]);
+                
+                // new added
+                $currentBalance = $finance['totalDeposit'] - $finance['totalWithdrawal'];
+          //echo $currentBalance.'<br>';
+         // echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];
+         // echo "<br>$credit<br>$bonus";die;
+          
+         // echo $currentBalance+$credit+$bonus;die;
+         
+        //  //echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];die;
+         //$amount = 1520;
+          $params = array();
+          if(($currentBalance-$amount) >= 0){//die('a');
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$amount);
+               //$trxDetails = MoneyTrxDetail::create($inputs);
+          }else if(($currentBalance+$credit)-$amount >= 0){
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
+              $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=> ($amount-$currentBalance));
+          }else if(($currentBalance+$credit+$bonus)-$amount > 0) {
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
+              $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
+              $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
+          }
+       
+      if(!empty($params)){
+          MoneyTrxDetail::insert($params);
+      }
+      // end of new added
             }
             if ($request->status == 'rejected') {
                 Notification::create([
@@ -895,47 +973,47 @@ class MainTPController extends Controller
                 ]);
             }
         }
-        if ($request->status == 'accepted') {
-            $mopType = [
-                'deposit'    => 1,
-                'withdraw'   => -1,
-                'credit in'  => 3,
-                'credit out' => -3,
-            ];
-            if ($moneyTrx->type == 'withdraw') {
-                $client = $moneyTrx->client;
-                $finance = $this->get_financial_data($client->broker_id);
-              
-                 //   print_r($finance);die;
-              
-                $credit = $finance['credit'] ?? 0;
-                $bonus = $finance['bonus'] ?? 0;
-    
-                // if ($credit > 0) {
-                //     MoneyTrx::create([
-                //         'broker_id' => $client->broker_id,
-                //         'client_id' => $client->id,
-                //         'type'      => 'credit out',
-                //         'amount'    => $credit,
-                //         'status'    => 'accepted',
-                //         'is_admin'  => 1,
-                //         'comment'   => 'Auto removal of credit on withdrawal acceptance',
-                //     ]);
-                // }
-                // if ($bonus > 0) {
-                //     MoneyTrx::create([
-                //         'broker_id' => $client->broker_id,
-                //         'client_id' => $client->id,
-                //         'type'      => 'bonus out',
-                //         'amount'    => $bonus,
-                //         'status'    => 'accepted',
-                //         'is_admin'  => 1,
-                //         'comment'   => 'Auto removal of bonus on withdrawal acceptance',
-                //     ]);
-                // }
-            }
-
-        }
+//        if ($request->status == 'accepted') {
+//            $mopType = [
+//                'deposit'    => 1,
+//                'withdraw'   => -1,
+//                'credit in'  => 3,
+//                'credit out' => -3,
+//            ];
+//            if ($moneyTrx->type == 'withdraw') {
+//                $client = $moneyTrx->client;
+//                $finance = $this->get_financial_data($client->broker_id);
+//              
+//                 //   print_r($finance);die;
+//              
+//                $credit = $finance['credit'] ?? 0;
+//                $bonus = $finance['bonus'] ?? 0;
+//    
+//                // if ($credit > 0) {
+//                //     MoneyTrx::create([
+//                //         'broker_id' => $client->broker_id,
+//                //         'client_id' => $client->id,
+//                //         'type'      => 'credit out',
+//                //         'amount'    => $credit,
+//                //         'status'    => 'accepted',
+//                //         'is_admin'  => 1,
+//                //         'comment'   => 'Auto removal of credit on withdrawal acceptance',
+//                //     ]);
+//                // }
+//                // if ($bonus > 0) {
+//                //     MoneyTrx::create([
+//                //         'broker_id' => $client->broker_id,
+//                //         'client_id' => $client->id,
+//                //         'type'      => 'bonus out',
+//                //         'amount'    => $bonus,
+//                //         'status'    => 'accepted',
+//                //         'is_admin'  => 1,
+//                //         'comment'   => 'Auto removal of bonus on withdrawal acceptance',
+//                //     ]);
+//                // }
+//            }
+//
+//        }
         if (!$id) {
             return redirect()->back()->with('success', 'Request has been updated successfully.');
         }
