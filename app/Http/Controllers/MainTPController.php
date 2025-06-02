@@ -816,36 +816,39 @@ class MainTPController extends Controller
         $client = $moneyTrx->client;
         $finance = $this->get_financial_data($client->broker_id);
         
-       /* // $credit = $finance['credit'] ?? 0;
-        //  $bonus = $finance['bonus'] ?? 0;
+          $credit = $finance['credit'] ?? 0;
+          $bonus = $finance['bonus'] ?? 0;
          
          
          
-        //  $currentBalance = $finance['totalDeposit'] - $finance['totalWithdrawal'];
-        //  echo $currentBalance+$credit+$bonus;die;
-        //  $amount = $moneyTrx->amount;
+          $currentBalance = $finance['totalDeposit'] - $finance['totalWithdrawal'];
+          //echo $currentBalance.'<br>';
+         // echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];
+         // echo "<br>$credit<br>$bonus";die;
+          
+         // echo $currentBalance+$credit+$bonus;die;
+          $amount = $moneyTrx->amount;
         //  //echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];die;
-         
-        //  $params = array();
-        //  if($currentBalance >= $amount){
-        //      $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance - $amount);
-        //       //$trxDetails = MoneyTrxDetails::create($inputs);
-        //  }else if(($currentBalance+$credit) >= $amount){
-        //      $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>($amount - $currentBalance));
-        //      $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>($credit - $amount));
-        //  }else if(($currentBalance+$credit+$bonus) > 0) {
-        //      $amount = $amount - $currentBalance;
-        //      $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$amount);
-        //      $amount = $amount - $credit;
-        //      $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$amount);
-        //      $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($bonus - $amount));
-        //  }
-        //  print_r($params);die;
-      
-        //  MoneyTrxDetails::insert($params);*/
+         //$amount = 1520;
+          $params = array();
+          if(($currentBalance-$amount) >= 0){//die('a');
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$amount);
+               //$trxDetails = MoneyTrxDetails::create($inputs);
+          }else if(($currentBalance+$credit)-$amount >= 0){
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
+              $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=> ($amount-$currentBalance));
+          }else if(($currentBalance+$credit+$bonus)-$amount > 0) {
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
+              $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
+              $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
+          }
+       
+      if(!empty($params)){
+          MoneyTrxDetails::insert($params);
          
          $moneyTrx->update($inputs);
-         
+      }
+         // print_r($params);die;  
          
         //     $user    = Auth::guard('client')->user();
         // $options = $user->options??[];
