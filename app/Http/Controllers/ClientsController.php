@@ -1773,6 +1773,14 @@ class ClientsController extends Controller
 
         ]);
 
+
+$pdf->setOptions([
+    'defaultFont' => 'Amiri',
+    'isHtml5ParserEnabled' => true,
+    'isPhpEnabled' => true,
+    'isFontSubsettingEnabled' => true,
+]);
+
         $filename = 'client_' . $client->id . '_transactions_' . now()->format('Ymd_His') . '.pdf';
         return $pdf->download($filename);
     }

@@ -12,6 +12,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "grkamil/laravel-telegram-logging": "^1.11",
         "guzzlehttp/guzzle": "^7.5",
+        "khaled.alshamaa/ar-php": "^6.3",
         "laravel/framework": "^8.83",
         "laravel/tinker": "^2.5",
         "laravel/ui": "3.3",

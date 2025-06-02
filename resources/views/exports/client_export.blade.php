@@ -7,7 +7,7 @@
             font-family: 'Amiri';
             font-style: normal;
             font-weight: normal;
-            src: url('{{ public_path('public_html/fonts/Amiri-Regular.ttf') }}') format('truetype');
+            src: url('{{ public_path('fonts/Amiri-Regular.ttf') }}') format('truetype');
         }
         body, .arabic-text {
             font-family: 'Amiri', 'DejaVu Sans', Arial, sans-serif;
