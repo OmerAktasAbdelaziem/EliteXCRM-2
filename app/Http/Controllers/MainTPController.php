@@ -421,7 +421,7 @@ class MainTPController extends Controller
             
             
     
-            $finance['last_deposit_amount'] = $lastDeposit ? $lastDeposit->amount : 0.00;
+            $finance['last_deposit_amount'] = $lastDeposit ? $lastDeposit->amountc : 0.00;
             $finance['ftd_amount'] = $finance['last_deposit_amount'];
     
 //            $withdrawals = MoneyTrx::where('broker_id', $broker_id)
@@ -959,6 +959,18 @@ class MainTPController extends Controller
               $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
               $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
               $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
+          }else if(($currentBalance+$credit+$bonus)-$amount < 0) {
+              
+              if($bonuce > 0){
+              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>$bonuce);
+              }
+              if($credit > 0){
+              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
+              }
+              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>($currentBalance+$credit+$bonus)-$amount);
+              
+              
+              
           }
        
       if(!empty($params)){
