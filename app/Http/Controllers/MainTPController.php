@@ -881,8 +881,8 @@ class MainTPController extends Controller
         
         //gohere request
         $moneyTrx = MoneyTrx::findOrFail($id??$request->id);
-        echo $moneyTrx->is_admin;die('asd');
-        print_r($moneyTrx->client->options['canWithdrawalCredit']);die;
+        //echo $moneyTrx->is_admin;die('asd');
+        //print_r($moneyTrx->client->options['canWithdrawalCredit']);die;
         //$moneyTrx->client->options['canWithdrawalBonus']
         $inputs = $request->only([
             'status',
