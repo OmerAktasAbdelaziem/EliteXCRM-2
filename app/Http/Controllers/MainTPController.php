@@ -961,14 +961,15 @@ class MainTPController extends Controller
               $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
           }else if(($currentBalance+$credit+$bonus)-$amount < 0) {
               
-              if($bonuce > 0){
-              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>$bonuce);
+              if($bonus > 0){
+              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>$bonus);
               }
               if($credit > 0){
               $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
               }
-              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>($currentBalance+$credit+$bonus)-$amount);
-              
+              $newAmount = abs(($currentBalance+$credit+$bonus)-$amount);
+              $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$newAmount);
+              //echo $currentBalance."+".$credit."+".$bonus.")-".$amount;
               
               
           }
