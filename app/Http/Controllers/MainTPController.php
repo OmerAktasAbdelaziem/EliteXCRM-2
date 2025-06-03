@@ -877,8 +877,13 @@ class MainTPController extends Controller
 
     public function handle_request(Request $request,$id = null)
     {
+        
+        
         //gohere request
         $moneyTrx = MoneyTrx::findOrFail($id??$request->id);
+        echo $moneyTrx->is_admin;die('asd');
+        print_r($moneyTrx->client->options['canWithdrawalCredit']);die;
+        //$moneyTrx->client->options['canWithdrawalBonus']
         $inputs = $request->only([
             'status',
             'comment'
@@ -889,8 +894,19 @@ class MainTPController extends Controller
         $client = $moneyTrx->client;
         $finance = $this->get_financial_data($client->broker_id);
         
-          $credit = $finance['credit'] ?? 0;
-          $bonus = $finance['bonus'] ?? 0;
+        $credit = $finance['credit'] ?? 0;
+        $bonus = $finance['bonus'] ?? 0;
+        if(!isset($moneyTrx->is_admin) || $moneyTrx->is_admin ==0){
+        if(!isset($moneyTrx->client->options['canWithdrawalCredit']) || $moneyTrx->client->options['canWithdrawalCredit'] == 0){
+            $credit = 0;
+        }
+        if(!isset($moneyTrx->client->options['canWithdrawalBonus']) || $moneyTrx->client->options['canWithdrawalBonus'] == 0){
+            $bonus = 0;
+        }
+        }
+            
+            
+          
           $amount = $moneyTrx->amount;
          
          
