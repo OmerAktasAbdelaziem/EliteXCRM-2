@@ -865,6 +865,7 @@ class MainTPController extends Controller
             ];
             MoneyHistory::create($history_inputs);
         }
+        MoneyTrxDetail::whereIn('money_trx', $ids['ids'])->delete();
         MoneyTrx::whereIn('id', $ids['ids'])->delete();
 
 
