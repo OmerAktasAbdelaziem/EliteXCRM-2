@@ -897,7 +897,7 @@ class MainTPController extends Controller
         
         $credit = $finance['credit'] ?? 0;
         $bonus = $finance['bonus'] ?? 0;
-        if(!isset($moneyTrx->is_admin) || $moneyTrx->is_admin ==0){
+        if(!isset($moneyTrx->is_admin) || $moneyTrx->is_admin == 0){
         if(!isset($moneyTrx->client->options['canWithdrawalCredit']) || $moneyTrx->client->options['canWithdrawalCredit'] == 0){
             $credit = 0;
         }
@@ -972,7 +972,7 @@ class MainTPController extends Controller
           }else if(($currentBalance+$credit)-$amount >= 0){
               $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
               $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=> ($amount-$currentBalance));
-          }else if(($currentBalance+$credit+$bonus)-$amount > 0) {
+          }else if(($currentBalance+$credit+$bonus)-$amount >= 0) {
               $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
               $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
               $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
