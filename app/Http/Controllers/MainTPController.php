@@ -447,6 +447,7 @@ class MainTPController extends Controller
             $finance['currentPL'] = $openedOrders->sum('pnl');
     
             $closedOrdersPL = Order::where('broker_id', $broker_id)->whereNotNull('closed_at')->sum('pnl');
+            $finance['closedOrdersPL'] = $closedOrdersPL;
     
             //print_r($closedOrdersPL);die;
             
@@ -956,27 +957,28 @@ class MainTPController extends Controller
                 ]);
                 
                 // new added
-                $currentBalance = $finance['totalDeposit'] - $finance['totalWithdrawal'];
-          //echo $currentBalance.'<br>';
+                $currentBalanceWithoutCredit = $finance['totalDeposit'] - $finance['totalWithdrawal']+$finance['closedOrdersPL'];
+          //echo $currentBalanceWithoutCredit.'<br>';
          // echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];
          // echo "<br>$credit<br>$bonus";die;
           
-         // echo $currentBalance+$credit+$bonus;die;
+         // echo $currentBalanceWithoutCredit+$credit+$bonus;die;
          
         //  //echo $finance['totalDeposit'] ." - ". $finance['totalWithdrawal'];die;
          //$amount = 1520;
+                //echo "currentBalance:$currentBalanceWithoutCredit<br> credit:$credit<br> bonus:$bonus<br> amount$amount";die;
           $params = array();
-          if(($currentBalance-$amount) >= 0){//die('a');
+          if(($currentBalanceWithoutCredit-$amount) >= 0){//die('a');
               $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$amount);
                //$trxDetails = MoneyTrxDetail::create($inputs);
-          }else if(($currentBalance+$credit)-$amount >= 0){
-              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
-              $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=> ($amount-$currentBalance));
-          }else if(($currentBalance+$credit+$bonus)-$amount >= 0) {
-              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalance);
+          }else if(($currentBalanceWithoutCredit+$credit)-$amount >= 0){
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalanceWithoutCredit);
+              $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=> ($amount-$currentBalanceWithoutCredit));
+          }else if(($currentBalanceWithoutCredit+$credit+$bonus)-$amount >= 0) {
+              $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$currentBalanceWithoutCredit);
               $params[1] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
-              $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalance+$credit)));
-          }else if(($currentBalance+$credit+$bonus)-$amount < 0) {
+              $params[2] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>($amount-($currentBalanceWithoutCredit+$credit)));
+          }else if(($currentBalanceWithoutCredit+$credit+$bonus)-$amount < 0) {
               
               if($bonus > 0){
               $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'bonus out','amount'=>$bonus);
@@ -984,13 +986,14 @@ class MainTPController extends Controller
               if($credit > 0){
               $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'credit out','amount'=>$credit);
               }
-              $newAmount = abs(($currentBalance+$credit+$bonus)-$amount);
+              $newAmount = abs(($currentBalanceWithoutCredit+$credit+$bonus)-$amount);
               $params[] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$newAmount);
-              //echo $currentBalance."+".$credit."+".$bonus.")-".$amount;
+              //echo $currentBalanceWithoutCredit."+".$credit."+".$bonus.")-".$amount;
               
               
           }
-       
+//          print_r($params);
+//       die('aas');
       if(!empty($params)){
           MoneyTrxDetail::insert($params);
       }
