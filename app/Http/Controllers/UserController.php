@@ -184,20 +184,27 @@ class UserController extends Controller
         $Password = $request->input('password');
 
         $inputs = array_merge($inputs, [
-            'password' => Hash::make($Password)
+            'password' => Hash::make($Password),
+            'password_changed_at' => now(),
         ]);
 
         $employee->update($inputs);
 
         if ($employee->text) {
             $text = Text::find($employee->text->id);
-            
             $text->update(['text'=>$Password]);
-        }else{
+        } else {
             Text::create([
                 'user_id' => $employee->id,
                 'text'    => $Password
             ]);
+        }
+        if (Auth::id() == $employee->id) {
+            Auth::logoutOtherDevices($Password);
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')->with('status', 'Password changed. Please log in again.');
         }
 
         return redirect()->route('user.show',$id);
