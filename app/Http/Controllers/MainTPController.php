@@ -1403,8 +1403,12 @@ class MainTPController extends Controller
             $orderArr['created_at'] = $order->created_at ? $order->created_at->format('Y-m-d H:i:s') : null;
             return $orderArr;
         });
-
-        $MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+//gohere
+        //$MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->select('money_trx_details.amount','money_trx_details.type')->latest()->get();
         $totalDeposit = 0.00;
         $totalWithdrawal = 0.00;
         $credit = 0.00;
@@ -1430,8 +1434,8 @@ class MainTPController extends Controller
             }
         }
 
-        $balance = ($totalDeposit - $totalWithdrawal) + Order::where('broker_id',$client->broker_id)->whereNotNull('closed_at')->sum('pnl') + $credit + $bonus;
-        $equity  = $balance + $totalOpenedPnl;
+        $balance = ($totalDeposit - $totalWithdrawal) + Order::where('broker_id',$client->broker_id)->whereNotNull('closed_at')->sum('pnl') + $credit ;
+        $equity  = $balance + $totalOpenedPnl + $bonus;
 
         $data = [
             'online_text' => $client->is_online ? 'Online now' : 'Offline now',

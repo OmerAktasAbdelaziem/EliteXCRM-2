@@ -1028,10 +1028,15 @@ class ClientsController extends Controller
         $orders = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
         $totalOpenedPnl = $orders->sum('pnl');
 
-        $MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        //$MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
+        $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->select('money_trx_details.amount','money_trx_details.type')->latest()->get();
         $totalDeposit = 0.00;
         $totalWithdrawal = 0.00;
         $credit = 0.00;
+        $bonus = 0.00;
         foreach ($MoneyTrxs as $MoneyTrx) {
             if ($MoneyTrx->type == 'deposit') {
                 $totalDeposit += $MoneyTrx->amount;
@@ -1045,10 +1050,16 @@ class ClientsController extends Controller
             if ($MoneyTrx->type == 'credit out') {
                 $credit -= $MoneyTrx->amount;
             }
+            if ($MoneyTrx->type == 'bonus in') {
+                $bonus += $MoneyTrx->amount;
+            }
+            if ($MoneyTrx->type == 'bonus out') {
+                $bonus -= $MoneyTrx->amount;
+            }
         }
 
         $balance = ($totalDeposit - $totalWithdrawal) + Order::where('broker_id',$client->broker_id)->whereNotNull('closed_at')->sum('pnl') + $credit;
-        $equity  = $balance + $totalOpenedPnl;
+        $equity  = $balance + $totalOpenedPnl + $bonus;
         $assets = Asset::select('bid_price','ask_price','id','last_bid','last_ask')->get();
 
         $data = [
