@@ -912,7 +912,7 @@ class MainTPController extends Controller
           $amount = $moneyTrx->amount;
          
          
-          
+          //die('aa');
       $moneyTrx->update($inputs);
          // print_r($params);die;  
          
@@ -968,6 +968,7 @@ class MainTPController extends Controller
          //$amount = 1520;
                 //echo "currentBalance:$currentBalanceWithoutCredit<br> credit:$credit<br> bonus:$bonus<br> amount$amount";die;
           $params = array();
+          
           if(($currentBalanceWithoutCredit-$amount) >= 0){//die('a');
               $params[0] = array('money_trx'=>$moneyTrx->id,'type'=>'withdraw','amount'=>$amount);
                //$trxDetails = MoneyTrxDetail::create($inputs);

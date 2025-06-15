@@ -83,7 +83,7 @@
                                 <div class="col">
                                     <small class="form-label">Balance</small>
                                     <h3 class="mb-3 balance {{ $finance['balance'] < 0 ? 'text-red' : 'text-green' }}">
-                                        $ {{number_format($finance['balance'], 2, '.', ',');}}
+                                        $ {{number_format((floor($finance['balance'] * 100) / 100), 2, '.', ',');}} 
                                     </h3>
                                 </div>
                                 <div class="col">
@@ -113,13 +113,13 @@
                                 <div class="col">
                                     <small class="form-label">Equity</small>
                                     <h3 class="mb-3 equity {{ ($finance['equity']) < 0 ? 'text-red' : 'text-green' }}">
-                                        $ {{ number_format($finance['equity'], 2, '.', ',') }}
+                                        $ {{ number_format((floor($finance['equity'] * 100) / 100), 2, '.', ',') }}
                                     </h3>
                                 </div>
                                 <div class="col">
                                     <small class="form-label">Used Margin</small>
                                     <h3 class="mb-3 usedMargin {{ $finance['usedMargin'] < 0 ? 'text-red' : 'text-green' }}">
-                                        $ {{number_format($finance['usedMargin'], 2, '.', ',');}}
+                                        $ {{number_format((floor($finance['usedMargin'] * 100) / 100), 2, '.', ',');}}
                                     </h3>
                                 </div>
                                 <div class="col">
