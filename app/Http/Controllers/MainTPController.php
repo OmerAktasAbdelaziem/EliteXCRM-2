@@ -220,7 +220,10 @@ class MainTPController extends Controller
         $opened_data           = $this->get_opened_data($client->broker_id,$opened_fromTo);
         $closed_data           = $this->get_closed_data($client->broker_id,$closed_fromTo);
         $bank_data             = Bank::latest()->get();
-        $session               = $client->source == 'BNC' ? 1 : $this->getSession();
+        $session = null;
+        if ($client->source == 'BNC') {
+            $session = 1;
+        }
         $finance               = $this->get_financial_data($client->broker_id,$session);
 
         if ($tab == 'opened') {
@@ -690,11 +693,6 @@ class MainTPController extends Controller
                 'Amount'      => $request->type == 'bonus out' ? $request->amount * -1 : $request->amount,
                 'Description' => ($request->type == 'bonus in' || $request->type == 'bonus out') ? $request->type : '' . $request->comment,
             ];
-            $session = $this->getSession();
-            $api = Http::withCookies(['ASP.NET_SessionId' => $session], 'platform.phooenixs.com')->baseUrl(config('services.app.host'))->get('/MoneyTransactions',$inputs);
-            if (!$api->successful()) {
-                Log::channel('telegram')->info($api->body().'MoneyTransactions problem');
-            }
         }
         session()->flash('success', 'Money Transaction has been created successfully.');
 
@@ -747,20 +745,6 @@ class MainTPController extends Controller
         return redirect()->back()->with('success', 'Request has been created successfully.');
     }
 
-    public function getSession()
-    {
-        $session = Http::baseUrl(config('services.app.host'))->get('/BackOfficeLogin?Username='.config('services.app.userName').'&Password='.config('services.app.pass'));
-
-        if (!$session->successful()) {
-            Log::channel('telegram')->info($session->body().'session problem');
-            return false;
-        }
-
-        $session = $session->json();
-
-        $session = json_decode($session['d'], true);
-        return $session['SessionID'];
-    }
 
     public function open_order(Request $request, $id)
     {
@@ -1561,7 +1545,7 @@ class MainTPController extends Controller
         $finance               = collect([]);
 
         if ($client && $client->broker_id) {
-            $session               = $client->source == 'BNC' ? 1 : $this->getSession();
+            $session = 1;
             $online                = $client->is_online;
             $moneytrx_request_data = MoneyTrx::where('broker_id',$client->broker_id)->where('status', 'pending')->get();
             $money_trx_data        = $this->get_trx_data($client->broker_id,$moneyTrx_fromTo);
