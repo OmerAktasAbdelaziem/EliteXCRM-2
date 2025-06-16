@@ -1458,24 +1458,12 @@ class MainTPController extends Controller
 
     public function get_leverage_data($id,$broker_id)
     {
-        // $user = Http::baseUrl(config('services.phoenix.host'))->withToken($token)->get('/admin/user/account?userId='.$broker_id);
         $leverage = 100;
         $contractSize = 100000;
 
         return ['leverage' => $leverage, 'contractSize' => $contractSize];
     }
 
-    public function get_group_phoenix($token)
-    {
-        $groups = Http::baseUrl(config('services.phoenix.host'))->withToken($token)->get('/OrganisationGroup/1?isDeleted=false');
-
-        if (!$groups->successful()) {
-            info($groups->body().'Group response');
-            return redirect()->back()->with('fail',$groups->body());
-        }
-
-        return $groups->json();
-    }
 
     public function retention(Request $request, $id = null)
     {
