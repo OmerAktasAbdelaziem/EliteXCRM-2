@@ -1380,9 +1380,9 @@ class MainTPController extends Controller
             $asset = Asset::find($asset_id);
         }
         $client = Client::find($client_id);
-        $orders = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
-        $totalOpenedPnl = $orders->sum('pnl');
         $broker_id = $client->broker_id;
+        $orders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
+        $totalOpenedPnl = $orders->sum('pnl');
 
         $orders = $orders->map(function($order) {
             $orderArr = $order->toArray();
