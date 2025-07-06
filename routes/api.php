@@ -19,8 +19,6 @@ Route::get('/assets', function () {
 Route::name('api.')->prefix('v1/')->group(function (Router $router) {
     $router->post('LeadCapture/{source?}/{pipeline_id?}', [LandingPagesController::class,    'LeadCapture'])->name('LeadCapture');
     $router->post('smart/registerUser',                   [ClientsTransferController::class, 'register_user'])->name('register_user');
-    $router->get('getFinancialDataPhoenix/{broker_id}',   [MainTPController::class,          'get_financial_data_phoenix'])->name('get_financial_data_phoenix');
-    $router->get('getOnlineStatusPhoenix/{broker_id}',    [MainTPController::class,          'get_online_status_phoenix'])->name('get_online_status_phoenix');
     $router->get('getFinancialData/{broker_id}',          [MainTPController::class,          'get_financial_data'])->name('get_financial_data');
     $router->post('smart/updateUserPassword',             [SmartController::class,           'update_user_password'])->name('update_user_password');
     $router->get('getOpenedData/{broker_id}',             [MainTPController::class,          'get_opened_data'])->name('get_opened_data');

@@ -31,6 +31,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 
 class ClientsController extends Controller
 {
@@ -1024,9 +1025,10 @@ class ClientsController extends Controller
         if ($asset_id) {
             $asset = Asset::find($asset_id);
         }
-        $client = Client::find($client_id);
-        $orders = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
+        $client         = Client::find($client_id);
+        $orders         = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
         $totalOpenedPnl = $orders->sum('pnl');
+        $broker_id      = $client->broker_id;
 
         //$MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
         $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
@@ -1770,7 +1772,7 @@ class ClientsController extends Controller
             $assets = \App\Models\Asset::all();
 
 
-        $pdf = Pdf::loadView('exports.client_export', [
+            $html = view('exports.client_export', [
             'totalWithdrawals' => $totalWithdrawals,
             'totalDeposits'    => $totalDeposits,
             'closedOrders'     => $closedOrders,
@@ -1781,19 +1783,19 @@ class ClientsController extends Controller
             'client'           => $client,
             'assets'           => $assets,
             'logo'             => $logo,
+        ])->render();
 
+        $mpdf = new \Mpdf\Mpdf([
+            'default_font' => 'Amiri',
+            'mode' => 'utf-8',
         ]);
-
-
-$pdf->setOptions([
-    'defaultFont' => 'Amiri',
-    'isHtml5ParserEnabled' => true,
-    'isPhpEnabled' => true,
-    'isFontSubsettingEnabled' => true,
-]);
+        $mpdf->WriteHTML($html);
 
         $filename = 'client_' . $client->id . '_transactions_' . now()->format('Ymd_His') . '.pdf';
-        return $pdf->download($filename);
+        return response($mpdf->Output('', 'S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
+
 
 }
