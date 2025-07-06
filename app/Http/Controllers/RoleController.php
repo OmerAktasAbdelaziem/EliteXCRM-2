@@ -133,7 +133,8 @@ class RoleController extends Controller
         }
 
         if ($request->users) {
-            $users = User::WithPipeline()->whereIn('id', $usersArr)->get();
+            //print_r($request->users);die;
+            $users = User::WithPipeline()->whereIn('id', $request->users)->get();
             foreach ($users as $user) {
                 $roleIds     = json_decode($user->role_ids, true) ?? [];
                 $userRole    = Role::whereIn('id', $roleIds)->first();
