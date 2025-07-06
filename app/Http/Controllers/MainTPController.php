@@ -1380,6 +1380,17 @@ class MainTPController extends Controller
             $asset = Asset::find($asset_id);
         }
         $client = Client::find($client_id);
+        if (!$client) {
+            return [
+                'online_text' => 'Client not found',
+                'equity'      => '0.00',
+                'orders'      => [],
+                'online'      => false,
+                'pnl'         => '0.000',
+                'bid'         => 0,
+                'ask'         => 0,
+            ];
+        }
         $broker_id = $client->broker_id;
         $orders = Order::where('broker_id',$broker_id)->whereNull('closed_at')->get();
         $totalOpenedPnl = $orders->sum('pnl');
