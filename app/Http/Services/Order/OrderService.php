@@ -15,10 +15,18 @@ class OrderService implements OrderServiceInterface {
     public function __construct(OrderRepositoryInterface $orderRepository) {
         $this->orderRepository = $orderRepository;
     }
+    public function getAll(): Collection{
+        $results = $this->orderRepository->getAll();
+        return $results;
+    }
 
-    public function getByParams(array $params): ?Collection{
-        $results = $this->orderRepository->getByParams($params);
-        return $$results;
+    public function getById(int $id): Collection{
+        $results = $this->orderRepository->getById($id);
+        return $results;
+    }
+    public function getByFilters(array $params): Collection{
+        $results = $this->orderRepository->getByFilters($params);
+        return $results;
     }
     public function create(array $data): Collection {
         return $this->orderRepository->create($data);
@@ -35,7 +43,7 @@ class OrderService implements OrderServiceInterface {
     }
 
     public function createBulk(array $data): bool {
-        return $this->orderRepository::insert($data);
+        return $this->orderRepository->createBulk($data);
     }
 
     public function deleteByParams(array $params): int {

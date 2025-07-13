@@ -13,10 +13,12 @@ class CreateMoneyTrxDetailsTable extends Migration
      */
     public function up()
     {
+     if (!Schema::hasTable('money_trx_details')) {
         Schema::create('money_trx_details', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
+        }
     }
 
     /**

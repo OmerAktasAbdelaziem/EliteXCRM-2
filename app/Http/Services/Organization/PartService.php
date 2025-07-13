@@ -16,9 +16,19 @@ class PartService implements PartServiceInterface {
         $this->partRepository = $partRepository;
     }
 
-    public function getByParams(array $params): ?Collection{
-        $results = $this->partRepository->getByParams($params);
-        return $$results;
+    public function getAll(): Collection{
+        $results = $this->partRepository->getAll();
+        return $results;
+    }
+    
+    public function getById(int $id): Collection{
+        $results = $this->partRepository->getById($id);
+        return $results;
+    }
+    
+    public function getByFilters(array $params): Collection{
+        $results = $this->partRepository->getByFilters($params);
+        return $results;
     }
     public function create(array $data): Collection {
         return $this->partRepository->create($data);
@@ -35,7 +45,7 @@ class PartService implements PartServiceInterface {
     }
 
     public function createBulk(array $data): bool {
-        return $this->partRepository::insert($data);
+        return $this->partRepository->createBulk($data);
     }
 
     public function deleteByParams(array $params): int {

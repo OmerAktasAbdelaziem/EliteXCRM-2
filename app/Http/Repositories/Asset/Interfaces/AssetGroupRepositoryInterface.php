@@ -1,10 +1,11 @@
 <?php
-namespace App\Http\Repositories\Organization\Interfaces;
+namespace App\Http\Repositories\Asset\Interfaces;
+
 
 //other
 use Illuminate\Database\Eloquent\Collection;
 
-interface PipelineRepositoryInterface{
+interface AssetGroupRepositoryInterface{
     public function getAll(): Collection;
     public function getById(int $id): Collection;
    public function getByFilters(array $params): Collection;

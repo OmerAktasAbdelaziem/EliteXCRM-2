@@ -15,10 +15,20 @@ class TeamService implements TeamServiceInterface {
     public function __construct(TeamRepositoryInterface $teamRepository) {
         $this->teamRepository = $teamRepository;
     }
+    
+    public function getAll(): Collection{
+        $results = $this->teamRepository->getAll();
+        return $results;
+    }
+    
+    public function getById(int $id): Collection{
+        $results = $this->teamRepository->getById($id);
+        return $results;
+    }
 
-    public function getByParams(array $params): ?Collection{
-        $results = $this->teamRepository->getByParams($params);
-        return $$results;
+    public function getByFilters(array $params): Collection{
+        $results = $this->teamRepository->getByFilters($params);
+        return $results;
     }
     public function create(array $data): Collection {
         return $this->teamRepository->create($data);
@@ -35,7 +45,7 @@ class TeamService implements TeamServiceInterface {
     }
 
     public function createBulk(array $data): bool {
-        return $this->teamRepository::insert($data);
+        return $this->teamRepository->createBulk($data);
     }
 
     public function deleteByParams(array $params): int {

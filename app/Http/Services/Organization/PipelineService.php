@@ -15,10 +15,20 @@ class PipelineService implements PipelineRepositoryInterface {
     public function __construct(PipelineServiceInterface $pipelineRepository) {
         $this->pipelineRepository = $pipelineRepository;
     }
+    
+    public function getAll(): Collection{
+        $results = $this->pipelineRepository->getAll();
+        return $results;
+    }
+    
+    public function getById(int $id): Collection{
+        $results = $this->pipelineRepository->getById($id);
+        return $results;
+    }
 
-    public function getByParams(array $params): ?Collection{
-        $results = $this->pipelineRepository->getByParams($params);
-        return $$results;
+    public function getByFilters(array $params): Collection{
+        $results = $this->pipelineRepository->getByFilters($params);
+        return $results;
     }
     public function create(array $data): Collection {
         return $this->pipelineRepository->create($data);
@@ -35,7 +45,7 @@ class PipelineService implements PipelineRepositoryInterface {
     }
 
     public function createBulk(array $data): bool {
-        return $this->pipelineRepository::insert($data);
+        return $this->pipelineRepository->createBulk($data);
     }
 
     public function deleteByParams(array $params): int {

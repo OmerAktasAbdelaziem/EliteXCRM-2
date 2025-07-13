@@ -1,22 +1,23 @@
 <?php
-namespace App\Http\Repositories\Organization;
+namespace App\Http\Repositories\Asset;
 
 //Interfaces
-use App\Http\Repositories\Organization\Interfaces\TeamRepositoryInterface;
+use App\Http\Repositories\Asset\Interfaces\AssetGroupRepositoryInterface;
 //Models
-use App\Models\Team;
+use App\Models\AssetGroup;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
-class TeamRepository implements TeamRepositoryInterface {
+class AssetGroupRepository implements AssetGroupRepositoryInterface {
 
     
     public function getAll(): Collection
 {
-    return Team::all();
+    return AssetGroup::all();
 }
+
 public function getById(int $id): Collection {
-    $item = Team::where('id',$id)->get();
+    $item = AssetGroup::where('id',$id)->get();
     return $item;
 }
     public function getByFilters(array $params): Collection {
@@ -29,7 +30,7 @@ public function getById(int $id): Collection {
           'price' => ['!=' => 100],
           ]
          */
-        $items = Team::where(function ($query) use ($params) {
+        $items = AssetGroup::where(function ($query) use ($params) {
         foreach ($params as $field => $condition) {
             if (!is_array($condition)) {
                 continue;
@@ -77,29 +78,29 @@ public function getById(int $id): Collection {
   
   public function create(array $data): Collection
     {
-        $result = Team::create($data);
+        $result = AssetGroup::create($data);
         return new Collection([$result]);
     }
     public function update(int $id,array $data): int
     {
-        return $result = Team::where('id', $id)->update($data);
+        return $result = AssetGroup::where('id', $id)->update($data);
         
     }
     public function updateBulk(array $ids,array $data): int
     {
-        return $result = Team::whereIn('id', $ids)->update($data);
+        return $result = AssetGroup::whereIn('id', $ids)->update($data);
         
     }
     
     public function createBulk(array $data): bool 
     {
-        return Team::insert($data);
+        return AssetGroup::insert($data);
     }
 
 
     public function deleteByParams(array $params): int 
     {
-        return Team::where(function ($query) use ($params) {
+        return AssetGroup::where(function ($query) use ($params) {
     foreach ($params as $key => $value) {
         if(is_array($value)){
         $query->whereIn($key, $value);    

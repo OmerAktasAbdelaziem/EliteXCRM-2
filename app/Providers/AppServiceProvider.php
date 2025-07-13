@@ -17,7 +17,12 @@ use App\Http\Repositories\Order\OrderRepository;
 use App\Http\Repositories\Order\Interfaces\OrderRepositoryInterface;
 use App\Http\Repositories\Order\MoneyTransactionRepository;
 use App\Http\Repositories\Order\Interfaces\MoneyTransactionRepositoryInterface;
-
+use App\Http\Repositories\Asset\AssetRepository;
+use App\Http\Repositories\Asset\Interfaces\AssetRepositoryInterface;
+use App\Http\Repositories\Asset\AssetGroupRepository;
+use App\Http\Repositories\Asset\Interfaces\AssetGroupRepositoryInterface;
+use App\Http\Repositories\Asset\AssetGroupAssignmentRepository;
+use App\Http\Repositories\Asset\Interfaces\AssetGroupAssignmentRepositoryInterface;
 
 //interfaces & services
 use App\Http\Services\Organization\PipelineService;
@@ -30,6 +35,10 @@ use App\Http\Services\Order\OrderService;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Order\MoneyTransactionService;
 use App\Http\Services\Order\Interfaces\MoneyTransactionServiceInterface;
+use App\Http\Services\Asset\AssetService;
+use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
+use App\Http\Services\Asset\AssetGroupService;
+use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TeamRepositoryInterface::class, TeamRepository::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(MoneyTransactionRepositoryInterface::class, MoneyTransactionRepository::class);
+        $this->app->bind(AssetRepositoryInterface::class, AssetRepository::class);
+        $this->app->bind(AssetGroupRepositoryInterface::class, AssetGroupRepository::class);
+        $this->app->bind(AssetGroupAssignmentRepositoryInterface::class, AssetGroupAssignmentRepository::class);
         
         
         //Services
@@ -49,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TeamServiceInterface::class, TeamService::class);
         $this->app->bind(OrderServiceInterface::class, OrderService::class);
         $this->app->bind(MoneyTransactionServiceInterface::class, MoneyTransactionService::class);
+        $this->app->bind(AssetServiceInterface::class, AssetService::class);
+        $this->app->bind(AssetGroupServiceInterface::class, AssetGroupService::class);
         
     }
 

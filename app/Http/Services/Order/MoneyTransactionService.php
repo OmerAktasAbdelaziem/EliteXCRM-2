@@ -15,10 +15,18 @@ class MoneyTransactionService implements MoneyTransactionServiceInterface {
     public function __construct(MoneyTransactionRepositoryInterface $moneyTransaction) {
         $this->moneyTransaction = $moneyTransaction;
     }
+    public function getAll(): Collection{
+        $results = $this->moneyTransaction->getAll();
+        return $results;
+    }
 
-    public function getByParams(array $params): ?Collection{
-        $results = $this->moneyTransaction->getByParams($params);
-        return $$results;
+    public function getById(int $id): Collection{
+        $results = $this->moneyTransaction->getById($id);
+        return $results;
+    }
+    public function getByFilters(array $params): Collection{
+        $results = $this->moneyTransaction->getByFilters($params);
+        return $results;
     }
     public function create(array $data): Collection {
         return $this->moneyTransaction->create($data);
@@ -35,7 +43,7 @@ class MoneyTransactionService implements MoneyTransactionServiceInterface {
     }
 
     public function createBulk(array $data): bool {
-        return $this->moneyTransaction::insert($data);
+        return $this->moneyTransaction->createBulk($data);
     }
 
     public function deleteByParams(array $params): int {

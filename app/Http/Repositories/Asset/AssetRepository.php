@@ -1,24 +1,27 @@
 <?php
-namespace App\Http\Repositories\Organization;
+
+namespace App\Http\Repositories\Asset;
 
 //Interfaces
-use App\Http\Repositories\Organization\Interfaces\TeamRepositoryInterface;
+use App\Http\Repositories\Asset\Interfaces\AssetRepositoryInterface;
 //Models
-use App\Models\Team;
+use App\Models\Asset;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
-class TeamRepository implements TeamRepositoryInterface {
+class AssetRepository implements AssetRepositoryInterface {
 
-    
     public function getAll(): Collection
 {
-    return Team::all();
+    return Asset::all();
 }
+
 public function getById(int $id): Collection {
-    $item = Team::where('id',$id)->get();
+    $item = Asset::where('id',$id)->get();
     return $item;
 }
+    
+    
     public function getByFilters(array $params): Collection {
         /*
          * Example of params array
@@ -29,7 +32,7 @@ public function getById(int $id): Collection {
           'price' => ['!=' => 100],
           ]
          */
-        $items = Team::where(function ($query) use ($params) {
+        $items = Asset::where(function ($query) use ($params) {
         foreach ($params as $field => $condition) {
             if (!is_array($condition)) {
                 continue;
@@ -74,42 +77,33 @@ public function getById(int $id): Collection {
          })->get();
         return $items;
     }
-  
-  public function create(array $data): Collection
-    {
-        $result = Team::create($data);
+
+    public function create(array $data): Collection {
+        $result = Asset::create($data);
         return new Collection([$result]);
     }
-    public function update(int $id,array $data): int
-    {
-        return $result = Team::where('id', $id)->update($data);
-        
-    }
-    public function updateBulk(array $ids,array $data): int
-    {
-        return $result = Team::whereIn('id', $ids)->update($data);
-        
-    }
-    
-    public function createBulk(array $data): bool 
-    {
-        return Team::insert($data);
+
+    public function update(int $id, array $data): int {
+        return $result = Asset::where('id', $id)->update($data);
     }
 
+    public function updateBulk(array $ids, array $data): int {
+        return $result = Asset::whereIn('id', $ids)->update($data);
+    }
 
-    public function deleteByParams(array $params): int 
-    {
-        return Team::where(function ($query) use ($params) {
-    foreach ($params as $key => $value) {
-        if(is_array($value)){
-        $query->whereIn($key, $value);    
-        }else{
-        $query->where($key, $value);
-        }
+    public function createBulk(array $data): bool {
+        return Asset::insert($data);
     }
-})->delete();
+
+    public function deleteByParams(array $params): int {
+        return Asset::where(function ($query) use ($params) {
+                    foreach ($params as $key => $value) {
+                        if (is_array($value)) {
+                            $query->whereIn($key, $value);
+                        } else {
+                            $query->where($key, $value);
+                        }
+                    }
+                })->delete();
     }
-  
-  
-  
 }

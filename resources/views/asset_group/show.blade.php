@@ -99,6 +99,7 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                                 <div class="col-12">
                                     @if ($group->getKey())
@@ -150,44 +151,47 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($groupAssets as $asset)
+                                            @foreach ($assetGroupAssignments as $assetGroupAssignment)
+                                           @php
+                                       
+                                           @endphp
                                                 <tr>
                                                     <td>
-                                                        <input class="form-check-input me-3 check-asset check-number" type="checkbox" form="multi_edit_form" name="asset_ids[]" value="{{$asset->id}}" aria-label="...">
+                                                        <input class="form-check-input me-3 check-asset check-number" type="checkbox" form="multi_edit_form" name="assetGroupAssignment_ids[]" value="{{$assetGroupAssignment->id}}" aria-label="...">
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('asset.show', $asset->id) }}">
-                                                            {{$asset->name}}
+                                                        <a href="{{ route('asset.show', $assetGroupAssignment->id) }}">
+                                                            {{$assetGroupAssignment->relatedAsset->name}}
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        {{$asset->symbol}}
+                                                        {{$assetGroupAssignment->relatedAsset->symbol}}
                                                     </td>
                                                     <td>
-                                                        {{$asset->currency}}
+                                                        {{$assetGroupAssignment->relatedAsset->currency}}
                                                     </td>
                                                     <td>
-                                                        {{$asset->category}}
+                                                        {{$assetGroupAssignment->relatedAsset->category}}
                                                     </td>
                                                     <td>
-                                                        {{$asset->leverage[$group->id]??''}}
+                                                        {{$assetGroupAssignment->leverage??''}}
                                                     </td>
                                                     <td>
-                                                        {{$asset->size[$group->id]??''}}
+                                                        {{$assetGroupAssignment->size??''}}
                                                     </td>
                                                     <td>
-                                                        {{$asset->bid_spread[$group->id]??''}}
+                                                        {{$assetGroupAssignment->bid_spread??''}}
                                                     </td>
                                                     <td>
-                                                        {{$asset->ask_spread[$group->id]??''}}
+                                                        {{$assetGroupAssignment->ask_spread??''}}
                                                     </td>
                                                     <td>
-                                                        <i class="bx bx-{{($asset->is_percentage[$group->id]??false) ? 'check text-success' : 'x text-danger'}}" style="font-size: 22px"></i>
+                                                        <i class="bx bx-{{($assetGroupAssignment->is_percentage??false) ? 'check text-success' : 'x text-danger'}}" style="font-size: 22px"></i>
                                                     </td>
                                                     <td>
-                                                        <i class="bx bx-{{$asset->is_active ? 'check text-success' : 'x text-danger'}}" style="font-size: 22px"></i>
+                                                        <i class="bx bx-{{$assetGroupAssignment->relatedAsset->is_active ? 'check text-success' : 'x text-danger'}}" style="font-size: 22px"></i>
                                                     </td>
-                                                    <td>{{date('d/m/Y H:i', strtotime($asset->created_at))}}</td>
+                                                    <td>{{date('d/m/Y H:i', strtotime($assetGroupAssignment->relatedAsset?->created_at))}}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
