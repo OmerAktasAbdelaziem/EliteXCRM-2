@@ -5,7 +5,9 @@ namespace App\Http\Services\Organization\Interfaces;
 use Illuminate\Database\Eloquent\Collection;
 
 interface TeamServiceInterface{
-    public function getByParams(array $params): ?Collection;
+    public function getAll(): Collection;
+    public function getById(int $id): Collection;
+    public function getByFilters(array $params): Collection;
      public function create(array $data): Collection;
      public function update(int $id,array $data):int;
      public function updateBulk(array $ids,array $data):int;

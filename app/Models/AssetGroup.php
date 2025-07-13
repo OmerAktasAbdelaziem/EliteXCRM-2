@@ -18,4 +18,10 @@ class AssetGroup extends Model
     protected $casts = [
         'asset_ids' => 'array',
     ];
+    
+    public function assetAssignments()
+{
+    return $this->hasMany(AssetGroupAssignment::class, 'asset_group');
+}
+//$groups = AssetGroup::with(['assetAssignments.asset'])->get();
 }

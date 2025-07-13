@@ -11,19 +11,73 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MoneyTransactionRepository implements MoneyTransactionInterface {
 
-    public function getByParams(array $params): ?Collection{
-      $items = MoneyTrx::where(function ($query) use ($params) {
-    foreach ($params as $key => $value) {
-        if(is_array($value)){
-        $query->whereIn($key, $value);    
-        }else{
-        $query->where($key, $value);
+    
+    
+    public function getAll(): Collection
+{
+    return MoneyTrx::all();
+}
+
+public function getById(int $id): Collection {
+    $item = MoneyTrx::where('id',$id)->get();
+    return $item;
+}
+
+    public function getByFilters(array $params): Collection {
+        /*
+         * Example of params array
+          [
+          'status' => ['=' => 'active'],
+          'type' => ['in' => ['A', 'B']],
+          'category' => ['notIn' => [1, 2, 3]],
+          'price' => ['!=' => 100],
+          ]
+         */
+        $items = MoneyTrx::where(function ($query) use ($params) {
+        foreach ($params as $field => $condition) {
+            if (!is_array($condition)) {
+                continue;
+            }
+
+            foreach ($condition as $operator => $value) {
+                switch (strtolower($operator)) {
+                    case 'in':
+                        $query->whereIn($field, $value);
+                        break;
+                    case 'notin':
+                        $query->whereNotIn($field, $value);
+                        break;
+                    case '!=':
+                    case '<>':
+                        $query->where($field, '!=', $value);
+                        break;
+                    case '=':
+                        $query->where($field, '=', $value);
+                        break;
+                    case 'like':
+                        $query->where($field, 'like', $value);
+                        break;
+                    case 'notlike':
+                        $query->where($field, 'not like', $value);
+                        break;
+                    case 'null':
+                        $query->whereNull($field);
+                        break;
+                    case 'notnull':
+                        $query->whereNotNull($field);
+                        break;
+                    case 'between':
+                        $query->whereBetween($field, $value);
+                        break;
+                    default:
+                        $query->where($field, $operator, $value);
+                        break;
+                }
+            }
         }
+         })->get();
+        return $items;
     }
-})->get();
-return $items->isEmpty() ? null : $items;
-      
-  }
   
   public function create(array $data): Collection
     {
@@ -42,6 +96,7 @@ return $items->isEmpty() ? null : $items;
         $result = MoneyTrx::create($data);
         return new Collection([$result]);
     }
+    
     public function update(int $id,array $data): int
     {
         return $result = MoneyTrx::where('id', $id)->update($data);
