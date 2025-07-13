@@ -42,7 +42,7 @@
                                 @if ($group->getKey())
                                     @method('PUT')
                                 @endif
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="name" class="form-label">Name</label>
                                     <div class="input-group">
                                             <input type="text" class="form-control" id="name" name="name" value="{{ old('name',$group->name) }}" placeholder="Asset Group Name" required />
@@ -51,15 +51,54 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="asset_ids" class="form-label">Assets</label>
-                                    <select class="form-select multiple-select" name="asset_ids[]" multiple>
-                                        <option value="all">All</option>
-                                        <option value="except">Except</option>
-                                        @foreach ($assets as $asset)
-                                            <option value="{{$asset->id}}" @if (in_array($asset->id, $group->asset_ids??[]) ) selected @endif>{{$asset->name}}</option>
-                                        @endforeach
-                                    </select>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="selected_assets_display" placeholder="Selected assets will appear here..." readonly onclick="toggleAssetSelection()">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="toggleAssetSelection()">
+                                                    <i class="bx bx-chevron-down" id="dropdown_arrow"></i>
+                                                </button>
+                                            </div>
+                                            <div id="asset_selection_dropdown" class="border rounded mt-2 p-3" style="display: none; max-height: 300px; overflow-y: auto;">
+                                                <div class="mb-3">
+                                                    <input type="text" class="form-control form-control-sm" id="asset_search" placeholder="Search assets..." onkeyup="filterAssets()">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="all" id="select_all_assets">
+                                                        <label class="form-check-label fw-bold" for="select_all_assets">All Assets</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="except" id="select_except_assets">
+                                                        <label class="form-check-label fw-bold" for="select_except_assets">All Except Selected</label>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                                <div id="assets_list">
+                                                    @foreach ($assets as $asset)
+                                                        <div class="form-check asset-item" data-asset-name="{{strtolower($asset->name)}}">
+                                                            <input class="form-check-input asset-checkbox" type="checkbox" name="asset_ids[]" value="{{$asset->id}}" id="asset_{{$asset->id}}" @if (in_array($asset->id, $group->asset_ids??[]) ) checked @endif>
+                                                            <label class="form-check-label" for="asset_{{$asset->id}}">{{$asset->name}}</label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="selected-assets-preview">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <small class="text-muted">Selected Assets Preview:</small>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleAssetSelection()">
+                                                        <i class="bx bx-plus"></i> Add Asset
+                                                    </button>
+                                                </div>
+                                                <div id="selected_assets_list" class="border rounded p-2" style="min-height: 100px; max-height: 200px; overflow-y: auto;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12">
                                     @if ($group->getKey())
@@ -86,7 +125,7 @@
                                             <i class="bx bx-trash me-2"></i>
                                             Delete
                                         </button>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="table-responsive mt-4">
                                     <table class="table align-middle mb-0 table-hover data-table">
@@ -270,6 +309,154 @@
                 });
             }
             setInterval(updateChoices, 1);
+
+            updateSelectedAssetsDisplay();
+            updateSelectedAssetsList();
+
+            $('.asset-checkbox').on('change', function() {
+                updateSelectedAssetsDisplay();
+                updateSelectedAssetsList();
+                handleSpecialSelections();
+            });
+
+            $('#select_all_assets').on('change', function() {
+                if (this.checked) {
+                    $('#select_except_assets').prop('checked', false);
+                    $('.asset-checkbox').prop('checked', true);
+                } else {
+                    $('.asset-checkbox').prop('checked', false);
+                }
+                updateSelectedAssetsDisplay();
+                updateSelectedAssetsList();
+            });
+
+            $('#select_except_assets').on('change', function() {
+                if (this.checked) {
+                    $('#select_all_assets').prop('checked', false);
+                }
+                updateSelectedAssetsDisplay();
+                updateSelectedAssetsList();
+            });
+        });
+
+        function toggleAssetSelection() {
+            var dropdown = $('#asset_selection_dropdown');
+            var arrow = $('#dropdown_arrow');
+            
+            if (dropdown.is(':visible')) {
+                dropdown.hide();
+                arrow.removeClass('bx-chevron-up').addClass('bx-chevron-down');
+            } else {
+                dropdown.show();
+                arrow.removeClass('bx-chevron-down').addClass('bx-chevron-up');
+            }
+        }
+
+        function removeAssetFromSelection(assetId) {
+            $('#asset_' + assetId).prop('checked', false);
+            updateSelectedAssetsDisplay();
+            updateSelectedAssetsList();
+            handleSpecialSelections();
+        }
+
+        function removeSpecialSelection(type) {
+            if (type === 'all') {
+                $('#select_all_assets').prop('checked', false);
+                $('.asset-checkbox').prop('checked', false);
+            } else if (type === 'except') {
+                $('#select_except_assets').prop('checked', false);
+            }
+            updateSelectedAssetsDisplay();
+            updateSelectedAssetsList();
+        }
+
+        function addAssetToSelection(assetId) {
+            $('#asset_' + assetId).prop('checked', true);
+            updateSelectedAssetsDisplay();
+            updateSelectedAssetsList();
+            handleSpecialSelections();
+        }
+
+        function filterAssets() {
+            var searchText = $('#asset_search').val().toLowerCase();
+            $('.asset-item').each(function() {
+                var assetName = $(this).data('asset-name');
+                if (assetName.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+        function updateSelectedAssetsDisplay() {
+            var selectedAssets = [];
+            
+            if ($('#select_all_assets').is(':checked')) {
+                selectedAssets.push('All Assets');
+            } else if ($('#select_except_assets').is(':checked')) {
+                selectedAssets.push('All Except Selected');
+            } else {
+                $('.asset-checkbox:checked').each(function() {
+                    var assetName = $('label[for="' + this.id + '"]').text();
+                    selectedAssets.push(assetName);
+                });
+            }
+
+            var displayText = selectedAssets.length > 0 ? selectedAssets.join(', ') : 'No assets selected';
+            if (displayText.length > 50) {
+                displayText = selectedAssets.length + ' assets selected';
+            }
+            
+            $('#selected_assets_display').val(displayText);
+        }
+
+        function updateSelectedAssetsList() {
+            var selectedAssetsList = $('#selected_assets_list');
+            selectedAssetsList.empty();
+
+            if ($('#select_all_assets').is(':checked')) {
+                selectedAssetsList.append('<span class="badge bg-primary me-1 mb-1">All Assets <button type="button" class="btn-close btn-close-white ms-1" style="font-size: 0.6em;" onclick="removeSpecialSelection(\'all\')"></button></span>');
+            } else if ($('#select_except_assets').is(':checked')) {
+                selectedAssetsList.append('<span class="badge bg-warning me-1 mb-1">All Except Selected <button type="button" class="btn-close ms-1" style="font-size: 0.6em;" onclick="removeSpecialSelection(\'except\')"></button></span>');
+                $('.asset-checkbox:checked').each(function() {
+                    var assetName = $('label[for="' + this.id + '"]').text();
+                    var assetId = this.value;
+                    selectedAssetsList.append('<span class="badge bg-secondary me-1 mb-1">' + assetName + ' (Excluded) <button type="button" class="btn-close btn-close-white ms-1" style="font-size: 0.6em;" onclick="removeAssetFromSelection(\'' + assetId + '\')"></button></span>');
+                });
+            } else {
+                $('.asset-checkbox:checked').each(function() {
+                    var assetName = $('label[for="' + this.id + '"]').text();
+                    var assetId = this.value;
+                    selectedAssetsList.append('<span class="badge bg-success me-1 mb-1">' + assetName + ' <button type="button" class="btn-close btn-close-white ms-1" style="font-size: 0.6em;" onclick="removeAssetFromSelection(\'' + assetId + '\')"></button></span>');
+                });
+            }
+
+            if (selectedAssetsList.children().length === 0) {
+                selectedAssetsList.append('<span class="text-muted">No assets selected</span>');
+            }
+        }
+
+        function handleSpecialSelections() {
+            if ($('#select_all_assets').is(':checked') && $('.asset-checkbox:not(:checked)').length > 0) {
+                $('#select_all_assets').prop('checked', false);
+            }
+            
+            if ($('.asset-checkbox:checked').length === $('.asset-checkbox').length && $('.asset-checkbox').length > 0) {
+                $('#select_all_assets').prop('checked', true);
+                $('#select_except_assets').prop('checked', false);
+            }
+        }
+
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('#asset_selection_dropdown, #selected_assets_display, button[onclick="toggleAssetSelection()"]').length) {
+                $('#asset_selection_dropdown').hide();
+                $('#dropdown_arrow').removeClass('bx-chevron-up').addClass('bx-chevron-down');
+            }
+        });
+
+        $('#asset_selection_dropdown').on('click', function(event) {
+            event.stopPropagation();
         });
     </script>
 @endsection
