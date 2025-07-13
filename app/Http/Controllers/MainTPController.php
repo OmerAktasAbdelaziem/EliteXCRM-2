@@ -1702,7 +1702,7 @@ protected $assetService;
         $order  = Order::find($order_id);
         //$asset  = Asset::find($order->currency);
         $asset  = $this->assetService->getById($order->currency)->first();
-        $asset->load(['']);
+        $asset->load(['groupAssignments']);
         $currentPrice = $order->close_price;
         $openPrice = $order->open_price;
 
