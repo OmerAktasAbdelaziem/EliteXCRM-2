@@ -53,15 +53,16 @@
                                 </div>
                                 <div class="col-md-12">
                                     <label for="asset_ids" class="form-label">Assets</label>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="selected_assets_display" placeholder="Selected assets will appear here..." readonly onclick="toggleAssetSelection()">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="toggleAssetSelection()">
-                                                    <i class="bx bx-chevron-down" id="dropdown_arrow"></i>
-                                                </button>
-                                            </div>
-                                            <div id="asset_selection_dropdown" class="border rounded mt-2 p-3" style="display: none; max-height: 300px; overflow-y: auto;">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="selected_assets_display" placeholder="Selected assets will appear here..." readonly onclick="toggleAssetSelection()">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="toggleAssetSelection()">
+                                            <i class="bx bx-chevron-down" id="dropdown_arrow"></i>
+                                        </button>
+                                    </div>
+                                    <div id="asset_selection_dropdown" class="border rounded mt-2 p-3" style="display: none; max-height: 400px; overflow-y: auto;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="mb-3">Available Assets</h6>
                                                 <div class="mb-3">
                                                     <input type="text" class="form-control form-control-sm" id="asset_search" placeholder="Search assets..." onkeyup="filterAssets()">
                                                 </div>
@@ -76,7 +77,7 @@
                                                     </div>
                                                     <hr>
                                                 </div>
-                                                <div id="assets_list">
+                                                <div id="assets_list" style="max-height: 250px; overflow-y: auto;">
                                                     @foreach ($assets as $asset)
                                                         <div class="form-check asset-item" data-asset-name="{{strtolower($asset->name)}}">
                                                             <input class="form-check-input asset-checkbox" type="checkbox" name="asset_ids[]" value="{{$asset->id}}" id="asset_{{$asset->id}}" @if (in_array($asset->id, $group->asset_ids??[]) ) checked @endif>
@@ -85,21 +86,19 @@
                                                     @endforeach
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="selected-assets-preview">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <small class="text-muted">Selected Assets Preview:</small>
-                                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleAssetSelection()">
-                                                        <i class="bx bx-plus"></i> Add Asset
+                                            <div class="col-md-6">
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <h6 class="mb-0">Selected Assets</h6>
+                                                    <button type="button" class="btn btn-sm btn-outline-success" onclick="toggleAssetSelection()">
+                                                        <i class="bx bx-check"></i> Done
                                                     </button>
                                                 </div>
-                                                <div id="selected_assets_list" class="border rounded p-2" style="min-height: 100px; max-height: 200px; overflow-y: auto;">
+                                                <div id="selected_assets_list" class="border rounded p-2" style="min-height: 300px; max-height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+                                                    <!-- Selected assets will be displayed here -->
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="col-12">
                                     @if ($group->getKey())
