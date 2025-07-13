@@ -32,8 +32,22 @@ use App\Models\ClosedOrder;
 use App\Models\MoneyTransaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+//Services
+use App\Http\Services\Asset\AssetGroupService;
+use App\Http\Services\Asset\AssetService;
+
 class MainTPController extends Controller
 {
+    
+    protected $assetGroupService;
+protected $assetService;
+    public function __construct(
+            AssetGroupService $assetGroupService,
+            AssetService $assetService
+            ) {
+        $this->assetGroupService = $assetGroupService;
+        $this->assetService = $assetService;
+    }
     public function show($id,Request $request)
     {
         $formattedNowFromDate = Carbon::now()->subDays(30)->startOfDay()->format('d/m/Y');
@@ -1686,7 +1700,9 @@ class MainTPController extends Controller
     {
         $client = Client::find($client_id);
         $order  = Order::find($order_id);
-        $asset  = Asset::find($order->currency);
+        //$asset  = Asset::find($order->currency);
+        $asset  = $this->assetService->getById($order->currency)->first();
+        $asset->load(['']);
         $currentPrice = $order->close_price;
         $openPrice = $order->open_price;
 

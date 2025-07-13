@@ -120,7 +120,7 @@
                                                         <input class="form-check-input me-3 check-asset check-number" type="checkbox" form="multi_edit_form" name="assetGroupAssignment_ids[]" value="{{$assetGroupAssignment->id}}" aria-label="...">
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('asset.show', $assetGroupAssignment->id) }}">
+                                                        <a href="{{ route('asset.show', $assetGroupAssignment->asset) }}">
                                                             {{$assetGroupAssignment->relatedAsset->name}}
                                                         </a>
                                                     </td>
