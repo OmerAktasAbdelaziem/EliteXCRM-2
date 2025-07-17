@@ -33,20 +33,27 @@ use App\Models\MoneyTransaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 //Services
-use App\Http\Services\Asset\AssetGroupService;
-use App\Http\Services\Asset\AssetService;
+use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
+use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
+use App\Http\Services\Order\Interfaces\OrderServiceInterface;
+
 
 class MainTPController extends Controller
 {
     
     protected $assetGroupService;
 protected $assetService;
+protected $orderService;
+
     public function __construct(
-            AssetGroupService $assetGroupService,
-            AssetService $assetService
+            AssetGroupServiceInterface $assetGroupService,
+            AssetServiceInterface $assetService,
+            OrderServiceInterface $orderService,
             ) {
         $this->assetGroupService = $assetGroupService;
         $this->assetService = $assetService;
+        $this->orderService = $orderService;
+        
     }
     public function show($id,Request $request)
     {
@@ -231,14 +238,16 @@ protected $assetService;
         $moneytrx_request_data = MoneyTrx::where('broker_id',$client->broker_id)->where('status', 'pending')->get();
         $money_trx_data        = $this->get_trx_data($client->broker_id,$moneyTrx_fromTo);
         $scripts_data          = $this->get_scripts_data($client->id);
+        //print_r($scripts_data);die('aaa');
         $opened_data           = $this->get_opened_data($client->broker_id,$opened_fromTo);
         $closed_data           = $this->get_closed_data($client->broker_id,$closed_fromTo);
+         
         $bank_data             = Bank::latest()->get();
         $session = null;
         if ($client->source == 'BNC') {
             $session = 1;
         }
-        $finance               = $this->get_financial_data($client->broker_id,$session);
+        $finance               = $this->orderService->getFinancialData($client->broker_id);//$this->get_financial_data($client->broker_id,$session);
 
         if ($tab == 'opened') {
             $opened_data = $opened_data->latest()->paginate($limit, ['*'], 'page', $page);
@@ -249,6 +258,8 @@ protected $assetService;
 
         if ($tab == 'closed') {
             $closed_data = $closed_data->latest()->paginate($limit, ['*'], 'page', $page);
+            //dd($closed_data);die('b');
+            
         }
         else {
             $closed_data = $closed_data->latest()->paginate($limit, ['*'], 'page', 1);
@@ -432,13 +443,13 @@ protected $assetService;
     ->where('money_trxes.broker_id', $broker_id)
     ->where('money_trxes.status', 'accepted')
     ->where('money_trx_details.type', 'deposit')
-    //->sum('money_trx_details.amount')
+    ->orderBy('money_trxes.created_at', 'desc')
     ->first();
           // var_dump($lastDeposit->amount);die;
             
             
     
-            $finance['last_deposit_amount'] = $lastDeposit ? $lastDeposit->amountc : 0.00;
+            $finance['last_deposit_amount'] = $lastDeposit ? $lastDeposit->amount : 0.00;
             $finance['ftd_amount'] = $finance['last_deposit_amount'];
     
 //            $withdrawals = MoneyTrx::where('broker_id', $broker_id)
@@ -587,7 +598,7 @@ protected $assetService;
             $to = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
         }else{
             $to = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-        }
+        }//echo $from.' - '.$to;die;
         $closed_data = Order::where('broker_id',$broker_id)->whereNotNull('closed_at')->where('created_at','>=',$from)->where('created_at','<=',$to);
 
         return $closed_data;
@@ -636,10 +647,17 @@ protected $assetService;
         }
 
         $asset_ids = $client->assetGroup->asset_ids ?? [];
-        $assets = Asset::whereIn('id', $asset_ids)->whereIn('type', ['Crypto','Forex','Stocks','Indx'])->where('bid_price','!=',0)->get();
+        //$assets = Asset::whereIn('id', $asset_ids)->whereIn('type', ['Crypto','Forex','Stocks','Indx'])->where('bid_price','!=',0)->get();
+        $assets = $this->assetService->getByFilters([
+            'id'=>['in'=>$asset_ids],
+            'type'=>['in'=>['Crypto','Forex','Stocks','Indx']],
+            'bid_price'=>['!='=>0],
+            ]);
         $asset_group_id = $client->asset_group_id;
-
-        foreach ($assets as $asset) {
+$assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
+    $query->where('asset_group', $asset_group_id);  
+}]);
+        /*foreach ($assets as $asset) {
             $defaults = [
                 'sell_commission' => 0,
                 'buy_commission'  => 0,
@@ -659,7 +677,7 @@ protected $assetService;
                 'leverage'        => $asset->leverage[$asset_group_id] ?? 0,
                 'size'            => $asset->size[$asset_group_id] ?? 0,
             ]));
-        }
+        }*/
 
         return $assets;
     }
@@ -781,7 +799,7 @@ protected $assetService;
             while ($loop) {
                 $order = Order::find($order->id);
                 if ($order->pnl != null) {
-                    $finance = $this->get_financial_data($order->broker_id,1);
+                    $finance = $this->orderService->getFinancialData($order->broker_id);//$this->get_financial_data($order->broker_id,1);
                     if ($finance['equity'] < 0) {
                         $order->delete();
                         session()->flash('fail', 'Liquidation Failed, Equity is less than 0.');
@@ -892,7 +910,7 @@ protected $assetService;
         
         
         $client = $moneyTrx->client;
-        $finance = $this->get_financial_data($client->broker_id);
+        $finance = $this->orderService->getFinancialData($client->broker_id);//$this->get_financial_data($client->broker_id);
         
         $credit = $finance['credit'] ?? 0;
         $bonus = $finance['bonus'] ?? 0;
@@ -1099,8 +1117,13 @@ protected $assetService;
 
     public function update_close_order(Request $request, $id)
     {
+        
         $order = Order::findOrFail($id);
-        $group_id = $order->client->asset_group_id;
+        
+        $groupId = $group_id = $order->client->asset_group_id;
+        $order->asset->load(['groupAssignments' => function($query) use ($groupId) {
+    $query->where('asset_group', $groupId);  
+}]);
         $inputs = $request->only([
             'close_price',
             'open_price',
@@ -1109,13 +1132,21 @@ protected $assetService;
             'comment',
             'amount',
         ]);
+        $size = $order->asset?->groupAssignments?->first()?->size;
+        $leverage = $order->asset?->groupAssignments?->first()?->leverage;
+        if ($size === null || $leverage === null) {
+    return response()->json([
+                        'success' => false,
+                        'message' => 'Order currency had been removed from asset group assigned to user, please choose another currency for the order.'
+                    ]);
+}
         if (str_starts_with($order->asset->symbol, 'USD') || (!strpos($order->asset->symbol, 'USD') && $order->asset->currency !== "USD")) {
-            $reqMargin = (($request->amount * $request->open_price * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$request->open_price);
+            $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1/$request->open_price);
         }else{
-            $reqMargin = (($request->amount * $request->open_price * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$request->open_price);
+            $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1/$request->open_price);
         }
-        if (($order->asset->is_percentage[$group_id]??0)==1) {
-            $reqMargin = ($request->amount * $request->open_price * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id];
+        if (($order->asset->groupAssignments->first()->is_percentage ??0)==1) {
+            $reqMargin = ($request->amount * $request->open_price * $size) / $leverage;
         }
         $inputs['required_margin'] = $reqMargin;
 
@@ -1129,11 +1160,12 @@ protected $assetService;
         $old_created_at = $order->created_at;
         $order->update($inputs);
         
-        $this->calculate_pnl($order->client->id, $order->id);
+        //$this->calculate_pnl($order->client->id, $order->id);
+        $this->orderService->calculatePnl($order);
         if (!isset($order->client->options['ignoreLiquidation']) && $order->client->source == 'BNC') {
             $order = Order::find($order->id);
             if ($order->pnl != $old_pnl) {
-                $finance = $this->get_financial_data($order->broker_id,1);
+                $finance = $this->orderService->getFinancialData($order->broker_id);//$this->get_financial_data($order->broker_id,1);
                 if ($finance['equity'] < 0) {
                     $order->update([
                         'closed_at' => $old_closed_at,
@@ -1146,7 +1178,8 @@ protected $assetService;
                     ]);
                     session()->flash('fail', 'Liquidation Failed, Equity is less than 0.');
                     return response()->json([
-                        'success' => true
+                        'success' => true,
+                        'message' => 'Equity less than 0'
                     ]);
                 }
             }
@@ -1165,6 +1198,7 @@ protected $assetService;
         session()->flash('success', 'Order updated successfully.');
         return response()->json([
             'success' => true,
+            'message'=>'success'
         ]);
     }
 
@@ -1190,7 +1224,7 @@ protected $assetService;
             while ($loop) {
                 $order = Order::find($order->id);
                 if ($order->pnl != null) {
-                    $finance = $this->get_financial_data($order->broker_id,1);
+                    $finance = $this->orderService->getFinancialData($order->broker_id);//$this->get_financial_data($order->broker_id,1);
                     if ($finance['equity'] < 0) {
                         $order->update([
                             'closed_at' => $old_closed_at,
@@ -1229,7 +1263,11 @@ protected $assetService;
     public function update_open_order(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $group_id = $order->client->asset_group_id;
+        $groupId = $group_id = $order->client->asset_group_id;
+        $order->asset->load(['groupAssignments' => function($query) use ($groupId) {
+    $query->where('asset_group', $groupId);  
+}]);
+
         $inputs = $request->only([
             'open_price',
             'created_at',
@@ -1238,13 +1276,23 @@ protected $assetService;
             'type',
         ]);
         $inputs['closed_at'] = Carbon::now();
+         $size = $order->asset?->groupAssignments?->first()?->size;
+        $leverage = $order->asset?->groupAssignments?->first()?->leverage;
+        if ($size === null || $leverage === null) {
+    return response()->json([
+                        'success' => false,
+                        'message' => 'Order currency had been removed from asset group assigned to user, please choose another currency for the order.'
+                    ]);
+}
+        
         if (str_starts_with($order->asset->symbol, 'USD') || (!strpos($order->asset->symbol, 'USD') && $order->asset->currency !== "USD")) {
-            $reqMargin = (($request->amount * $request->open_price * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$request->open_price);
+            
+            $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1/$request->open_price);
         }else{
-            $reqMargin = (($request->amount * $request->open_price * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id]) * (1/$request->open_price);
+            $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1/$request->open_price);
         }
-        if (($order->asset->is_percentage[$group_id]??0)==1) {
-            $reqMargin = ($request->amount * $request->open_price * $order->asset->size[$group_id]) / $order->asset->leverage[$group_id];
+        if (($order->asset->groupAssignments->first()->is_percentage??0)==1) {
+            $reqMargin = ($request->amount * $request->open_price * $size) / $leverage;
         }
         $inputs['required_margin'] = number_format($reqMargin, 2, '.', '');
 
@@ -1258,10 +1306,11 @@ protected $assetService;
         $order->update($inputs);
         $new_text = "<span class='text-success'>Created at : ".$order->created_at."<br>Amount : ".$order->amount."<br>Type : ".($order->type==1?'Buy':'Sell')."<br> open price : ".$order->open_price."</span>";
         if (!isset($order->client->options['ignoreLiquidation']) && $order->client->source == 'BNC') {
-            $this->calculate_pnl($order->client->id, $order->id);
+            //$this->calculate_pnl($order->client->id, $order->id);
+            $this->orderService->calculatePnl($order);
             $order = Order::find($order->id);
             if ($order->pnl != $old_pnl) {
-                $finance = $this->get_financial_data($order->broker_id,1);
+                $finance = $this->orderService->getFinancialData($order->broker_id);//$this->get_financial_data($order->broker_id,1);
                 if ($finance['equity'] < 0) {
                     $order->update([
                         'closed_at' => null,
@@ -1274,7 +1323,8 @@ protected $assetService;
                     ]);
                     session()->flash('fail', 'Liquidation Failed, Equity is less than 0.');
                     return response()->json([
-                        'success' => true
+                        'success' => true,
+                        'message' => 'Equity less than 0'
                     ]);
                 }
             }
@@ -1294,12 +1344,15 @@ protected $assetService;
         MoneyHistory::create($history_inputs);
 
         session()->flash('success', 'Order updated successfully.');
+        
         return response()->json([
             'success' => true,
             'order' => [
                 'id' => $order->id,
                 'created_at' => $order->created_at->format('d/m/Y H:i'),
-            ]
+            ],
+            'message'=>'success'
+            
         ]);
     }
 
@@ -1578,7 +1631,7 @@ protected $assetService;
             $opened_data           = $this->get_opened_data($client->broker_id,$opened_fromTo);
             $closed_data           = $this->get_closed_data($client->broker_id,$closed_fromTo);
             $bank_data             = Bank::latest()->get();
-            $finance               = $this->get_financial_data($client->broker_id,$session);
+            $finance               = $this->orderService->getFinancialData($client->broker_id);//$this->get_financial_data($client->broker_id,$session);
 
             if ($tab == 'opened') {
                 $opened_data = $opened_data->latest()->paginate($limit, ['*'], 'page', $page);
@@ -1696,13 +1749,18 @@ protected $assetService;
         return redirect()->route('main_tp.retention')->with('success', 'Client removed from retention successfully.');
     }
 
-    public function calculate_pnl($client_id,$order_id)
+    /*public function calculate_pnl($client_id,$order_id)
     {
         $client = Client::find($client_id);
         $order  = Order::find($order_id);
         //$asset  = Asset::find($order->currency);
         $asset  = $this->assetService->getById($order->currency)->first();
-        $asset->load(['groupAssignments']);
+        $groupId = $client->asset_group_id;
+        $asset->load(['groupAssignments' => function($query) use ($groupId) {
+    $query->where('asset_group', $groupId);  
+}]);
+$assetGroupAssignment = $asset->groupAssignments->first();
+
         $currentPrice = $order->close_price;
         $openPrice = $order->open_price;
 
@@ -1712,7 +1770,8 @@ protected $assetService;
             }else{
                 $def_price =  $openPrice - $currentPrice;
             }
-            $pnl = $order->amount * $asset->size[$client->asset_group_id] * $def_price;
+            //$pnl = $order->amount * $asset->size[$client->asset_group_id] * $def_price;
+            $pnl = $order->amount * $assetGroupAssignment->size * $def_price;
         }
         else  {
             $pipSize = $order->amount;
@@ -1723,7 +1782,7 @@ protected $assetService;
                 $pipDiff = ( $openPrice - $currentPrice) / $pipSize;
             }
             
-            $standardLot = $asset->size[$client->asset_group_id];
+            $standardLot = $assetGroupAssignment->size;
             $pipValueJPY = $standardLot * $pipSize;
             
             $pipValueStandard = $pipValueJPY / $currentPrice;
@@ -1739,7 +1798,7 @@ protected $assetService;
                 'close_price' => $currentPrice,
             ]);
         }
-    }
+    }*/
 
     public function exportData(Request $request, $id)
     {
@@ -1791,7 +1850,7 @@ protected $assetService;
 
         $assets = \App\Models\Asset::all();
 
-        $finance = $this->get_financial_data($brokerId);
+        $finance = $this->orderService->getFinancialData($brokerId);//$this->get_financial_data($brokerId);
         $freeMargin = $finance['freeMargin'] ?? 0.00;
 
         $pdf = Pdf::loadView('exports.client_export', [

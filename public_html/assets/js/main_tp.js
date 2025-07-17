@@ -172,7 +172,8 @@ $(document).ready(function(){
         $('#editOpenPosition').attr('action', formAction);
     });
 
-	$('#editOpenPosition').on('submit', function(e) {
+	/*This functios was repeated itexist when all submi fom handeled app.min.js
+         * $('#editOpenPosition').on('submit', function(e) {
 		e.preventDefault();
 		let $form = $(this);
 		$.ajax({
@@ -193,11 +194,14 @@ $(document).ready(function(){
 						})
 						.last()
 						.replaceWith(' ' + newCreatedAt);
-				}
+                                        alert(response.message);
+				}else{
+                                    alert(response.message);
+                                }
 				// Optionally close modal, show success, etc.
 			}
 		});
-	});
+	});*/
 	
 	$(document).on('click', '.editRequest', function() {
         let paymentType = $(this).data('payment-type');

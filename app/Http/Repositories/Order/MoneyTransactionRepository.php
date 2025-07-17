@@ -2,14 +2,14 @@
 namespace App\Http\Repositories\Order;
 
 //Interfaces
-use App\Http\Repositories\Order\Interfaces\MoneyTransactionInterface;
+use App\Http\Repositories\Order\Interfaces\MoneyTransactionRepositoryInterface;
 //Models
 use App\Models\MoneyTrx;
 use App\Models\MoneyTrxDetail;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
-class MoneyTransactionRepository implements MoneyTransactionInterface {
+class MoneyTransactionRepository implements MoneyTransactionRepositoryInterface {
 
     
     
@@ -127,6 +127,131 @@ public function getById(int $id): Collection {
 })->delete();
     }
   
+  public function getDeposits(int $brokerId):float{
+      /*$deposits = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'deposit')
+    ->sum('money_trx_details.amount');*/
+      $deposits = MoneyTrxDetail::where('type', 'deposit')
+    ->whereHas('moneyTrx', function ($q) use ($brokerId) {
+        $q->where('broker_id', $brokerId)
+          ->where('status', 'accepted');
+    })
+    ->sum('amount');
+    return $deposits;
+  }
   
+  public function getLastDeposit(int $brokerId):Collection
+  {
+      /*
+       $lastDeposit = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'deposit')
+    ->orderBy('money_trxes.created_at', 'desc')
+    ->first();
+       */
+      $lastDeposit = MoneyTrxDetail::where('type', 'deposit')
+    ->whereHas('moneyTrx', function ($q) use ($brokerId) {
+        $q->where('broker_id', $brokerId)
+          ->where('status', 'accepted');
+    })
+    ->orderByDesc('id')
+    ->get();
+    return $lastDeposit;
+  }
+  public function getWithdrawals(int $brokerID):float
+  {
+      /*
+       $withdrawals = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'withdraw')
+    ->sum('money_trx_details.amount');
+       */
+      
+      $withdrawals = MoneyTrxDetail::where('type', 'withdraw')
+    ->whereHas('moneyTrx', function ($q) use ($brokerID) {
+        $q->where('broker_id', $brokerID)
+          ->where('status', 'accepted');
+    })
+    ->sum('amount');
+    return $withdrawals;
+  }
+  
+  
+
+
+  public function getCreditIn(int $brokerId):float
+  {
+      /*
+       $creditIn = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'credit in')
+    ->sum('money_trx_details.amount');
+       */
+      $creditIn = MoneyTrxDetail::where('type', 'credit in')
+    ->whereHas('moneyTrx', function ($q) use ($brokerId) {
+        $q->where('broker_id', $brokerId)
+          ->where('status', 'accepted');
+    })
+    ->sum('amount');
+    return $creditIn;
+  }
+  public function getCreditOut(int $brokerId):float
+  {
+      /*
+       $creditIn = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'credit out')
+    ->sum('money_trx_details.amount');
+       */
+      $creditOut = MoneyTrxDetail::where('type', 'credit out')
+    ->whereHas('moneyTrx', function ($q) use ($brokerId) {
+        $q->where('broker_id', $brokerId)
+          ->where('status', 'accepted');
+    })
+    ->sum('amount');
+    return $creditOut;
+  }
+  
+  public function getBonusIn(int $brokerId):float
+  {
+      /*
+       $creditIn = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'bonus in')
+    ->sum('money_trx_details.amount');
+       */
+      $bonusIn = MoneyTrxDetail::where('type', 'bonus in')
+    ->whereHas('moneyTrx', function ($q) use ($brokerId) {
+        $q->where('broker_id', $brokerId)
+          ->where('status', 'accepted');
+    })
+    ->sum('amount');
+    return $bonusIn;
+  }
+  
+  public function getBonusOut(int $brokerId):float
+  {
+      /*
+       $creditIn = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
+    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.status', 'accepted')
+    ->where('money_trx_details.type', 'bonus in')
+    ->sum('money_trx_details.amount');
+       */
+      $bonusOut = MoneyTrxDetail::where('type', 'bonus out')
+    ->whereHas('moneyTrx', function ($q) use ($brokerId) {
+        $q->where('broker_id', $brokerId)
+          ->where('status', 'accepted');
+    })
+    ->sum('amount');
+    return $bonusOut;
+  }
   
 }

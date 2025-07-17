@@ -1800,8 +1800,8 @@
                                                 <select id="posCurrencyId" class="single-select form-select inside-modal" name="currency" required>
                                                     <option value="">Select Script</option>;
                                                     @foreach ($scripts_data as $asset)
-                                                        <option value="{{$asset->id}}" data-bid="{{$asset->bid_price??0.00}}" data-percentage="{{($asset->is_percentage??0) == 0 ? 0 : 1}}" data-ask="{{$asset->ask_price??0.00}}"
-                                                            data-contract-size="{{$asset->size??0.00}}" data-leverage="{{$asset->leverage??0.00}}" data-base="{{$asset->currency??0.00}}" data-symbol="{{$asset->symbol}}">
+                                                        <option value="{{$asset->id}}" data-bid="{{$asset->bid_price??0.00}}" data-percentage="{{($asset->groupAssignments->first()->is_percentage??0) == 0 ? 0 : 1}}" data-ask="{{$asset->ask_price??0.00}}"
+                                                            data-contract-size="{{$asset->groupAssignments->first()->size??0.00}}" data-leverage="{{$asset->groupAssignments->first()->leverage??0.00}}" data-base="{{$asset->currency??0.00}}" data-symbol="{{$asset->symbol}}">
                                                             {{$asset->name}}
                                                         </option>
                                                     @endforeach
@@ -1889,7 +1889,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-12">
-                                <form class="ajax-form" method="POST" id="editClosePosition" data-tab="closed">
+                                <form class="ajax-form-no-reload" method="POST" id="editClosePosition" data-tab="closed">
                                     @csrf
                                     @method('PUT')
                                     <div class="row g-2">

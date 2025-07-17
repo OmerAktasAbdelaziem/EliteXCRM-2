@@ -15,7 +15,10 @@ class MoneyTrxDetail extends Model
         'type',
         'amount',
     ];
-
+public function moneyTrx()
+{
+    return $this->belongsTo(MoneyTrx::class, 'money_trx', 'id');
+}
   
 }
 

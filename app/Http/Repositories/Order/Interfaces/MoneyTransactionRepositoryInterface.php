@@ -13,4 +13,11 @@ interface MoneyTransactionRepositoryInterface{
      public function updateBulk(array $ids,array $data):int;
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
+     public function getDeposits(int $brokerId):float;
+     public function getLastDeposit(int $brokerId):Collection;
+     public function getCreditIn(int $brokerId):float;
+     public function getCreditOut(int $brokerId):float;
+     public function getBonusIn(int $brokerId):float;
+     public function getBonusOut(int $brokerId):float;
+     public function getWithdrawals(int $brokerID):float;
 }

@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Repositories\Order\Interfaces;
+namespace App\Http\Repositories\Client\Interfaces;
 
 //other
 use Illuminate\Database\Eloquent\Collection;
 
-interface OrderRepositoryInterface{
+interface ClientRepositoryInterface{
     public function getAll(): Collection;
     public function getById(int $id): Collection;
    public function getByFilters(array $params): Collection;
@@ -13,5 +13,4 @@ interface OrderRepositoryInterface{
      public function updateBulk(array $ids,array $data):int;
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
-     public function getClosedOrdersPL(int $brokerId):float;
 }

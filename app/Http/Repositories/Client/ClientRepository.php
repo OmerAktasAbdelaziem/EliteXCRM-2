@@ -1,23 +1,21 @@
 <?php
-namespace App\Http\Repositories\Order;
+namespace App\Http\Repositories\Client;
 
 //Interfaces
-use App\Http\Repositories\Order\Interfaces\OrderRepositoryInterface;
+use App\Http\Repositories\Client\Interfaces\ClientRepositoryInterface;
 //Models
-use App\Models\Order;
+use App\Models\Client;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
-class OrderRepository implements OrderRepositoryInterface {
+class ClientRepository implements ClientRepositoryInterface {
 
-    
     public function getAll(): Collection
 {
-    return Order::all();
+    return Client::all();
 }
-
-public function getById(int $id): Collection {
-    $item = Order::where('id',$id)->get();
+    public function getById(int $id): Collection {
+    $item = Client::where('id',$id)->get();
     return $item;
 }
     public function getByFilters(array $params): Collection {
@@ -30,7 +28,7 @@ public function getById(int $id): Collection {
           'price' => ['!=' => 100],
           ]
          */
-        $items = Order::where(function ($query) use ($params) {
+        $items = Client::where(function ($query) use ($params) {
         foreach ($params as $field => $condition) {
             if (!is_array($condition)) {
                 continue;
@@ -78,29 +76,29 @@ public function getById(int $id): Collection {
   
   public function create(array $data): Collection
     {
-        $result = Order::create($data);
+        $result = Client::create($data);
         return new Collection([$result]);
     }
     public function update(int $id,array $data): int
     {
-        return $result = Order::where('id', $id)->update($data);
+        return $result = Client::where('id', $id)->update($data);
         
     }
     public function updateBulk(array $ids,array $data): int
     {
-        return $result = Order::whereIn('id', $ids)->update($data);
+        return $result = Client::whereIn('id', $ids)->update($data);
         
     }
     
     public function createBulk(array $data): bool 
     {
-        return Order::insert($data);
+        return Client::insert($data);
     }
 
 
     public function deleteByParams(array $params): int 
     {
-        return Order::where(function ($query) use ($params) {
+        return Client::where(function ($query) use ($params) {
     foreach ($params as $key => $value) {
         if(is_array($value)){
         $query->whereIn($key, $value);    
@@ -111,10 +109,6 @@ public function getById(int $id): Collection {
 })->delete();
     }
   
-  public function getClosedOrdersPL(int $brokerId):float
-  {
-      $closedOrdersPL = Order::where('broker_id', $brokerId)->whereNotNull('closed_at')->sum('pnl');
-      return $closedOrdersPL;
-  }
+  
   
 }

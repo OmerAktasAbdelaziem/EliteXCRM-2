@@ -33,8 +33,20 @@ use Illuminate\Support\Facades\Http;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Mpdf\Mpdf;
 
+//Services
+//use App\Http\Services\Order\Interfaces\OrderServiceInterface;
+
 class ClientsController extends Controller
 {
+    /*protected $orderService;
+   
+    public function __construct(
+            OrderServiceInterface $orderService,
+            ) {
+        $this->orderService = $orderService;
+        
+    }*/
+    
     public function index(Request $request)
     {
         $mycontact_filters = null;
@@ -1696,7 +1708,7 @@ class ClientsController extends Controller
 
         $balanceNow = $netDeposits + $totalClosedPnl;
 
-        $finance = (new MainTPController)->get_financial_data($brokerId);
+        $finance = (new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
         $freeMargin = $finance['freeMargin'] ?? 0.00;
 
         $moneyTrxes = collect();

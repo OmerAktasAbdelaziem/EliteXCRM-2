@@ -23,6 +23,8 @@ use App\Http\Repositories\Asset\AssetGroupRepository;
 use App\Http\Repositories\Asset\Interfaces\AssetGroupRepositoryInterface;
 use App\Http\Repositories\Asset\AssetGroupAssignmentRepository;
 use App\Http\Repositories\Asset\Interfaces\AssetGroupAssignmentRepositoryInterface;
+use App\Http\Repositories\Client\ClientRepository;
+use App\Http\Repositories\Client\Interfaces\ClientRepositoryInterface;
 
 //interfaces & services
 use App\Http\Services\Organization\PipelineService;
@@ -39,6 +41,8 @@ use App\Http\Services\Asset\AssetService;
 use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
 use App\Http\Services\Asset\AssetGroupService;
 use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
+use App\Http\Services\Client\ClientService;
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AssetRepositoryInterface::class, AssetRepository::class);
         $this->app->bind(AssetGroupRepositoryInterface::class, AssetGroupRepository::class);
         $this->app->bind(AssetGroupAssignmentRepositoryInterface::class, AssetGroupAssignmentRepository::class);
+        $this->app->bind(ClientRepositoryInterface::class, ClientRepository::class);
         
         
         //Services
@@ -63,7 +68,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MoneyTransactionServiceInterface::class, MoneyTransactionService::class);
         $this->app->bind(AssetServiceInterface::class, AssetService::class);
         $this->app->bind(AssetGroupServiceInterface::class, AssetGroupService::class);
-        
+        $this->app->bind(ClientServiceInterface::class, ClientService::class);
+      
     }
 
     public function boot()

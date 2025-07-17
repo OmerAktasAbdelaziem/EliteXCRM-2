@@ -51,8 +51,8 @@ protected $assetService;
     {
         
         
-        
         /*
+        
          //uncomment this code to handle old data of assets & asset groups just for once and then remove it
          $groups = AssetGroup::all();
         try{
@@ -60,7 +60,17 @@ protected $assetService;
             if (!empty($group->asset_ids)) {
             $assets = Asset::whereIn('id',$group->asset_ids)->get();
             foreach($assets as $asset){
-                
+//                if($asset->id == 2){
+//                    print_r([
+//                    'asset_group'=>$group->id,'asset'=>$asset->id??null,
+//                        'size'=>$asset->size[$group->id]??null,
+//                    'leverage'=>$asset->leverage[$group->id]??null,
+//                    'bid_spread'=>$asset->bid_spread[$group->id]??null,
+//                    'ask_spread'=>$asset->ask_spread[$group->id]??null,
+//                    'buy_commission'=>$asset->buy_commission[$group->id]??null,
+//                    'sell_commission'=>$asset->sell_commission[$group->id]??null,
+//                    'is_percentage'=>$asset->is_percentage[$group->id]??null]);echo '<br><br><br><br><br><br>';
+//                }
                 if(isset($asset)){
                 $this->assetGroupService->createAssetGroupAssignment([
                     'asset_group'=>$group->id,'asset'=>$asset->id??null,
@@ -79,7 +89,7 @@ protected $assetService;
             }
         }}catch (QueryException $e) {
                     print_r($group);die;
-                }
+                }die;
          //end of uncomment this code to handle old data of assets & asset groups just for once and then remove it
         */
         

@@ -9,29 +9,37 @@ use App\Models\Asset;
 use App\Models\Order;
 use Carbon\Carbon;
 
+//Services
+use App\Http\Services\Order\Interfaces\OrderServiceInterface;
+
 class CalculatePnl extends Command
 {
     protected $signature = 'calculate:pnl';
 
     protected $description = 'Calculate PnL for open orders';
+    
+    protected $orderService;
 
-    public function __construct()
+    public function __construct(OrderServiceInterface $orderService)
     {
         parent::__construct();
+        $this->orderService = $orderService;
     }
 
     public function handle()
-    {
+    {//die('a');
         $loop = true;
         while ($loop) {
             $orders = Order::whereNull('closed_at')->orderBy('pnl')->get();
             foreach ($orders as $order) {
-                $this->calculate_pnl($order);
+                //$this->calculate_pnl($order);
+                $comands = 1;
+                $this->orderService->calculatePnl($order,$comands);
             }
         }
     }
 
-    public function calculate_pnl($order)
+    /*public function calculate_pnl($order)
     {
         $client = $order->client;
         $asset = Asset::find($order->currency);
@@ -126,5 +134,5 @@ class CalculatePnl extends Command
                 }
             }
         }
-    }
+    }*/
 }

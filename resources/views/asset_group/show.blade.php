@@ -150,7 +150,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($assetGroupAssignments as $assetGroupAssignment)
+                                            @foreach($assetGroupAssignments??[] as $assetGroupAssignment)
                                            @php
                                        
                                            @endphp
