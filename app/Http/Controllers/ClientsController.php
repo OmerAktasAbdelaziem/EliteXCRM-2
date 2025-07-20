@@ -1634,9 +1634,9 @@ class ClientsController extends Controller
             }
         }
 
-        $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+        $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
             $teams = Team::latest()->get();
         }
 
@@ -1651,9 +1651,9 @@ class ClientsController extends Controller
             ->orWhere('id', Auth::id());
         })->latest()->get();
 
-        $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+        $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
             $users = User::WithPipeline()->latest()->get();
         }
 
@@ -1671,9 +1671,9 @@ class ClientsController extends Controller
 
         $parts = $parts->latest()->get();
 
-        $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+        $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
             $parts = Part::latest()->get();
         }
 
