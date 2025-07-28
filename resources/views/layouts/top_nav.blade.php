@@ -213,6 +213,16 @@
                     </ul>
                 </li>
             @endif
+            
+            @if (Auth::id() == 298274)
+                <li>
+                    <a href="{{ route('user.stats') }}">
+                        <div class="parent-icon"><i class='bx bx-bar-chart-alt-2'></i>
+                        </div>
+                        <div class="menu-title">Statistics</div>
+                    </a>
+                </li>
+            @endif
         </ul>
     </nav>
 </div>

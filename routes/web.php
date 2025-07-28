@@ -25,6 +25,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserStatsController;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -371,6 +372,10 @@ Route::middleware(['auth'])->group(function (Router $router) {
     $router->middleware(['role:pipeline_update'])->group(function (Router $router) {
         $router->put('pipeline/{id}', [PipelineController::class, 'update'])->name('pipeline.update');
     });
+
+    // User Statistics Routes (only for user 298274)
+    $router->get('user-stats', [UserStatsController::class, 'index'])->name('user.stats');
+    $router->get('user-stats/client-details/{userId}/{status}', [UserStatsController::class, 'getClientDetails'])->name('user.stats.client.details');
 
     $router->middleware(['role:settings'])->group(function (Router $router) {
         $router->get('settings',        [SettingsController::class, 'index'])->name('settings.index');
