@@ -35,9 +35,25 @@ use Mpdf\Mpdf;
 
 //Services
 //use App\Http\Services\Order\Interfaces\OrderServiceInterface;
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
 
 class ClientsController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            UserServiceInterface $userService,
+            ) {
+        $this->userService = $userService;
+        
+    }
+   /* public function __construct(
+            ClientServiceInterface $clientService,
+            ) {
+        $this->clientService = $clientService;
+        
+    }*/
     /*protected $orderService;
    
     public function __construct(
@@ -59,7 +75,7 @@ class ClientsController extends Controller
         $gb_filter         = '';
         $mycontact         = null;
         $contacts          = null;
-        $options           = (new UserController)->get_user_options();
+        $options           = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $actions           = null;
         $broker            = null;
         $new               = null;
@@ -695,7 +711,7 @@ class ClientsController extends Controller
     
     public function create()
     {
-        $options = (new UserController)->get_user_options();
+        $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams   = $this->getTeams($options);
         $users   = $this->getUsers($teams);
         $parts   = $this->getParts($teams);
@@ -794,7 +810,7 @@ class ClientsController extends Controller
         $kycs               = Kyc::where('client_id',$id);
         $next               = 1;
         $pre                = 1;
-        $options            = (new UserController)->get_user_options();
+        $options            = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams              = $this->getTeams($options);
         $users              = $this->getUsers($teams);
         $parts              = $this->getParts($teams);
@@ -999,9 +1015,9 @@ class ClientsController extends Controller
 
     public function slides($status,$move, $id)
     {
-        $user_controller = new UserController;
+        //$user_controller = new UserController;
         $old_client      = Client::findOrfail($id);
-        $options         = $user_controller->get_user_options();
+        $options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams           = $this->getTeams($options);
         $users           = $this->getUsers($teams);
 
@@ -1234,7 +1250,7 @@ class ClientsController extends Controller
     
     public function update(Request $request, $id)
     {
-        $options = (new UserController)->get_user_options();
+        $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $client  = Client::findOrfail($id);
 
         $inputs = array_filter(
@@ -1359,8 +1375,8 @@ class ClientsController extends Controller
 
     public function editStatus(Request $request, $id)
     {
-        $user_controller = new UserController;
-        $options         = $user_controller->get_user_options();
+        //$user_controller = new UserController;
+        $options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $client          = Client::findOrfail($id);
         $request->validate([
             'sales_status' => ['required' , 'string'],
@@ -1606,6 +1622,7 @@ class ClientsController extends Controller
 
     function getTeams($options)
     {
+       // return $this->clientService->getTeams($options, Auth::user());
         $teams = collect();
 
         if (Auth::user()->ledTeams->count() > 0) {
@@ -1618,7 +1635,7 @@ class ClientsController extends Controller
 
         if (Auth::user()->ledParts->count() > 0) {
             $ledPartTeams = Auth::user()->ledParts->load('teams')->pluck('teams')->flatten();
-            foreach ($ledPartTeams as $ledPartTeam) {
+            foreach ($ledPartTeams as $ledPartTeam) { 
                 if (!$teams->contains($ledPartTeam)) {
                     $teams = $teams->merge([$ledPartTeam]);
                 }
@@ -1665,6 +1682,8 @@ class ClientsController extends Controller
         $parts = collect();
         $parts = Part::whereIn('id', $teams->pluck('part_id'));
 
+        //dd(Auth::user());
+        //print_r(Auth::user()->team);die('b');
         if (Auth::user()->team) {
             $parts = $parts->orWhereIn('id', [Auth::user()->team->part_id]);
         }

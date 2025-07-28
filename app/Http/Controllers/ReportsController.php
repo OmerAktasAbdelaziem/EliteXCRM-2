@@ -10,24 +10,38 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+
 class ReportsController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
+            ) {
+        $this->clientService = $clientService;
+        $this->userService = $userService;
+        
+    }
     public function index(Request $request)
     {
-        $clientsController = new ClientsController;
-        $user_controller   = new UserController;
+        //$clientsController = new ClientsController;
+        //$user_controller   = new UserController;
         $timePeriod        = $request->input('time-period');
         $user_input        = $request->input('users');
         $employee          = null;
-        $options           = $user_controller->get_user_options();
+        $options           = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $month             = null;
         $date              = $request->input('date');
         $year              = null;
         $day               = null;
         $data              = [];
-        $teams             = $clientsController->getTeams($options);
-        $parts             = $clientsController->getParts($teams);
-        $users             = $clientsController->getUsers($teams);
+        $teams             = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+        $parts             = $this->clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
+        $users             = $this->clientService->getUsers($teams, Auth::user());//$this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
 
         $statuses = Status::where('pipeline_id', 1)->where(function ($query) use ($parts) {
             foreach ($parts as $part) {

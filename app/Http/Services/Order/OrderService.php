@@ -44,8 +44,8 @@ class OrderService implements OrderServiceInterface {
         $results = $this->orderRepository->getById($id);
         return $results;
     }
-    public function getByFilters(array $params): Collection{
-        $results = $this->orderRepository->getByFilters($params);
+    public function getByFilters(array $params, array $with = []): Collection{
+        $results = $this->orderRepository->getByFilters($params,$with);
         return $results;
     }
     public function create(array $data): Collection {
@@ -207,9 +207,9 @@ $assetGroupAssignment = $asset->groupAssignments->first();
     
         //$client = Client::where('broker_id', $broker_id)->where('deleted', 0)->first();
         $client = $this->clientService->getByFilters([
-            'broker_id'=>['='=>$brokerId],
-            'deleted'=>['='=>0],
-                ])->first();
+    ['field' => 'broker_id', 'conditions' => ['=' => $brokerId]],
+    ['field' => 'deleted',   'conditions' => ['=' => 0]],
+])->first();
         if ($client) {
             $finance['totalDeposit'] = $this->moneyTransactionService->getDeposits($brokerId);
             $lastDeposit = $this->moneyTransactionService->getLastDeposit($brokerId)->first();
@@ -217,9 +217,9 @@ $assetGroupAssignment = $asset->groupAssignments->first();
             $finance['ftd_amount'] = $finance['last_deposit_amount'];
             $finance['totalWithdrawal'] = $this->moneyTransactionService->getWithdrawals($brokerId);
             $openedOrders = $this->getByFilters([
-                'broker_id'=>['='=>$brokerId],
-                'closed_at'=>['null'=>true]
-                    ]);
+    ['field' => 'broker_id', 'conditions' => ['=' => $brokerId]],
+    ['field' => 'closed_at', 'conditions' => ['null' => true]],
+]);
             $finance['usedMargin'] = $openedOrders->sum('required_margin');
             $finance['currentPL'] = $openedOrders->sum('pnl');
             $closedOrdersPL = $this->getClosedOrdersPL($brokerId);
@@ -228,6 +228,7 @@ $assetGroupAssignment = $asset->groupAssignments->first();
             $finance['credit'] = $creditIn - $creditOut;
             $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + $closedOrdersPL + $finance['credit'] ;
             $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']);
+            $finance['pendingWithdrawal'] = $this->moneyTransactionService->getPendingWithdrawal($brokerId);
             $bonusIn = $this->moneyTransactionService->getBonusIn($brokerId);
             $bonusOut = $this->moneyTransactionService->getBonusOut($brokerId);
             $finance['bonus'] = $bonusIn - $bonusOut;

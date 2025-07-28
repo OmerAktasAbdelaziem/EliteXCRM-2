@@ -26,8 +26,8 @@ class TeamService implements TeamServiceInterface {
         return $results;
     }
 
-    public function getByFilters(array $params): Collection{
-        $results = $this->teamRepository->getByFilters($params);
+    public function getByFilters(array $params, array $with = []): Collection{
+        $results = $this->teamRepository->getByFilters($params,$with);
         return $results;
     }
     public function create(array $data): Collection {

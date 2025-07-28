@@ -8,13 +8,16 @@ use App\Http\Controllers\SmartController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Router;
 use App\Models\Asset;
+use App\Http\Controllers\Api\OrderApiController;
 
 
 Route::get('/assets', function () {
     return response()->json(Asset::all());
 });
 
-
+Route::middleware(['check.api.key'])->group(function () {
+    Route::get('/getFinancialData', [OrderApiController::class, 'getFinancialData']);
+});
 
 Route::name('api.')->prefix('v1/')->group(function (Router $router) {
     $router->post('LeadCapture/{source?}/{pipeline_id?}', [LandingPagesController::class,    'LeadCapture'])->name('LeadCapture');

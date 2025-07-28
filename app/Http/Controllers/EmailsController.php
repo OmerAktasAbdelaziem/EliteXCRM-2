@@ -18,18 +18,33 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+
 class EmailsController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
+            ) {
+        $this->clientService = $clientService;
+        $this->userService = $userService;
+        
+    }
+    
     public function index(Request $request)
     {
         $marketingEmailLogs = MarketingEmailLog::where('user_id','!=',null);
-        $clientsController  = new ClientsController;
-        $userController     = new UserController;
+        //$clientsController  = new ClientsController;
+        //$userController     = new UserController;
         $emailTemplates     = EmailTemplate::latest()->get();
         $senderEmails       = SenderEmail::select('id','email')->latest()->get();
         $statuses           = Status::select('id', 'name')->latest()->get();
-        $options            = $userController->get_user_options();
-        $teams              = $clientsController->getTeams($options);
+        $options            = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
         $limit              = $request->input('limit', 6);
 
         $leads = Client::select('id', 'first_name', 'last_name', 'email', 'phone1', 'phone2', 'country', 'sales_status')

@@ -10,8 +10,22 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+
 class PipelineController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
+            ) {
+        $this->clientService = $clientService;
+        $this->userService = $userService;
+        
+    }
     public function index()
     {
         $pipelines = Pipeline::latest()->get();
@@ -22,12 +36,12 @@ class PipelineController extends Controller
     
     public function create()
     {
-        $clientsController = new ClientsController;
-        $userController    = new UserController;
+        //$clientsController = new ClientsController;
+        //$userController    = new UserController;
         $pipeline          = new Pipeline;
-        $options           = $userController->get_user_options();
-        $teams             = $clientsController->getTeams($options);
-        $users             = $clientsController->getUsers($teams);
+        $options           = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
+        $teams             = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+        $users             = $this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
         $brokers           = Broker::latest()->get();
         
         return view('pipeline.show',compact(
