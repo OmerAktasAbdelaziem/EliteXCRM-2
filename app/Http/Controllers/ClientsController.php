@@ -1056,12 +1056,9 @@ class ClientsController extends Controller
         $client         = Client::find($client_id);
         $orders         = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
         $totalOpenedPnl = $orders->sum('pnl');
-<<<<<<< HEAD
 $broker_id      = $client->broker_id;
-=======
-        $broker_id      = $client->broker_id;
 
->>>>>>> 0f77febb8b1f86389d6fe17639a90cad558ed63e
+
         //$MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
         $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
     ->where('money_trxes.broker_id', $client->broker_id)
