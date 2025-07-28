@@ -28,8 +28,8 @@ protected $assetGroupAssignmentRepository;
         $results = $this->assetGroupRepository->getById($id);
         return $results;
     }
-    public function getByFilters(array $params): Collection{
-        $results = $this->assetGroupRepository->getByFilters($params);
+    public function getByFilters(array $params, array $with = []): Collection{
+        $results = $this->assetGroupRepository->getByFilters($params,$with);
         return $results;
     }
     public function create(array $data): Collection {

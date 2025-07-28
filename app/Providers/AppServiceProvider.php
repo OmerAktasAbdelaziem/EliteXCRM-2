@@ -25,6 +25,10 @@ use App\Http\Repositories\Asset\AssetGroupAssignmentRepository;
 use App\Http\Repositories\Asset\Interfaces\AssetGroupAssignmentRepositoryInterface;
 use App\Http\Repositories\Client\ClientRepository;
 use App\Http\Repositories\Client\Interfaces\ClientRepositoryInterface;
+use App\Http\Repositories\User\UserRepository;
+use App\Http\Repositories\User\Interfaces\UserRepositoryInterface;
+use App\Http\Repositories\Role\RoleRepository;
+use App\Http\Repositories\Role\Interfaces\RoleRepositoryInterface;
 
 //interfaces & services
 use App\Http\Services\Organization\PipelineService;
@@ -43,6 +47,12 @@ use App\Http\Services\Asset\AssetGroupService;
 use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 use App\Http\Services\Client\ClientService;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\UserService;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+use App\Http\Services\Filter\FilterService;
+use App\Http\Services\Filter\Interfaces\FilterServiceInterface;
+use App\Http\Services\Role\RoleService;
+use App\Http\Services\Role\Interfaces\RoleServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -58,6 +68,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AssetGroupRepositoryInterface::class, AssetGroupRepository::class);
         $this->app->bind(AssetGroupAssignmentRepositoryInterface::class, AssetGroupAssignmentRepository::class);
         $this->app->bind(ClientRepositoryInterface::class, ClientRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        
         
         
         //Services
@@ -69,6 +82,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AssetServiceInterface::class, AssetService::class);
         $this->app->bind(AssetGroupServiceInterface::class, AssetGroupService::class);
         $this->app->bind(ClientServiceInterface::class, ClientService::class);
+        $this->app->bind(UserServiceInterface::class, UserService::class);
+        $this->app->bind(FilterServiceInterface::class, FilterService::class);
+        $this->app->bind(RoleServiceInterface::class, RoleService::class);
       
     }
 

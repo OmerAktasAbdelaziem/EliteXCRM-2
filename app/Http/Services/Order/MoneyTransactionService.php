@@ -30,8 +30,8 @@ class MoneyTransactionService implements MoneyTransactionServiceInterface {
         $results = $this->moneyTransaction->getById($id);
         return $results;
     }
-    public function getByFilters(array $params): Collection{
-        $results = $this->moneyTransaction->getByFilters($params);
+    public function getByFilters(array $params, array $with = []): Collection{
+        $results = $this->moneyTransaction->getByFilters($params,$with);
         return $results;
     }
     public function create(array $data): Collection {
@@ -85,6 +85,10 @@ class MoneyTransactionService implements MoneyTransactionServiceInterface {
     public function getBonusOut(int $brokerID):float
     {
         return $this->moneyTransaction->getBonusOut($brokerID);
+    }
+    public function getPendingWithdrawal(int $brokerId):float
+    {
+        return $this->moneyTransaction->getPendingWithdrawal($brokerId);
     }
     
 

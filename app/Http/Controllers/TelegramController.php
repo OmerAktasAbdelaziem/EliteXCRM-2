@@ -11,9 +11,17 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 class TelegramController extends Controller
 {
+    protected $clientService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            ) {
+        $this->clientService = $clientService;
+        
+    }
     public function inbound(Request $request)
     {
         if ($request->message) {
@@ -151,7 +159,7 @@ class TelegramController extends Controller
     {
         $text = null;
         $lead = Client::where('id', $leadId)->whereIn('pipeline_id', $pipeline_id)->first();
-        $clientController = new ClientsController;
+        //$clientController = new ClientsController;
 
         if ($lead) {
             switch ($option) {
@@ -176,7 +184,7 @@ class TelegramController extends Controller
                         'user_id'   => $userId,
                     ]);
 
-                    $clientController->multiEdit($request);
+                    $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Assigned User changed to {$user->username} successfully ✅";
                     break;
                     
@@ -194,7 +202,7 @@ class TelegramController extends Controller
                         'client_id'    => $leadId,
                     ]);
 
-                    $clientController->multiEdit($request);
+                    $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Status changed to {$status} successfully ✅";
                     break;
         

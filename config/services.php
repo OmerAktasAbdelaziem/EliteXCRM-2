@@ -42,5 +42,10 @@ return [
         'host'        => "https://ark1api.arktrader.io",
         'pass'        => "Smart Trade website",
     ],
+    
+    'myapi' => [
+    'key1' => env('MY_API_KEY_1', 'M1.4URTs91B.@1OlL19EdoNuH23.@1'),
+    //'key2' => env('MY_API_KEY_2', 'K1.4rRTsu12.@1nlL19EdoN@SH23.5'),
+],
 
 ];

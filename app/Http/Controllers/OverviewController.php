@@ -15,8 +15,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+
 class OverviewController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
+            ) {
+        $this->clientService = $clientService;
+        $this->userService = $userService;
+        
+    }
     public function index(Request $request)
     {
         $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
@@ -33,15 +47,15 @@ class OverviewController extends Controller
         $days_leads            = [];
         $period                = 'Monthly';
         
-        $clientsController = new ClientsController;
+        //$clientsController = new ClientsController;
         $mainTpController  = new MainTPController;
-        $user_controller   = new UserController;
+        //$user_controller   = new UserController;
 
-        $options = $user_controller->get_user_options();
-        $teams   = $clientsController->getTeams($options);
+        $options = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams   = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
         
-        $users   = $clientsController->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
-        $parts   = $clientsController->getParts($teams);
+        $users   = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds);//$clientsController->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
+        $parts   = $this->clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
 
         $leads = Client::where(function ($query) use ($users, $options) {
             $query->whereIn('user_id', $users->pluck('id'));
@@ -235,11 +249,11 @@ class OverviewController extends Controller
     public function getLastComments($lead_ids = null)
     {
         if (!$lead_ids) {
-            $clientsController = new ClientsController;
-            $user_controller   = new UserController;
-            $options = $user_controller->get_user_options();
-            $teams   = $clientsController->getTeams($options);
-            $users   = $clientsController->getUsers($teams);
+            //$clientsController = new ClientsController;
+            //$user_controller   = new UserController;
+            $options = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+            $teams   = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+            $users   = $this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
 
             $lead_ids = Client::where(function ($query) use ($users, $options) {
                 $query->whereIn('user_id', $users->pluck('id'));

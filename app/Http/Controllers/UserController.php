@@ -12,21 +12,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+
 class UserController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
+            ) {
+        $this->clientService = $clientService;
+        $this->userService = $userService;
+        
+    }
     public function index()
     {
-        $clients_controller = new ClientsController;
-        $user_controller    = new UserController;
-        $options            = $user_controller->get_user_options();
-        $teams              = $clients_controller->getTeams($options);
+        //$clients_controller = new ClientsController;
+        //$user_controller    = new UserController;
+        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
         if (Auth::id() == 644033 || Auth::id() == 298274) {
             $deleted_users = User::WithPipeline()->where('deleted',true)->get();
-            $users         = $clients_controller->getUsers($teams);
+            $users         = $this->clientService->getUsers($teams, Auth::user());//$clients_controller->getUsers($teams);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
-            $users = $clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
+            $users = $this->clientService->getUsers($teams, Auth::user())->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
             $deleted_users = User::WithPipeline()->where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
         }
 
@@ -38,10 +52,10 @@ class UserController extends Controller
     
     public function create()
     {
-        $clients_controller = new ClientsController;
-        $user_controller    = new UserController;
-        $options            = $user_controller->get_user_options();
-        $teams              = $clients_controller->getTeams($options);
+        //$clients_controller = new ClientsController;
+        //$user_controller    = new UserController;
+        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
 
         return view('user.create',compact('teams'));
     }
@@ -82,10 +96,10 @@ class UserController extends Controller
     
     public function show($id)
     {
-        $clients_controller = new ClientsController;
-        $user_controller    = new UserController;
-        $options            = $user_controller->get_user_options();
-        $teams              = $clients_controller->getTeams($options);
+        //$clients_controller = new ClientsController;
+        //$user_controller    = new UserController;
+        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
         $roles              = Role::latest()->get();
 
         if (Auth::id() == 644033 || Auth::id() == 298274) {

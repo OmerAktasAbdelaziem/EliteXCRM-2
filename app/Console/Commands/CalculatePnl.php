@@ -29,14 +29,14 @@ class CalculatePnl extends Command
     public function handle()
     {//die('a');
         $loop = true;
-        //while ($loop) {
+        while ($loop) {
             $orders = Order::whereNull('closed_at')->orderBy('pnl')->get();
             foreach ($orders as $order) {
                 //$this->calculate_pnl($order);
                 $comands = 1;
                 $this->orderService->calculatePnl($order,$comands);
             }
-        //}
+        }
     }
 
     /*public function calculate_pnl($order)
