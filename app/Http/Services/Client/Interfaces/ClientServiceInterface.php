@@ -3,6 +3,7 @@ namespace App\Http\Services\Client\Interfaces;
 
 //Other
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as supportCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 //Models
@@ -17,8 +18,8 @@ interface ClientServiceInterface{
      public function updateBulk(array $ids,array $data):int;
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
-     public function getTeams(array $options,User $user): Collection;
-     public function getUsers(Collection $teams,User $user): Collection;
-     public function getParts(Collection $teams,User $user): Collection;
+     public function getTeams(array $options,User $user): supportCollection;
+     public function getUsers(supportCollection $teams,User $user): supportCollection;
+     public function getParts(supportCollection $teams,User $user): supportCollection;
      public function multiEdit(Request $request,User $user): RedirectResponse;
 }

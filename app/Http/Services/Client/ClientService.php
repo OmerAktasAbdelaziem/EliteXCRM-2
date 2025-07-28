@@ -10,6 +10,7 @@ use App\Http\Services\Organization\Interfaces\PartServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
 //Other
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as supportCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -69,7 +70,7 @@ class ClientService implements ClientServiceInterface {
         return $this->clientRepository->deleteByIDs($Ids);
     }
     
-    public function getTeams(array $options,User $user): Collection
+    public function getTeams(array $options,User $user): supportCollection
     {
         //$user is Authinticated User
         $teams = collect();
@@ -110,7 +111,7 @@ class ClientService implements ClientServiceInterface {
         
     }
     
-    public function getUsers(collection $teams,User $user): Collection
+    public function getUsers(supportCollection $teams,User $user): supportCollection
     {
         //$user is Authinticated User
         $with = ['pipeline'];
@@ -128,7 +129,7 @@ class ClientService implements ClientServiceInterface {
         
     }
     
-    public function getParts(Collection $teams,User $user): Collection
+    public function getParts(supportCollection $teams,User $user): supportCollection
     {
      //$user is Authinticated User
          $params = [];
