@@ -48,14 +48,14 @@ class GetForexAssets extends Command
                 $conn->send($subscribeMessage);
 
                 $conn->on('message', function ($data) {
-                    static $lastProcessed = [];
+                    //static $lastProcessed = [];
                     $symbol = strtoupper($response['s']?? null);
-                    $now = microtime(true);
+                    //$now = microtime(true);
 
-if (isset($lastProcessed[$symbol]) && ($now - $lastProcessed[$symbol]) < 0.5) {
+/*if (isset($lastProcessed[$symbol]) && ($now - $lastProcessed[$symbol]) < 0.5) {
     return;
-}
-$lastProcessed[$symbol] = $now;
+}*/
+//$lastProcessed[$symbol] = $now;
 
                     $response = json_decode($data, true);
 

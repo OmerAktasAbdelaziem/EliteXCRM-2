@@ -57,22 +57,22 @@ class GetStockAssets2 extends Command
                 // Listen for incoming messages
                 $conn->on('message', function ($data) {
                      $response = json_decode($data, true);
-                    static $lastProcessed = [];
+                    //static $lastProcessed = [];
                     $symbol = $symbol = strtoupper($response['s']?? null);
                     $now = microtime(true);
 
 //if (isset($lastProcessed[$symbol]) && ($now - $lastProcessed[$symbol]) < 0.5) {
 //    return;
 //}
-$lastProcessed[$symbol] = $now;
-                    $now = microtime(true);
+//$lastProcessed[$symbol] = $now;
+                    //$now = microtime(true);
 
                     // Process messages only every 0.5 seconds to reduce DB load
-                    if (($now - $lastProcessed[$symbol]) < 0.5) {
+                   /* if (($now - $lastProcessed[$symbol]) < 0.5) {
                         return;
-                    }
+                    }*/
 
-                    $lastProcessed = $now;
+                    //$lastProcessed = $now;
 
                    
 
