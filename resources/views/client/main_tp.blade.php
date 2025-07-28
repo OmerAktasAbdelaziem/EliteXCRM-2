@@ -938,11 +938,14 @@
                                         <div class="tab-pane fade @if ($tab == 'opened') active show @endif" id="opened" role="tabpanel">
                                             <form class="ajax-form" method="GET" data-tab="opened">
                                                 <div class="row">
-                                                    <div class="d-flex col-md-4">
+                                                    <div class="d-flex col-md-4"> 
+                                                        <?php
+                                                    /*
                                                         {{-- <div class="input-group">
                                                             <input type="text" class="form-control from-to-range" id="opened_fromTo" placeholder="{{$opened_fromTo}}">
                                                             <input type="hidden" class="rangeDate" value="{{$opened_fromTo}}" name="opened_fromTo">
-                                                        </div> --}}
+                                                        </div> --}}*/
+                                                    ?>
                                                         <input type="hidden" value="opened" name="tab">
                                                         <input type="hidden" value="{{$closed_fromTo}}" name="closed_fromTo">
                                                         <input type="hidden" value="{{$moneyTrx_fromTo}}" name="moneyTrx_fromTo">
@@ -2130,8 +2133,8 @@
                                         <select id="posCurrencyId" class="single-select form-select inside-modal" name="currency" required>
                                             <option value="0" data-bid="0.00" data-ask="0.00">Select Script</option>;
                                             @foreach ($scripts_data as $asset)
-                                                <option value="{{$asset->id}}" data-bid="{{$asset->bid_price??0.00}}" data-percentage="{{($asset->is_percentage??0) == 0 ? 0 : 1}}" data-ask="{{$asset->ask_price??0.00}}"
-                                                    data-contract-size="{{$asset->size??0.00}}" data-leverage="{{$asset->leverage??0.00}}" data-base="{{$asset->currency??0.00}}" data-symbol="{{$asset->symbol}}">
+                                                <option value="{{$asset->id}}" data-bid="{{$asset->bid_price??0.00}}" data-percentage="{{($asset->groupAssignments->first()->is_percentage??0) == 0 ? 0 : 1}}" data-ask="{{$asset->ask_price??0.00}}"
+                                                    data-contract-size="{{$asset->groupAssignments->first()->size??0.00}}" data-leverage="{{$asset->groupAssignments->first()->leverage??0.00}}" data-base="{{$asset->currency??0.00}}" data-symbol="{{$asset->symbol}}">
                                                     {{$asset->name}}
                                                 </option>
                                             @endforeach
@@ -2219,7 +2222,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <form class="ajax-form" method="POST" id="editClosePosition" data-tab="closed">
+                        <form class="ajax-form-no-reload" method="POST" id="editClosePosition" data-tab="closed">
                             @csrf
                             @method('PUT')
                             <div class="row g-2">

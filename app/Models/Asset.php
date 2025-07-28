@@ -39,6 +39,12 @@ class Asset extends Model
         'leverage'        => 'array',
         'size'            => 'array',
     ];
+    
+    public function groupAssignments()
+{
+    return $this->hasMany(AssetGroupAssignment::class, 'asset');
+}
+//$groups = AssetGroup::with(['assetAssignments.asset'])->get();
 }
 
 class AssetFromDb1 extends Model

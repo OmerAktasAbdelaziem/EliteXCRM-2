@@ -40,6 +40,8 @@ class LoginController extends Controller
         $auth->lastlogin_at = Carbon::now();
 
         $auth->save();
+
+        session(['password_changed_at' => Auth::user()->password_changed_at]);
     }
 
     protected function username()

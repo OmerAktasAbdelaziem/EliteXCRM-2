@@ -43,20 +43,4 @@ return [
         'pass'        => "Smart Trade website",
     ],
 
-    'phoenix' => [
-        'userName' => "admin@phoenixtrader.com",
-        'host'     => "https://api-admin-trader.phoenix-trader.com",
-        'pass'     => "hSnvJpvCQC",
-        'affUser'  => "elite@gmail.com",
-        'affPass'  => "elite@gmail.com",
-    ],
-
-    'app' => [
-        'demo_parent' => 13589,
-        'real_parent' => 13588,
-        'userName'  => "Admin24",
-        'host'      => "https://platform.phooenixs.com/phoenixfxbowcf/Backoffice.svc",
-        'pass'      => "Admin24",
-    ],
-
 ];

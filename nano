@@ -1,0 +1,53 @@
+[program:worker_one]
+process_name=%(program_name)s
+command=/usr/bin/php /var/www/crmstaging2/artisan get:assets
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/crons/error.log
+
+[program:worker_two]
+process_name=%(program_name)s
+command=/usr/bin/php /var/www/crmstaging2/artisan get:stock-assets2
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/crons/error.log
+
+[program:worker_three]
+process_name=%(program_name)s
+command=/usr/bin/php /var/www/crmstaging2/artisan get:forex-assets
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/crons/error.log
+
+[program:worker_four]
+process_name=%(program_name)s
+command=/usr/bin/php /var/www/crmstaging2/artisan get:assetsBinance
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/crons/error.log
+
+[program:worker_five]
+process_name=%(program_name)s
+command=/usr/bin/php /var/www/crmstaging2/artisan get:indx-assets
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/crons/error.log
+
+[program:worker_six]
+process_name=%(program_name)s
+command=/usr/bin/php /var/www/crmstaging2/artisan get:stock-assets
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/crons/error.log

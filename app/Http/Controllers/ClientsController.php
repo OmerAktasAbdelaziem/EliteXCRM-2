@@ -31,9 +31,22 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
+
+//Services
+//use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 
 class ClientsController extends Controller
 {
+    /*protected $orderService;
+   
+    public function __construct(
+            OrderServiceInterface $orderService,
+            ) {
+        $this->orderService = $orderService;
+        
+    }*/
+    
     public function index(Request $request)
     {
         $mycontact_filters = null;
@@ -1024,10 +1037,15 @@ class ClientsController extends Controller
         if ($asset_id) {
             $asset = Asset::find($asset_id);
         }
-        $client = Client::find($client_id);
-        $orders = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
+        $client         = Client::find($client_id);
+        $orders         = Order::where('broker_id',$client->broker_id)->whereNull('closed_at')->get();
         $totalOpenedPnl = $orders->sum('pnl');
+<<<<<<< HEAD
 $broker_id      = $client->broker_id;
+=======
+        $broker_id      = $client->broker_id;
+
+>>>>>>> 0f77febb8b1f86389d6fe17639a90cad558ed63e
         //$MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
         $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
     ->where('money_trxes.broker_id', $client->broker_id)
@@ -1620,9 +1638,9 @@ $broker_id      = $client->broker_id;
             }
         }
 
-        $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+        $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
             $teams = Team::latest()->get();
         }
 
@@ -1637,9 +1655,9 @@ $broker_id      = $client->broker_id;
             ->orWhere('id', Auth::id());
         })->latest()->get();
 
-        $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+        $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
             $users = User::WithPipeline()->latest()->get();
         }
 
@@ -1657,9 +1675,9 @@ $broker_id      = $client->broker_id;
 
         $parts = $parts->latest()->get();
 
-        $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+        $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
             $parts = Part::latest()->get();
         }
 
@@ -1694,7 +1712,7 @@ $broker_id      = $client->broker_id;
 
         $balanceNow = $netDeposits + $totalClosedPnl;
 
-        $finance = (new MainTPController)->get_financial_data($brokerId);
+        $finance = (new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
         $freeMargin = $finance['freeMargin'] ?? 0.00;
 
         $moneyTrxes = collect();
@@ -1770,7 +1788,7 @@ $broker_id      = $client->broker_id;
             $assets = \App\Models\Asset::all();
 
 
-        $pdf = Pdf::loadView('exports.client_export', [
+            $html = view('exports.client_export', [
             'totalWithdrawals' => $totalWithdrawals,
             'totalDeposits'    => $totalDeposits,
             'closedOrders'     => $closedOrders,
@@ -1781,19 +1799,19 @@ $broker_id      = $client->broker_id;
             'client'           => $client,
             'assets'           => $assets,
             'logo'             => $logo,
+        ])->render();
 
+        $mpdf = new \Mpdf\Mpdf([
+            'default_font' => 'Amiri',
+            'mode' => 'utf-8',
         ]);
-
-
-$pdf->setOptions([
-    'defaultFont' => 'Amiri',
-    'isHtml5ParserEnabled' => true,
-    'isPhpEnabled' => true,
-    'isFontSubsettingEnabled' => true,
-]);
+        $mpdf->WriteHTML($html);
 
         $filename = 'client_' . $client->id . '_transactions_' . now()->format('Ymd_His') . '.pdf';
-        return $pdf->download($filename);
+        return response($mpdf->Output('', 'S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
+
 
 }

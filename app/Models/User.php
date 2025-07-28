@@ -19,6 +19,7 @@ class User extends Authenticatable
     ];
 
     protected $fillable = [
+        'password_changed_at',
         'retention_clients',
         'channel_name',
         'pipeline_id',

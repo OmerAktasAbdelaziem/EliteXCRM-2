@@ -152,7 +152,12 @@ $(document).ready(function() {
 				// if (response.data == 3) {
 				// 	$('#error_message').removeClass('d-none').html('Out of the trading session');
 				// }
+                                if(response.success){
 				submitButton.removeAttr('disabled');
+                                alert(response.message);
+                            }else{
+                                alert(response.message);
+                            }
 			},
 			error: function(xhr) {
 				submitButton.removeAttr('disabled');
@@ -179,3 +184,4 @@ $(document).ready(function() {
 	);
 	
 });
+

@@ -38,7 +38,7 @@ class MoneyTrx extends Model
     }
     public function details()
 {
-    return $this->hasOne(MoneyTrxDetail::class, 'money_trx', 'id');
+    return $this->hasMany(MoneyTrxDetail::class, 'money_trx', 'id');
 }
 }
 
