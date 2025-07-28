@@ -9,11 +9,14 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         \App\Console\Commands\GetAssets::class,
+        
     ];
 
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('capture:leads')->everyFiveMinutes();
+        //remove following line when go online
+        //$schedule->command('calculate:pnl')->withoutOverlapping();
     }
 
     protected function commands()
