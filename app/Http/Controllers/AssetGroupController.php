@@ -51,7 +51,7 @@ protected $assetService;
     {
         
         
-        
+        /*
         
          //uncomment this code to handle old data of assets & asset groups just for once and then remove it
          $groups = AssetGroup::all();
@@ -92,7 +92,7 @@ protected $assetService;
                 }die('done');
          //end of uncomment this code to handle old data of assets & asset groups just for once and then remove it
         
-        
+        */
        
         /*
         $inputs = $request->only([
