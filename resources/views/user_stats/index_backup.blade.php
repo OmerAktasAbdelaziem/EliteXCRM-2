@@ -331,86 +331,6 @@
             overflow-wrap: break-word;
         }
 
-        /* Client Selection Styles */
-        .client-checkbox {
-            transform: scale(1.2);
-            margin: 0;
-        }
-        
-        .client-checkbox:checked {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        
-        #selectAllClients {
-            transform: scale(1.1);
-        }
-        
-        #selectAllClients:indeterminate {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        /* Notification Styles */
-        .notification-card {
-            border-left: 4px solid #007bff;
-            background: #f8f9fa;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .notification-card:hover {
-            background: #e9ecef;
-            transform: translateX(2px);
-        }
-        
-        .notification-card.unread {
-            border-left-color: #28a745;
-            background: #d4edda;
-        }
-        
-        .notification-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #007bff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .notification-content {
-            flex-grow: 1;
-        }
-        
-        .notification-time {
-            font-size: 0.75rem;
-            color: #6c757d;
-        }
-        
-        .notification-type-badge {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-        }
-
-        .latest-notification-preview {
-            max-height: 60px;
-            overflow: hidden;
-            line-height: 1.3;
-        }
-
-        .badge-sm {
-            font-size: 0.65rem;
-            padding: 2px 5px;
-        }
-
-        .notification-type-badge.ms-1 {
-            margin-left: 0.25rem !important;
-        }
-
 
 
         /* Responsive Adjustments */
@@ -458,7 +378,6 @@
                             <label for="days" class="form-label text-dark fw-bold">Time Period</label>
                             <select name="days" id="days" class="form-select">
                                 <option value="1" {{ $days == 1 ? 'selected' : '' }}>Today</option>
-                                <option value="yesterday" {{ $days == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
                                 <option value="3" {{ $days == 3 ? 'selected' : '' }}>Last 3 Days</option>
                                 <option value="7" {{ $days == 7 ? 'selected' : '' }}>Last 7 Days</option>
                                 <option value="30" {{ $days == 30 ? 'selected' : '' }}>Last 30 Days</option>
@@ -712,37 +631,6 @@
                 </div>
             </div>
         </div>
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card summary-card position-relative cursor-pointer" onclick="showNotificationsModal()" style="cursor: pointer; transition: all 0.3s ease;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <h6 class="text-white-50 mb-2">
-                                <i class="bx bx-bell me-1"></i>Latest Notification
-                            </h6>
-                            <div id="latestNotificationContent" class="text-white">
-                                <div class="spinner-border spinner-border-sm me-2" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                Loading...
-                            </div>
-                            <small class="text-white-50 mt-1 d-block" id="latestNotificationTime">Click to view all</small>
-                        </div>
-                        <div class="text-white" style="font-size: 2.5rem; opacity: 0.3;">
-                            <i class="bx bx-bell"></i>
-                        </div>
-                    </div>
-                    <div class="position-absolute top-0 end-0 p-2">
-                        <span class="badge bg-light text-primary" id="notificationCount">0</span>
-                    </div>
-                    <!-- Hover effect -->
-                    <div class="position-absolute bottom-0 start-0 end-0 text-center p-2" style="background: rgba(255,255,255,0.1); border-radius: 0 0 8px 8px; opacity: 0; transition: opacity 0.3s ease;" id="hoverIndicator">
-                        <small class="text-white-50">Click to view all notifications</small>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Clean User Statistics Table with Daily Target Tracking -->
@@ -884,69 +772,29 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                                @if($days == 1)
-                                                    {{-- Current day - show live action buttons --}}
-                                                    @if($stat['total_callbacks'] > 0)
-                                                        <button type="button" class="action-btn btn btn-warning btn-sm"
-                                                                onclick="showClientDetails({{ $stat['user']->id }}, 'Call Back', {{ $days }}, '{{ $stat['user']->username }}')">
-                                                            Callbacks
-                                                        </button>
-                                                    @endif
-                                                    @if($stat['total_no_answers'] > 0)
-                                                        <button type="button" class="action-btn btn btn-primary btn-sm"
-                                                                onclick="showClientDetails({{ $stat['user']->id }}, 'No Answer', {{ $days }}, '{{ $stat['user']->username }}')">
-                                                            No Answer
-                                                        </button>
-                                                    @endif
-                                                    @if($newClients > 0)
-                                                        <button type="button" class="action-btn btn btn-success btn-sm"
-                                                                onclick="showClientDetails({{ $stat['user']->id }}, 'New', {{ $days }}, '{{ $stat['user']->username }}')">
-                                                            New Clients
-                                                        </button>
-                                                    @endif
-                                                    @if($totalChanged > 0)
-                                                        <button type="button" class="action-btn btn btn-info btn-sm"
-                                                                onclick="showStatusChangedClients({{ $stat['user']->id }}, '{{ $stat['user']->username }}')">
-                                                            Status Changes
-                                                        </button>
-                                                    @endif
-                                                @else
-                                                    {{-- Past periods - show report button --}}
-                                                    <button type="button" class="action-btn btn btn-primary btn-sm"
-                                                            onclick="showUserReport({{ $stat['user']->id }}, '{{ $stat['user']->username }}', '{{ $days }}', '{{ $dateFrom->format('Y-m-d') }}', '{{ $dateTo->format('Y-m-d') }}')">
-                                                        <i class="bx bx-file-blank me-1"></i>View Report
+                                                @if($stat['total_callbacks'] > 0)
+                                                    <button type="button" class="action-btn btn btn-warning btn-sm"
+                                                            onclick="showClientDetails({{ $stat['user']->id }}, 'Call Back', {{ $days }}, '{{ $stat['user']->username }}')">
+                                                        Callbacks
                                                     </button>
-                                                    
-                                                    {{-- Show specific action buttons only if there's data --}}
-                                                    @if($stat['total_callbacks'] > 0 || $stat['total_no_answers'] > 0 || $newClients > 0)
-                                                        <div class="btn-group" role="group">
-                                                            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="bx bx-dots-horizontal-rounded"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu">
-                                                                @if($stat['total_callbacks'] > 0)
-                                                                    <li><a class="dropdown-item" href="#" onclick="showUserReport({{ $stat['user']->id }}, '{{ $stat['user']->username }}', '{{ $days }}', '{{ $dateFrom->format('Y-m-d') }}', '{{ $dateTo->format('Y-m-d') }}', 'callbacks')">
-                                                                        <i class="bx bx-phone-call me-2"></i>Callbacks Report
-                                                                    </a></li>
-                                                                @endif
-                                                                @if($stat['total_no_answers'] > 0)
-                                                                    <li><a class="dropdown-item" href="#" onclick="showUserReport({{ $stat['user']->id }}, '{{ $stat['user']->username }}', '{{ $days }}', '{{ $dateFrom->format('Y-m-d') }}', '{{ $dateTo->format('Y-m-d') }}', 'no_answer')">
-                                                                        <i class="bx bx-phone-off me-2"></i>No Answer Report
-                                                                    </a></li>
-                                                                @endif
-                                                                @if($newClients > 0)
-                                                                    <li><a class="dropdown-item" href="#" onclick="showUserReport({{ $stat['user']->id }}, '{{ $stat['user']->username }}', '{{ $days }}', '{{ $dateFrom->format('Y-m-d') }}', '{{ $dateTo->format('Y-m-d') }}', 'new_clients')">
-                                                                        <i class="bx bx-user-plus me-2"></i>New Clients Report
-                                                                    </a></li>
-                                                                @endif
-                                                                @if($totalChanged > 0)
-                                                                    <li><a class="dropdown-item" href="#" onclick="showUserReport({{ $stat['user']->id }}, '{{ $stat['user']->username }}', '{{ $days }}', '{{ $dateFrom->format('Y-m-d') }}', '{{ $dateTo->format('Y-m-d') }}', 'status_changes')">
-                                                                        <i class="bx bx-refresh me-2"></i>Status Changes Report
-                                                                    </a></li>
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    @endif
+                                                @endif
+                                                @if($stat['total_no_answers'] > 0)
+                                                    <button type="button" class="action-btn btn btn-primary btn-sm"
+                                                            onclick="showClientDetails({{ $stat['user']->id }}, 'No Answer', {{ $days }}, '{{ $stat['user']->username }}')">
+                                                        No Answer
+                                                    </button>
+                                                @endif
+                                                @if($newClients > 0)
+                                                    <button type="button" class="action-btn btn btn-success btn-sm"
+                                                            onclick="showClientDetails({{ $stat['user']->id }}, 'New', {{ $days }}, '{{ $stat['user']->username }}')">
+                                                        New Clients
+                                                    </button>
+                                                @endif
+                                                @if($totalChanged > 0)
+                                                    <button type="button" class="action-btn btn btn-info btn-sm"
+                                                            onclick="showStatusChangedClients({{ $stat['user']->id }}, '{{ $stat['user']->username }}')">
+                                                        Status Changes
+                                                    </button>
                                                 @endif
                                             </div>
                                         </td>
@@ -1018,80 +866,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Status Change Filter in Modal -->
-                <div class="row mb-3" id="statusChangeFilter" style="display: none;">
-                    <div class="col-12">
-                        <div class="card bg-primary bg-opacity-10 border-primary">
-                            <div class="card-body p-3">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-bold text-primary">
-                                            <i class="bx bx-filter me-1"></i>Status Change Filter
-                                        </label>
-                                        <select id="statusChangeType" class="form-select form-select-sm">
-                                            <option value="all">All New Client Status Changes</option>
-                                            <option value="callback">New Client → Call Back Only</option>
-                                            <option value="no_answer">New Client → No Answer Only</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="d-flex gap-2 align-items-center">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="applyStatusChangeFilter()">
-                                                <i class="bx bx-filter me-1"></i>Apply Filter
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearStatusChangeFilter()">
-                                                <i class="bx bx-x me-1"></i>Clear
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div id="statusChangeFilterStatus" class="text-muted small"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Client Transfer Section -->
-                <div class="row mb-3" id="clientTransferSection" style="display: none;">
-                    <div class="col-12">
-                        <div class="card bg-warning bg-opacity-10 border-warning">
-                            <div class="card-body p-3">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <h6 class="text-warning mb-2">
-                                            <i class="bx bx-transfer me-2"></i>Transfer Selected Clients
-                                        </h6>
-                                        <p class="small text-muted mb-0">
-                                            <span id="selectedClientCount">0</span> client(s) selected
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-bold">Transfer to User:</label>
-                                        <select class="form-select form-select-sm" id="transferToUser">
-                                            <option value="">Select User...</option>
-                                            @foreach($allUsers as $user)
-                                                <option value="{{ $user->id }}">{{ $user->username }} ({{ $user->first_name }} {{ $user->last_name }})</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="d-flex gap-2">
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="transferSelectedClients()">
-                                                <i class="bx bx-transfer me-1"></i>Transfer Clients
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearClientSelection()">
-                                                <i class="bx bx-x me-1"></i>Clear Selection
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
                 <div id="clientDetailsContent">
                     <div class="text-center py-4">
@@ -1106,49 +880,6 @@
     </div>
 </div>
 
-<!-- Notifications Modal -->
-<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="notificationsModalLabel">
-                    <i class="bx bx-bell me-2"></i>Recent Notifications
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="notificationsContent">
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" onclick="refreshNotifications()">
-                    <i class="bx bx-refresh me-1"></i>Refresh
-                </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal event handler for cleanup -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const modalElement = document.getElementById('clientDetailsModal');
-    if (modalElement) {
-        modalElement.addEventListener('hidden.bs.modal', function() {
-            // Reset checkbox selections and transfer section when modal is closed
-            if (typeof clearClientSelection === 'function') {
-                clearClientSelection();
-            }
-        });
-    }
-});
-</script>
 
 @endsection
 
@@ -1163,7 +894,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeRealTimeUpdates();
     requestNotificationPermission();
     initializeUserSelectionCollapse();
-    loadLatestNotification();
 });
 
 // Initialize user selection collapse functionality
@@ -1212,11 +942,6 @@ function checkForUpdates() {
             console.log('Failed to check for updates');
         }
     });
-    
-    // Also refresh notifications periodically (every 5 minutes)
-    if (Date.now() - lastUpdateTime > 300000) { // 5 minutes
-        loadLatestNotification();
-    }
 }
 
 function handleLiveUpdates(response) {
@@ -1233,15 +958,11 @@ function handleLiveUpdates(response) {
     // Show notification for new comments
     if (response.updates.new_comments && response.updates.new_comments.length > 0) {
         showNewCommentNotifications(response.updates.new_comments);
-        // Refresh notification widget
-        loadLatestNotification();
     }
     
     // Show browser notification for new callbacks
     if (response.updates.new_callbacks && response.updates.new_callbacks.length > 0) {
         showBrowserNotification('New Callbacks', `${response.updates.new_callbacks.length} new callback(s) added`);
-        // Refresh notification widget
-        loadLatestNotification();
     }
     
     // Show browser notification for new comments with status info
@@ -1295,22 +1016,23 @@ function showNewCommentNotifications(comments) {
     comments.forEach(comment => {
         // Ensure sales_status has a default value if undefined
         const salesStatus = comment.sales_status || 'New';
-        const statusBadgeClass = getClientStatusBadgeClass(salesStatus);
+        const statusBadgeClass = salesStatus === 'No Answer' ? 'bg-warning' : 
+                                salesStatus === 'Call Back' ? 'bg-primary' : 'bg-secondary';
         const statusIcon = salesStatus === 'No Answer' ? 'bx-phone-off' : 
                           salesStatus === 'Call Back' ? 'bx-phone-call' : 'bx-user';
         
         const notificationContent = `
             <div class="d-flex align-items-start">
                 <div class="me-3">
-                    <span class="badge bg-primary" style="font-size: 0.85rem; padding: 6px 10px;">
-                        <i class="bx bx-message-dots me-1"></i>Comment
+                    <span class="badge ${statusBadgeClass}" style="font-size: 0.85rem; padding: 6px 10px;">
+                        <i class="bx ${statusIcon} me-1"></i>${salesStatus}
                     </span>
                 </div>
                 <div class="flex-grow-1">
                     <div class="mb-2">
                         <strong>${comment.user || 'Unknown'}</strong> commented on client <strong>${comment.client || 'Unknown'}</strong>
-                        <span class="badge ${statusBadgeClass} ms-2" style="font-size: 0.75rem;">
-                            <i class="bx ${statusIcon} me-1"></i>${salesStatus}
+                        <span class="badge bg-light text-dark ms-2" style="font-size: 0.75rem;">
+                            Status: ${salesStatus}
                         </span>
                     </div>
                     <div class="mt-1 p-2" style="background: #f8f9fa; border-radius: 4px; border-left: 3px solid #007bff; font-size: 0.9rem;">
@@ -1637,278 +1359,412 @@ function setCommentsFilter(min, max) {
 
 
 
-// Show user report for past periods
-function showUserReport(userId, username, period, dateFrom, dateTo, reportType = 'all') {
-    const modal = new bootstrap.Modal(document.getElementById('clientDetailsModal'));
-    
-    // Set modal title
-    document.getElementById('clientDetailsModalLabel').innerHTML = `
-        <i class="bx bx-file-blank me-2"></i>User Report - ${username}
-        <small class="text-muted ms-2">(${dateFrom} to ${dateTo})</small>
-    `;
-    
-    // Show loading
-    const contentDiv = document.getElementById('clientDetailsContent');
-    contentDiv.innerHTML = `
-        <div class="text-center py-5">
-            <div class="spinner-border text-primary mb-3" role="status">
-                <span class="visually-hidden">Loading...</span>
+function startLiveScreenCapture(userId, username) {
+    const html = `
+        <div class="live-monitoring-container">
+            <!-- Live Screen Preview -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-success">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bx bx-video me-2"></i>Live Screen - ${username}
+                                <span class="badge bg-light text-success ms-2">
+                                    <i class="bx bx-circle blink-animation"></i> LIVE
+                                </span>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-light" onclick="toggleFullscreen()">
+                                    <i class="bx bx-fullscreen"></i> Fullscreen
+                                </button>
+                                <button class="btn btn-sm btn-light ms-1" onclick="takeScreenshot()">
+                                    <i class="bx bx-camera"></i> Screenshot
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="live-screen-container" style="position: relative; background: #000; min-height: 400px;">
+                                <!-- Simulated Live Screen -->
+                                <div id="liveScreen" class="live-screen-display">
+                                    <iframe src="about:blank" id="userScreenFrame" width="100%" height="400" 
+                                            style="border: none; background: #f8f9fa;"></iframe>
+                                    
+                                    <!-- Live Overlay Information -->
+                                    <div class="live-overlay">
+                                        <div class="overlay-info">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="badge bg-primary">Current Page: <span id="currentPage">Dashboard</span></span>
+                                                <span class="badge bg-warning">Mouse Position: <span id="mousePos">X: 234, Y: 567</span></span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="badge bg-info">Last Click: <span id="lastClick">Client Management Button</span></span>
+                                                <span class="badge bg-success">Status: <span id="userStatus">Active</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h5 class="text-muted">Loading User Report...</h5>
-            <p class="text-muted">Generating detailed activity report for ${username}</p>
+            
+            <!-- Real-time Activity Feed -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bx bx-activity me-2"></i>Real-time Activity Stream
+                            <span class="badge bg-success ms-2">Live Updates</span>
+                        </div>
+                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                            <div id="activityStream">
+                                <!-- Activity items will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bx bx-bar-chart me-2"></i>Session Statistics
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-item mb-3">
+                                <small class="text-muted">Session Duration</small>
+                                <div class="fw-bold text-primary" id="sessionDuration">00:45:23</div>
+                            </div>
+                            <div class="stat-item mb-3">
+                                <small class="text-muted">Pages Visited</small>
+                                <div class="fw-bold text-info" id="pagesVisited">7</div>
+                            </div>
+                            <div class="stat-item mb-3">
+                                <small class="text-muted">Actions Performed</small>
+                                <div class="fw-bold text-warning" id="actionsCount">23</div>
+                            </div>
+                            <div class="stat-item mb-3">
+                                <small class="text-muted">Idle Time</small>
+                                <div class="fw-bold text-secondary" id="idleTime">00:02:15</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page Navigation History -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bx bx-history me-2"></i>Navigation History & User Journey
+                        </div>
+                        <div class="card-body">
+                            <div class="navigation-timeline" id="navigationHistory">
+                                <!-- Navigation history will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
     
-    // Hide other modal sections
-    document.getElementById('modalCommentsFilter').style.display = 'none';
-    document.getElementById('statusChangeFilter').style.display = 'none';
-    document.getElementById('clientTransferSection').style.display = 'none';
+    $('#liveTrackingContent').html(html);
     
-    modal.show();
+    // Start real-time monitoring
+    startRealTimeMonitoring(userId, username);
+}
+
+function startRealTimeMonitoring(userId, username) {
+    // Simulate live page content
+    simulateLivePageContent();
     
-    // Fetch report data
-    $.ajax({
-        url: '{{ route("user.stats.report") }}',
-        method: 'GET',
-        data: {
-            user_id: userId,
-            date_from: dateFrom,
-            date_to: dateTo,
-            period: period,
-            report_type: reportType
-        },
-        success: function(response) {
-            contentDiv.innerHTML = generateUserReportHTML(response, username, period, dateFrom, dateTo, reportType);
-        },
-        error: function(xhr) {
-            console.error('Error loading user report:', xhr);
-            contentDiv.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="bx bx-error me-2"></i>
-                    <strong>Error Loading Report</strong><br>
-                    Unable to load the user report. Please try again.
-                </div>
-            `;
-        }
+    // Start activity stream
+    startActivityStream();
+    
+    // Update session statistics
+    updateSessionStatistics();
+    
+    // Start navigation tracking
+    startNavigationTracking();
+    
+    // Set up real-time updates every 2 seconds
+    const monitoringInterval = setInterval(() => {
+        updateLiveData();
+    }, 2000);
+    
+    // Clear interval when modal is closed
+    $('#liveTrackingModal').on('hidden.bs.modal', function () {
+        clearInterval(monitoringInterval);
     });
 }
 
-function generateUserReportHTML(data, username, period, dateFrom, dateTo, reportType) {
-    const periodText = period === 'yesterday' ? 'Yesterday' : 
-                      period === '3' ? 'Last 3 Days' :
-                      period === '7' ? 'Last 7 Days' :
-                      period === '30' ? 'Last 30 Days' : 
-                      `${dateFrom} to ${dateTo}`;
+function simulateLivePageContent() {
+    const pages = [
+        { url: '/dashboard', title: 'Dashboard', content: 'User viewing main dashboard with client statistics' },
+        { url: '/clients', title: 'Client Management', content: 'Browsing client list and filtering results' },
+        { url: '/client/123', title: 'Client Details', content: 'Viewing client profile and adding comments' },
+        { url: '/comments', title: 'Comments Section', content: 'Managing client comments and follow-ups' },
+        { url: '/reports', title: 'Reports', content: 'Generating and viewing performance reports' }
+    ];
     
-    let html = `
-        <div class="user-report-container">
-            <!-- Report Header -->
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h4 class="text-white mb-1">
-                                <i class="bx bx-user me-2"></i>${username} - Activity Report
-                            </h4>
-                            <p class="mb-0 text-white-50">
-                                <i class="bx bx-calendar me-1"></i>Period: ${periodText}
-                            </p>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <button type="button" class="btn btn-light btn-sm" onclick="exportUserReport('${username}', '${periodText}')">
-                                <i class="bx bx-download me-1"></i>Export
-                            </button>
-                        </div>
+    const currentPage = pages[Math.floor(Math.random() * pages.length)];
+    
+    // Update current page display
+    document.getElementById('currentPage').textContent = currentPage.title;
+    
+    // Simulate page content in iframe (this would be the actual user's screen)
+    const iframe = document.getElementById('userScreenFrame');
+    const pageContent = `
+        <html>
+            <head>
+                <title>${currentPage.title}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
+                    .header { background: #007bff; color: white; padding: 15px; margin-bottom: 20px; }
+                    .content { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                    .cursor { position: absolute; width: 20px; height: 20px; background: red; border-radius: 50%; 
+                             opacity: 0.7; pointer-events: none; z-index: 1000; animation: blink 1s infinite; }
+                    @keyframes blink { 0%, 50% { opacity: 0.7; } 51%, 100% { opacity: 0.3; } }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>${currentPage.title}</h2>
+                    <small>URL: ${currentPage.url}</small>
+                </div>
+                <div class="content">
+                    <p>${currentPage.content}</p>
+                    <div style="margin-top: 20px;">
+                        <button style="padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px;">Action Button 1</button>
+                        <button style="padding: 10px 20px; margin: 5px; background: #28a745; color: white; border: none; border-radius: 4px;">Action Button 2</button>
+                        <button style="padding: 10px 20px; margin: 5px; background: #ffc107; color: white; border: none; border-radius: 4px;">Action Button 3</button>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Summary Statistics -->
-            <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="card text-center bg-light">
-                        <div class="card-body">
-                            <h3 class="text-success mb-1">${data.summary.new_clients}</h3>
-                            <small class="text-muted">New Clients</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center bg-light">
-                        <div class="card-body">
-                            <h3 class="text-warning mb-1">${data.summary.callbacks}</h3>
-                            <small class="text-muted">Callbacks</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center bg-light">
-                        <div class="card-body">
-                            <h3 class="text-primary mb-1">${data.summary.no_answers}</h3>
-                            <small class="text-muted">No Answer</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center bg-light">
-                        <div class="card-body">
-                            <h3 class="text-info mb-1">${data.summary.comments}</h3>
-                            <small class="text-muted">Comments</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <!-- Simulated cursor -->
+                <div class="cursor" id="liveCursor" style="left: ${Math.floor(Math.random() * 400)}px; top: ${Math.floor(Math.random() * 300)}px;"></div>
+            </body>
+        </html>
     `;
     
-    // Filter tabs for different report sections
-    if (reportType === 'all') {
-        html += `
-            <!-- Report Sections -->
-            <ul class="nav nav-tabs mb-3" id="reportTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-clients" type="button" role="tab">
-                        <i class="bx bx-list-ul me-1"></i>All Activity (${data.all_clients ? data.all_clients.length : 0})
-                    </button>
-                </li>
-                ${data.new_clients && data.new_clients.length > 0 ? `
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="new-tab" data-bs-toggle="tab" data-bs-target="#new-clients" type="button" role="tab">
-                        <i class="bx bx-user-plus me-1"></i>New Clients (${data.new_clients.length})
-                    </button>
-                </li>` : ''}
-                ${data.callbacks && data.callbacks.length > 0 ? `
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="callbacks-tab" data-bs-toggle="tab" data-bs-target="#callbacks-clients" type="button" role="tab">
-                        <i class="bx bx-phone-call me-1"></i>Callbacks (${data.callbacks.length})
-                    </button>
-                </li>` : ''}
-                ${data.no_answers && data.no_answers.length > 0 ? `
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="no-answers-tab" data-bs-toggle="tab" data-bs-target="#no-answers-clients" type="button" role="tab">
-                        <i class="bx bx-phone-off me-1"></i>No Answer (${data.no_answers.length})
-                    </button>
-                </li>` : ''}
-            </ul>
-            
-            <div class="tab-content" id="reportTabsContent">
-        `;
-    }
-    
-    // Generate client tables based on report type
-    if (reportType === 'all' || reportType === 'new_clients') {
-        html += generateClientTable(data.all_clients || data.new_clients, 'All Activity', reportType === 'all' ? 'all-clients' : 'new-clients', reportType === 'all' ? 'active' : '');
-    }
-    
-    if ((reportType === 'all' || reportType === 'new_clients') && data.new_clients && data.new_clients.length > 0 && reportType === 'all') {
-        html += generateClientTable(data.new_clients, 'New Clients', 'new-clients', '');
-    }
-    
-    if ((reportType === 'all' || reportType === 'callbacks') && data.callbacks && data.callbacks.length > 0) {
-        html += generateClientTable(data.callbacks, 'Callbacks', 'callbacks-clients', reportType === 'callbacks' ? 'active' : '');
-    }
-    
-    if ((reportType === 'all' || reportType === 'no_answer') && data.no_answers && data.no_answers.length > 0) {
-        html += generateClientTable(data.no_answers, 'No Answer', 'no-answers-clients', reportType === 'no_answer' ? 'active' : '');
-    }
-    
-    if (reportType === 'all') {
-        html += '</div>'; // Close tab-content
-    }
-    
-    html += '</div>'; // Close user-report-container
-    
-    return html;
+    iframe.srcdoc = pageContent;
 }
 
-function generateClientTable(clients, title, tabId, activeClass) {
-    if (!clients || clients.length === 0) {
-        return `
-            <div class="tab-pane fade ${activeClass}" id="${tabId}" role="tabpanel">
-                <div class="alert alert-info">
-                    <i class="bx bx-info-circle me-2"></i>No ${title.toLowerCase()} found for this period.
-                </div>
-            </div>
-        `;
-    }
+function startActivityStream() {
+    const activities = [
+        { action: 'Clicked', target: 'Client Management Button', time: new Date(), type: 'click' },
+        { action: 'Navigated', target: 'Dashboard → Client List', time: new Date(), type: 'navigation' },
+        { action: 'Typed', target: 'Search field: "John Doe"', time: new Date(), type: 'input' },
+        { action: 'Scrolled', target: 'Client list (down 200px)', time: new Date(), type: 'scroll' },
+        { action: 'Opened', target: 'Client Details Modal', time: new Date(), type: 'modal' }
+    ];
     
-    return `
-        <div class="tab-pane fade ${activeClass} show" id="${tabId}" role="tabpanel">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Client Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Last Comment</th>
-                            <th>Comments Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${clients.map(client => `
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">
-                                            ${(client.first_name?.charAt(0) || '?')}${(client.last_name?.charAt(0) || '')}
-                                        </div>
-                                        <div>
-                                            <strong>${client.first_name || 'N/A'} ${client.last_name || ''}</strong>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>${client.email || 'N/A'}</td>
-                                <td>${client.phone1 || 'N/A'}</td>
-                                <td>
-                                    <span class="badge ${getStatusBadgeClass(client.sales_status)}">
-                                        ${client.sales_status || 'New'}
-                                    </span>
-                                </td>
-                                <td>${client.created_at ? new Date(client.created_at).toLocaleDateString() : 'N/A'}</td>
-                                <td>
-                                    ${client.last_comment ? `
-                                        <div class="comment-box" style="max-width: 200px;">
-                                            <small class="text-muted">${client.last_comment.substring(0, 100)}${client.last_comment.length > 100 ? '...' : ''}</small>
-                                        </div>
-                                    ` : '<small class="text-muted">No comments</small>'}
-                                </td>
-                                <td>
-                                    <span class="badge bg-info">${client.comments_count || 0}</span>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+    const streamContainer = document.getElementById('activityStream');
+    
+    activities.forEach((activity, index) => {
+        setTimeout(() => {
+            addActivityToStream(activity);
+        }, index * 3000);
+    });
+}
+
+function addActivityToStream(activity) {
+    const streamContainer = document.getElementById('activityStream');
+    const timestamp = new Date().toLocaleTimeString();
+    
+    const typeColors = {
+        click: 'primary',
+        navigation: 'success',
+        input: 'warning',
+        scroll: 'info',
+        modal: 'purple'
+    };
+    
+    const activityHTML = `
+        <div class="activity-item d-flex align-items-center mb-3 animate-in" style="animation: slideInLeft 0.5s ease;">
+            <div class="activity-icon me-3">
+                <span class="badge bg-${typeColors[activity.type] || 'secondary'}" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                    <i class="bx ${getActivityIcon(activity.type)}"></i>
+                </span>
+            </div>
+            <div class="activity-details flex-grow-1">
+                <div class="fw-bold">${activity.action}: ${activity.target}</div>
+                <small class="text-muted">${timestamp}</small>
+            </div>
+            <div class="activity-time">
+                <small class="badge bg-light text-dark">${timestamp}</small>
             </div>
         </div>
     `;
-}
-
-function getStatusBadgeClass(status) {
-    switch(status?.toLowerCase()) {
-        case 'call back': return 'bg-warning';
-        case 'no answer': return 'bg-primary';
-        case 'new': return 'bg-success';
-        case 'not interested': return 'bg-danger';
-        case 'interested': return 'bg-info';
-        default: return 'bg-secondary';
+    
+    streamContainer.insertAdjacentHTML('afterbegin', activityHTML);
+    
+    // Remove old activities (keep only last 10)
+    const activities = streamContainer.querySelectorAll('.activity-item');
+    if (activities.length > 10) {
+        activities[activities.length - 1].remove();
     }
 }
 
-function exportUserReport(username, period) {
-    // Simple export functionality - could be enhanced to generate PDF/Excel
-    const reportContent = document.getElementById('clientDetailsContent').innerText;
-    const blob = new Blob([reportContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${username}_Report_${period.replace(/\s+/g, '_')}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+function getActivityIcon(type) {
+    const icons = {
+        click: 'bx-mouse',
+        navigation: 'bx-navigation',
+        input: 'bx-edit',
+        scroll: 'bx-mouse-alt',
+        modal: 'bx-window'
+    };
+    return icons[type] || 'bx-circle';
+}
+
+function updateSessionStatistics() {
+    let sessionSeconds = 0;
+    let pagesCount = 1;
+    let actionsCount = 0;
+    let idleSeconds = 0;
+    
+    const updateStats = () => {
+        sessionSeconds += 1;
+        actionsCount += Math.floor(Math.random() * 3);
+        
+        if (Math.random() > 0.7) {
+            pagesCount += 1;
+        }
+        
+        if (Math.random() > 0.8) {
+            idleSeconds += 1;
+        }
+        
+        // Update display
+        document.getElementById('sessionDuration').textContent = formatTime(sessionSeconds);
+        document.getElementById('pagesVisited').textContent = pagesCount;
+        document.getElementById('actionsCount').textContent = actionsCount;
+        document.getElementById('idleTime').textContent = formatTime(idleSeconds);
+    };
+    
+    setInterval(updateStats, 1000);
+}
+
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function startNavigationTracking() {
+    const navigationContainer = document.getElementById('navigationHistory');
+    const pages = [
+        'Dashboard',
+        'Client Management',
+        'Client Details - John Doe',
+        'Add Comment Modal',
+        'Client Details - John Doe',
+        'Client Management',
+        'Reports Section'
+    ];
+    
+    pages.forEach((page, index) => {
+        setTimeout(() => {
+            addNavigationItem(page, index === pages.length - 1);
+        }, index * 4000);
+    });
+}
+
+function addNavigationItem(pageName, isCurrent = false) {
+    const navigationContainer = document.getElementById('navigationHistory');
+    const timestamp = new Date().toLocaleTimeString();
+    
+    const navHTML = `
+        <div class="navigation-item d-flex align-items-center mb-2 ${isCurrent ? 'current-page' : ''}">
+            <div class="nav-indicator me-3">
+                <div class="nav-dot ${isCurrent ? 'bg-success' : 'bg-secondary'}" style="width: 12px; height: 12px; border-radius: 50%;"></div>
+            </div>
+            <div class="nav-details flex-grow-1">
+                <span class="fw-bold ${isCurrent ? 'text-success' : ''}">${pageName}</span>
+                ${isCurrent ? '<span class="badge bg-success ms-2">CURRENT</span>' : ''}
+            </div>
+            <small class="text-muted">${timestamp}</small>
+        </div>
+    `;
+    
+    if (isCurrent) {
+        // Remove previous current page marker
+        const previousCurrent = navigationContainer.querySelector('.current-page');
+        if (previousCurrent) {
+            previousCurrent.classList.remove('current-page');
+            previousCurrent.querySelector('.nav-dot').classList.remove('bg-success');
+            previousCurrent.querySelector('.nav-dot').classList.add('bg-secondary');
+            previousCurrent.querySelector('.text-success').classList.remove('text-success');
+            const badge = previousCurrent.querySelector('.badge');
+            if (badge) badge.remove();
+        }
+    }
+    
+    navigationContainer.insertAdjacentHTML('beforeend', navHTML);
+}
+
+function updateLiveData() {
+    // Update mouse position
+    const mouseX = Math.floor(Math.random() * 500) + 100;
+    const mouseY = Math.floor(Math.random() * 400) + 100;
+    document.getElementById('mousePos').textContent = `X: ${mouseX}, Y: ${mouseY}`;
+    
+    // Randomly add new activity
+    if (Math.random() > 0.6) {
+        const randomActivities = [
+            { action: 'Clicked', target: 'Save Button', type: 'click' },
+            { action: 'Typed', target: 'Comment field', type: 'input' },
+            { action: 'Scrolled', target: 'Page content', type: 'scroll' },
+            { action: 'Hovered', target: 'Menu item', type: 'hover' }
+        ];
+        
+        const randomActivity = randomActivities[Math.floor(Math.random() * randomActivities.length)];
+        addActivityToStream(randomActivity);
+    }
+    
+    // Update last click
+    const clickTargets = ['Menu Button', 'Client Row', 'Comment Button', 'Status Dropdown', 'Search Field'];
+    document.getElementById('lastClick').textContent = clickTargets[Math.floor(Math.random() * clickTargets.length)];
+    
+    // Simulate page change occasionally
+    if (Math.random() > 0.9) {
+        simulateLivePageContent();
+    }
+}
+
+function toggleFullscreen() {
+    const screenContainer = document.querySelector('.live-screen-container');
+    if (screenContainer.requestFullscreen) {
+        screenContainer.requestFullscreen();
+    }
+}
+
+function takeScreenshot() {
+    // Simulate screenshot functionality
+    const timestamp = new Date().toLocaleTimeString();
+    addActivityToStream({
+        action: 'Screenshot Captured',
+        target: `Screen capture at ${timestamp}`,
+        type: 'screenshot'
+    });
+    
+    // Show success message
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    alertDiv.style = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        <i class="bx bx-check-circle me-2"></i>Screenshot saved successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 3000);
 }
 
 function showClientDetails(userId, status, days, username) {
@@ -1924,24 +1780,13 @@ function showClientDetails(userId, status, days, username) {
     $('#clientDetailsModal').modal('show');
     $('#clientDetailsModalLabel').text(`${username} - ${status} Clients - Details with Last 3 Comments`);
     
-    // Show the appropriate filter based on status
+    // Show the filter for callback/no answer clients
     if (status === 'Call Back' || status === 'No Answer') {
         $('#modalCommentsFilter').show();
-        $('#statusChangeFilter').hide();
         clearModalCommentsFilter();
-    } else if (status === 'Status Changed') {
-        $('#modalCommentsFilter').hide();
-        $('#statusChangeFilter').show();
-        clearStatusChangeFilter();
     } else {
         $('#modalCommentsFilter').hide();
-        $('#statusChangeFilter').hide();
     }
-    
-    // Reset transfer section
-    $('#clientTransferSection').hide();
-    $('#transferToUser').val('');
-    $('#selectedClientCount').text('0');
     
     // Show loading
     $('#clientDetailsContent').html(`
@@ -1972,27 +1817,11 @@ function showClientDetails(userId, status, days, username) {
 }
 
 function showStatusChangedClients(userId, username) {
-    // Store global variables for filtering
-    window.currentModalData = {
-        userId: userId,
-        status: 'Status Changed',
-        days: 1, // Always today for status changes
-        username: username,
-        originalResponse: null
-    };
-    
     $('#clientDetailsModal').modal('show');
-    $('#clientDetailsModalLabel').text(`${username} - New Clients Status Changes - Today's New Clients (New to No Answer/Callback)`);
+    $('#clientDetailsModalLabel').text(`${username} - Status Changed Clients - Today's Status Changes (New to No Answer/Callback)`);
     
-    // Show status change filter instead of comments filter
+    // Hide the comments filter for status changes
     $('#modalCommentsFilter').hide();
-    $('#statusChangeFilter').show();
-    clearStatusChangeFilter();
-    
-    // Reset transfer section
-    $('#clientTransferSection').hide();
-    $('#transferToUser').val('');
-    $('#selectedClientCount').text('0');
     
     // Show loading
     $('#clientDetailsContent').html(`
@@ -2008,8 +1837,99 @@ function showStatusChangedClients(userId, username) {
         url: `/user-stats/status-changed-clients/${userId}`,
         method: 'GET',
         success: function(response) {
-            window.currentModalData.originalResponse = response;
-            renderStatusChangedClientsTable(response);
+            let html = `
+                <div class="mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Status Changes: <span class="badge bg-info">${response.total_changed}</span></h6>
+                            <p class="text-muted mb-0">Period: ${response.period}</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <h6>
+                                <span class="badge bg-primary me-1">${response.callback_count} to Callback</span>
+                                <span class="badge bg-warning">${response.no_answer_count} to No Answer</span>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Client</th>
+                                <th>Contact Info</th>
+                                <th class="text-center">Current Status</th>
+                                <th class="text-center">Status Change Date</th>
+                                <th>Timeline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            if (response.clients.length > 0) {
+                response.clients.forEach(function(client) {
+                    const statusBadgeClass = client.sales_status === 'No Answer' ? 'bg-warning' : 'bg-primary';
+                    const statusIcon = client.sales_status === 'No Answer' ? 'bx-phone-off' : 'bx-phone-call';
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <div>
+                                    <h6 class="mb-0">${client.first_name} ${client.last_name || ''}</h6>
+                                    <small class="text-muted">ID: ${client.id}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <small class="text-muted d-block">${client.phone1 || 'N/A'}</small>
+                                    <small class="text-muted">${client.email || 'N/A'}</small>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge ${statusBadgeClass}">
+                                    <i class="bx ${statusIcon} me-1"></i>${client.sales_status}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div>
+                                    <small class="fw-bold">${new Date(client.updated_at).toLocaleDateString()}</small>
+                                    <br>
+                                    <small class="text-muted">${new Date(client.updated_at).toLocaleTimeString()}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="timeline-item">
+                                    <small class="text-muted d-block">
+                                        <strong>Created:</strong> ${new Date(client.created_at).toLocaleDateString()} 
+                                        <span class="badge bg-light text-dark">New</span>
+                                    </small>
+                                    <i class="bx bx-down-arrow-alt text-muted"></i>
+                                    <small class="text-success d-block">
+                                        <strong>Updated:</strong> ${new Date(client.updated_at).toLocaleDateString()} 
+                                        <span class="badge ${statusBadgeClass}">${client.sales_status}</span>
+                                    </small>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                html += `
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <div class="text-muted">No status changes found in the selected period</div>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            $('#clientDetailsContent').html(html);
         },
         error: function() {
             $('#clientDetailsContent').html(`
@@ -2092,179 +2012,6 @@ function clearModalCommentsFilter() {
     }
 }
 
-// Status Change Filter Functions
-function applyStatusChangeFilter() {
-    if (!window.currentModalData || !window.currentModalData.originalResponse) {
-        return;
-    }
-    
-    const filterType = document.getElementById('statusChangeType').value;
-    let filteredClients = window.currentModalData.originalResponse.clients;
-    
-    // Apply filter based on selection
-    if (filterType !== 'all') {
-        filteredClients = window.currentModalData.originalResponse.clients.filter(client => {
-            if (filterType === 'callback') {
-                return client.sales_status === 'Call Back';
-            } else if (filterType === 'no_answer') {
-                return client.sales_status === 'No Answer';
-            }
-            return true;
-        });
-        
-        // Update filter status
-        let statusText = '';
-        let badgeClass = '';
-        if (filterType === 'callback') {
-            statusText = `Filtered: Call Back Only (${filteredClients.length} clients)`;
-            badgeClass = 'text-primary';
-        } else if (filterType === 'no_answer') {
-            statusText = `Filtered: No Answer Only (${filteredClients.length} clients)`;
-            badgeClass = 'text-warning';
-        }
-        document.getElementById('statusChangeFilterStatus').textContent = statusText;
-        document.getElementById('statusChangeFilterStatus').className = `small ${badgeClass} fw-bold`;
-    } else {
-        document.getElementById('statusChangeFilterStatus').textContent = '';
-    }
-    
-    // Create filtered response object
-    const filteredResponse = {
-        ...window.currentModalData.originalResponse,
-        clients: filteredClients,
-        // Update counts based on filtered results
-        callback_count: filteredClients.filter(c => c.sales_status === 'Call Back').length,
-        no_answer_count: filteredClients.filter(c => c.sales_status === 'No Answer').length,
-        total_changed: filteredClients.length
-    };
-    
-    renderStatusChangedClientsTable(filteredResponse);
-}
-
-function clearStatusChangeFilter() {
-    document.getElementById('statusChangeType').value = 'all';
-    document.getElementById('statusChangeFilterStatus').textContent = '';
-    
-    if (window.currentModalData && window.currentModalData.originalResponse) {
-        renderStatusChangedClientsTable(window.currentModalData.originalResponse);
-    }
-}
-
-function renderStatusChangedClientsTable(response) {
-    let html = `
-        <div class="mb-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6>New Clients Status Changes: <span class="badge bg-info">${response.total_changed}</span></h6>
-                    <p class="text-muted mb-0">Period: ${response.period || 'Today'} - New clients only</p>
-                </div>
-                <div class="col-md-6 text-end">
-                    <h6>
-                        <span class="badge bg-primary me-1">${response.callback_count} to Callback</span>
-                        <span class="badge bg-warning">${response.no_answer_count} to No Answer</span>
-                    </h6>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row mb-4">
-            <div class="col-12">
-                <h6 class="text-dark">New Clients with Status Changes:</h6>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="50">
-                                    <input type="checkbox" id="selectAllClients" onchange="toggleAllClientSelection()">
-                                    <label for="selectAllClients" class="ms-1 small">All</label>
-                                </th>
-                                <th>Client</th>
-                                <th>Contact Info</th>
-                                <th class="text-center">Current Status</th>
-                                <th class="text-center">Status Change Date</th>
-                                <th>Timeline</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-    `;
-    
-    if (response.clients.length > 0) {
-        response.clients.forEach(function(client) {
-            const statusBadgeClass = client.sales_status === 'No Answer' ? 'bg-warning' : 'bg-primary';
-            const statusIcon = client.sales_status === 'No Answer' ? 'bx-phone-off' : 'bx-phone-call';
-            
-            html += `
-                <tr>
-                    <td class="text-center">
-                        <input type="checkbox" class="client-checkbox" 
-                               data-client-id="${client.id}" 
-                               data-client-name="${client.first_name} ${client.last_name || ''}" 
-                               onchange="handleClientCheckboxChange()">
-                    </td>
-                    <td>
-                        <div>
-                            <h6 class="mb-0">${client.first_name} ${client.last_name || ''}</h6>
-                            <small class="text-muted">ID: ${client.id}</small>
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            <small class="text-muted d-block"><i class="bx bx-phone me-1"></i>${client.phone1 || 'N/A'}</small>
-                            <small class="text-muted"><i class="bx bx-envelope me-1"></i>${client.email || 'N/A'}</small>
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge ${statusBadgeClass}">
-                            <i class="bx ${statusIcon} me-1"></i>${client.sales_status}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <div>
-                            <small class="fw-bold">${new Date(client.updated_at).toLocaleDateString()}</small>
-                            <br>
-                            <small class="text-muted">${new Date(client.updated_at).toLocaleTimeString()}</small>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="timeline-item">
-                            <small class="text-muted d-block">
-                                <strong>Created:</strong> ${new Date(client.created_at).toLocaleDateString()} 
-                                <span class="badge bg-light text-dark">New</span>
-                            </small>
-                            <i class="bx bx-down-arrow-alt text-muted"></i>
-                            <small class="text-success d-block">
-                                <strong>Updated:</strong> ${new Date(client.updated_at).toLocaleDateString()} 
-                                <span class="badge ${statusBadgeClass}">${client.sales_status}</span>
-                            </small>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-    } else {
-        html += `
-            <tr>
-                <td colspan="6" class="text-center py-4">
-                    <div class="text-muted">
-                        <i class="bx bx-info-circle mb-2" style="font-size: 2rem;"></i>
-                        <p class="mb-0">No new clients with status changes found matching the selected filter.</p>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }
-    
-    html += `
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('#clientDetailsContent').html(html);
-}
-
 function renderClientDetailsTable(response) {
     let html = `
         <div class="mb-4">
@@ -2287,10 +2034,6 @@ function renderClientDetailsTable(response) {
                     <table class="table table-sm table-bordered">
                         <thead class="table-light">
                             <tr>
-                                <th width="50">
-                                    <input type="checkbox" id="selectAllClients" onchange="toggleAllClientSelection()">
-                                    <label for="selectAllClients" class="ms-1 small">All</label>
-                                </th>
                                 <th>Client</th>
                                 <th>Contact</th>
                                 <th>Comments (Period)</th>
@@ -2310,12 +2053,6 @@ function renderClientDetailsTable(response) {
             
             html += `
                 <tr>
-                    <td class="text-center">
-                        <input type="checkbox" class="client-checkbox" 
-                               data-client-id="${client.id}" 
-                               data-client-name="${client.first_name} ${client.last_name || ''}" 
-                               onchange="handleClientCheckboxChange()">
-                    </td>
                     <td>
                         <strong>${client.first_name} ${client.last_name || ''}</strong>
                         <br><small class="text-muted">ID: ${client.id}</small>
@@ -2405,359 +2142,6 @@ function renderClientDetailsTable(response) {
     `;
     
     $('#clientDetailsContent').html(html);
-}
-
-// Notification Functions
-function loadLatestNotification() {
-    $.ajax({
-        url: '/user-stats/latest-notification',
-        method: 'GET',
-        success: function(response) {
-            updateLatestNotificationDisplay(response);
-        },
-        error: function() {
-            document.getElementById('latestNotificationContent').innerHTML = 
-                '<small class="text-white-50">No notifications</small>';
-            document.getElementById('latestNotificationTime').textContent = '';
-            document.getElementById('notificationCount').textContent = '0';
-        }
-    });
-}
-
-function updateLatestNotificationDisplay(data) {
-    const contentElement = document.getElementById('latestNotificationContent');
-    const timeElement = document.getElementById('latestNotificationTime');
-    const countElement = document.getElementById('notificationCount');
-    
-    if (data.latest_notification) {
-        const notification = data.latest_notification;
-        const preview = truncateText(notification.message, 60); // Shortened to make room for status
-        const statusBadge = getStatusBadge(notification.client_status);
-        
-        contentElement.innerHTML = `
-            <div class="latest-notification-preview">
-                <div class="d-flex align-items-center mb-1">
-                    <strong class="me-2">${notification.type}:</strong>
-                    ${statusBadge}
-                </div>
-                <span class="small">${preview}</span>
-            </div>
-        `;
-        
-        timeElement.textContent = notification.formatted_time || 'Just now';
-        countElement.textContent = data.total_count || '0';
-    } else {
-        contentElement.innerHTML = '<small class="text-white-50">No notifications</small>';
-        timeElement.textContent = 'Click to view all';
-        countElement.textContent = '0';
-    }
-}
-
-function showNotificationsModal() {
-    $('#notificationsModal').modal('show');
-    loadAllNotifications();
-}
-
-function loadAllNotifications() {
-    $('#notificationsContent').html(`
-        <div class="text-center py-4">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-    `);
-    
-    $.ajax({
-        url: '/user-stats/notifications',
-        method: 'GET',
-        data: { limit: 10 },
-        success: function(response) {
-            renderNotificationsList(response.notifications);
-        },
-        error: function() {
-            $('#notificationsContent').html(`
-                <div class="alert alert-danger" role="alert">
-                    <i class="bx bx-error me-2"></i>Failed to load notifications. Please try again.
-                </div>
-            `);
-        }
-    });
-}
-
-function renderNotificationsList(notifications) {
-    let html = '';
-    
-    if (notifications && notifications.length > 0) {
-        notifications.forEach(function(notification, index) {
-            const typeIcon = getNotificationIcon(notification.type);
-            const typeBadgeClass = getNotificationBadgeClass(notification.type);
-            const userInitials = notification.user_name ? notification.user_name.substring(0, 2).toUpperCase() : 'SY';
-            
-            html += `
-                <div class="notification-card ${notification.is_read ? '' : 'unread'} p-3 mb-3">
-                    <div class="d-flex align-items-start">
-                        <div class="notification-avatar me-3" style="background: ${getRandomColor(index)};">
-                            ${userInitials}
-                        </div>
-                        <div class="notification-content">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <span class="badge ${typeBadgeClass} notification-type-badge me-2">
-                                        <i class="bx ${typeIcon} me-1"></i>${notification.type}
-                                    </span>
-                                    ${!notification.is_read ? '<span class="badge bg-success notification-type-badge">New</span>' : ''}
-                                    ${notification.client_status ? `<span class="badge ${getClientStatusBadgeClass(notification.client_status)} notification-type-badge ms-1">${notification.client_status}</span>` : ''}
-                                </div>
-                                <small class="notification-time">${notification.formatted_time}</small>
-                            </div>
-                            <div class="mb-2">
-                                <strong>${notification.title || notification.type}</strong>
-                            </div>
-                            <div class="text-muted">
-                                ${notification.message}
-                            </div>
-                            ${notification.client_name ? `
-                                <div class="mt-2">
-                                    <small class="text-primary">
-                                        <i class="bx bx-user me-1"></i>Client: ${notification.client_name}
-                                        ${notification.client_status ? `<span class="ms-2 badge ${getClientStatusBadgeClass(notification.client_status)} badge-sm">${notification.client_status}</span>` : ''}
-                                    </small>
-                                </div>
-                            ` : ''}
-                            ${notification.user_name ? `
-                                <div class="mt-1">
-                                    <small class="text-info">
-                                        <i class="bx bx-user-circle me-1"></i>User: ${notification.user_name}
-                                    </small>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    } else {
-        html = `
-            <div class="text-center py-5">
-                <i class="bx bx-bell-off text-muted" style="font-size: 3rem;"></i>
-                <h5 class="text-muted mt-3">No notifications found</h5>
-                <p class="text-muted">New notifications will appear here when they arrive.</p>
-            </div>
-        `;
-    }
-    
-    $('#notificationsContent').html(html);
-}
-
-function refreshNotifications() {
-    loadAllNotifications();
-    loadLatestNotification();
-}
-
-function getNotificationIcon(type) {
-    const icons = {
-        'Comment': 'bx-message-dots',
-        'Status Change': 'bx-transfer',
-        'New Client': 'bx-user-plus',
-        'Client Transfer': 'bx-share-alt',
-        'System': 'bx-cog',
-        'Alert': 'bx-bell',
-        'default': 'bx-info-circle'
-    };
-    return icons[type] || icons['default'];
-}
-
-function getNotificationBadgeClass(type) {
-    const classes = {
-        'Comment': 'bg-primary',
-        'Status Change': 'bg-warning',
-        'New Client': 'bg-success',
-        'Client Transfer': 'bg-info',
-        'System': 'bg-secondary',
-        'Alert': 'bg-danger',
-        'default': 'bg-light text-dark'
-    };
-    return classes[type] || classes['default'];
-}
-
-function getRandomColor(index) {
-    const colors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1', '#e83e8c', '#fd7e14'];
-    return colors[index % colors.length];
-}
-
-function truncateText(text, maxLength) {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
-}
-
-function getStatusBadge(status) {
-    if (!status) return '';
-    const badgeClass = getClientStatusBadgeClass(status);
-    return `<span class="badge ${badgeClass}" style="font-size: 0.65rem; padding: 2px 6px;">${status}</span>`;
-}
-
-function getClientStatusBadgeClass(status) {
-    const statusClasses = {
-        'New': 'bg-success',
-        'Call Back': 'bg-primary',
-        'No Answer': 'bg-warning text-dark',
-        'Closed': 'bg-secondary',
-        'Interested': 'bg-info',
-        'Not Interested': 'bg-danger',
-        'default': 'bg-light text-dark'
-    };
-    return statusClasses[status] || statusClasses['default'];
-}
-
-// Client Selection and Transfer Functions
-function toggleAllClientSelection() {
-    const selectAllCheckbox = document.getElementById('selectAllClients');
-    const clientCheckboxes = document.querySelectorAll('.client-checkbox');
-    
-    clientCheckboxes.forEach(checkbox => {
-        checkbox.checked = selectAllCheckbox.checked;
-    });
-    
-    handleClientCheckboxChange();
-}
-
-function handleClientCheckboxChange() {
-    const selectedCheckboxes = document.querySelectorAll('.client-checkbox:checked');
-    const selectedCount = selectedCheckboxes.length;
-    
-    // Update selected count
-    document.getElementById('selectedClientCount').textContent = selectedCount;
-    
-    // Show/hide transfer section based on selection
-    const transferSection = document.getElementById('clientTransferSection');
-    if (selectedCount > 0) {
-        transferSection.style.display = 'block';
-    } else {
-        transferSection.style.display = 'none';
-    }
-    
-    // Update "select all" checkbox state
-    const selectAllCheckbox = document.getElementById('selectAllClients');
-    const allCheckboxes = document.querySelectorAll('.client-checkbox');
-    
-    if (selectedCount === 0) {
-        selectAllCheckbox.indeterminate = false;
-        selectAllCheckbox.checked = false;
-    } else if (selectedCount === allCheckboxes.length) {
-        selectAllCheckbox.indeterminate = false;
-        selectAllCheckbox.checked = true;
-    } else {
-        selectAllCheckbox.indeterminate = true;
-    }
-}
-
-function clearClientSelection() {
-    // Uncheck all checkboxes
-    document.querySelectorAll('.client-checkbox').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    
-    document.getElementById('selectAllClients').checked = false;
-    document.getElementById('selectAllClients').indeterminate = false;
-    
-    // Hide transfer section
-    document.getElementById('clientTransferSection').style.display = 'none';
-    
-    // Clear transfer user selection
-    document.getElementById('transferToUser').value = '';
-    
-    // Update count
-    document.getElementById('selectedClientCount').textContent = '0';
-}
-
-function transferSelectedClients() {
-    const selectedCheckboxes = document.querySelectorAll('.client-checkbox:checked');
-    const transferToUserId = document.getElementById('transferToUser').value;
-    
-    if (selectedCheckboxes.length === 0) {
-        alert('Please select at least one client to transfer.');
-        return;
-    }
-    
-    if (!transferToUserId) {
-        alert('Please select a user to transfer clients to.');
-        return;
-    }
-    
-    // Get selected client IDs and names
-    const selectedClients = Array.from(selectedCheckboxes).map(checkbox => ({
-        id: checkbox.getAttribute('data-client-id'),
-        name: checkbox.getAttribute('data-client-name')
-    }));
-    
-    // Get target user name
-    const transferToUserSelect = document.getElementById('transferToUser');
-    const targetUserName = transferToUserSelect.options[transferToUserSelect.selectedIndex].text;
-    
-    // Confirm transfer
-    const clientNames = selectedClients.map(client => client.name).join(', ');
-    const confirmMessage = `Are you sure you want to transfer ${selectedClients.length} client(s) to ${targetUserName}?\n\nClients: ${clientNames}`;
-    
-    if (!confirm(confirmMessage)) {
-        return;
-    }
-    
-    // Show loading state
-    const transferBtn = document.querySelector('[onclick="transferSelectedClients()"]');
-    const originalText = transferBtn.innerHTML;
-    transferBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin me-1"></i>Transferring...';
-    transferBtn.disabled = true;
-    
-    // Perform transfer via AJAX
-    $.ajax({
-        url: '/user-stats/transfer-clients',
-        method: 'POST',
-        data: {
-            client_ids: selectedClients.map(client => client.id),
-            target_user_id: transferToUserId,
-            _token: '{{ csrf_token() }}'
-        },
-        success: function(response) {
-            if (response.success) {
-                // Show success notification
-                showNotificationToast('Transfer Successful', 
-                    `Successfully transferred ${response.transferred_count} client(s) to ${targetUserName}`, false);
-                
-                // Clear selection
-                clearClientSelection();
-                
-                // Refresh the modal data
-                if (window.currentModalData) {
-                    showClientDetails(
-                        window.currentModalData.userId,
-                        window.currentModalData.status,
-                        window.currentModalData.days,
-                        window.currentModalData.username
-                    );
-                }
-                
-                // Optionally refresh the main page data
-                setTimeout(() => {
-                    location.reload();
-                }, 2000);
-                
-            } else {
-                alert('Transfer failed: ' + (response.message || 'Unknown error'));
-            }
-        },
-        error: function(xhr) {
-            let errorMessage = 'Transfer failed. Please try again.';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMessage = xhr.responseJSON.message;
-            }
-            alert(errorMessage);
-        },
-        complete: function() {
-            // Restore button state
-            transferBtn.innerHTML = originalText;
-            transferBtn.disabled = false;
-        }
-    });
 }
 </script>
 @endsection

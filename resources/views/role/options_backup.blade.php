@@ -1,124 +1,10 @@
 <style>
-/* CRITICAL OVERRIDES - Ensure all permission elements stay within form-section */
-.form-section .permission-card,
-.form-section .enhanced-legacy-card,
-.form-section .permission-conditional-section,
-.form-section .permissions-container,
-.form-section .permissions-grid,
-.form-section .permission-section-full-width,
-.form-section .permission-section-two-columns,
-.form-section .permission-section-three-columns {
-    position: relative !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: none !important;
-    float: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    contain: layout !important;
-}
-
-/* Override any child card styling that breaks containment */
-.form-section .permission-card.child-card,
-.form-section .permission-card.conditional-child {
-    margin-left: 0 !important;
-    border-left: none !important;
-    background: white !important;
-}
-
 /* Modern Permissions Design */
 .permissions-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-top: 1rem;
-    width: 100%;
-    max-width: 100%;
-    position: relative;
-    contain: layout;
-}
-
-/* Ensure permissions grid stays within form section */
-.form-section .permissions-grid {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    overflow: hidden;
-}
-
-/* Container for all permission sections */
-.permissions-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    position: relative !important;
-    contain: layout !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Ensure form sections maintain proper containment */
-.form-section .permissions-container {
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-}
-
-/* Override any potential z-index or positioning issues */
-.form-section .permission-card,
-.form-section .enhanced-legacy-card,
-.form-section .permission-conditional-section {
-    position: relative !important;
-    z-index: auto !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* Ensure all permission sections respect form-section boundaries */
-.form-section .permission-section-full-width,
-.form-section .permission-section-two-columns,
-.form-section .permission-section-three-columns {
-    max-width: 100%;
-    overflow: hidden;
-    contain: layout;
-}
-
-/* Full width permission sections - for standalone sections like Leads Inputs (Show) */
-.permission-section-full-width {
-    width: 100%;
-    margin: 1.5rem 0;
-    display: block;
-    position: relative;
-    contain: layout;
-}
-
-/* Two column permission sections - for paired sections like MainTp */
-.permission-section-two-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-    position: relative;
-    contain: layout;
-}
-
-/* Three column grid for conditional child sections */
-.permission-section-three-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-    position: relative;
-    contain: layout;
 }
 
 .permission-card {
@@ -128,20 +14,6 @@
     overflow: hidden;
     transition: all 0.3s ease;
     position: relative;
-    margin-bottom: 1rem;
-    width: 100%;
-    max-width: 100%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Ensure permission cards stay within form boundaries */
-.form-section .permission-card {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    position: relative !important;
-    float: none !important;
-    clear: both;
-    contain: layout;
 }
 
 .permission-card:hover {
@@ -278,20 +150,6 @@
     transition: all 0.3s ease;
     margin-bottom: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-/* Ensure legacy cards stay within form boundaries */
-.form-section .enhanced-legacy-card {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    position: relative !important;
-    float: none !important;
-    clear: both;
-    contain: layout;
 }
 
 .enhanced-legacy-card:hover {
@@ -359,72 +217,7 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
-
-/* Form Section Integration - Ensure all permission elements stay within form boundaries */
-.form-section * {
-    box-sizing: border-box;
-}
-
-.form-section .permission-conditional-section,
-.form-section .permission-section-full-width,
-.form-section .permission-section-two-columns,
-.form-section .permission-section-three-columns,
-.form-section .permissions-grid {
-    max-width: 100% !important;
-    overflow: hidden !important;
-    position: relative !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* Prevent any absolute positioning that could break out of form */
-.form-section .permission-card,
-.form-section .enhanced-legacy-card {
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: none !important;
-}
-
-/* CRITICAL: Override any margin/positioning from show.blade.php that causes cards to break out */
-.form-section .enhanced-legacy-card {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    margin-top: 1rem !important;
-    position: relative !important;
-    float: none !important;
-    clear: both !important;
-    border-left: none !important;
-    background: white !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    contain: layout !important;
-}
-
-.form-section .permission-card.child-card,
-.form-section .permission-card.conditional-child {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    border-left: none !important;
-    background: white !important;
-    position: relative !important;
-}
-
-/* Force all permission sections to respect form boundaries */
-.form-section .permission-conditional-section {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    position: relative !important;
-    contain: layout !important;
-}
 </style>
-
-<!-- Permissions Container - ensures all permissions stay within form -->
-<div class="permissions-container">
 
 <div class="permissions-grid">
     <!-- Leads Permissions -->
@@ -605,6 +398,229 @@
     <div class="permission-conditional-section leads @if (isset($role->options['leads_show'])) expanded @else collapsed @endif">
         <div class="enhanced-legacy-card">
             <div class="form-label">
+                <i class="bx bx-show me-2"></i>Leads Inputs (Show)
+                <span class="position-absolute badge">
+                    <input type="checkbox" class="check-all"/>
+                </span>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">First Name</span>
+                        <input type="checkbox" name="options[leads_show_first_name]" value="1" @if (isset($role->options['leads_show_first_name'])) checked @endif />
+                    </div>
+                    <div class="permission-item mt-1">
+                        <span class="permission-text small">Hide</span>
+                        <input type="checkbox" class="hide" name="options[leads_show_first_name_hide]" value="1" @if (isset($role->options['leads_show_first_name_hide'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Last Name</span>
+                        <input type="checkbox" name="options[leads_show_last_name]" value="1" @if (isset($role->options['leads_show_last_name'])) checked @endif />
+                    </div>
+                    <div class="permission-item mt-1">
+                        <span class="permission-text small">Hide</span>
+                        <input type="checkbox" class="hide" name="options[leads_show_last_name_hide]" value="1" @if (isset($role->options['leads_show_last_name_hide'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Email Address</span>
+                        <input type="checkbox" name="options[leads_show_email]" value="1" @if (isset($role->options['leads_show_email'])) checked @endif />
+                    </div>
+                    <div class="permission-item mt-1">
+                        <span class="permission-text small">Hide</span>
+                        <input type="checkbox" class="hide" name="options[leads_show_email_hide]" value="1" @if (isset($role->options['leads_show_email_hide'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Primary Number</span>
+                        <input type="checkbox" name="options[leads_show_phone1]" value="1" @if (isset($role->options['leads_show_phone1'])) checked @endif />
+                    </div>
+                    <div class="permission-item mt-1">
+                        <span class="permission-text small">Hide</span>
+                        <input type="checkbox" class="hide" name="options[leads_show_phone1_hide]" value="1" @if (isset($role->options['leads_show_phone1_hide'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Secondary Number</span>
+                        <input type="checkbox" name="options[leads_show_phone2]" value="1" @if (isset($role->options['leads_show_phone2'])) checked @endif />
+                    </div>
+                    <div class="permission-item mt-1">
+                        <span class="permission-text small">Hide</span>
+                        <input type="checkbox" class="hide" name="options[leads_show_phone2_hide]" value="1" @if (isset($role->options['leads_show_phone2_hide'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Sales Status</span>
+                        <input type="checkbox" name="options[leads_show_status]" value="1" @if (isset($role->options['leads_show_status'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">FTD</span>
+                        <input type="checkbox" name="options[leads_show_ftd]" value="1" @if (isset($role->options['leads_show_ftd'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Enabled</span>
+                        <input type="checkbox" name="options[leads_show_enabled]" value="1" @if (isset($role->options['leads_show_enabled'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Assigned User</span>
+                        <input type="checkbox" name="options[leads_show_user_id]" value="1" @if (isset($role->options['leads_show_user_id'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Username</span>
+                        <input type="checkbox" name="options[leads_show_username]" value="1" @if (isset($role->options['leads_show_username'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Password</span>
+                        <input type="checkbox" name="options[leads_show_pass]" value="1" @if (isset($role->options['leads_show_pass'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">USDT</span>
+                        <input type="checkbox" name="options[leads_show_usdt]" value="1" @if (isset($role->options['leads_show_usdt'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">FTD Amount</span>
+                        <input type="checkbox" name="options[leads_show_ftd_amount]" value="1" @if (isset($role->options['leads_show_ftd_amount'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Leverage</span>
+                        <input type="checkbox" name="options[leads_show_leverage]" value="1" @if (isset($role->options['leads_show_leverage'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Account Type</span>
+                        <input type="checkbox" name="options[leads_show_account_type]" value="1" @if (isset($role->options['leads_show_account_type'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Asset Group</span>
+                        <input type="checkbox" name="options[leads_show_asset_group]" value="1" @if (isset($role->options['leads_show_asset_group'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Country</span>
+                        <input type="checkbox" name="options[leads_show_country]" value="1" @if (isset($role->options['leads_show_country'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">First Owner</span>
+                        <input type="checkbox" name="options[leads_show_first_owner]" value="1" @if (isset($role->options['leads_show_first_owner'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Team</span>
+                        <input type="checkbox" name="options[leads_show_team]" value="1" @if (isset($role->options['leads_show_team'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Last Deposit Amount</span>
+                        <input type="checkbox" name="options[leads_show_lda]" value="1" @if (isset($role->options['leads_show_lda'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">First Comment Date</span>
+                        <input type="checkbox" name="options[leads_show_first_comment_date]" value="1" @if (isset($role->options['leads_show_first_comment_date'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">First Comment Owner</span>
+                        <input type="checkbox" name="options[leads_show_first_comment_owner]" value="1" @if (isset($role->options['leads_show_first_comment_owner'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Assigned Date</span>
+                        <input type="checkbox" name="options[leads_show_assigned_date]" value="1" @if (isset($role->options['leads_show_assigned_date'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">FTD Date</span>
+                        <input type="checkbox" name="options[leads_show_ftd_date]" value="1" @if (isset($role->options['leads_show_ftd_date'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Created Date</span>
+                        <input type="checkbox" name="options[leads_show_created_date]" value="1" @if (isset($role->options['leads_show_created_date'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Modified Date</span>
+                        <input type="checkbox" name="options[leads_show_modified_date]" value="1" @if (isset($role->options['leads_show_modified_date'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Registration Date</span>
+                        <input type="checkbox" name="options[leads_show_registration_date]" value="1" @if (isset($role->options['leads_show_registration_date'])) checked @endif />
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="permission-item">
+                        <span class="permission-text">Age</span>
+                        <input type="checkbox" name="options[leads_show_age]" value="1" @if (isset($role->options['leads_show_age'])) checked @endif />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="permission-conditional-section leads @if (isset($role->options['leads_show'])) expanded @else collapsed @endif">
+        <div class="enhanced-legacy-card">
+            <div class="form-label">
+                <i class="bx bx-cog me-2"></i>Leads Actions
+                <span class="position-absolute badge">
+                    <input type="checkbox" class="check-all"/>
+                </span>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Open Real Account<input type="checkbox" name="options[leads_actions_open_real]" value="1" @if (isset($role->options['leads_actions_open_real'])) checked @endif />
+                </div>
+                <div class="col">
+                    Open Demo<input type="checkbox" name="options[leads_actions_open_demo]" value="1" @if (isset($role->options['leads_actions_open_demo'])) checked @endif />
+                </div>
+                <div class="col">
+                    Actions<input type="checkbox" name="options[leads_actions_actions]" value="1" @if (isset($role->options['leads_actions_open_demo'])) checked @endif />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="permission-conditional-section leads @if (isset($role->options['leads_show'])) expanded @else collapsed @endif">
+        <div class="enhanced-legacy-card">
+            <div class="form-label">
                 <i class="bx bx-card-list me-2"></i>Leads Cards
                 <span class="position-absolute badge">
                     <input type="checkbox" class="check-all"/>
@@ -667,281 +683,92 @@
             </div>
         </div>
     </div>
-</div>
 
-        </div>
-    </div>
-</div>
-
-<!-- Leads Inputs (Show) - Full Width Section -->
-<div class="permission-conditional-section leads @if (isset($role->options['leads_show'])) expanded @else collapsed @endif">
-    <div class="permission-section-full-width">
-        <div class="permission-card">
-            <div class="permission-header">
-                <h4 class="permission-title">
-                    <i class="bx bx-show me-2"></i>Leads Inputs (Show)
-                </h4>
-                <div class="select-all-toggle">
-                    <input type="checkbox" class="check-all select-all-checkbox" />
-                </div>
+    <div class="permission-conditional-section main_tp @if (isset($role->options['leads_main_tp']) || isset($role->options['leads_main_tp_demo'])) expanded @else collapsed @endif">
+        <div class="enhanced-legacy-card">
+            <div class="form-label">
+                <i class="bx bx-edit me-2"></i>MainTp Inputs (Update)
+                <span class="position-absolute badge">
+                    <input type="checkbox" class="check-all"/>
+                </span>
             </div>
-            <div class="permission-body">
-                <div class="permission-options">
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_first_name]" value="1" id="leads_show_first_name" @if (isset($role->options['leads_show_first_name'])) checked @endif />
-                        <label for="leads_show_first_name">First Name</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_first_name_hide]" value="1" id="leads_show_first_name_hide" @if (isset($role->options['leads_show_first_name_hide'])) checked @endif />
-                        <label for="leads_show_first_name_hide">First Name - Hide</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_last_name]" value="1" id="leads_show_last_name" @if (isset($role->options['leads_show_last_name'])) checked @endif />
-                        <label for="leads_show_last_name">Last Name</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_last_name_hide]" value="1" id="leads_show_last_name_hide" @if (isset($role->options['leads_show_last_name_hide'])) checked @endif />
-                        <label for="leads_show_last_name_hide">Last Name - Hide</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_email]" value="1" id="leads_show_email" @if (isset($role->options['leads_show_email'])) checked @endif />
-                        <label for="leads_show_email">Email Address</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_email_hide]" value="1" id="leads_show_email_hide" @if (isset($role->options['leads_show_email_hide'])) checked @endif />
-                        <label for="leads_show_email_hide">Email Address - Hide</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_phone1]" value="1" id="leads_show_phone1" @if (isset($role->options['leads_show_phone1'])) checked @endif />
-                        <label for="leads_show_phone1">Primary Number</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_phone1_hide]" value="1" id="leads_show_phone1_hide" @if (isset($role->options['leads_show_phone1_hide'])) checked @endif />
-                        <label for="leads_show_phone1_hide">Primary Number - Hide</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_phone2]" value="1" id="leads_show_phone2" @if (isset($role->options['leads_show_phone2'])) checked @endif />
-                        <label for="leads_show_phone2">Secondary Number</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_phone2_hide]" value="1" id="leads_show_phone2_hide" @if (isset($role->options['leads_show_phone2_hide'])) checked @endif />
-                        <label for="leads_show_phone2_hide">Secondary Number - Hide</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_status]" value="1" id="leads_show_status" @if (isset($role->options['leads_show_status'])) checked @endif />
-                        <label for="leads_show_status">Sales Status</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_ftd]" value="1" id="leads_show_ftd" @if (isset($role->options['leads_show_ftd'])) checked @endif />
-                        <label for="leads_show_ftd">FTD</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_enabled]" value="1" id="leads_show_enabled" @if (isset($role->options['leads_show_enabled'])) checked @endif />
-                        <label for="leads_show_enabled">Enabled</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_user_id]" value="1" id="leads_show_user_id" @if (isset($role->options['leads_show_user_id'])) checked @endif />
-                        <label for="leads_show_user_id">Assigned User</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_username]" value="1" id="leads_show_username" @if (isset($role->options['leads_show_username'])) checked @endif />
-                        <label for="leads_show_username">Username</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_pass]" value="1" id="leads_show_pass" @if (isset($role->options['leads_show_pass'])) checked @endif />
-                        <label for="leads_show_pass">Password</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_usdt]" value="1" id="leads_show_usdt" @if (isset($role->options['leads_show_usdt'])) checked @endif />
-                        <label for="leads_show_usdt">USDT</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_ftd_amount]" value="1" id="leads_show_ftd_amount" @if (isset($role->options['leads_show_ftd_amount'])) checked @endif />
-                        <label for="leads_show_ftd_amount">FTD Amount</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_leverage]" value="1" id="leads_show_leverage" @if (isset($role->options['leads_show_leverage'])) checked @endif />
-                        <label for="leads_show_leverage">Leverage</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_account_type]" value="1" id="leads_show_account_type" @if (isset($role->options['leads_show_account_type'])) checked @endif />
-                        <label for="leads_show_account_type">Account Type</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_asset_group]" value="1" id="leads_show_asset_group" @if (isset($role->options['leads_show_asset_group'])) checked @endif />
-                        <label for="labels_show_asset_group">Asset Group</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_country]" value="1" id="leads_show_country" @if (isset($role->options['leads_show_country'])) checked @endif />
-                        <label for="leads_show_country">Country</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_first_owner]" value="1" id="leads_show_first_owner" @if (isset($role->options['leads_show_first_owner'])) checked @endif />
-                        <label for="leads_show_first_owner">First Owner</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_team]" value="1" id="leads_show_team" @if (isset($role->options['leads_show_team'])) checked @endif />
-                        <label for="leads_show_team">Team</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_lda]" value="1" id="leads_show_lda" @if (isset($role->options['leads_show_lda'])) checked @endif />
-                        <label for="leads_show_lda">Last Deposit Amount</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_first_comment_date]" value="1" id="leads_show_first_comment_date" @if (isset($role->options['leads_show_first_comment_date'])) checked @endif />
-                        <label for="leads_show_first_comment_date">First Comment Date</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_first_comment_owner]" value="1" id="leads_show_first_comment_owner" @if (isset($role->options['leads_show_first_comment_owner'])) checked @endif />
-                        <label for="leads_show_first_comment_owner">First Comment Owner</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_assigned_date]" value="1" id="leads_show_assigned_date" @if (isset($role->options['leads_show_assigned_date'])) checked @endif />
-                        <label for="leads_show_assigned_date">Assigned Date</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_ftd_date]" value="1" id="leads_show_ftd_date" @if (isset($role->options['leads_show_ftd_date'])) checked @endif />
-                        <label for="leads_show_ftd_date">FTD Date</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_created_date]" value="1" id="leads_show_created_date" @if (isset($role->options['leads_show_created_date'])) checked @endif />
-                        <label for="leads_show_created_date">Created Date</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_modified_date]" value="1" id="leads_show_modified_date" @if (isset($role->options['leads_show_modified_date'])) checked @endif />
-                        <label for="leads_show_modified_date">Modified Date</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_registration_date]" value="1" id="leads_show_registration_date" @if (isset($role->options['leads_show_registration_date'])) checked @endif />
-                        <label for="leads_show_registration_date">Registration Date</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[leads_show_age]" value="1" id="leads_show_age" @if (isset($role->options['leads_show_age'])) checked @endif />
-                        <label for="leads_show_age">Age</label>
-                    </div>
+            <div class="row">
+                <div class="col-2">
+                    Can Update<input type="checkbox" data-col="update_mainTp" name="options[mainTp_can_update]" value="1" @if (isset($role->options['mainTp_can_update'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Yes/No<input type="checkbox" name="options[mainTp_yes_no]" value="1" @if (isset($role->options['mainTp_yes_no'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    First Name<input type="checkbox" name="options[mainTp_first_name]" value="1" @if (isset($role->options['mainTp_first_name'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Last Name<input type="checkbox" name="options[mainTp_last_name]" value="1" @if (isset($role->options['mainTp_last_name'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Primary Number<input type="checkbox" name="options[mainTp_phone1]" value="1" @if (isset($role->options['mainTp_phone1'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Secondary Number<input type="checkbox" name="options[mainTp_phone2]" value="1" @if (isset($role->options['mainTp_phone2'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Email Address<input type="checkbox" name="options[mainTp_email]" value="1" @if (isset($role->options['mainTp_email'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Enabled<input type="checkbox" name="options[mainTp_enabled]" value="1" @if (isset($role->options['mainTp_enabled'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Leverage<input type="checkbox" name="options[mainTp_leverage]" value="1" @if (isset($role->options['mainTp_leverage'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Username<input type="checkbox" name="options[mainTp_username]" value="1" @if (isset($role->options['mainTp_username'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Password<input type="checkbox" name="options[mainTp_pass]" value="1" @if (isset($role->options['mainTp_pass'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    USDT<input type="checkbox" name="options[mainTp_usdt]" value="1" @if (isset($role->options['mainTp_usdt'])) checked @endif />
+                </div>
+                <div class="col-2 update_mainTp">
+                    Country<input type="checkbox" name="options[mainTp_country]" value="1" @if (isset($role->options['mainTp_country'])) checked @endif />
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- MainTp Sections in Two-Column Grid -->
-<div class="permission-conditional-section main_tp @if (isset($role->options['leads_main_tp']) || isset($role->options['leads_main_tp_demo'])) expanded @else collapsed @endif">
-    <div class="permission-section-two-columns">
-        <div class="permission-card">
-            <div class="permission-header">
-                <h4 class="permission-title">
-                    <i class="bx bx-edit me-2"></i>MainTp Inputs (Update)
-                </h4>
-                <div class="select-all-toggle">
-                    <input type="checkbox" class="check-all select-all-checkbox" />
-                </div>
+    <div class="permission-conditional-section main_tp @if (isset($role->options['leads_main_tp']) || isset($role->options['leads_main_tp_demo'])) expanded @else collapsed @endif">
+        <div class="enhanced-legacy-card">
+            <div class="form-label">
+                <i class="bx bx-cog me-2"></i>MainTp Actions
+                <span class="position-absolute badge">
+                    <input type="checkbox" class="check-all"/>
+                </span>
             </div>
-            <div class="permission-body">
-                <div class="permission-options">
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_can_update]" value="1" id="mainTp_can_update" @if (isset($role->options['mainTp_can_update'])) checked @endif />
-                        <label for="mainTp_can_update">Can Update</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_yes_no]" value="1" id="mainTp_yes_no" @if (isset($role->options['mainTp_yes_no'])) checked @endif />
-                        <label for="mainTp_yes_no">Yes/No</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_first_name]" value="1" id="mainTp_first_name" @if (isset($role->options['mainTp_first_name'])) checked @endif />
-                        <label for="mainTp_first_name">First Name</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_last_name]" value="1" id="mainTp_last_name" @if (isset($role->options['mainTp_last_name'])) checked @endif />
-                        <label for="mainTp_last_name">Last Name</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_phone1]" value="1" id="mainTp_phone1" @if (isset($role->options['mainTp_phone1'])) checked @endif />
-                        <label for="mainTp_phone1">Primary Number</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_phone2]" value="1" id="mainTp_phone2" @if (isset($role->options['mainTp_phone2'])) checked @endif />
-                        <label for="mainTp_phone2">Secondary Number</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_email]" value="1" id="mainTp_email" @if (isset($role->options['mainTp_email'])) checked @endif />
-                        <label for="mainTp_email">Email Address</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_enabled]" value="1" id="mainTp_enabled" @if (isset($role->options['mainTp_enabled'])) checked @endif />
-                        <label for="mainTp_enabled">Enabled</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_leverage]" value="1" id="mainTp_leverage" @if (isset($role->options['mainTp_leverage'])) checked @endif />
-                        <label for="mainTp_leverage">Leverage</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_username]" value="1" id="mainTp_username" @if (isset($role->options['mainTp_username'])) checked @endif />
-                        <label for="mainTp_username">Username</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_pass]" value="1" id="mainTp_pass" @if (isset($role->options['mainTp_pass'])) checked @endif />
-                        <label for="mainTp_pass">Password</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_usdt]" value="1" id="mainTp_usdt" @if (isset($role->options['mainTp_usdt'])) checked @endif />
-                        <label for="mainTp_usdt">USDT</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_country]" value="1" id="mainTp_country" @if (isset($role->options['mainTp_country'])) checked @endif />
-                        <label for="mainTp_country">Country</label>
-                    </div>
+            <div class="row">
+                <div class="col">
+                    Send Email<input type="checkbox" name="options[mainTp_actions_send_email]" value="1" @if (isset($role->options['mainTp_actions_send_email'])) checked @endif />
                 </div>
-            </div>
-        </div>
-        
-        <div class="permission-card">
-            <div class="permission-header">
-                <h4 class="permission-title">
-                    <i class="bx bx-cog me-2"></i>MainTp Actions
-                </h4>
-                <div class="select-all-toggle">
-                    <input type="checkbox" class="check-all select-all-checkbox" />
+                <div class="col">
+                    Create Money Transaction<input type="checkbox" name="options[mainTp_actions_create_money_transaction]" value="1" @if (isset($role->options['mainTp_actions_create_money_transaction'])) checked @endif />
                 </div>
-            </div>
-            <div class="permission-body">
-                <div class="permission-options">
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions_send_email]" value="1" id="mainTp_actions_send_email" @if (isset($role->options['mainTp_actions_send_email'])) checked @endif />
-                        <label for="mainTp_actions_send_email">Send Email</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions_create_money_transaction]" value="1" id="mainTp_actions_create_money_transaction" @if (isset($role->options['mainTp_actions_create_money_transaction'])) checked @endif />
-                        <label for="mainTp_actions_create_money_transaction">Create Money Transaction</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions_create_request]" value="1" id="mainTp_actions_create_request" @if (isset($role->options['mainTp_actions_create_request'])) checked @endif />
-                        <label for="mainTp_actions_create_request">Create Request</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions_open_order]" value="1" id="mainTp_actions_open_order" @if (isset($role->options['mainTp_actions_open_order'])) checked @endif />
-                        <label for="mainTp_actions_open_order">Open Order</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions]" value="1" id="mainTp_actions" @if (isset($role->options['mainTp_actions'])) checked @endif />
-                        <label for="mainTp_actions">Actions</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions_Requests]" value="1" id="mainTp_actions_Requests" @if (isset($role->options['mainTp_actions_Requests'])) checked @endif />
-                        <label for="mainTp_actions_Requests">Requests</label>
-                    </div>
-                    <div class="permission-option">
-                        <input type="checkbox" name="options[mainTp_actions_login_as_client]" value="1" id="mainTp_actions_login_as_client" @if (isset($role->options['mainTp_actions_login_as_client'])) checked @endif />
-                        <label for="mainTp_actions_login_as_client">LogIn As Client</label>
-                    </div>
+                <div class="col">
+                    Create Request<input type="checkbox" name="options[mainTp_actions_create_request]" value="1" @if (isset($role->options['mainTp_actions_create_request'])) checked @endif />
+                </div>
+                <div class="col">
+                    Open Order<input type="checkbox" name="options[mainTp_actions_open_order]" value="1" @if (isset($role->options['mainTp_actions_open_order'])) checked @endif />
+                </div>
+                <div class="col">
+                    Actions<input type="checkbox" name="options[mainTp_actions]" value="1" @if (isset($role->options['mainTp_actions'])) checked @endif />
+                </div>
+                <div class="col">
+                    Requests<input type="checkbox" name="options[mainTp_actions_Requests]" value="1" @if (isset($role->options['mainTp_actions_Requests'])) checked @endif />
+                </div>
+                <div class="col">
+                    LogIn As Client<input type="checkbox" name="options[mainTp_actions_login_as_client]" value="1" @if (isset($role->options['mainTp_actions_login_as_client'])) checked @endif />
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Other Conditional Sections in 3-Column Grid -->
-<div class="permission-section-three-columns">
 
     <div class="permission-conditional-section main_tp @if (isset($role->options['leads_main_tp']) || isset($role->options['leads_main_tp_demo'])) expanded @else collapsed @endif">
         <div class="enhanced-legacy-card">
@@ -1339,10 +1166,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- Other Conditional Sections in 3-Column Grid -->
-<div class="permission-section-three-columns">
 
     <!-- Sender Emails (Conditional) -->
     <div class="permission-conditional-section sender_email @if (isset($role->options['emails_sender_emails'])) expanded @else collapsed @endif">
@@ -1381,8 +1204,4 @@
             </div>
         </div>
     </div>
-</div>
-</div>
-
-<!-- End Permissions Container -->
 </div>
