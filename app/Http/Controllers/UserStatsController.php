@@ -12,6 +12,71 @@ use Illuminate\Support\Facades\DB;
 
 class UserStatsController extends Controller
 {
+    /**
+     * Sanitize data to ensure UTF-8 compatibility for JSON responses
+     */
+    private function sanitizeForJson($data)
+    {
+        if (is_array($data)) {
+            return array_map([$this, 'sanitizeForJson'], $data);
+        } elseif (is_object($data)) {
+            $sanitized = new \stdClass();
+            foreach ($data as $key => $value) {
+                $sanitized->{$key} = $this->sanitizeForJson($value);
+            }
+            return $sanitized;
+        } elseif (is_string($data)) {
+            // Remove or replace non-UTF-8 characters
+            $clean = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+            // Remove null bytes and other problematic characters
+            $clean = str_replace("\0", '', $clean);
+            // Replace smart quotes and other problematic characters
+            $clean = str_replace(['"', '"', "'", "'"], ['"', '"', "'", "'"], $clean);
+            // Remove any remaining invalid UTF-8 sequences
+            $clean = filter_var($clean, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+            return $clean;
+        }
+        return $data;
+    }
+
+    /**
+     * Create a safe JSON response with UTF-8 sanitization
+     */
+    private function safeJsonResponse($data, $status = 200)
+    {
+        try {
+            $sanitizedData = $this->sanitizeForJson($data);
+            return response()->json($sanitizedData, $status, [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE);
+        } catch (\Exception $e) {
+            // Fallback with more aggressive cleaning
+            $fallbackData = $this->aggressiveCleanForJson($data);
+            return response()->json($fallbackData, $status, [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE);
+        }
+    }
+
+    /**
+     * More aggressive cleaning for problematic data
+     */
+    private function aggressiveCleanForJson($data)
+    {
+        if (is_array($data)) {
+            return array_map([$this, 'aggressiveCleanForJson'], $data);
+        } elseif (is_object($data)) {
+            $clean = new \stdClass();
+            foreach ($data as $key => $value) {
+                $cleanKey = $this->aggressiveCleanForJson($key);
+                $clean->{$cleanKey} = $this->aggressiveCleanForJson($value);
+            }
+            return $clean;
+        } elseif (is_string($data)) {
+            // Remove all non-printable characters except newlines and tabs
+            $clean = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/', '', $data);
+            // Ensure valid UTF-8
+            $clean = mb_convert_encoding($clean ?? '', 'UTF-8', 'UTF-8');
+            return $clean ?? '';
+        }
+        return $data;
+    }
     public function index(Request $request)
     {
         // Check if user is authorized (only user 298274)
@@ -219,7 +284,7 @@ class UserStatsController extends Controller
             return $b['comments_count_period'] - $a['comments_count_period'];
         });
 
-        return response()->json([
+        return $this->safeJsonResponse([
             'clients' => $clientsWithCommentCounts,
             'last_comments' => $lastComments,
             'status' => $status,
@@ -282,7 +347,7 @@ class UserStatsController extends Controller
         
         $hasUpdates = $newComments->count() > 0 || $newCallbacks > 0 || $newNoAnswers > 0;
         
-        return response()->json([
+        return $this->safeJsonResponse([
             'has_updates' => $hasUpdates,
             'updates' => [
                 'new_comments' => $newComments,
@@ -393,7 +458,7 @@ class UserStatsController extends Controller
         // Get detailed client information
         $allChangedClients = $statusChanges['new_to_no_answer']->merge($statusChanges['new_to_callback']);
 
-        return response()->json([
+        return $this->safeJsonResponse([
             'clients' => $allChangedClients->values(),
             'total_changed' => $statusChanges['total_changed'],
             'no_answer_count' => $statusChanges['no_answer_count'],
@@ -437,7 +502,7 @@ class UserStatsController extends Controller
                 ->get();
 
             if ($clients->isEmpty()) {
-                return response()->json([
+                return $this->safeJsonResponse([
                     'success' => false,
                     'message' => 'No valid clients found for transfer.'
                 ], 400);
@@ -472,7 +537,7 @@ class UserStatsController extends Controller
                 }
             }
 
-            return response()->json([
+            return $this->safeJsonResponse([
                 'success' => true,
                 'message' => "Successfully transferred {$transferredCount} client(s) to {$targetUser->username}",
                 'transferred_count' => $transferredCount,
@@ -485,7 +550,7 @@ class UserStatsController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
+            return $this->safeJsonResponse([
                 'success' => false,
                 'message' => 'Transfer failed: ' . $e->getMessage()
             ], 500);
@@ -530,13 +595,13 @@ class UserStatsController extends Controller
                 'is_read' => false
             ];
 
-            return response()->json([
+            return $this->safeJsonResponse([
                 'latest_notification' => $notification,
                 'total_count' => $totalCount
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
+            return $this->safeJsonResponse([
                 'latest_notification' => null,
                 'total_count' => 0,
                 'error' => 'Failed to load notification'
@@ -586,13 +651,13 @@ class UserStatsController extends Controller
                 $notifications = array_merge($notifications, $systemNotifications);
             }
 
-            return response()->json([
+            return $this->safeJsonResponse([
                 'notifications' => $notifications,
                 'total_count' => count($notifications)
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
+            return $this->safeJsonResponse([
                 'notifications' => [],
                 'total_count' => 0,
                 'error' => 'Failed to load notifications'
@@ -726,6 +791,6 @@ class UserStatsController extends Controller
                 break;
         }
 
-        return response()->json($data);
+        return $this->safeJsonResponse($data);
     }
 }
