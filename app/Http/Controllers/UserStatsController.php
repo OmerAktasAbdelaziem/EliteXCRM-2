@@ -69,13 +69,6 @@ class UserStatsController extends Controller
             // Deep sanitization of all data
             $sanitizedData = $this->sanitizeForJson($data);
             
-            // Log a sample to see what we're sending
-            if (isset($sanitizedData['clients']) && count($sanitizedData['clients']) > 0) {
-                Log::info('Sample client being sent:', [
-                    'first_client' => $sanitizedData['clients'][0]
-                ]);
-            }
-            
             // Use proper JSON encoding options for Arabic text
             return response()->json($sanitizedData, $status, [
                 'Content-Type' => 'application/json; charset=utf-8'
