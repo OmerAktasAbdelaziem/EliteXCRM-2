@@ -2523,9 +2523,22 @@ function renderClientDetailsTable(response) {
         response.clients.forEach(function(item, index) {
             console.log('Processing client item:', item);
             
-            const client = item.client || item;
-            if (!client) {
+            // Handle both object and array formats for client data
+            let client;
+            if (item.client) {
+                // If client is nested (older format)
+                client = item.client;
+            } else if (item.id) {
+                // If item is the client directly (newer format)
+                client = item;
+            } else {
                 console.warn('No client data for item:', item);
+                return;
+            }
+            
+            // Ensure client has the required fields
+            if (!client || (!client.id && !client.client_id)) {
+                console.warn('Invalid client data:', client);
                 return;
             }
             
@@ -2533,21 +2546,29 @@ function renderClientDetailsTable(response) {
             const targetMet = commentsToday >= 3;
             const remaining = Math.max(0, 3 - commentsToday);
             
+            // Use client_id if id is not available
+            const clientId = client.id || client.client_id || 'unknown';
+            const firstName = client.first_name || 'Unknown';
+            const lastName = client.last_name || '';
+            const fullName = firstName + ' ' + lastName;
+            const phone = client.phone1 || client.phone || 'N/A';
+            const email = client.email || 'N/A';
+            
             html += `
                 <tr>
                     <td class="text-center">
                         <input type="checkbox" class="client-checkbox" 
-                               data-client-id="${client.id || 'unknown'}" 
-                               data-client-name="${(client.first_name || '') + ' ' + (client.last_name || '')}" 
+                               data-client-id="${clientId}" 
+                               data-client-name="${fullName.trim()}" 
                                onchange="handleClientCheckboxChange()">
                     </td>
                     <td>
-                        <strong>${(client.first_name || 'Unknown') + ' ' + (client.last_name || '')}</strong>
-                        <br><small class="text-muted">ID: ${client.id || 'N/A'}</small>
+                        <strong>${fullName.trim()}</strong>
+                        <br><small class="text-muted">ID: ${clientId}</small>
                     </td>
                     <td>
-                        <small class="text-muted d-block"><i class="bx bx-phone me-1"></i>${client.phone1 || 'N/A'}</small>
-                        <small class="text-muted"><i class="bx bx-envelope me-1"></i>${client.email || 'N/A'}</small>
+                        <small class="text-muted d-block"><i class="bx bx-phone me-1"></i>${phone}</small>
+                        <small class="text-muted"><i class="bx bx-envelope me-1"></i>${email}</small>
                     </td>
                     <td class="text-center">
                         <span class="badge ${targetMet ? 'bg-success' : 'bg-warning'}">${commentsToday}</span>
@@ -2573,21 +2594,32 @@ function renderClientDetailsTable(response) {
             } else {
                 let clientComments = [];
                 if (response.last_comments && response.last_comments.length > 0) {
-                    clientComments = response.last_comments.filter(comment => 
-                        comment.client && comment.client.id === client.id
-                    );
+                    // Find comments for this client
+                    clientComments = response.last_comments.filter(comment => {
+                        const commentClientId = comment.client_id || 
+                                              (comment.client && (comment.client.id || comment.client.client_id));
+                        return commentClientId == clientId;
+                    });
                 }
                 
                 if (clientComments.length > 0) {
                     html += '<div class="d-flex flex-column gap-2">';
                     clientComments.slice(0, 3).forEach(function(comment) {
+                        const commentUser = comment.user ? 
+                                          (comment.user.username || comment.user.name || 'Unknown') : 
+                                          'Unknown';
+                        const commentTime = comment.formatted_datetime || 
+                                          comment.created_at || 
+                                          'Unknown time';
+                        const commentText = comment.comment || 'No comment text';
+                        
                         html += `
                             <div class="border rounded p-2 comment-box" style="background: #f8f9fa;">
                                 <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <small class="fw-bold text-primary">${comment.user ? comment.user.username : 'Unknown'}</small>
-                                    <small class="text-muted">${comment.formatted_datetime || comment.created_at || 'Unknown time'}</small>
+                                    <small class="fw-bold text-primary">${commentUser}</small>
+                                    <small class="text-muted">${commentTime}</small>
                                 </div>
-                                <div class="small text-dark comment-text comment-container">${comment.comment || 'No comment text'}</div>
+                                <div class="small text-dark comment-text comment-container">${commentText}</div>
                             </div>
                         `;
                     });

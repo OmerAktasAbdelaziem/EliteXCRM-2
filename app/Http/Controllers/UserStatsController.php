@@ -226,15 +226,16 @@ class UserStatsController extends Controller
             $dateTo = Carbon::now()->endOfDay();
         }
 
-        // Get all clients with the specified status
+        // Get all clients with the specified status - use toArray() to ensure proper serialization
         $clients = Client::where('user_id', $userId)
             ->where('sales_status', $status)
             ->where('deleted', 0)
-            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'created_at', 'updated_at')
-            ->get();
+            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'created_at', 'updated_at', 'sales_status')
+            ->get()
+            ->toArray(); // Convert to array to ensure proper serialization
 
         // Get the last 3 comments for each client
-        $clientIds = $clients->pluck('id');
+        $clientIds = collect($clients)->pluck('id');
         $lastComments = [];
         
         // Get the last 3 comments for each client
@@ -250,7 +251,7 @@ class UserStatsController extends Controller
                 $comment->formatted_date = $comment->created_at->format('d/m/Y');
                 $comment->formatted_time = $comment->created_at->format('H:i:s');
                 $comment->formatted_datetime = $comment->created_at->format('d/m/Y H:i:s');
-                $lastComments[] = $comment;
+                $lastComments[] = $comment->toArray(); // Convert to array
             }
         }
 
@@ -265,8 +266,8 @@ class UserStatsController extends Controller
         $clientsWithCommentCounts = [];
         foreach ($clients as $client) {
             $clientsWithCommentCounts[] = [
-                'client' => $client,
-                'comments_count_period' => $commentCounts->get($client->id, 0)
+                'client' => $client, // Already an array now
+                'comments_count_period' => $commentCounts->get($client['id'], 0)
             ];
         }
 
@@ -289,7 +290,13 @@ class UserStatsController extends Controller
             'last_comments' => $lastComments,
             'status' => $status,
             'period' => $days . ' day' . ($days > 1 ? 's' : ''),
-            'daily_target' => $status === 'No Answer' ? count($clientsWithCommentCounts) * 3 : null
+            'daily_target' => $status === 'No Answer' ? count($clientsWithCommentCounts) * 3 : null,
+            'debug' => [
+                'client_count' => count($clients),
+                'comment_count' => count($lastComments),
+                'date_from' => $dateFrom->format('Y-m-d H:i:s'),
+                'date_to' => $dateTo->format('Y-m-d H:i:s')
+            ]
         ]);
     }
 
