@@ -2061,6 +2061,8 @@ function exportUserReport(username, period) {
 
 
 function showClientDetails(userId, status, days, username) {
+    console.log('showClientDetails called:', { userId, status, days, username });
+    
     // Store global variables for filtering
     window.currentModalData = {
         userId: userId,
@@ -2070,57 +2072,81 @@ function showClientDetails(userId, status, days, username) {
         originalResponse: null
     };
     
-    $('#clientDetailsModal').modal('show');
-    $('#clientDetailsModalLabel').text(`${username} - ${status} Clients - Details with Last 3 Comments`);
+    // Use Bootstrap 5 modal initialization
+    const modal = new bootstrap.Modal(document.getElementById('clientDetailsModal'));
+    modal.show();
+    
+    // Update modal title
+    document.getElementById('clientDetailsModalLabel').textContent = `${username} - ${status} Clients - Details with Last 3 Comments`;
     
     // Show the appropriate filter based on status
+    const modalCommentsFilter = document.getElementById('modalCommentsFilter');
+    const statusChangeFilter = document.getElementById('statusChangeFilter');
+    
     if (status === 'Call Back' || status === 'No Answer') {
-        $('#modalCommentsFilter').show();
-        $('#statusChangeFilter').hide();
+        modalCommentsFilter.style.display = 'block';
+        statusChangeFilter.style.display = 'none';
         clearModalCommentsFilter();
     } else if (status === 'Status Changed') {
-        $('#modalCommentsFilter').hide();
-        $('#statusChangeFilter').show();
+        modalCommentsFilter.style.display = 'none';
+        statusChangeFilter.style.display = 'block';
         clearStatusChangeFilter();
     } else {
-        $('#modalCommentsFilter').hide();
-        $('#statusChangeFilter').hide();
+        modalCommentsFilter.style.display = 'none';
+        statusChangeFilter.style.display = 'none';
     }
     
     // Reset transfer section
-    $('#clientTransferSection').hide();
-    $('#transferToUser').val('');
-    $('#selectedClientCount').text('0');
+    document.getElementById('clientTransferSection').style.display = 'none';
+    document.getElementById('transferToUser').value = '';
+    document.getElementById('selectedClientCount').textContent = '0';
     
     // Show loading
-    $('#clientDetailsContent').html(`
+    document.getElementById('clientDetailsContent').innerHTML = `
         <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-    `);
+    `;
     
-    // Fetch client details
+    // Fetch client details with improved error handling
+    const ajaxUrl = `/user-stats/client-details/${userId}/${status}`;
+    console.log('Making AJAX request to:', ajaxUrl);
+    
     $.ajax({
-        url: `/user-stats/client-details/${userId}/${status}`,
+        url: ajaxUrl,
         method: 'GET',
         data: { days: days, include_target_data: true },
+        headers: {
+            'X-CSRF-TOKEN': window.csrfToken,
+            'Accept': 'application/json'
+        },
         success: function(response) {
+            console.log('AJAX Success:', response);
             window.currentModalData.originalResponse = response;
             renderClientDetailsTable(response);
         },
-        error: function() {
-            $('#clientDetailsContent').html(`
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', { xhr, status, error, responseText: xhr.responseText });
+            document.getElementById('clientDetailsContent').innerHTML = `
                 <div class="alert alert-danger" role="alert">
-                    Failed to load client details. Please try again.
+                    <h6>Failed to load client details</h6>
+                    <p>Error: ${error}</p>
+                    <p>Status: ${xhr.status}</p>
+                    <p>Response: ${xhr.responseText}</p>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="showClientDetails(${userId}, '${status}', ${days}, '${username}')">
+                        Try Again
+                    </button>
                 </div>
-            `);
+            `;
         }
     });
 }
 
 function showStatusChangedClients(userId, username) {
+    console.log('showStatusChangedClients called:', { userId, username });
+    
     // Store global variables for filtering
     window.currentModalData = {
         userId: userId,
@@ -2130,42 +2156,61 @@ function showStatusChangedClients(userId, username) {
         originalResponse: null
     };
     
-    $('#clientDetailsModal').modal('show');
-    $('#clientDetailsModalLabel').text(`${username} - New Clients Status Changes - Today's New Clients (New to No Answer/Callback)`);
+    // Use Bootstrap 5 modal initialization
+    const modal = new bootstrap.Modal(document.getElementById('clientDetailsModal'));
+    modal.show();
+    
+    // Update modal title
+    document.getElementById('clientDetailsModalLabel').textContent = `${username} - New Clients Status Changes - Today's New Clients (New to No Answer/Callback)`;
     
     // Show status change filter instead of comments filter
-    $('#modalCommentsFilter').hide();
-    $('#statusChangeFilter').show();
+    document.getElementById('modalCommentsFilter').style.display = 'none';
+    document.getElementById('statusChangeFilter').style.display = 'block';
     clearStatusChangeFilter();
     
     // Reset transfer section
-    $('#clientTransferSection').hide();
-    $('#transferToUser').val('');
-    $('#selectedClientCount').text('0');
+    document.getElementById('clientTransferSection').style.display = 'none';
+    document.getElementById('transferToUser').value = '';
+    document.getElementById('selectedClientCount').textContent = '0';
     
     // Show loading
-    $('#clientDetailsContent').html(`
+    document.getElementById('clientDetailsContent').innerHTML = `
         <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-    `);
+    `;
     
     // Fetch status changed clients (always for today only)
+    const ajaxUrl = `/user-stats/status-changed-clients/${userId}`;
+    console.log('Making AJAX request to:', ajaxUrl);
+    
     $.ajax({
-        url: `/user-stats/status-changed-clients/${userId}`,
+        url: ajaxUrl,
         method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': window.csrfToken,
+            'Accept': 'application/json'
+        },
         success: function(response) {
+            console.log('Status Changed Clients AJAX Success:', response);
             window.currentModalData.originalResponse = response;
             renderStatusChangedClientsTable(response);
         },
-        error: function() {
-            $('#clientDetailsContent').html(`
+        error: function(xhr, status, error) {
+            console.error('Status Changed Clients AJAX Error:', { xhr, status, error, responseText: xhr.responseText });
+            document.getElementById('clientDetailsContent').innerHTML = `
                 <div class="alert alert-danger" role="alert">
-                    Failed to load status changed clients. Please try again.
+                    <h6>Failed to load status changed clients</h6>
+                    <p>Error: ${error}</p>
+                    <p>Status: ${xhr.status}</p>
+                    <p>Response: ${xhr.responseText}</p>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="showStatusChangedClients(${userId}, '${username}')">
+                        Try Again
+                    </button>
                 </div>
-            `);
+            `;
         }
     });
 }
@@ -2415,11 +2460,35 @@ function renderStatusChangedClientsTable(response) {
 }
 
 function renderClientDetailsTable(response) {
+    console.log('renderClientDetailsTable called with:', response);
+    
+    if (!response) {
+        console.error('No response data provided to renderClientDetailsTable');
+        document.getElementById('clientDetailsContent').innerHTML = `
+            <div class="alert alert-warning" role="alert">
+                No data received from server.
+            </div>
+        `;
+        return;
+    }
+    
+    // Ensure clients array exists
+    if (!response.clients) {
+        console.error('No clients array in response:', response);
+        response.clients = [];
+    }
+    
+    // Ensure last_comments array exists
+    if (!response.last_comments) {
+        console.warn('No last_comments array in response, creating empty array');
+        response.last_comments = [];
+    }
+    
     let html = `
         <div class="mb-4">
             <div class="row">
                 <div class="col-md-8">
-                    <h6>Status: <span class="badge bg-primary">${response.status}</span></h6>
+                    <h6>Status: <span class="badge bg-primary">${response.status || 'Unknown'}</span></h6>
                     <p class="text-muted mb-0">Client details with last 3 comments for each client</p>
                 </div>
                 <div class="col-md-4 text-end">
@@ -2452,7 +2521,14 @@ function renderClientDetailsTable(response) {
     
     if (response.clients.length > 0) {
         response.clients.forEach(function(item, index) {
-            const client = item.client;
+            console.log('Processing client item:', item);
+            
+            const client = item.client || item;
+            if (!client) {
+                console.warn('No client data for item:', item);
+                return;
+            }
+            
             const commentsToday = item.comments_count_period || 0;
             const targetMet = commentsToday >= 3;
             const remaining = Math.max(0, 3 - commentsToday);
@@ -2461,13 +2537,13 @@ function renderClientDetailsTable(response) {
                 <tr>
                     <td class="text-center">
                         <input type="checkbox" class="client-checkbox" 
-                               data-client-id="${client.id}" 
-                               data-client-name="${client.first_name} ${client.last_name || ''}" 
+                               data-client-id="${client.id || 'unknown'}" 
+                               data-client-name="${(client.first_name || '') + ' ' + (client.last_name || '')}" 
                                onchange="handleClientCheckboxChange()">
                     </td>
                     <td>
-                        <strong>${client.first_name} ${client.last_name || ''}</strong>
-                        <br><small class="text-muted">ID: ${client.id}</small>
+                        <strong>${(client.first_name || 'Unknown') + ' ' + (client.last_name || '')}</strong>
+                        <br><small class="text-muted">ID: ${client.id || 'N/A'}</small>
                     </td>
                     <td>
                         <small class="text-muted d-block"><i class="bx bx-phone me-1"></i>${client.phone1 || 'N/A'}</small>
@@ -2509,9 +2585,9 @@ function renderClientDetailsTable(response) {
                             <div class="border rounded p-2 comment-box" style="background: #f8f9fa;">
                                 <div class="d-flex justify-content-between align-items-start mb-1">
                                     <small class="fw-bold text-primary">${comment.user ? comment.user.username : 'Unknown'}</small>
-                                    <small class="text-muted">${comment.formatted_datetime}</small>
+                                    <small class="text-muted">${comment.formatted_datetime || comment.created_at || 'Unknown time'}</small>
                                 </div>
-                                <div class="small text-dark comment-text comment-container">${comment.comment}</div>
+                                <div class="small text-dark comment-text comment-container">${comment.comment || 'No comment text'}</div>
                             </div>
                         `;
                     });
@@ -2535,10 +2611,11 @@ function renderClientDetailsTable(response) {
     } else {
         html += `
             <tr>
-                <td colspan="5" class="text-center py-4">
+                <td colspan="6" class="text-center py-4">
                     <div class="text-muted">
                         <i class="bx bx-info-circle mb-2" style="font-size: 2rem;"></i>
                         <p class="mb-0">No clients match the current filter criteria.</p>
+                        <small>Status: ${response.status || 'Unknown'}, Days: ${response.days || 'Unknown'}</small>
                     </div>
                 </td>
             </tr>
@@ -2553,7 +2630,8 @@ function renderClientDetailsTable(response) {
         </div>
     `;
     
-    $('#clientDetailsContent').html(html);
+    console.log('Setting HTML content for clientDetailsContent');
+    document.getElementById('clientDetailsContent').innerHTML = html;
 }
 
 // Notification Functions
