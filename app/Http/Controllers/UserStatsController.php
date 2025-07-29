@@ -69,6 +69,13 @@ class UserStatsController extends Controller
             // Deep sanitization of all data
             $sanitizedData = $this->sanitizeForJson($data);
             
+            // Log a sample to see what we're sending
+            if (isset($sanitizedData['clients']) && count($sanitizedData['clients']) > 0) {
+                Log::info('Sample client being sent:', [
+                    'first_client' => $sanitizedData['clients'][0]
+                ]);
+            }
+            
             // Use proper JSON encoding options for Arabic text
             return response()->json($sanitizedData, $status, [
                 'Content-Type' => 'application/json; charset=utf-8'
@@ -103,9 +110,6 @@ class UserStatsController extends Controller
         // Convert to string if not already
         $text = (string) $text;
         
-        // Log original text for debugging
-        Log::info('Original text: ' . $text . ' (encoding: ' . mb_detect_encoding($text) . ')');
-        
         // First, ensure the text is in UTF-8
         if (!mb_check_encoding($text, 'UTF-8')) {
             // Try common Arabic encodings
@@ -114,7 +118,6 @@ class UserStatsController extends Controller
                 $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
                 if (mb_check_encoding($converted, 'UTF-8')) {
                     $text = $converted;
-                    Log::info('Converted from ' . $encoding . ' to UTF-8: ' . $text);
                     break;
                 }
             }
@@ -138,10 +141,7 @@ class UserStatsController extends Controller
             $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8//IGNORE');
         }
         
-        $cleanedText = trim($text);
-        Log::info('Cleaned text: ' . $cleanedText);
-        
-        return $cleanedText;
+        return trim($text);
     }
 
     /**

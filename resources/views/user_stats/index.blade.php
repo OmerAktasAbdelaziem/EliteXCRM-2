@@ -2124,6 +2124,19 @@ function showClientDetails(userId, status, days, username) {
         },
         success: function(response) {
             console.log('AJAX Success:', response);
+            console.log('Response type:', typeof response);
+            console.log('Response keys:', Object.keys(response));
+            
+            if (response.clients) {
+                console.log('Clients count:', response.clients.length);
+                console.log('First client sample:', response.clients[0]);
+            }
+            
+            if (response.last_comments) {
+                console.log('Comments count:', response.last_comments.length);
+                console.log('First comment sample:', response.last_comments[0]);
+            }
+            
             window.currentModalData.originalResponse = response;
             renderClientDetailsTable(response);
         },
@@ -2522,15 +2535,22 @@ function renderClientDetailsTable(response) {
     if (response.clients.length > 0) {
         response.clients.forEach(function(item, index) {
             console.log('Processing client item:', item);
+            console.log('Item structure check:', {
+                'has_client_property': !!item.client,
+                'has_id': !!item.id,
+                'item_keys': Object.keys(item)
+            });
             
             // Handle both object and array formats for client data
             let client;
             if (item.client) {
-                // If client is nested (older format)
+                // If client is nested (current format)
                 client = item.client;
+                console.log('Using nested client:', client);
             } else if (item.id) {
-                // If item is the client directly (newer format)
+                // If item is the client directly (alternative format)
                 client = item;
+                console.log('Using direct client:', client);
             } else {
                 console.warn('No client data for item:', item);
                 return;
@@ -2553,6 +2573,16 @@ function renderClientDetailsTable(response) {
             const fullName = firstName + ' ' + lastName;
             const phone = client.phone1 || client.phone || 'N/A';
             const email = client.email || 'N/A';
+            
+            console.log('Client data extracted:', {
+                clientId,
+                firstName,
+                lastName,
+                fullName,
+                phone,
+                email,
+                commentsToday
+            });
             
             html += `
                 <tr>
