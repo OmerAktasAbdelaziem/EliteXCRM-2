@@ -1141,31 +1141,176 @@
     </div>
 </div>
 
-<!-- Modal event handler for cleanup -->
+@endsection
+
+@section('script')
+<script src="{{ asset('js/user-stats.js') }}"></script>
 <script>
+// Page-specific variables that need PHP data
+window.csrfToken = '{{ csrf_token() }}';
+
+// Additional functions that require PHP data
+function showUserReport(userId, username, days, dateFrom, dateTo, filterType = null) {
+    const modal = new bootstrap.Modal(document.getElementById('userReportModal'));
+    
+    const reportTitle = document.getElementById('userReportTitle');
+    const reportContent = document.getElementById('userReportContent');
+    
+    let title = `${username} - Report`;
+    if (days === 'yesterday') {
+        title += ' (Yesterday)';
+    } else if (days === '1') {
+        title += ' (Today)';
+    } else {
+        title += ` (${days} days)`;
+    }
+    
+    if (filterType) {
+        title += ` - ${filterType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+    }
+    
+    reportTitle.textContent = title;
+    reportContent.innerHTML = '<div class="text-center p-4"><i class="bx bx-loader-alt bx-spin" style="font-size: 2rem;"></i><p class="mt-2">Generating report...</p></div>';
+    
+    modal.show();
+    
+    const params = {
+        user_id: userId,
+        days: days,
+        date_from: dateFrom,
+        date_to: dateTo
+    };
+    
+    if (filterType) {
+        params.filter_type = filterType;
+    }
+    
+    $.ajax({
+        url: '{{ route("user.stats.report") }}',
+        method: 'GET',
+        data: params,
+        success: function(response) {
+            reportContent.innerHTML = response;
+        },
+        error: function() {
+            reportContent.innerHTML = '<div class="alert alert-danger">Error generating report.</div>';
+        }
+    });
+}
+
+function showStatusChangedClients(userId, username) {
+    const modal = new bootstrap.Modal(document.getElementById('clientDetailsModal'));
+    const modalTitle = document.getElementById('clientDetailsModalLabel');
+    const modalBody = document.querySelector('#clientDetailsModal .modal-body');
+    
+    modalTitle.textContent = `Status Changes - ${username}`;
+    modalBody.innerHTML = '<div class="text-center p-4"><i class="bx bx-loader-alt bx-spin" style="font-size: 2rem;"></i><p class="mt-2">Loading status changes...</p></div>';
+    
+    modal.show();
+    
+    $.ajax({
+        url: `/user-stats/status-changed-clients/${userId}`,
+        method: 'GET',
+        success: function(response) {
+            modalBody.innerHTML = response;
+        },
+        error: function() {
+            modalBody.innerHTML = '<div class="alert alert-danger">Error loading status changes.</div>';
+        }
+    });
+}
+
+function transferSelectedClients() {
+    const selectedCheckboxes = document.querySelectorAll('.client-checkbox:checked');
+    const transferToUserId = document.getElementById('transferToUser').value;
+    
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one client to transfer.');
+        return;
+    }
+    
+    if (!transferToUserId) {
+        alert('Please select a user to transfer clients to.');
+        return;
+    }
+    
+    const selectedClients = Array.from(selectedCheckboxes).map(checkbox => ({
+        id: checkbox.getAttribute('data-client-id'),
+        name: checkbox.getAttribute('data-client-name')
+    }));
+    
+    const transferToUserSelect = document.getElementById('transferToUser');
+    const targetUserName = transferToUserSelect.options[transferToUserSelect.selectedIndex].text;
+    
+    const clientNames = selectedClients.map(client => client.name).join(', ');
+    const confirmMessage = `Are you sure you want to transfer ${selectedClients.length} client(s) to ${targetUserName}?\n\nClients: ${clientNames}`;
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+    
+    const transferBtn = document.querySelector('[onclick="transferSelectedClients()"]');
+    const originalText = transferBtn.innerHTML;
+    transferBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin me-1"></i>Transferring...';
+    transferBtn.disabled = true;
+    
+    $.ajax({
+        url: '/user-stats/transfer-clients',
+        method: 'POST',
+        data: {
+            client_ids: selectedClients.map(client => client.id),
+            target_user_id: transferToUserId,
+            _token: window.csrfToken
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotificationToast('Transfer Successful', 
+                    `Successfully transferred ${response.transferred_count} client(s) to ${targetUserName}`, false);
+                
+                clearClientSelection();
+                
+                if (window.currentModalData) {
+                    showClientDetails(
+                        window.currentModalData.userId,
+                        window.currentModalData.status,
+                        window.currentModalData.days,
+                        window.currentModalData.username
+                    );
+                }
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                
+            } else {
+                alert('Transfer failed: ' + (response.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Transfer failed. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            alert(errorMessage);
+        },
+        complete: function() {
+            transferBtn.innerHTML = originalText;
+            transferBtn.disabled = false;
+        }
+    });
+}
+
+// Modal cleanup
 document.addEventListener('DOMContentLoaded', function() {
     const modalElement = document.getElementById('clientDetailsModal');
     if (modalElement) {
         modalElement.addEventListener('hidden.bs.modal', function() {
-            // Reset checkbox selections and transfer section when modal is closed
             if (typeof clearClientSelection === 'function') {
                 clearClientSelection();
             }
         });
     }
-});
-</script>
-
-@endsection
-
-@section('script')
-<script>
-// Real-time Updates System
-let updateInterval;
-let lastUpdateTime = Date.now();
-
-// Initialize real-time features
-document.addEventListener('DOMContentLoaded', function() {
+    
     initializeRealTimeUpdates();
     requestNotificationPermission();
     initializeUserSelectionCollapse();
@@ -1913,7 +2058,7 @@ function exportUserReport(username, period) {
     window.URL.revokeObjectURL(url);
 }
 
-}
+
 
 function showClientDetails(userId, status, days, username) {
     // Store global variables for filtering
