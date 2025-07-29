@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserStatsController extends Controller
 {
@@ -26,14 +27,37 @@ class UserStatsController extends Controller
             }
             return $sanitized;
         } elseif (is_string($data)) {
-            // Remove or replace non-UTF-8 characters
+            // First, detect and fix encoding issues
+            if (!mb_check_encoding($data, 'UTF-8')) {
+                // Try to convert from common encodings
+                $encodings = ['ISO-8859-1', 'Windows-1252', 'CP1256', 'ISO-8859-6'];
+                foreach ($encodings as $encoding) {
+                    $converted = @mb_convert_encoding($data, 'UTF-8', $encoding);
+                    if (mb_check_encoding($converted, 'UTF-8')) {
+                        $data = $converted;
+                        break;
+                    }
+                }
+            }
+            
+            // Ensure proper UTF-8 encoding
             $clean = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+            
             // Remove null bytes and other problematic characters
             $clean = str_replace("\0", '', $clean);
-            // Replace smart quotes and other problematic characters
-            $clean = str_replace(['"', '"', "'", "'"], ['"', '"', "'", "'"], $clean);
+            
+            // Handle smart quotes and special characters properly
+            $clean = str_replace(['"', '"', "'", "'", '–', '—'], ['"', '"', "'", "'", '-', '-'], $clean);
+            
             // Remove any remaining invalid UTF-8 sequences
-            $clean = filter_var($clean, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+            $clean = mb_convert_encoding($clean, 'UTF-8', 'UTF-8');
+            
+            // Final validation
+            if (!mb_check_encoding($clean, 'UTF-8')) {
+                // If still invalid, replace problematic characters
+                $clean = mb_convert_encoding($clean, 'UTF-8', 'UTF-8//IGNORE');
+            }
+            
             return $clean;
         }
         return $data;
@@ -45,13 +69,74 @@ class UserStatsController extends Controller
     private function safeJsonResponse($data, $status = 200)
     {
         try {
+            // Deep sanitization of all data
             $sanitizedData = $this->sanitizeForJson($data);
-            return response()->json($sanitizedData, $status, [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE);
+            
+            // Use proper JSON encoding options for Arabic text
+            return response()->json($sanitizedData, $status, [
+                'Content-Type' => 'application/json; charset=utf-8'
+            ], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR);
+            
         } catch (\Exception $e) {
-            // Fallback with more aggressive cleaning
-            $fallbackData = $this->aggressiveCleanForJson($data);
-            return response()->json($fallbackData, $status, [], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE);
+            Log::error('JSON encoding error: ' . $e->getMessage(), [
+                'data_sample' => is_array($data) ? array_slice($data, 0, 2, true) : substr(print_r($data, true), 0, 200),
+                'error' => $e->getMessage()
+            ]);
+            
+            // Fallback response with minimal data
+            return response()->json([
+                'error' => 'Data encoding issue',
+                'message' => 'Unable to process data with current encoding',
+                'clients' => [],
+                'last_comments' => [],
+                'debug' => 'UTF-8 encoding failed'
+            ], 500, ['Content-Type' => 'application/json; charset=utf-8']);
         }
+    }
+
+    /**
+     * Clean Arabic text to ensure proper UTF-8 encoding
+     */
+    private function cleanArabicText($text)
+    {
+        if (!$text) {
+            return $text;
+        }
+        
+        // Convert to string if not already
+        $text = (string) $text;
+        
+        // First, ensure the text is in UTF-8
+        if (!mb_check_encoding($text, 'UTF-8')) {
+            // Try common Arabic encodings
+            $arabicEncodings = ['CP1256', 'ISO-8859-6', 'Windows-1256'];
+            foreach ($arabicEncodings as $encoding) {
+                $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
+                if (mb_check_encoding($converted, 'UTF-8')) {
+                    $text = $converted;
+                    break;
+                }
+            }
+        }
+        
+        // Clean up the text
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        
+        // Remove null bytes and control characters but preserve Arabic characters
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $text);
+        
+        // Normalize Arabic characters
+        $text = str_replace(['ي', 'ك'], ['ي', 'ك'], $text);
+        
+        // Remove any remaining invalid sequences
+        $text = filter_var($text, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
+        
+        // Final UTF-8 validation and cleanup
+        if (!mb_check_encoding($text, 'UTF-8')) {
+            $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8//IGNORE');
+        }
+        
+        return trim($text);
     }
 
     /**
@@ -60,12 +145,19 @@ class UserStatsController extends Controller
     private function aggressiveCleanForJson($data)
     {
         if (is_array($data)) {
-            return array_map([$this, 'aggressiveCleanForJson'], $data);
+            $clean = [];
+            foreach ($data as $key => $value) {
+                $cleanKey = $this->aggressiveCleanForJson($key);
+                $cleanValue = $this->aggressiveCleanForJson($value);
+                $clean[$cleanKey] = $cleanValue;
+            }
+            return $clean;
         } elseif (is_object($data)) {
             $clean = new \stdClass();
             foreach ($data as $key => $value) {
                 $cleanKey = $this->aggressiveCleanForJson($key);
-                $clean->{$cleanKey} = $this->aggressiveCleanForJson($value);
+                $cleanValue = $this->aggressiveCleanForJson($value);
+                $clean->{$cleanKey} = $cleanValue;
             }
             return $clean;
         } elseif (is_string($data)) {
@@ -77,6 +169,7 @@ class UserStatsController extends Controller
         }
         return $data;
     }
+
     public function index(Request $request)
     {
         // Check if user is authorized (only user 298274)
@@ -232,7 +325,20 @@ class UserStatsController extends Controller
             ->where('deleted', 0)
             ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'created_at', 'updated_at', 'sales_status')
             ->get()
-            ->toArray(); // Convert to array to ensure proper serialization
+            ->map(function($client) {
+                // Clean each client's data to ensure UTF-8 compatibility
+                return [
+                    'id' => $client->id,
+                    'first_name' => $this->cleanArabicText($client->first_name),
+                    'last_name' => $this->cleanArabicText($client->last_name),
+                    'phone1' => $this->cleanArabicText($client->phone1),
+                    'email' => $this->cleanArabicText($client->email),
+                    'sales_status' => $client->sales_status,
+                    'created_at' => $client->created_at,
+                    'updated_at' => $client->updated_at
+                ];
+            })
+            ->toArray();
 
         // Get the last 3 comments for each client
         $clientIds = collect($clients)->pluck('id');
@@ -251,7 +357,31 @@ class UserStatsController extends Controller
                 $comment->formatted_date = $comment->created_at->format('d/m/Y');
                 $comment->formatted_time = $comment->created_at->format('H:i:s');
                 $comment->formatted_datetime = $comment->created_at->format('d/m/Y H:i:s');
-                $lastComments[] = $comment->toArray(); // Convert to array
+                
+                // Clean the comment text for Arabic compatibility
+                $cleanComment = [
+                    'id' => $comment->id,
+                    'client_id' => $comment->client_id,
+                    'user_id' => $comment->user_id,
+                    'comment' => $this->cleanArabicText($comment->comment),
+                    'created_at' => $comment->created_at,
+                    'formatted_date' => $comment->formatted_date,
+                    'formatted_time' => $comment->formatted_time,
+                    'formatted_datetime' => $comment->formatted_datetime,
+                    'user' => $comment->user ? [
+                        'id' => $comment->user->id,
+                        'username' => $this->cleanArabicText($comment->user->username)
+                    ] : null,
+                    'client' => $comment->client ? [
+                        'id' => $comment->client->id,
+                        'first_name' => $this->cleanArabicText($comment->client->first_name),
+                        'last_name' => $this->cleanArabicText($comment->client->last_name),
+                        'phone1' => $this->cleanArabicText($comment->client->phone1),
+                        'email' => $this->cleanArabicText($comment->client->email)
+                    ] : null
+                ];
+                
+                $lastComments[] = $cleanComment;
             }
         }
 
