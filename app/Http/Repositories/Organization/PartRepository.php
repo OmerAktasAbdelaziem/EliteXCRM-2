@@ -3,6 +3,8 @@ namespace App\Http\Repositories\Organization;
 
 //Interfaces
 use App\Http\Repositories\Organization\Interfaces\PartRepositoryInterface;
+//Services
+use App\Http\Services\Filter\Interfaces\FilterServiceInterface;
 //Models
 use App\Models\Part;
 //Other
@@ -10,6 +12,13 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PartRepository implements PartRepositoryInterface {
 
+    
+    protected FilterServiceInterface $filterService;
+
+    public function __construct(FilterServiceInterface $filterService) {
+        $this->filterService = $filterService;
+    }
+    
     public function getAll(): Collection
 {
     return Part::all();
@@ -18,60 +27,17 @@ class PartRepository implements PartRepositoryInterface {
     $item = Part::where('id',$id)->get();
     return $item;
 }
-    public function getByFilters(array $params): Collection {
-        /*
-         * Example of params array
-          [
-          'status' => ['=' => 'active'],
-          'type' => ['in' => ['A', 'B']],
-          'category' => ['notIn' => [1, 2, 3]],
-          'price' => ['!=' => 100],
-          ]
-         */
-        $items = Part::where(function ($query) use ($params) {
-        foreach ($params as $field => $condition) {
-            if (!is_array($condition)) {
-                continue;
-            }
+    public function getByFilters(array $params, array $with = []): Collection {
+        
+        
+        $query = Part::query();
+if (!empty($with)) {
+        $query->with($with);
+    }
+    $filteredQuery = $this->filterService->applyFilters($query, $params);
 
-            foreach ($condition as $operator => $value) {
-                switch (strtolower($operator)) {
-                    case 'in':
-                        $query->whereIn($field, $value);
-                        break;
-                    case 'notin':
-                        $query->whereNotIn($field, $value);
-                        break;
-                    case '!=':
-                    case '<>':
-                        $query->where($field, '!=', $value);
-                        break;
-                    case '=':
-                        $query->where($field, '=', $value);
-                        break;
-                    case 'like':
-                        $query->where($field, 'like', $value);
-                        break;
-                    case 'notlike':
-                        $query->where($field, 'not like', $value);
-                        break;
-                    case 'null':
-                        $query->whereNull($field);
-                        break;
-                    case 'notnull':
-                        $query->whereNotNull($field);
-                        break;
-                    case 'between':
-                        $query->whereBetween($field, $value);
-                        break;
-                    default:
-                        $query->where($field, $operator, $value);
-                        break;
-                }
-            }
-        }
-         })->get();
-        return $items;
+    
+    return $filteredQuery->get();
     }
   
   public function create(array $data): Collection

@@ -9,14 +9,28 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+//Services
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+
 class TeamController extends Controller
 {
+    protected $clientService;
+    protected $userService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
+            ) {
+        $this->clientService = $clientService;
+        $this->userService = $userService;
+        
+    }
     public function index()
     {
-        $clients_controller = new ClientsController;
-        $user_controller    = new UserController;
-        $options            = $user_controller->get_user_options();
-        $teams              = $clients_controller->getTeams($options);
+        //$clients_controller = new ClientsController;
+        //$user_controller    = new UserController;
+        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
 
         return view('team.index',compact(
             'teams'
@@ -25,13 +39,13 @@ class TeamController extends Controller
     
     public function create()
     {
-        $clients_controller = new ClientsController;
+        //$clients_controller = new ClientsController;
         $usersWithoutTeam   = User::WithPipeline()->whereNull('team_id')->get();
-        $user_controller    = new UserController;
-        $options            = $user_controller->get_user_options();
-        $teams              = $clients_controller->getTeams($options);
-        $users              = $clients_controller->getUsers($teams);
-        $parts              = $clients_controller->getParts($teams);
+        //$user_controller    = new UserController;
+        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
+        $users              = $this->clientService->getUsers($teams, Auth::user());//$clients_controller->getUsers($teams);
+        $parts              = $this->clientService->getParts($teams, Auth::user());//$clients_controller->getParts($teams);
         $team               = new Team;
         $users              = $users->merge($usersWithoutTeam);
 
@@ -66,13 +80,13 @@ class TeamController extends Controller
     public function show($id)
     {
         $team  = Team::findOrfail($id);
-        $clients_controller = new ClientsController;
+        //$clients_controller = new ClientsController;
         $usersWithoutTeam   = User::WithPipeline()->whereNull('team_id')->get();
-        $user_controller    = new UserController;
-        $options            = $user_controller->get_user_options();
-        $teams              = $clients_controller->getTeams($options);
-        $users              = $clients_controller->getUsers($teams);
-        $parts              = $clients_controller->getParts($teams);
+        //$user_controller    = new UserController;
+        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
+        $users              = $this->clientService->getUsers($teams, Auth::user());//$clients_controller->getUsers($teams);
+        $parts              = $this->clientService->getParts($teams, Auth::user());//$clients_controller->getParts($teams);
         $users              = $users->merge($usersWithoutTeam);
 
         return view('team.show',compact(

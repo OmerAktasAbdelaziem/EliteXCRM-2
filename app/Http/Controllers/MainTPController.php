@@ -36,7 +36,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
-
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
 
 class MainTPController extends Controller
 {
@@ -44,15 +45,21 @@ class MainTPController extends Controller
     protected $assetGroupService;
 protected $assetService;
 protected $orderService;
+protected $clientService;
+protected $userService;
 
     public function __construct(
             AssetGroupServiceInterface $assetGroupService,
             AssetServiceInterface $assetService,
             OrderServiceInterface $orderService,
+            ClientServiceInterface $clientService,
+            UserServiceInterface $userService,
             ) {
         $this->assetGroupService = $assetGroupService;
         $this->assetService = $assetService;
         $this->orderService = $orderService;
+        $this->clientService = $clientService;
+        $this->userService = $userService;
         
     }
     public function show($id,Request $request)
@@ -70,15 +77,16 @@ protected $orderService;
         $asset_groups         = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)->get();
         $email_logs           = EmailLog::where('client_id',$id)->where('type','real')->latest()->limit(6)->get();
         $comments             = Client_comment::where('client_id',$id)->latest()->get();
-        $options              = (new UserController)->get_user_options();
+        $options              = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $actions              = Action::where('client_id',$id);
         $changes              = null;
         $client               = Client::findOrfail($id);
         $status               = $request->status ?? $client->sales_status;
-        $teams                = (new ClientsController)->getTeams($options);
+        $teams                = $this->clientService->getTeams($options, Auth::user()); //(new ClientsController)->getTeams($options);
         $limit                = $request->input('limit', 14);
-        $users                = (new ClientsController)->getUsers($teams);
-        $parts                = (new ClientsController)->getParts($teams);
+        $users                = $this->clientService->getUsers($teams, Auth::user());//(new ClientsController)->getUsers($teams);
+        $parts                = $this->clientService->getParts($teams, Auth::user());//(new ClientsController)->getParts($teams);
+        //print_r($teams);die('a');
         $chat                 = Chat_ah::where('client_id',$id)->latest()->get();
         $page                 = $request->query('page', 1);
         $from                 = Carbon::now()->subYears(10)->format('Y-m-d H:i:s');
@@ -329,7 +337,7 @@ protected $orderService;
 
     public function update(Request $request, $id)
     {
-        $options = (new UserController)->get_user_options();
+        $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $client  = Client::findOrfail($id);
 
         $inputs = array_filter(
@@ -649,10 +657,10 @@ protected $orderService;
         $asset_ids = $client->assetGroup->asset_ids ?? [];
         //$assets = Asset::whereIn('id', $asset_ids)->whereIn('type', ['Crypto','Forex','Stocks','Indx'])->where('bid_price','!=',0)->get();
         $assets = $this->assetService->getByFilters([
-            'id'=>['in'=>$asset_ids],
-            'type'=>['in'=>['Crypto','Forex','Stocks','Indx']],
-            'bid_price'=>['!='=>0],
-            ]);
+    ['field' => 'id',        'conditions' => ['in'  => $asset_ids]],
+    ['field' => 'type',      'conditions' => ['in'  => ['Crypto', 'Forex', 'Stocks', 'Indx']]],
+    ['field' => 'bid_price', 'conditions' => ['!='  => 0]],
+]);
         $asset_group_id = $client->asset_group_id;
 $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
     $query->where('asset_group', $asset_group_id);  
@@ -1470,7 +1478,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
 //gohere
         //$MoneyTrxs = MoneyTrx::where('broker_id',$client->broker_id)->where('status','accepted')->select('amount','type')->latest()->get();
         $MoneyTrxs = MoneyTrx::join('money_trx_details', 'money_trxes.id', '=', 'money_trx_details.money_trx')
-    ->where('money_trxes.broker_id', $broker_id)
+    ->where('money_trxes.broker_id', $client->broker_id)
     ->where('money_trxes.status', 'accepted')
     ->select('money_trx_details.amount','money_trx_details.type')->latest()->get();
         $totalDeposit = 0.00;
@@ -1541,16 +1549,16 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
         $asset_groups         = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)->get();
         $email_logs           = EmailLog::where('client_id',$id)->where('type','real')->latest()->limit(6)->get();
         $comments             = Client_comment::where('client_id',$id)->latest()->get();
-        $options              = (new UserController)->get_user_options();
+        $options              = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $actions              = Action::where('client_id',$id);
         $changes              = null;
         $client               = null;
         $clients              = auth()->user()->retention_clients??[];
         $online               = false;
-        $teams                = (new ClientsController)->getTeams($options);
+        $teams                = $this->clientService->getTeams($options, Auth::user());//(new ClientsController)->getTeams($options);
         $limit                = $request->input('limit', 6);
-        $users                = (new ClientsController)->getUsers($teams);
-        $parts                = (new ClientsController)->getParts($teams);
+        $users                = $this->clientService->getUsers($teams, Auth::user());//(new ClientsController)->getUsers($teams);
+        $parts                = $this->clientService->getParts($teams, Auth::user());//(new ClientsController)->getParts($teams);
         $page                 = $request->query('page', 1);
         $from                 = Carbon::now()->subYears(10)->format('Y-m-d H:i:s');
         $chat                 = Chat_ah::where('client_id',$id)->latest()->get();

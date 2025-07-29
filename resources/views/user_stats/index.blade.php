@@ -807,7 +807,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex flex-column align-items-center">
-                                                <h5 class="mb-1 fw-bold text-dark">{{ $noAnswerClients }}</h5>
+                                                <h5 class="mb-1 fw-bold text-dark">{{ $stat['total_no_answers'] }}</h5>
                                                 @if($stat['comments_count_no_answer'] > 0)
                                                     <small class="text-success">
                                                         {{ $stat['comments_count_no_answer'] }} with comments
@@ -843,6 +843,12 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
+                                            @php
+                                                $dailyTarget = $stat['total_no_answers'] * 3;
+                                                $commentsToday = $stat['total_comments_today'];
+                                                $targetProgress = $dailyTarget > 0 ? round(($commentsToday / $dailyTarget) * 100, 1) : 0;
+                                                $remaining = max(0, $dailyTarget - $commentsToday);
+                                            @endphp
                                             <div class="mb-2">
                                                 <small class="fw-bold">Target: {{ $dailyTarget }} comments</small>
                                             </div>
@@ -1633,10 +1639,6 @@ function setCommentsFilter(min, max) {
     document.querySelector('form').submit();
 }
 
-
-
-
-
 // Show user report for past periods
 function showUserReport(userId, username, period, dateFrom, dateTo, reportType = 'all') {
     const modal = new bootstrap.Modal(document.getElementById('clientDetailsModal'));
@@ -1909,6 +1911,8 @@ function exportUserReport(username, period) {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+}
+
 }
 
 function showClientDetails(userId, status, days, username) {

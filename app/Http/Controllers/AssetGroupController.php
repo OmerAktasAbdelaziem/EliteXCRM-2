@@ -89,10 +89,10 @@ protected $assetService;
             }
         }}catch (QueryException $e) {
                     print_r($group);die;
-                }die;
+                }die('done');
          //end of uncomment this code to handle old data of assets & asset groups just for once and then remove it
-        */
         
+        */
        
         /*
         $inputs = $request->only([
@@ -190,7 +190,7 @@ protected $assetService;
             if ($is_except) {
                 unset($asset_ids['except']);
                 //$asset_ids = Asset::whereNotIn('id', $asset_ids)->pluck('id')->toArray();
-                $asset_ids = $this->assetService->getByFilters(['id'=>['notIn'=>$asset_ids]])->pluck('id')->toArray();
+                $asset_ids = $this->assetService->getByFilters([['field' => 'id','conditions' => ['notIn' => $asset_ids]]])->pluck('id')->toArray();
               
             }
             elseif ($is_all) {
@@ -214,7 +214,7 @@ protected $assetService;
         $group = $this->assetGroupService->create($inputs)->first();
         foreach ($asset_ids as $asset_id) {
             //$asset = Asset::find($asset_id);
-            $asset = $this->assetService->getByFilters(['id'=>['='=>$asset_id]])->first();
+            $asset = $this->assetService->getByFilters([['field' => 'id', 'conditions' => ['=' => $asset_id]]])->first();
             $asset->load(['groupAssignments']);
         //dd($asset);die('d');
             if ($asset) {
@@ -336,7 +336,7 @@ protected $assetService;
             if ($is_except) {
                 unset($asset_ids['except']);
                 //$asset_ids = Asset::whereNotIn('id', $asset_ids)->pluck('id')->toArray();
-                $asset_ids = $this->assetService->getByFilters(['id'=>['notIn'=>$asset_ids]])->pluck('id')->toArray();
+                $asset_ids = $this->assetService->getByFilters([['field' => 'id', 'conditions' => ['notIn' => $asset_ids]]])->pluck('id')->toArray();
             }
             elseif ($is_all) {
                 //$asset_ids = Asset::pluck('id')->toArray();
@@ -355,7 +355,7 @@ protected $assetService;
             foreach ($asset_ids as $asset_id) {
                 
                 //$asset = Asset::find($asset_id);
-                $asset = $this->assetService->getByFilters(['id'=>['='=>$asset_id]])->first();
+                $asset = $this->assetService->getByFilters([['field' => 'id', 'conditions' => ['=' => $asset_id]]])->first();
             $asset->load(['groupAssignments']);
             
                 if ($asset) {
