@@ -43,18 +43,15 @@ class UserStatsController extends Controller
             // Ensure proper UTF-8 encoding
             $clean = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
             
-            // Remove null bytes and other problematic characters
+            // Remove only null bytes and dangerous control characters, preserve Arabic
             $clean = str_replace("\0", '', $clean);
+            $clean = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $clean);
             
             // Handle smart quotes and special characters properly
             $clean = str_replace(['"', '"', "'", "'", '–', '—'], ['"', '"', "'", "'", '-', '-'], $clean);
             
-            // Remove any remaining invalid UTF-8 sequences
-            $clean = mb_convert_encoding($clean, 'UTF-8', 'UTF-8');
-            
-            // Final validation
+            // Final validation - only if still invalid, use IGNORE flag
             if (!mb_check_encoding($clean, 'UTF-8')) {
-                // If still invalid, replace problematic characters
                 $clean = mb_convert_encoding($clean, 'UTF-8', 'UTF-8//IGNORE');
             }
             
@@ -106,6 +103,9 @@ class UserStatsController extends Controller
         // Convert to string if not already
         $text = (string) $text;
         
+        // Log original text for debugging
+        Log::info('Original text: ' . $text . ' (encoding: ' . mb_detect_encoding($text) . ')');
+        
         // First, ensure the text is in UTF-8
         if (!mb_check_encoding($text, 'UTF-8')) {
             // Try common Arabic encodings
@@ -114,6 +114,7 @@ class UserStatsController extends Controller
                 $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
                 if (mb_check_encoding($converted, 'UTF-8')) {
                     $text = $converted;
+                    Log::info('Converted from ' . $encoding . ' to UTF-8: ' . $text);
                     break;
                 }
             }
@@ -128,15 +129,19 @@ class UserStatsController extends Controller
         // Normalize Arabic characters
         $text = str_replace(['ي', 'ك'], ['ي', 'ك'], $text);
         
-        // Remove any remaining invalid sequences
-        $text = filter_var($text, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
+        // Remove any remaining invalid sequences BUT KEEP Arabic characters
+        // Don't use FILTER_FLAG_STRIP_HIGH as it removes Arabic characters
+        $text = filter_var($text, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
         
         // Final UTF-8 validation and cleanup
         if (!mb_check_encoding($text, 'UTF-8')) {
             $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8//IGNORE');
         }
         
-        return trim($text);
+        $cleanedText = trim($text);
+        Log::info('Cleaned text: ' . $cleanedText);
+        
+        return $cleanedText;
     }
 
     /**
@@ -161,8 +166,8 @@ class UserStatsController extends Controller
             }
             return $clean;
         } elseif (is_string($data)) {
-            // Remove all non-printable characters except newlines and tabs
-            $clean = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/', '', $data);
+            // Remove control characters but preserve Arabic and other Unicode characters
+            $clean = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $data);
             // Ensure valid UTF-8
             $clean = mb_convert_encoding($clean ?? '', 'UTF-8', 'UTF-8');
             return $clean ?? '';
