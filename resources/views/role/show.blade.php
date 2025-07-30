@@ -41,11 +41,6 @@
             font-feature-settings: "cv03", "cv04", "cv11";
         }
 
-        .modern-bg {
-            background: linear-gradient(135deg, var(--gray-50) 0%, #ffffff 100%);
-            min-height: 100vh;
-        }
-
         /* Modern Card System */
         .modern-card {
             background: white;
@@ -90,49 +85,17 @@
             z-index: 1;
         }
 
-        .modern-card-header .modern-title {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-            position: relative;
-            z-index: 1;
-        }
-
-        .modern-card-header .modern-subtitle {
+        .modern-card-header p {
             margin: 0.5rem 0 0 0;
             opacity: 0.9;
             font-size: 0.95rem;
             font-weight: 400;
             position: relative;
             z-index: 1;
-            color: white;
         }
 
         .modern-card-body {
             padding: 0;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        /* Ensure all content stays within card bounds */
-        .modern-card {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-
-        .modern-section {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Form grid improvements */
-        .modern-form-grid {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
         }
 
         /* Modern Sections */
@@ -150,7 +113,7 @@
             background-color: var(--gray-50);
         }
 
-        .modern-section-header {
+        .section-header {
             display: flex;
             align-items: center;
             margin-bottom: 1.5rem;
@@ -383,7 +346,7 @@
 
         /* Container and Layout */
         .modern-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 1rem;
         }
@@ -391,12 +354,6 @@
         @media (min-width: 768px) {
             .modern-container {
                 padding: 2rem;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .modern-container {
-                max-width: 1400px;
             }
         }
 
@@ -409,8 +366,6 @@
             gap: 1rem;
             padding: 2rem;
             background: var(--gray-50);
-            border-top: 1px solid var(--gray-200);
-            margin-top: 0;
         }
 
         .action-group {
@@ -421,10 +376,6 @@
 
         /* Responsive Design */
         @media (max-width: 767px) {
-            .modern-container {
-                padding: 1rem;
-            }
-
             .modern-card-header {
                 padding: 1.5rem;
             }
@@ -436,13 +387,11 @@
             .modern-btn {
                 width: 100%;
                 justify-content: center;
-                margin-bottom: 0.5rem;
             }
 
             .action-bar {
                 flex-direction: column;
                 align-items: stretch;
-                padding: 1.5rem;
             }
 
             .action-group {
@@ -451,22 +400,6 @@
 
             .action-group .modern-btn {
                 flex: 1;
-                margin-bottom: 0.5rem;
-            }
-
-            .modern-form-grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .modern-section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: left;
-            }
-
-            .section-icon {
-                margin-bottom: 1rem;
-                margin-right: 0;
             }
         }
 
@@ -621,13 +554,13 @@
 
         /* Child card styling for proper visual hierarchy */
         .permission-card.child-card {
-            margin-left: 0 !important;
+            margin-left: 1.5rem;
             border-left: 3px solid #6366f1;
             background: #f8fafc;
         }
 
         .permission-card.conditional-child {
-            margin-left: 0 !important;
+            margin-left: 1.5rem;
             margin-top: 0.75rem;
             border-left: 3px solid #6366f1;
             background: #f8fafc;
@@ -635,7 +568,7 @@
 
         /* Enhanced legacy card child styling */
         .enhanced-legacy-card {
-            margin-left: 0 !important;
+            margin-left: 1.5rem;
             margin-top: 0.75rem;
             border-left: 3px solid #6366f1;
             background: #f8fafc;
@@ -724,35 +657,6 @@
             margin: 0;
             align-self: flex-start;
         }
-
-        /* Ensure all permission elements stay within modern section bounds */
-        .modern-section .permission-card,
-        .modern-section .enhanced-legacy-card,
-        .modern-section .permission-conditional-section,
-        .modern-section .permissions-container,
-        .modern-section .permissions-grid {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-        }
-
-        .modern-section .permission-card.conditional-child,
-        .modern-section .permission-card.child-card {
-            margin-left: 0 !important;
-        }
-
-        /* Fix any Bootstrap grid issues in permissions */
-        .modern-section .row {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-        }
-
-        .modern-section .col,
-        .modern-section [class*="col-"] {
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
-        }
     </style>
 @endsection
 @section("wrapper")
@@ -781,14 +685,28 @@
                 <div class="modern-card">
                     <!-- Header -->
                     <div class="modern-card-header">
-                        <h3 class="modern-title">
+                        <div class="modern-header-content">
+                            <h1 class="modern-title">
+                                {{ isset($role) ? 'Edit Role' : 'Create Role' }}
+                            </h1>
+                            <p class="modern-subtitle">
+                                {{ isset($role) ? 'Modify role permissions and settings' : 'Set up a new role with permissions' }}
+                            </p>
+                        </div>
+                    </div>
+
+                <!-- Main Form -->
+                <div class="simple-card">
+                    <!-- Header -->
+                    <div class="simple-header">
+                        <h3>
                             @if ($role->getKey())
                                 Edit Role
                             @else
                                 Create Role
                             @endif
                         </h3>
-                        <p class="modern-subtitle">
+                        <p>
                             @if ($role->getKey())
                                 Modify role settings and permissions
                             @else
@@ -796,9 +714,6 @@
                             @endif
                         </p>
                     </div>
-
-                    <!-- Card Body -->
-                    <div class="modern-card-body">
 
                     <!-- Form -->
                     <form name="addform" id="addform" method="POST" action="{{ $role->getKey()?route('role.update',$role->getKey()):route('role.store') }}">
@@ -988,7 +903,6 @@
                             </div>
                         </div>
                     </form>
-                    </div>
                 </div>
             </div>
         </div>

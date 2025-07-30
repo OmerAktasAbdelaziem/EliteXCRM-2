@@ -198,7 +198,7 @@
 }
 
 .permission-card.conditional-child {
-    margin-left: 0 !important;
+    margin-left: 2rem;
     margin-top: 1rem;
     border-left: 4px solid #6366f1;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
