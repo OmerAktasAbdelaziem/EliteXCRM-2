@@ -127,7 +127,7 @@ class ClientsTransferController extends Controller
             return redirect()->back()->with('fail','Username is already exist'); 
         }
 
-        $broker_id = $this->createAccountFromApp('false',$request->password,$request->username,$client);
+        $broker_id = $this->createAccountFromApp('false',$request->password,$request->username,$client);//die('a');
         if ($broker_id == false) {
             return redirect()->back()->with('fail','Couldnt Create Real Account');
         }
@@ -172,8 +172,12 @@ class ClientsTransferController extends Controller
 
    public function createAccountFromApp($isDemo, $password, $username, $clientData)
     {
+       if(isset($clientData['id'])){
+        $existingClient = Client::where('id', $clientData['id'])->first();   
+       }else{
         $existingClient = Client::where('email', $clientData['email'])->first();
-    
+       }
+    //print_r();die;
         if ($existingClient) {
             if ($existingClient->broker_id) {
                 return $existingClient->broker_id;

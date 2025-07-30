@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CreateClientRequest extends FormRequest
 {
@@ -18,7 +19,15 @@ class CreateClientRequest extends FormRequest
             'source'       => ['nullable' , 'string'],
             'phone1'       => ['required' , 'string'],
             'phone2'       => ['nullable' , 'string'],
-            'email'        => [ 'required', 'string', 'unique:clients,email,NULL,id,pipeline_id,'.Auth::user()->pipeline_id],
+            //'email'        => [ 'required', 'string', 'unique:clients,email,NULL,id,pipeline_id,'.Auth::user()->pipeline_id],
+            'email'        => [
+            'required',
+            'string',
+            Rule::unique('clients')->where(function ($query) {
+                $query->where('pipeline_id', Auth::user()->pipeline_id)
+                      ->whereNotNull('broker_id'); 
+            }),
+                    ],
         ];
     }
 }

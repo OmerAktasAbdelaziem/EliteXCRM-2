@@ -713,7 +713,7 @@ class ClientsController extends Controller
     {
         $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams   = $this->getTeams($options);
-        $users   = $this->getUsers($teams);
+        $users   = $this->getUsers($teams)->where('deleted', '!=', true);
         $parts   = $this->getParts($teams);
 
         $statuses = Status::where(function ($query) use ($parts) {
@@ -1436,6 +1436,10 @@ $broker_id      = $client->broker_id;
             $client = Client::find($clientid);
             $clientName = $client->first_name.' '.$client->last_name;
             if ($client) {
+                if($client->username !== null){
+                $inputs['username'] = $client->username.'-#-deletet-#-'.Carbon::now();
+                }
+                $inputs['email'] = $client->email.'-#-deletet-#-'.Carbon::now();
                 $client->update($inputs);
             }
             Action::create([
@@ -1581,7 +1585,7 @@ $broker_id      = $client->broker_id;
         $rows = array_filter(array_slice($sheet, 1), function ($row) {
             return !empty(array_filter($row, fn($cell) => trim($cell) !== ''));
         });
-
+//print_r(count($headers));echo " - ".count($sheet);die;
         if (!empty($rows)) {
             return view('client.upload', compact(
                 'headers',

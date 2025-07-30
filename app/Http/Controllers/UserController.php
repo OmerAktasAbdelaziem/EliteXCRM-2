@@ -36,11 +36,11 @@ class UserController extends Controller
         $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
         if (Auth::id() == 644033 || Auth::id() == 298274) {
             $deleted_users = User::WithPipeline()->where('deleted',true)->get();
-            $users         = $this->clientService->getUsers($teams, Auth::user());//$clients_controller->getUsers($teams);
+            $users         = $this->clientService->getUsers($teams, Auth::user())->where('deleted', '!=', true);//$clients_controller->getUsers($teams);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
-            $users = $this->clientService->getUsers($teams, Auth::user())->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
+            $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds)->where('deleted', '!=', true);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
             $deleted_users = User::WithPipeline()->where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
         }
 
@@ -258,8 +258,10 @@ class UserController extends Controller
                 }
 
                 $user = User::WithPipeline()->find($id);
-                $user ->deleted = true;
-                $user ->save();
+                $user->deleted = true;
+                $user->username = $user ->username.'-#-deleted-#-'.Carbon::now();
+                $user->email = $user ->email.'-#-deleted-#-'.Carbon::now();
+                $user->save();
             }
         }else{
             $userids = $request->input('userid', []);
@@ -270,6 +272,8 @@ class UserController extends Controller
                     if ($supportCheck->count() <= 0 || Auth::id() != 644033 || Auth::id() != 298274) {
                         $user = User::WithPipeline()->find($userid);
                         $user ->deleted = true;
+                        $user->username = $user ->username.'-#-deleted-#-'.Carbon::now();
+                        $user->email = $user ->email.'-#-deleted-#-'.Carbon::now();
                         $user ->save();
                     }
                 }

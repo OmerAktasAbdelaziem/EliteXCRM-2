@@ -115,15 +115,19 @@ class ClientService implements ClientServiceInterface {
     {
         //$user is Authinticated User
         $with = ['pipeline'];
-        $users = collect();
+        //$users = collect();
         $users = $this->userService->getByFilters([
+            ['field' => 'deleted', 'conditions' => ['!=' => true]],
     ['field' => 'team_id', 'conditions' => ['in' => $teams->pluck('id')]],
     ['field' => 'id',      'conditions' => ['='  => $user->id, 'or' => true]],
 ],$with);
         $pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
         if (in_array($user->id, $pipelineSupportIds) || $user->pipeline->co_id == $user->id || $user->id == 644033 || $user->id == 298274) {
             //$users = User::WithPipeline()->latest()->get();
-            $users = $this->userService->getByFilters([['field' => 'created_at', 'conditions' => ['order' => 'desc']]],$with);
+            $users = $this->userService->getByFilters([
+                ['field' => 'deleted', 'conditions' => ['!=' => true]],
+                ['field' => 'created_at', 'conditions' => ['order' => 'desc']]
+                ],$with);
         }
         return $users;
         

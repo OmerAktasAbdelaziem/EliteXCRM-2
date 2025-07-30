@@ -23,9 +23,14 @@ class ClientImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-
+        /*print_r($this->headers);
+        echo '<br><br><br><br><br><br>';
+        print_r($row);die;*/
+        //$mappedRow = [];
         foreach ($this->headers as $header => $field) {
+            if(isset($row[$header])){
             $mappedRow[$field] = $row[$header];
+            }
         }
 
         $validator = Validator::make($mappedRow, [
@@ -36,6 +41,7 @@ class ClientImport implements ToModel, WithHeadingRow
         ]);
 
         if ($validator->fails()) {
+          //  print_r($validator->errors());die;
             $this->empty++;
             return null;
         }
