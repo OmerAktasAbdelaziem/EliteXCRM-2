@@ -2131,7 +2131,7 @@ function showStatusChangedClients(userId, username) {
     };
     
     $('#clientDetailsModal').modal('show');
-    $('#clientDetailsModalLabel').text(`${username} - Call Back & No Answer Clients`);
+    $('#clientDetailsModalLabel').text(`${username} - Today's New Clients Status Changes`);
     
     // Show status change filter instead of comments filter
     $('#modalCommentsFilter').hide();
@@ -2304,8 +2304,8 @@ function renderStatusChangedClientsTable(response) {
         <div class="mb-4">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Call Back & No Answer Clients: <span class="badge bg-info">${response.total_changed}</span></h6>
-                    <p class="text-muted mb-0">All clients with Call Back or No Answer status</p>
+                    <h6>Today's New Clients Status Changes: <span class="badge bg-info">${response.total_changed}</span></h6>
+                    <p class="text-muted mb-0">Period: ${response.period || 'Today'} - New clients that changed status</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <h6>
@@ -2318,7 +2318,7 @@ function renderStatusChangedClientsTable(response) {
         
         <div class="row mb-4">
             <div class="col-12">
-                <h6 class="text-dark">Clients with Call Back & No Answer Status:</h6>
+                <h6 class="text-dark">Today's New Clients with Status Changes:</h6>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-light">
@@ -2330,8 +2330,8 @@ function renderStatusChangedClientsTable(response) {
                                 <th>Client</th>
                                 <th>Contact Info</th>
                                 <th class="text-center">Current Status</th>
-                                <th class="text-center">Last Updated</th>
-                                <th>Created Date</th>
+                                <th class="text-center">Status Change Date</th>
+                                <th>Timeline</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2375,12 +2375,15 @@ function renderStatusChangedClientsTable(response) {
                         </div>
                     </td>
                     <td>
-                        <div>
+                        <div class="timeline-item">
                             <small class="text-muted d-block">
-                                <strong>Created:</strong> ${new Date(client.created_at).toLocaleDateString()}
+                                <strong>Created:</strong> ${new Date(client.created_at).toLocaleDateString()} 
+                                <span class="badge bg-light text-dark">New</span>
                             </small>
-                            <small class="text-muted">
-                                <strong>Time:</strong> ${new Date(client.created_at).toLocaleTimeString()}
+                            <i class="bx bx-down-arrow-alt text-muted"></i>
+                            <small class="text-success d-block">
+                                <strong>Changed:</strong> ${new Date(client.updated_at).toLocaleDateString()} 
+                                <span class="badge ${statusBadgeClass}">${client.sales_status}</span>
                             </small>
                         </div>
                     </td>
@@ -2393,7 +2396,7 @@ function renderStatusChangedClientsTable(response) {
                 <td colspan="6" class="text-center py-4">
                     <div class="text-muted">
                         <i class="bx bx-info-circle mb-2" style="font-size: 2rem;"></i>
-                        <p class="mb-0">No clients found with Call Back or No Answer status.</p>
+                        <p class="mb-0">No new clients with status changes found for today.</p>
                     </div>
                 </td>
             </tr>

@@ -427,7 +427,7 @@ class UserStatsController extends Controller
             ->where('deleted', 0)
             ->whereBetween('created_at', [$dateFrom, $dateTo]) // Created today
             ->where('updated_at', '>', DB::raw('created_at')) // Status was updated after creation (meaning it was changed from "New")
-            ->select('id', 'first_name', 'last_name', 'phone1', 'sales_status', 'created_at', 'updated_at')
+            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'sales_status', 'created_at', 'updated_at')
             ->get();
 
         $result = [
@@ -448,29 +448,22 @@ class UserStatsController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        // Get all clients with "No Answer" or "Call Back" status for this user
-        // This matches what's shown in the main page counts
-        $callbackClients = Client::where('user_id', $userId)
-            ->where('sales_status', 'Call Back')
-            ->where('deleted', 0)
-            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'sales_status', 'created_at', 'updated_at')
-            ->get();
+        // Always check for today's status changes only
+        $dateFrom = Carbon::today()->startOfDay();
+        $dateTo = Carbon::today()->endOfDay();
 
-        $noAnswerClients = Client::where('user_id', $userId)
-            ->where('sales_status', 'No Answer')
-            ->where('deleted', 0)
-            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'sales_status', 'created_at', 'updated_at')
-            ->get();
+        // Get status changed clients for this user (new clients created today that changed status)
+        $statusChanges = $this->getStatusChangesForUser($userId, $dateFrom, $dateTo);
 
-        // Combine both collections
-        $allStatusClients = $callbackClients->merge($noAnswerClients);
+        // Get detailed client information from the collections
+        $allChangedClients = $statusChanges['new_to_no_answer']->merge($statusChanges['new_to_callback']);
 
         return $this->safeJsonResponse([
-            'clients' => $allStatusClients->values(),
-            'total_changed' => $allStatusClients->count(),
-            'no_answer_count' => $noAnswerClients->count(),
-            'callback_count' => $callbackClients->count(),
-            'period' => 'All Clients with Call Back / No Answer Status'
+            'clients' => $allChangedClients->values(),
+            'total_changed' => $statusChanges['total_changed'],
+            'no_answer_count' => $statusChanges['no_answer_count'],
+            'callback_count' => $statusChanges['callback_count'],
+            'period' => 'Today\'s New Clients with Status Changes (' . $dateFrom->format('d/m/Y') . ')'
         ]);
     }
 
