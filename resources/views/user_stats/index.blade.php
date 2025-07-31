@@ -1221,12 +1221,119 @@ function showStatusChangedClients(userId, username) {
         url: `/user-stats/status-changed-clients/${userId}`,
         method: 'GET',
         success: function(response) {
-            modalBody.innerHTML = response;
+            // Process JSON response and render as HTML
+            renderStatusChangedClientsTable(response, modalBody);
         },
         error: function() {
             modalBody.innerHTML = '<div class="alert alert-danger">Error loading status changes.</div>';
         }
     });
+}
+
+function renderStatusChangedClientsTable(data, container) {
+    if (!data.clients || data.clients.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bx bx-info-circle mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+                <h5 class="text-muted">No Status Changes Found</h5>
+                <p class="mb-0">No clients have changed status ${data.period ? 'for ' + data.period : 'today'}.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <div class="mb-4">
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <i class="bx bx-refresh me-3" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <strong>${data.period || 'Today\'s Status Changes'}</strong><br>
+                        <small class="text-muted">
+                            Total Changes: ${data.total_changed} | 
+                            No Answer: ${data.no_answer_count} | 
+                            Callbacks: ${data.callback_count}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Client Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th class="text-center">Current Status</th>
+                        <th class="text-center">Created</th>
+                        <th class="text-center">Status Changed</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    data.clients.forEach(function(client) {
+        const statusBadgeClass = client.sales_status === 'No Answer' ? 'bg-danger' :
+                                client.sales_status === 'Call Back' ? 'bg-warning' : 'bg-secondary';
+        
+        const statusIcon = client.sales_status === 'No Answer' ? 'bx-phone-off' :
+                          client.sales_status === 'Call Back' ? 'bx-phone-call' : 'bx-user';
+
+        const createdDate = new Date(client.created_at).toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const updatedDate = new Date(client.updated_at).toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        html += `
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar me-3" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                            ${client.first_name.charAt(0)}${client.last_name.charAt(0)}
+                        </div>
+                        <div>
+                            <h6 class="mb-0">${client.first_name} ${client.last_name}</h6>
+                            <small class="text-muted">ID: ${client.id}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>${client.phone1 || '-'}</td>
+                <td>${client.email || '-'}</td>
+                <td class="text-center">
+                    <span class="badge ${statusBadgeClass} px-3 py-2">
+                        <i class="bx ${statusIcon} me-1"></i>${client.sales_status}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <small class="text-muted">${createdDate}</small>
+                </td>
+                <td class="text-center">
+                    <small class="text-success">${updatedDate}</small>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    container.innerHTML = html;
 }
 
 function transferSelectedClients() {
