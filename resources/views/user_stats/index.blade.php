@@ -750,6 +750,15 @@
         <div class="col-12">
             <div class="card clean-card">
                 <div class="card-body pt-2">
+                    <!-- Debug Information -->
+                    @if(config('app.debug'))
+                        <div class="alert alert-info">
+                            <strong>Debug Info:</strong> 
+                            Total Users: {{ count($userStats) }} | 
+                            All Users Available: {{ $allUsers->count() }} |
+                            Selected User IDs: {{ implode(', ', $selectedUserIds ?? []) }}
+                        </div>
+                    @endif
                     <div class="table-responsive">
                         <table class="table stats-table table-hover align-middle mb-0">
                             <thead>
