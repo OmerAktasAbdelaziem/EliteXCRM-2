@@ -448,22 +448,29 @@ class UserStatsController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        // Always check for today's status changes only
-        $dateFrom = Carbon::today()->startOfDay();
-        $dateTo = Carbon::today()->endOfDay();
+        // Get all clients with "No Answer" or "Call Back" status for this user
+        // This matches what's shown in the main page counts
+        $callbackClients = Client::where('user_id', $userId)
+            ->where('sales_status', 'Call Back')
+            ->where('deleted', 0)
+            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'sales_status', 'created_at', 'updated_at')
+            ->get();
 
-        // Get status changed clients for this user
-        $statusChanges = $this->getStatusChangesForUser($userId, $dateFrom, $dateTo);
+        $noAnswerClients = Client::where('user_id', $userId)
+            ->where('sales_status', 'No Answer')
+            ->where('deleted', 0)
+            ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'sales_status', 'created_at', 'updated_at')
+            ->get();
 
-        // Get detailed client information
-        $allChangedClients = $statusChanges['new_to_no_answer']->merge($statusChanges['new_to_callback']);
+        // Combine both collections
+        $allStatusClients = $callbackClients->merge($noAnswerClients);
 
         return $this->safeJsonResponse([
-            'clients' => $allChangedClients->values(),
-            'total_changed' => $statusChanges['total_changed'],
-            'no_answer_count' => $statusChanges['no_answer_count'],
-            'callback_count' => $statusChanges['callback_count'],
-            'period' => 'Today (' . $dateFrom->format('d/m/Y') . ')'
+            'clients' => $allStatusClients->values(),
+            'total_changed' => $allStatusClients->count(),
+            'no_answer_count' => $noAnswerClients->count(),
+            'callback_count' => $callbackClients->count(),
+            'period' => 'All Clients with Call Back / No Answer Status'
         ]);
     }
 
