@@ -1236,7 +1236,7 @@ function renderStatusChangedClientsTable(data, container) {
             <div class="text-center py-5">
                 <i class="bx bx-info-circle mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
                 <h5 class="text-muted">No Status Changes Found</h5>
-                <p class="mb-0">No clients have changed status ${data.period ? 'for ' + data.period : 'today'}.</p>
+                <p class="mb-0">No new clients created today have changed their status to "Call Back" or "No Answer".</p>
             </div>
         `;
         return;
@@ -1248,8 +1248,9 @@ function renderStatusChangedClientsTable(data, container) {
                 <div class="d-flex align-items-center">
                     <i class="bx bx-refresh me-3" style="font-size: 1.5rem;"></i>
                     <div>
-                        <strong>${data.period || 'Today\'s Status Changes'}</strong><br>
+                        <strong>Today's New Clients with Status Changes</strong><br>
                         <small class="text-muted">
+                            New clients added today that have been changed to "Call Back" or "No Answer"<br>
                             Total Changes: ${data.total_changed} | 
                             No Answer: ${data.no_answer_count} | 
                             Callbacks: ${data.callback_count}
@@ -1267,8 +1268,8 @@ function renderStatusChangedClientsTable(data, container) {
                         <th>Phone</th>
                         <th>Email</th>
                         <th class="text-center">Current Status</th>
-                        <th class="text-center">Created</th>
-                        <th class="text-center">Status Changed</th>
+                        <th class="text-center">Created Today</th>
+                        <th class="text-center">Last Updated</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -421,27 +421,23 @@ class UserStatsController extends Controller
      */
     private function getStatusChangesForUser($userId, $dateFrom, $dateTo)
     {
-        // Get only NEW clients (created today) that have their status changed to "No Answer" or "Call Back"
-        // This ensures we only get clients that were:
-        // 1. Created today (new clients)
-        // 2. Had their status changed from "New" to either "No Answer" or "Call Back"
-        $newClientsChangedToday = Client::where('user_id', $userId)
-            ->whereIn('sales_status', ['No Answer', 'Call Back'])
+        // Get clients that were:
+        // 1. Created today (new clients added to user's account today)
+        // 2. Currently have status "Call Back" or "No Answer" (meaning they were changed from "New")
+        $statusChangedClients = Client::where('user_id', $userId)
+            ->whereIn('sales_status', ['Call Back', 'No Answer'])
             ->where('deleted', 0)
             ->whereBetween('created_at', [$dateFrom, $dateTo]) // Created today
-            ->where('updated_at', '>', DB::raw('created_at')) // Status was updated after creation (meaning it was changed from "New")
             ->select('id', 'first_name', 'last_name', 'phone1', 'email', 'sales_status', 'created_at', 'updated_at')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
-        $result = [
-            'new_to_no_answer' => $newClientsChangedToday->where('sales_status', 'No Answer'),
-            'new_to_callback' => $newClientsChangedToday->where('sales_status', 'Call Back'),
-            'total_changed' => $newClientsChangedToday->count(),
-            'no_answer_count' => $newClientsChangedToday->where('sales_status', 'No Answer')->count(),
-            'callback_count' => $newClientsChangedToday->where('sales_status', 'Call Back')->count()
+        return [
+            'clients' => $statusChangedClients,
+            'total_changed' => $statusChangedClients->count(),
+            'no_answer_count' => $statusChangedClients->where('sales_status', 'No Answer')->count(),
+            'callback_count' => $statusChangedClients->where('sales_status', 'Call Back')->count()
         ];
-
-        return $result;
     }
 
     public function getStatusChangedClients(Request $request, $userId)
@@ -455,14 +451,11 @@ class UserStatsController extends Controller
         $dateFrom = Carbon::today()->startOfDay();
         $dateTo = Carbon::today()->endOfDay();
 
-        // Get status changed clients for this user (new clients created today that changed status)
+        // Get status changed clients for this user
         $statusChanges = $this->getStatusChangesForUser($userId, $dateFrom, $dateTo);
 
-        // Get detailed client information from the collections
-        $allChangedClients = $statusChanges['new_to_no_answer']->merge($statusChanges['new_to_callback']);
-
         return $this->safeJsonResponse([
-            'clients' => $allChangedClients->values(),
+            'clients' => $statusChanges['clients']->values(),
             'total_changed' => $statusChanges['total_changed'],
             'no_answer_count' => $statusChanges['no_answer_count'],
             'callback_count' => $statusChanges['callback_count'],
