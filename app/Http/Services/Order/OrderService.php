@@ -223,6 +223,7 @@ $assetGroupAssignment = $asset->groupAssignments->first();
             $finance['usedMargin'] = $openedOrders->sum('required_margin');
             $finance['currentPL'] = $openedOrders->sum('pnl');
             $closedOrdersPL = $this->getClosedOrdersPL($brokerId);
+            $finance['closedOrdersPL'] = $closedOrdersPL;
             $creditIn = $this->moneyTransactionService->getCreditIn($brokerId);
             $creditOut = $this->moneyTransactionService->getCreditOut($brokerId);
             $finance['credit'] = $creditIn - $creditOut;
