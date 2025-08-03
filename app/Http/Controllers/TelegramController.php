@@ -400,6 +400,12 @@ class TelegramController extends Controller
 
     public function sendNotification($chatId,$message)
     {
+        // Validate that message is not empty
+        if (empty(trim($message))) {
+            info('Telegram notification skipped: message is empty');
+            return;
+        }
+
         $token = env('TELEGRAM_NOTIFICATION_BOT_TOKEN');
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
         $headers = [
@@ -421,6 +427,12 @@ class TelegramController extends Controller
 
     public function notifi(Request $request)
     {
+        // Validate that message is not empty
+        if (empty(trim($request->message))) {
+            info('Telegram notification skipped: request message is empty');
+            return response()->json(['status' => 'error', 'message' => 'Message is required']);
+        }
+
         $token = env('TELEGRAM_NOTIFI_BOT_TOKEN');
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
         $headers = [
