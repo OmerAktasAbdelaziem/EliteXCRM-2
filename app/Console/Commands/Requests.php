@@ -7,11 +7,21 @@ use App\Http\Controllers\TelegramController;
 use App\Models\Notification;
 use Illuminate\Console\Command;
 use App\Models\TelegramChat;
+use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 
 class Requests extends Command
 {
     protected $signature   = 'app:Requests';
     protected $description = 'check requests and send notifications';
+
+    protected $clientService;
+    protected $telegramController;
+
+    public function __construct(ClientServiceInterface $clientService)
+    {
+        parent::__construct();
+        $this->clientService = $clientService;
+    }
 
     public function handle()
     {
@@ -19,7 +29,10 @@ class Requests extends Command
         foreach ($request_data as $request) {
             $exist = Notification::firstWhere('partner_id', $request->id);
             if (!$exist) {
-                $message = "🤩🤩🤩 You have a new " . $request->type . " Request \n" ."Client: " . $request->client->first_name . "\n" ."Amount: " . $request->amount . "\n" ."Comment: " . $request->comment . "\n";
+                $message = "🤩🤩🤩 You have a new " . $request->type . " Request \n" .
+                          "Client: " . ($request->client->first_name ?? 'N/A') . "\n" .
+                          "Amount: " . ($request->amount ?? 'N/A') . "\n" .
+                          "Comment: " . ($request->comment ?? 'N/A') . "\n";
 
                 if ($request->type == 'deposit') {
                     $message .= "Details: " . ($request->usdt != null ? $request->usdt : ($request->bank?->country . " : " . $request->bank?->name));
@@ -43,7 +56,11 @@ class Requests extends Command
 
                 $chats = TelegramChat::where('verification_level',1)->where('type','notifi')->get();
                 foreach ($chats as $chat) {
-                    (new TelegramController)->sendNotification($chat->id,$message);
+                    // Validate message is not empty before sending
+                    if (!empty(trim($message))) {
+                        $telegramController = new TelegramController($this->clientService);
+                        $telegramController->sendNotification($chat->id,$message);
+                    }
                 }
                 Notification::create([
                     'type'       => '0',
