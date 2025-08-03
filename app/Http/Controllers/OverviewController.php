@@ -48,7 +48,7 @@ class OverviewController extends Controller
         $period                = 'Monthly';
         
         //$clientsController = new ClientsController;
-        $mainTpController  = new MainTPController;
+        // $mainTpController  = new MainTPController;
         //$user_controller   = new UserController;
 
         $options = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
@@ -177,7 +177,7 @@ class OverviewController extends Controller
 
     public function filter(Request $request)
     {
-        $mainTpController = new MainTPController;
+        // $mainTpController = new MainTPController;
 
         $api_data['totalWithdrawal'] = 0.00;
         $api_data['totalDeposit']    = 0.00;
