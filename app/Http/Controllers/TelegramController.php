@@ -400,12 +400,6 @@ class TelegramController extends Controller
 
     public function sendNotification($chatId,$message)
     {
-        // Validate that message is not empty
-        if (empty(trim($message))) {
-            info('Telegram notification skipped: message is empty');
-            return;
-        }
-
         $token = env('TELEGRAM_NOTIFICATION_BOT_TOKEN');
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
         $headers = [
@@ -421,39 +415,12 @@ class TelegramController extends Controller
         $response = Http::withHeaders($headers)->post($url, $data);
 
         if ($response->failed()) {
-            $responseData = $response->json();
-            info('Telegram Failed:', $responseData);
-            
-            // Log specific error types for better debugging
-            if (isset($responseData['error_code'])) {
-                switch ($responseData['error_code']) {
-                    case 403:
-                        info("Telegram user deactivated or blocked bot: Chat ID {$chatId}");
-                        // Mark the chat as inactive to prevent future notifications
-                        $telegramChat = TelegramChat::find($chatId);
-                        if ($telegramChat) {
-                            $telegramChat->update(['verification_level' => 0, 'times_to_try' => 0]);
-                            info("Marked Telegram chat {$chatId} as inactive due to deactivation");
-                        }
-                        break;
-                    case 400:
-                        info("Telegram bad request: Chat ID {$chatId}, Message length: " . strlen($message));
-                        break;
-                    default:
-                        info("Telegram error {$responseData['error_code']}: {$responseData['description']} for Chat ID {$chatId}");
-                }
-            }
+            info('Telegram Failed:', $response->json());
         }
     }
 
     public function notifi(Request $request)
     {
-        // Validate that message is not empty
-        if (empty(trim($request->message))) {
-            info('Telegram notification skipped: request message is empty');
-            return response()->json(['status' => 'error', 'message' => 'Message is required']);
-        }
-
         $token = env('TELEGRAM_NOTIFI_BOT_TOKEN');
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
         $headers = [
