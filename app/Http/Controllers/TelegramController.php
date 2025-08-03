@@ -421,6 +421,33 @@ class TelegramController extends Controller
 
     public function notifi(Request $request)
     {
+        $update = $request->all();
+
+        if (isset($update['message'])) {
+            $chat_id = $update['message']['chat']['id'];
+            $telegramChat = TelegramChat::where('type','notifi')->find($chat_id);
+            if ($telegramChat) {
+                $text = $update['message']['text'] ?? '';
+                if ($telegramChat->verification_level != 1) {
+                    $this->getNotifiPassword($telegramChat,$chat_id,$text);
+                }else{
+                    Log::channel('telegram')->info($text);
+                }
+            }else{
+                $inputs = [
+                    'id' => $chat_id,
+                    'type' => 'notifi',
+                ];
+                $telegramChat = TelegramChat::create($inputs);
+                $this->getNotifiPassword($telegramChat,$chat_id);
+            }
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    private function getNotifiPassword($telegramChat,$chatId,$text = null)
+    {
         $token = env('TELEGRAM_NOTIFI_BOT_TOKEN');
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
         $headers = [
@@ -429,22 +456,44 @@ class TelegramController extends Controller
         ];
 
         $data = [
-            'chat_id' => 1205971874,
-            'text'    => 'You have a notifi from trading view : '.$request->message,
+            'chat_id' => $chatId,
         ];
 
-        $response = Http::withHeaders($headers)->post($url, $data);
-        $data = [
-            'chat_id' => 5173560887,
-            'text'    => 'You have a notifi from trading view : '.$request->message,
-        ];
+        if (!$text) {
+            $data['text'] = "Welcome to Notification Bot🤩🤩🤩\nPlease write The Password 🙏🙏🙏";
+        }else{
+            if ($telegramChat->times_to_try <= 0) {
+                $data['text'] = "😳 Sorry, you have tried many times and can't try anymore 😳";
+            }
+            else{
+                if ($text == 'Notification154575') {
+                    $telegramChat->update([
+                        'verification_level' => 1,
+                    ]);
+                    $data['text'] = 'You are connected with the Notification Bot ✅✅✅';
+                }else{
+                    $data['text'] = 'Wrong Password ❌❌ Please Try again';
+                    $telegramChat->update([
+                        'times_to_try' => $telegramChat->times_to_try-1
+                    ]);
+                }
+            }
+            if ($text == 'the best bot') {
+                $data['text'] = 'Thank you 🤩🤩🤩';
+                $inputs = [
+                    'times_to_try' => 5,
+                ];
+                $telegramChat->update($inputs);
+            }
+        }
+
         $response = Http::withHeaders($headers)->post($url, $data);
 
         if ($response->failed()) {
             info('Telegram Failed:', $response->json());
         }
 
-        return response()->json(['status' => 'success']);
+        return $response->json();
     }
 
     public function getId(Request $request)
