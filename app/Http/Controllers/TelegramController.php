@@ -421,7 +421,28 @@ class TelegramController extends Controller
         $response = Http::withHeaders($headers)->post($url, $data);
 
         if ($response->failed()) {
-            info('Telegram Failed:', $response->json());
+            $responseData = $response->json();
+            info('Telegram Failed:', $responseData);
+            
+            // Log specific error types for better debugging
+            if (isset($responseData['error_code'])) {
+                switch ($responseData['error_code']) {
+                    case 403:
+                        info("Telegram user deactivated or blocked bot: Chat ID {$chatId}");
+                        // Mark the chat as inactive to prevent future notifications
+                        $telegramChat = TelegramChat::find($chatId);
+                        if ($telegramChat) {
+                            $telegramChat->update(['verification_level' => 0, 'times_to_try' => 0]);
+                            info("Marked Telegram chat {$chatId} as inactive due to deactivation");
+                        }
+                        break;
+                    case 400:
+                        info("Telegram bad request: Chat ID {$chatId}, Message length: " . strlen($message));
+                        break;
+                    default:
+                        info("Telegram error {$responseData['error_code']}: {$responseData['description']} for Chat ID {$chatId}");
+                }
+            }
         }
     }
 
