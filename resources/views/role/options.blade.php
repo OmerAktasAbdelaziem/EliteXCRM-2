@@ -500,6 +500,10 @@
                     <label for="leads_delete">Delete</span>
                 </div>
                 <div class="permission-option">
+                    <input type="checkbox" name="options[leads_export]" value="1" id="leads_export" @if (isset($role->options['leads_export'])) checked @endif />
+                    <label for="leads_export">Export</span>
+                </div>
+                <div class="permission-option">
                     <input type="checkbox" data-col="main_tp" name="options[leads_main_tp]" value="1" id="leads_main_tp" @if (isset($role->options['leads_main_tp'])) checked @endif />
                     <label for="leads_main_tp">MainTP (Real&Demo)</span>
                 </div>
