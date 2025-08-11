@@ -127,7 +127,7 @@ class TelegramController extends Controller
     }
 
     // ========= التعامل مع ضغط أزرار Accept / Reject =========
-    if ($request->callback_query) {
+    if ($request->callback_query) {$this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");
         $chat_id = $request->callback_query['from']['id'];
         $callbackData = $request->callback_query['data'];
 
