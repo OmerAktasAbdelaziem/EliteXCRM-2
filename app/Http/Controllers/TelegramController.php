@@ -91,7 +91,7 @@ class TelegramController extends Controller
     }*/
     public function inbound(Request $request)
 {
-    // ========= التعامل مع الرسائل العادية =========
+    // ========= Handle messages =========
     if ($request->message) {
         $reply_to_message = $request->message['message_id'];
         $chat_id = $request->message['from']['id'];
@@ -126,18 +126,18 @@ class TelegramController extends Controller
         }
     }
 
-    // ========= التعامل مع ضغط أزرار Accept / Reject =========
+    // ========= Handle Accept / Reject =========
     if ($request->callback_query) {
         $chat_id = $request->callback_query['from']['id'];
         $callbackData = $request->callback_query['data'];
 
         // مثال: accept_deposit_123
         if (preg_match('/^(accept|reject)_(deposit|withdraw)_(\d+)$/', $callbackData, $matches)) {
-            $action = $matches[1]; // accept أو reject
-            $type   = $matches[2]; // deposit أو withdraw
-            $id     = $matches[3]; // ID الطلب
+            $action = $matches[1]; // accept or reject
+            $type   = $matches[2]; // deposit or withdraw
+            $id     = $matches[3]; // ID 
 
-            // هنا المنطق الخاص بك لقبول/رفض الطلب
+            
             if ($action === 'accept') {
                 // RequestModel::where('id', $id)->update(['status' => 'accepted']);
                 $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted.");
@@ -146,7 +146,7 @@ class TelegramController extends Controller
                 $this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");
             }
 
-            // الرد على الكول باك عشان يختفي الـ Loading
+            //Answer call back, disappear loading
             return response()->json([
                 'method' => 'answerCallbackQuery',
                 'callback_query_id' => $request->callback_query['id'],
@@ -154,7 +154,7 @@ class TelegramController extends Controller
             ]);
         }
 
-        // ========= باقي منطق الـ callback_query القديم =========
+        // ========= Old logic =========
         if (isset($request->callback_query['message']['reply_to_message'])) {
             $reply_to_message = $request->callback_query['message']['reply_to_message']['message_id'];
             $leadId = $request->callback_query['message']['reply_to_message']['text'];
