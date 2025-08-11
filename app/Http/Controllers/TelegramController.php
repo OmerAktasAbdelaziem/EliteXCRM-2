@@ -440,17 +440,18 @@ $clientService = app(ClientServiceInterface::class);
             $type   = $matches[2]; // deposit or withdraw
             $id     = $matches[3]; // ID 
 
-            // هنا نفذ الأكشن المناسب
+          
             if ($action === 'accept') {
-                // مثال: تحديث حالة الطلب
+                
                 // RequestModel::where('id', $id)->update(['status' => 'accepted']);
+                app(MainTPController::class)->handle_request($request, $id);
                 $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted.");
             } elseif ($action === 'reject') {
                 // RequestModel::where('id', $id)->update(['status' => 'rejected']);
                 $this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");
             }
 
-            // الرد على التليجرام بأن الإجراء تم (اختفاء الـ loading)
+            //Hide loading and answer telegram
             return response()->json([
                 'method' => 'answerCallbackQuery',
                 'callback_query_id' => $update['callback_query']['id'],
