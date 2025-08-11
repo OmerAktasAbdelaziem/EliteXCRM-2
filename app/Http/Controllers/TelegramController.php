@@ -432,7 +432,34 @@ $clientService = app(ClientServiceInterface::class);
 
         if (isset($update['message'])) {
             $chat_id = $update['message']['chat']['id'];
-            $this->sendNotification($chat_id, "✅ asd");
+            //$this->sendNotification($chat_id, "✅ asd");
+            if ($request->callback_query) {
+        $chat_id = $request->callback_query['from']['id'];
+        $callbackData = $request->callback_query['data'];
+
+        // مثال: accept_deposit_123
+        if (preg_match('/^(accept|reject)_(deposit|withdraw)_(\d+)$/', $callbackData, $matches)) {
+            $action = $matches[1]; // accept or reject
+            $type   = $matches[2]; // deposit or withdraw
+            $id     = $matches[3]; // ID 
+
+            
+            if ($action === 'accept') {
+                // RequestModel::where('id', $id)->update(['status' => 'accepted']);
+                $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted.");
+            } elseif ($action === 'reject') {
+                // RequestModel::where('id', $id)->update(['status' => 'rejected']);
+                $this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");
+            }
+
+            //Answer call back, disappear loading
+            return response()->json([
+                'method' => 'answerCallbackQuery',
+                'callback_query_id' => $request->callback_query['id'],
+                'text' => 'Action processed successfully'
+            ]);
+        }
+            }
             $telegramChat = TelegramChat::where('type','notifi')->find($chat_id);
             if ($telegramChat) {
                 $text = $update['message']['text'] ?? '';
