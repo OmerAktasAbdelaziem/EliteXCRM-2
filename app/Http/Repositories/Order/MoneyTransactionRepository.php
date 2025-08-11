@@ -57,14 +57,21 @@ if (!empty($with)) {
       
       
         $result = MoneyTrx::create($data);
-        return new Collection([$result]);
+        $moneyrxDetail = [];
+        $moneyrxDetail['money_trx'] = $result->id;
+        $moneyrxDetail['amount'] = $data['amount'];
+        $moneyrxDetail['type'] = $data['type'];
+        $moneyrxDetailResult = MoneyTrxDetail::create($moneyrxDetail);
+        return new Collection([$moneyrxDetailResult]);
     }
     
-    public function update(int $id,array $data): int
+    /*
+     * this function need to be edited to handle moneyTrxDetails
+       public function update(int $id,array $data): int
     {
         return $result = MoneyTrx::where('id', $id)->update($data);
         
-    }
+    }*/
     public function updateBulk(array $ids,array $data): int
     {
         return $result = MoneyTrx::whereIn('id', $ids)->update($data);
@@ -226,5 +233,6 @@ if (!empty($with)) {
   
   return $pendingWithdrawal;
   }
+  
   
 }

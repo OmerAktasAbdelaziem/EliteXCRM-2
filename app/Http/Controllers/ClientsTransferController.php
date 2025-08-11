@@ -15,9 +15,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Http\Services\Order\Interfaces\MoneyTransactionServiceInterface;
 
 class ClientsTransferController extends Controller
 {
+    protected $moneyTransactionService;
+    public function __construct(
+            MoneyTransactionServiceInterface $moneyTransactionService,
+            ) {
+        $this->moneyTransactionService = $moneyTransactionService;
+        
+    }
     public function register_user(Request $request)
     {
         sleep(10);
@@ -73,7 +81,8 @@ class ClientsTransferController extends Controller
         if ($old_client->count() > 0) {
             return redirect()->back()->with('fail', 'Username is already exist');
         }
-    
+    //gohere
+        //die('b');
         $broker_id = $this->createAccountFromApp('true', $request->password, $request->username, $client);
         if ($broker_id == false) {
             return redirect()->back()->with('fail', 'Could not create account');
@@ -105,6 +114,13 @@ class ClientsTransferController extends Controller
             ]);
         }
     
+        $moneyTrx = [];
+        $moneyTrx['broker_id'] = $broker_id;
+        $moneyTrx['type'] = 'deposit';
+        $moneyTrx['status'] = 'accepted';
+        $moneyTrx['amount'] = $request->amount;
+        $this->moneyTransactionService->create($moneyTrx);
+        
         $action = Action::create([
             'client_id' => $id,
             'user_id' => Auth::id(),

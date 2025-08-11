@@ -40,4 +40,8 @@ class Pipeline extends Model
     {
         return $this->belongsTo(Broker::class);
     }
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class, 'pipeline');
+    }
 }

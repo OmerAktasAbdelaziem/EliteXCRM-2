@@ -37,21 +37,12 @@ use Mpdf\Mpdf;
 //use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
-use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 
-class ClientsController extends Controller
+class ClientsController2 extends Controller
 {
     protected $clientService;
     protected $userService;
-    protected $orderService;
-    public function __construct(
-            UserServiceInterface $userService,
-            OrderServiceInterface $orderService,
-            ) {
-        $this->userService = $userService;
-        $this->orderService = $orderService;
-        
-    }
+    
    /* public function __construct(
             ClientServiceInterface $clientService,
             ) {
@@ -79,7 +70,8 @@ class ClientsController extends Controller
         $gb_filter         = '';
         $mycontact         = null;
         $contacts          = null;
-        $options           = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
+        $options           = $userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $actions           = null;
         $broker            = null;
         $new               = null;
@@ -715,7 +707,8 @@ class ClientsController extends Controller
     
     public function create()
     {
-        $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
+        $options = $userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams   = $this->getTeams($options);
         $users   = $this->getUsers($teams)->where('deleted', '!=', true);
         $parts   = $this->getParts($teams);
@@ -814,7 +807,8 @@ class ClientsController extends Controller
         $kycs               = Kyc::where('client_id',$id);
         $next               = 1;
         $pre                = 1;
-        $options            = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
+        $options            = $userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams              = $this->getTeams($options);
         $users              = $this->getUsers($teams);
         $parts              = $this->getParts($teams);
@@ -1021,7 +1015,8 @@ class ClientsController extends Controller
     {
         //$user_controller = new UserController;
         $old_client      = Client::findOrfail($id);
-        $options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
+        $options         = $userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams           = $this->getTeams($options);
         $users           = $this->getUsers($teams);
 
@@ -1255,7 +1250,8 @@ $broker_id      = $client->broker_id;
     
     public function update(Request $request, $id)
     {
-        $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
+        $options = $userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $client  = Client::findOrfail($id);
 
         $inputs = array_filter(
@@ -1381,7 +1377,8 @@ $broker_id      = $client->broker_id;
     public function editStatus(Request $request, $id)
     {
         //$user_controller = new UserController;
-        $options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
+        $options         = $userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $client          = Client::findOrfail($id);
         $request->validate([
             'sales_status' => ['required' , 'string'],
@@ -1736,7 +1733,7 @@ $broker_id      = $client->broker_id;
 
         $balanceNow = $netDeposits + $totalClosedPnl;
 
-        $finance = $this->orderService->getFinancialData($brokerId); //(new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
+        $finance = (new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
         $freeMargin = $finance['freeMargin'] ?? 0.00;
 
         $moneyTrxes = collect();

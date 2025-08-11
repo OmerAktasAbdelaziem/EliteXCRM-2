@@ -26,6 +26,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserStatsController;
+use App\Http\Controllers\SubscriptionController;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -373,6 +374,28 @@ Route::middleware(['auth'])->group(function (Router $router) {
         $router->put('pipeline/{id}', [PipelineController::class, 'update'])->name('pipeline.update');
     });
 
+    //Subscription
+    $router->middleware(['role:subscription_create'])->group(function (Router $router) {
+        $router->get('subscription/create/{pipelineId}', [SubscriptionController::class, 'create'])->name('subscription.create');
+        $router->post('subscription/store',       [SubscriptionController::class, 'store'])->name('subscription.store');
+    });
+    $router->middleware(['role:subscription_list'])->group(function (Router $router) {
+        $router->get('subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
+    });
+    $router->middleware(['role:subscription_update'])->group(function (Router $router) {
+        $router->get('subscription/edit/{id}', [SubscriptionController::class, 'edit'])->name('subscription.edit');
+        $router->post('subscription/update/{id}', [SubscriptionController::class, 'update'])->name('subscription.update');
+    });
+    $router->middleware(['role:subscription_delete'])->group(function (Router $router) {
+        $router->get('subscription/delete/{id}', [SubscriptionController::class, 'destroy'])->name('subscription.destroy');
+    });
+    /*
+     * 'subscription_update' => 1,
+                'subscription_list'   => 1,
+                'subscription_show'   => 1,
+     */
+    
+    
     // User Statistics Routes (only for user 298274)
     $router->get('user-stats', [UserStatsController::class, 'index'])->name('user.stats');
     $router->get('user-stats/report', [UserStatsController::class, 'getUserReport'])->name('user.stats.report');

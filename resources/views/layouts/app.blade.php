@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="{{ url('assets/css/dark-theme.min.css?v2.944') }}" />
         <link rel="stylesheet" href="{{ url('assets/css/semi-dark.min.css?v2.944') }}" />
         <link rel="stylesheet" href="{{ url('assets/css/header-colors.min.css?v2.944') }}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css">
         <title>@yield('title', 'EliteX - CRM')</title>
         <style>
             .nav-container ,.nav-container ul{
@@ -71,6 +73,7 @@
         <script src="{{ url('assets/plugins/perfect-scrollbar/js/perfect-scrollbar.min.js?v2.944') }}"></script>
         <script src="{{ url('assets/js/scrollbar.min.js?v2.944') }}"></script>
         <script src="{{ url('assets/js/app.min.js?v2.944') }}"></script>
+        <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
         @yield("script")
     </body>
 </html>

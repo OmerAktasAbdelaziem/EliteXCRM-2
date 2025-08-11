@@ -21,21 +21,18 @@ class TelegramBot
     protected $api_endpoint;
 
     protected $headers;
-    protected $clientService;
-    protected $userService;
+
    
 
     public function __construct(
-            ClientServiceInterface $clientService,
-            UserServiceInterface $userService,
+         
             )
     {
         $this->token = env('TELEGRAM_BOT_TOKEN');
         $this->api_endpoint = 'https://api.telegram.org';
         $this->setHeaders();
         
-        $this->clientService = $clientService;
-        $this->userService = $userService;
+
     }
 
     protected function setHeaders()
@@ -94,6 +91,8 @@ class TelegramBot
     }
 
     public function get_options($optionsType, $user_id){
+        $clientService = app(ClientServiceInterface::class);
+    $userService = app(UserServiceInterface::class);
         if ($optionsType == 'users') {
             $user = User::find($user_id);
             Auth::login($user);
@@ -102,9 +101,9 @@ class TelegramBot
             //$clientsController = new ClientsController;
             //$userController    = new UserController;
             $inlineKeyboard    = [];
-            $options           = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
-            $teams             = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
-            $users             = $this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
+            $options           = $userService->getUserOptions(Auth::user());//$userController->get_user_options();
+            $teams             = $clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+            $users             = $clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
             $row               = [];
 
             foreach ($users as $index => $user) {
@@ -126,9 +125,9 @@ class TelegramBot
             //$clientsController = new ClientsController;
             //$userController    = new UserController;
             $inlineKeyboard    = [];
-            $options           = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
-            $teams             = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
-            $parts             = $this->clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
+            $options           = $userService->getUserOptions(Auth::user());//$userController->get_user_options();
+            $teams             = $clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+            $parts             = $clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
             $row               = [];
 
             $statuses = Status::where(function ($query) use ($parts) {

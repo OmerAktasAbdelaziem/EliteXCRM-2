@@ -154,7 +154,7 @@ $(document).ready(function() {
 				// }
                                 if(response.success){
 				submitButton.removeAttr('disabled');
-                                alert(response.message);
+                                //alert('response.message');
                             }else{
                                 alert(response.message);
                             }

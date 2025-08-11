@@ -330,6 +330,12 @@ class UserController extends Controller
                 'pipeline_update' => 1,
                 'pipeline_list'   => 1,
                 'pipeline_show'   => 1,
+                'subscription_create' => 1,
+                'subscription_update' => 1,
+                'subscription_list'   => 1,
+                'subscription_show'   => 1,
+                'subscription_delete'   => 1,
+                
             ]);
             $userOptions = array_merge($userOptions,$adminPipeline);
         }

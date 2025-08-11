@@ -15,9 +15,15 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 class TelegramController extends Controller
 {
-  
+    protected $clientService;
+    public function __construct(
+            ClientServiceInterface $clientService,
+            ) {
+        $this->clientService = $clientService;
+        
+    }
     public function inbound(Request $request)
-    {
+    {die('a');
         if ($request->message) {
             $reply_to_message = $request->message['message_id'];
             $chat_id = $request->message['from']['id'];
@@ -177,8 +183,8 @@ class TelegramController extends Controller
                         'client_id' => $leadId,
                         'user_id'   => $userId,
                     ]);
-$clientService = app(ClientServiceInterface::class);
-                    $clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
+
+                    $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Assigned User changed to {$user->username} successfully ✅";
                     break;
                     
@@ -196,8 +202,7 @@ $clientService = app(ClientServiceInterface::class);
                         'client_id'    => $leadId,
                     ]);
 
-                    $clientService = app(ClientServiceInterface::class);
-                    $clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
+                    $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Status changed to {$status} successfully ✅";
                     break;
         

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
@@ -29,6 +28,12 @@ use App\Http\Repositories\User\UserRepository;
 use App\Http\Repositories\User\Interfaces\UserRepositoryInterface;
 use App\Http\Repositories\Role\RoleRepository;
 use App\Http\Repositories\Role\Interfaces\RoleRepositoryInterface;
+use App\Http\Repositories\Subscription\SubscriptionRepository;
+use App\Http\Repositories\Subscription\Interfaces\SubscriptionRepositoryInterface;
+use App\Http\Repositories\Action\ActionRepository;
+use App\Http\Repositories\Action\Interfaces\ActionRepositoryInterface;
+
+
 
 //interfaces & services
 use App\Http\Services\Organization\PipelineService;
@@ -53,6 +58,11 @@ use App\Http\Services\Filter\FilterService;
 use App\Http\Services\Filter\Interfaces\FilterServiceInterface;
 use App\Http\Services\Role\RoleService;
 use App\Http\Services\Role\Interfaces\RoleServiceInterface;
+use App\Http\Services\Subscription\SubscriptionService;
+use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
+use App\Http\Services\Action\ActionService;
+use App\Http\Services\Action\Interfaces\ActionServiceInterface;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -70,6 +80,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ClientRepositoryInterface::class, ClientRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
+        $this->app->bind(ActionRepositoryInterface::class, ActionRepository::class);
         
         
         
@@ -85,6 +97,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(FilterServiceInterface::class, FilterService::class);
         $this->app->bind(RoleServiceInterface::class, RoleService::class);
+        $this->app->bind(SubscriptionServiceInterface::class, SubscriptionService::class);
+        $this->app->bind(ActionServiceInterface::class, ActionService::class);
       
     }
 

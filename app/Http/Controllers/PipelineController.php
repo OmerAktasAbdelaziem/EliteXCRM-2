@@ -13,17 +13,21 @@ use Illuminate\Support\Facades\Auth;
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
+use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 
 class PipelineController extends Controller
 {
     protected $clientService;
     protected $userService;
+    protected $subscriptionService;
     public function __construct(
             ClientServiceInterface $clientService,
             UserServiceInterface $userService,
+            SubscriptionServiceInterface $subscriptionService,
             ) {
         $this->clientService = $clientService;
         $this->userService = $userService;
+        $this->subscriptionService = $subscriptionService;
         
     }
     public function index()
@@ -52,7 +56,7 @@ class PipelineController extends Controller
     }
     
     public function store(CreatePipelineRequest $request)
-    {
+    {die('a');
         $inputs = $request->only([
             'category_id',
             'part_limit',
@@ -74,15 +78,18 @@ class PipelineController extends Controller
     
     public function show($id)
     {
-        $pipeline              = Pipeline::findOrfail($id);
+        $pipeline = Pipeline::with('subscription')->findOrFail($id);
         $users                 = User::latest()->get();
         $pipeline->support_ids = json_decode($pipeline->support_ids, true) ?? [];
         $brokers               = Broker::latest()->get();
-
+        $supscriptions = $this->subscriptionService->getByFilters([['field' => 'pipeline', 'conditions' => ['=' => $id]],
+    ['field' => 'deleted', 'conditions' => ['!=' => 1]]]);
+        
         return view('pipeline.show',compact(
             'pipeline',
             'brokers',
             'users',
+            'supscriptions',
         ));
     }
     

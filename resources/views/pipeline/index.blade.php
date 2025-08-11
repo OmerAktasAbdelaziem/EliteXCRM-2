@@ -39,6 +39,7 @@
                                                     <tr>
                                                         <th>Name</th>
                                                         <th>Created At</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -48,6 +49,7 @@
                                                                 <a @if (isset($options['pipeline_show'])) href="{{ route('pipeline.show', $pipeline->id) }}" @endif>{{$pipeline->name}}</a>
                                                             </td>
                                                             <td>{{date('d/m/Y H:i', strtotime($pipeline->created_at))}}</td>
+                                                            <td><a @if (isset($options['pipeline_show'])) href="{{ route('pipeline.show', $pipeline->id) }}" @endif><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

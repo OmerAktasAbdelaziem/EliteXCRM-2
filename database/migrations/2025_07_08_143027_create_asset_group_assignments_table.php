@@ -19,11 +19,11 @@ class CreateAssetGroupAssignmentsTable extends Migration
             $table->unsignedBigInteger('asset_group');
 
             $table->integer('size')->nullable();
-            $table->integer('leverage')->nullable();
-            $table->integer('bid_spread')->nullable();
-            $table->integer('ask_spread')->nullable();
-            $table->integer('buy_commission')->nullable();
-            $table->integer('sell_commission')->nullable();
+            $table->double('leverage')->nullable();
+            $table->double('bid_spread')->nullable();
+            $table->double('ask_spread')->nullable();
+            $table->double('buy_commission')->nullable();
+            $table->double('sell_commission')->nullable();
             $table->integer('is_percentage')->nullable();
         });
     }

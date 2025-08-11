@@ -5334,3 +5334,9 @@ input::placeholder {
 
 
 }
+.section-area{
+                                    border:1px #ccc solid;
+                                    border-radius: 20px;
+                                    padding: 20px;
+                                    margin-bottom: 10px;
+                                }
