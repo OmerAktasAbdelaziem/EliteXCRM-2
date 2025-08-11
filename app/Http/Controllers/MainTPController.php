@@ -905,7 +905,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
        
         
         //gohere request
-        $moneyTrx = MoneyTrx::findOrFail($id??$request->id);
+        $moneyTrx = MoneyTrx::findOrFail($id??$request->id);return "aa";
         //echo $moneyTrx->is_admin;die('asd');
         //print_r($moneyTrx->client->options['canWithdrawalCredit']);die;
         //$moneyTrx->client->options['canWithdrawalBonus']
@@ -933,7 +933,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
             
           
           $amount = $moneyTrx->amount;
-          return "aa";
+          
          
           //die('aa');
       $moneyTrx->update($inputs);
