@@ -432,6 +432,7 @@ $clientService = app(ClientServiceInterface::class);
 
         if (isset($update['message'])) {
             $chat_id = $update['message']['chat']['id'];
+            $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted.");
             $telegramChat = TelegramChat::where('type','notifi')->find($chat_id);
             if ($telegramChat) {
                 $text = $update['message']['text'] ?? '';
