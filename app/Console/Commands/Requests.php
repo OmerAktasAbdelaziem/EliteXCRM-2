@@ -43,7 +43,18 @@ class Requests extends Command
 
                 $chats = TelegramChat::where('verification_level',1)->where('type','notifi')->get();
                 foreach ($chats as $chat) {
-                    (new TelegramController)->sendNotification($chat->id,$message);
+                    $replyMarkup = null;
+                    if (in_array($request->type, ['deposit', 'withdraw'])) {
+        $replyMarkup = [
+            'inline_keyboard' => [
+                [
+                    ['text' => '✅ Accept', 'callback_data' => 'accept_' . $request->id],
+                    ['text' => '❌ Reject', 'callback_data' => 'reject_' . $request->id]
+                ]
+            ]
+        ];
+    }
+                    (new TelegramController)->sendNotification($chat->id,$message,$replyMarkup);
                 }
                 Notification::create([
                     'type'       => '0',

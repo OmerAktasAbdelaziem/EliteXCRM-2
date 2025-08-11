@@ -399,7 +399,7 @@ $clientService = app(ClientServiceInterface::class);
         return $response->json();
     }
 
-    public function sendNotification($chatId,$message)
+    public function sendNotification($chatId,$message,$replyMarkup = null)
     {
         $token = env('TELEGRAM_NOTIFICATION_BOT_TOKEN');
         $url = "https://api.telegram.org/bot{$token}/sendMessage";
@@ -412,7 +412,10 @@ $clientService = app(ClientServiceInterface::class);
             'chat_id' => $chatId,
             'text'    => $message,
         ];
-
+if ($replyMarkup) {
+        $data['reply_markup'] = json_encode($replyMarkup);
+    }
+        
         $response = Http::withHeaders($headers)->post($url, $data);
 
         if ($response->failed()) {
