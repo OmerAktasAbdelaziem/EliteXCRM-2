@@ -77,7 +77,7 @@ class TelegramBot
 
         try {
             $response = Http::withHeaders($this->headers)->post($url, $params);
-
+//dd($url);
             if ($response->successful()) {
                 $result = ['success' => true, 'body' => $response->json()];
             } else {

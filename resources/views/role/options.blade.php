@@ -31,6 +31,50 @@
     background: white !important;
 }
 
+/* Modern Permissions Design for updated form */
+.modern-section .permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    contain: layout;
+}
+
+/* Update permission cards for modern design */
+.modern-section .permission-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modern-section .permission-card:hover {
+    border-color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+    transform: translateY(-2px);
+}
+
+.modern-section .permission-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modern-section .permission-title {
+    font-weight: 600;
+    color: #111827;
+    font-size: 1.1rem;
+}
+
 /* Modern Permissions Design */
 .permissions-grid {
     display: grid;
@@ -454,6 +498,10 @@
                 <div class="permission-option">
                     <input type="checkbox" name="options[leads_delete]" value="1" id="leads_delete" @if (isset($role->options['leads_delete'])) checked @endif />
                     <label for="leads_delete">Delete</span>
+                </div>
+                <div class="permission-option">
+                    <input type="checkbox" name="options[leads_export]" value="1" id="leads_export" @if (isset($role->options['leads_export'])) checked @endif />
+                    <label for="leads_export">Export</span>
                 </div>
                 <div class="permission-option">
                     <input type="checkbox" data-col="main_tp" name="options[leads_main_tp]" value="1" id="leads_main_tp" @if (isset($role->options['leads_main_tp'])) checked @endif />

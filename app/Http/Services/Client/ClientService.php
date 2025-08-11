@@ -13,9 +13,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as supportCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 //Models
 use App\Models\User;
+use App\Models\Action;
+use App\Models\Client;
 
 class ClientService implements ClientServiceInterface {
 

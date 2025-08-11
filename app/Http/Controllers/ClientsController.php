@@ -707,6 +707,7 @@ class ClientsController extends Controller
             'broker',
             'users',
             'teams',
+            'options',
             'tab',
             'hot',
             'new',
@@ -1835,6 +1836,117 @@ $broker_id      = $client->broker_id;
         return response($mpdf->Output('', 'S'), 200)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
+
+    public function export(Request $request)
+    {
+        // Check if user is Admin
+        if (Auth::user()->role->name !== 'Admin') {
+            abort(403, 'Unauthorized access to export functionality.');
+        }
+
+        $options = $this->userService->getUserOptions(Auth::user());
+        $teams = $this->getTeams($options);
+        $users = $this->getUsers($teams);
+
+        // Build query for clients export
+        $query = Client::where('clients.deleted', 0)
+            ->leftJoin('users', 'clients.user_id', '=', 'users.id')
+            ->leftJoin('statuses', 'clients.status_id', '=', 'statuses.id')
+            ->select(
+                'clients.*',
+                'users.name as assigned_user',
+                'statuses.name as status_name'
+            );
+
+        // Apply user filter based on permissions
+        $query->where(function ($q) use ($users, $options) {
+            $q->whereIn('clients.user_id', $users);
+            if (isset($options['leads_data_show_unassigned_leads'])) {
+                $q->orWhereNull('clients.user_id');
+            }
+        });
+
+        // Apply filters from request
+        if ($request->filled('assigned_user')) {
+            $query->where('clients.user_id', $request->assigned_user);
+        }
+
+        if ($request->filled('country')) {
+            $query->where('clients.country', $request->country);
+        }
+
+        if ($request->filled('account_type')) {
+            $query->where('clients.account_type', $request->account_type);
+        }
+
+        if ($request->filled('include_status') && is_array($request->include_status)) {
+            $query->whereIn('clients.status_id', $request->include_status);
+        }
+
+        if ($request->filled('exclude_status') && is_array($request->exclude_status)) {
+            $query->whereNotIn('clients.status_id', $request->exclude_status);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->where('clients.created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->where('clients.created_at', '<=', $request->date_to . ' 23:59:59');
+        }
+
+        // Get the clients
+        $clients = $query->get();
+
+        // Create CSV content
+        $filename = 'clients_export_' . now()->format('Ymd_His') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($clients) {
+            $file = fopen('php://output', 'w');
+            
+            // CSV Header
+            fputcsv($file, [
+                'ID',
+                'First Name',
+                'Last Name',
+                'Email',
+                'Phone',
+                'Country',
+                'Account Type',
+                'Status',
+                'Assigned User',
+                'Registration Date',
+                'FTD Date',
+                'Created At'
+            ]);
+
+            // CSV Data
+            foreach ($clients as $client) {
+                fputcsv($file, [
+                    $client->id,
+                    $client->first_name,
+                    $client->last_name,
+                    $client->email,
+                    $client->phone,
+                    $client->country,
+                    $client->account_type,
+                    $client->status_name,
+                    $client->assigned_user,
+                    $client->registration_date,
+                    $client->ftd_date,
+                    $client->created_at
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
 

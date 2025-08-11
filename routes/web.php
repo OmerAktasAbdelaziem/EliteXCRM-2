@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function (Router $router) {
     $router->middleware(['role:leads_create'])->group(function (Router $router) {
         $router->post('client/excell/upload', [ClientsController::class, 'excelUpload'])->name('client.excel.upload');
         $router->post('client/excell/check',  [ClientsController::class, 'excelCheck'])->name('client.excel.check');
+        $router->post('client/export',        [ClientsController::class, 'export'])->name('client.export');
         $router->get('client/create',         [ClientsController::class, 'create'])->name('client.create');
         $router->post('client',               [ClientsController::class, 'store'])->name('client.store');
     });

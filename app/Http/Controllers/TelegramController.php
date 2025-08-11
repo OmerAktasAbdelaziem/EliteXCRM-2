@@ -23,7 +23,7 @@ class TelegramController extends Controller
         
     }
     public function inbound(Request $request)
-    {die('a');
+
         if ($request->message) {
             $reply_to_message = $request->message['message_id'];
             $chat_id = $request->message['from']['id'];
@@ -184,7 +184,7 @@ class TelegramController extends Controller
                         'user_id'   => $userId,
                     ]);
 
-                    $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
+                    $ttt = $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Assigned User changed to {$user->username} successfully ✅";
                     break;
                     

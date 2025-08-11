@@ -32,6 +32,12 @@
                     @enderror
                 </div>
             @endif
+            @if (Auth::user()->role->name === 'Admin')
+                <button type="button" class="btn btn-success text-white text-center w-auto mx-1" data-bs-toggle="modal" data-bs-target="#exportModal-{{$check_type}}">
+                    <i class="bx bx-download me-2"></i>
+                    Export Clients
+                </button>
+            @endif
             @if (isset($options['leads_can_update']))
                 <button type="button" class="btn btn-primary text-white text-center w-auto modal-btn multi-edit-btn mx-1" data-bs-toggle="modal" data-bs-target="#multiEdit-{{$check_type}}">
                     <span class="number">0</span>
@@ -416,6 +422,111 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" form="addemployee" formmethod="POST" formaction="{{ route('client.delete') }}" href="javascript:;" class="btn btn-danger">Delete</button>
             </div>
+            </div>
+        </div>
+    </div>
+@endif
+
+@if (Auth::user()->role->name === 'Admin')
+    <div class="modal fade" id="exportModal-{{$check_type}}" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">Export Clients</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('client.export') }}" id="export_form-{{$check_type}}">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Assigned User</label>
+                                <select class="form-select" name="assigned_user">
+                                    <option value="">All Users</option>
+                                    @if(isset($users))
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Country</label>
+                                <select class="form-select" name="country">
+                                    <option value="">All Countries</option>
+                                    <option value="Afghanistan">Afghanistan</option>
+                                    <option value="Albania">Albania</option>
+                                    <option value="Algeria">Algeria</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Austria">Austria</option>
+                                    <option value="Belgium">Belgium</option>
+                                    <option value="Brazil">Brazil</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="China">China</option>
+                                    <option value="France">France</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="India">India</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="Mexico">Mexico</option>
+                                    <option value="Netherlands">Netherlands</option>
+                                    <option value="Spain">Spain</option>
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="United States">United States</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Account Type</label>
+                                <select class="form-select" name="account_type">
+                                    <option value="">All Account Types</option>
+                                    <option value="demo">Demo</option>
+                                    <option value="real">Real</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Include Status</label>
+                                <select class="form-select" name="include_status[]" multiple>
+                                    @if(isset($statuses))
+                                        @foreach($statuses as $status)
+                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Exclude Status</label>
+                                <select class="form-select" name="exclude_status[]" multiple>
+                                    @if(isset($statuses))
+                                        @foreach($statuses as $status)
+                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Date From</label>
+                                <input type="date" class="form-control" name="date_from">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Date To</label>
+                                <input type="date" class="form-control" name="date_to">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="export_form-{{$check_type}}" class="btn btn-success">
+                        <i class="bx bx-download me-2"></i>Export
+                    </button>
+                </div>
             </div>
         </div>
     </div>

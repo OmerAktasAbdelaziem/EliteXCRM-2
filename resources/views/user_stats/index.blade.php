@@ -750,6 +750,15 @@
         <div class="col-12">
             <div class="card clean-card">
                 <div class="card-body pt-2">
+                    <!-- Debug Information -->
+                    @if(config('app.debug'))
+                        <div class="alert alert-info">
+                            <strong>Debug Info:</strong> 
+                            Total Users: {{ count($userStats) }} | 
+                            All Users Available: {{ $allUsers->count() }} |
+                            Selected User IDs: {{ implode(', ', $selectedUserIds ?? []) }}
+                        </div>
+                    @endif
                     <div class="table-responsive">
                         <table class="table stats-table table-hover align-middle mb-0">
                             <thead>
@@ -1141,31 +1150,284 @@
     </div>
 </div>
 
-<!-- Modal event handler for cleanup -->
+@endsection
+
+@section('script')
+<script src="{{ asset('js/user-stats.js') }}"></script>
 <script>
+// Page-specific variables that need PHP data
+window.csrfToken = '{{ csrf_token() }}';
+
+// Additional functions that require PHP data
+function showUserReport(userId, username, days, dateFrom, dateTo, filterType = null) {
+    const modal = new bootstrap.Modal(document.getElementById('userReportModal'));
+    
+    const reportTitle = document.getElementById('userReportTitle');
+    const reportContent = document.getElementById('userReportContent');
+    
+    let title = `${username} - Report`;
+    if (days === 'yesterday') {
+        title += ' (Yesterday)';
+    } else if (days === '1') {
+        title += ' (Today)';
+    } else {
+        title += ` (${days} days)`;
+    }
+    
+    if (filterType) {
+        title += ` - ${filterType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+    }
+    
+    reportTitle.textContent = title;
+    reportContent.innerHTML = '<div class="text-center p-4"><i class="bx bx-loader-alt bx-spin" style="font-size: 2rem;"></i><p class="mt-2">Generating report...</p></div>';
+    
+    modal.show();
+    
+    const params = {
+        user_id: userId,
+        days: days,
+        date_from: dateFrom,
+        date_to: dateTo
+    };
+    
+    if (filterType) {
+        params.filter_type = filterType;
+    }
+    
+    $.ajax({
+        url: '{{ route("user.stats.report") }}',
+        method: 'GET',
+        data: params,
+        success: function(response) {
+            reportContent.innerHTML = response;
+        },
+        error: function() {
+            reportContent.innerHTML = '<div class="alert alert-danger">Error generating report.</div>';
+        }
+    });
+}
+
+function showStatusChangedClients(userId, username) {
+    const modal = new bootstrap.Modal(document.getElementById('clientDetailsModal'));
+    const modalTitle = document.getElementById('clientDetailsModalLabel');
+    const modalBody = document.querySelector('#clientDetailsModal .modal-body');
+    
+    modalTitle.textContent = `Status Changes - ${username}`;
+    modalBody.innerHTML = '<div class="text-center p-4"><i class="bx bx-loader-alt bx-spin" style="font-size: 2rem;"></i><p class="mt-2">Loading status changes...</p></div>';
+    
+    modal.show();
+    
+    $.ajax({
+        url: `/user-stats/status-changed-clients/${userId}`,
+        method: 'GET',
+        success: function(response) {
+            // Process JSON response and render as HTML
+            renderStatusChangedClientsTable(response, modalBody);
+        },
+        error: function() {
+            modalBody.innerHTML = '<div class="alert alert-danger">Error loading status changes.</div>';
+        }
+    });
+}
+
+function renderStatusChangedClientsTable(data, container) {
+    if (!data.clients || data.clients.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bx bx-info-circle mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+                <h5 class="text-muted">No Status Changes Found</h5>
+                <p class="mb-0">No new clients created today have changed their status to "Call Back" or "No Answer".</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <div class="mb-4">
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <i class="bx bx-refresh me-3" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <strong>Today's New Clients with Status Changes</strong><br>
+                        <small class="text-muted">
+                            New clients added today that have been changed to "Call Back" or "No Answer"<br>
+                            Total Changes: ${data.total_changed} | 
+                            No Answer: ${data.no_answer_count} | 
+                            Callbacks: ${data.callback_count}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Client Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th class="text-center">Current Status</th>
+                        <th class="text-center">Created Today</th>
+                        <th class="text-center">Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    data.clients.forEach(function(client) {
+        const statusBadgeClass = client.sales_status === 'No Answer' ? 'bg-danger' :
+                                client.sales_status === 'Call Back' ? 'bg-warning' : 'bg-secondary';
+        
+        const statusIcon = client.sales_status === 'No Answer' ? 'bx-phone-off' :
+                          client.sales_status === 'Call Back' ? 'bx-phone-call' : 'bx-user';
+
+        const createdDate = new Date(client.created_at).toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const updatedDate = new Date(client.updated_at).toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        html += `
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar me-3" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                            ${client.first_name.charAt(0)}${client.last_name.charAt(0)}
+                        </div>
+                        <div>
+                            <h6 class="mb-0">${client.first_name} ${client.last_name}</h6>
+                            <small class="text-muted">ID: ${client.id}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>${client.phone1 || '-'}</td>
+                <td>${client.email || '-'}</td>
+                <td class="text-center">
+                    <span class="badge ${statusBadgeClass} px-3 py-2">
+                        <i class="bx ${statusIcon} me-1"></i>${client.sales_status}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <small class="text-muted">${createdDate}</small>
+                </td>
+                <td class="text-center">
+                    <small class="text-success">${updatedDate}</small>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+function transferSelectedClients() {
+    const selectedCheckboxes = document.querySelectorAll('.client-checkbox:checked');
+    const transferToUserId = document.getElementById('transferToUser').value;
+    
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one client to transfer.');
+        return;
+    }
+    
+    if (!transferToUserId) {
+        alert('Please select a user to transfer clients to.');
+        return;
+    }
+    
+    const selectedClients = Array.from(selectedCheckboxes).map(checkbox => ({
+        id: checkbox.getAttribute('data-client-id'),
+        name: checkbox.getAttribute('data-client-name')
+    }));
+    
+    const transferToUserSelect = document.getElementById('transferToUser');
+    const targetUserName = transferToUserSelect.options[transferToUserSelect.selectedIndex].text;
+    
+    const clientNames = selectedClients.map(client => client.name).join(', ');
+    const confirmMessage = `Are you sure you want to transfer ${selectedClients.length} client(s) to ${targetUserName}?\n\nClients: ${clientNames}`;
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+    
+    const transferBtn = document.querySelector('[onclick="transferSelectedClients()"]');
+    const originalText = transferBtn.innerHTML;
+    transferBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin me-1"></i>Transferring...';
+    transferBtn.disabled = true;
+    
+    $.ajax({
+        url: '/user-stats/transfer-clients',
+        method: 'POST',
+        data: {
+            client_ids: selectedClients.map(client => client.id),
+            target_user_id: transferToUserId,
+            _token: window.csrfToken
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotificationToast('Transfer Successful', 
+                    `Successfully transferred ${response.transferred_count} client(s) to ${targetUserName}`, false);
+                
+                clearClientSelection();
+                
+                if (window.currentModalData) {
+                    showClientDetails(
+                        window.currentModalData.userId,
+                        window.currentModalData.status,
+                        window.currentModalData.days,
+                        window.currentModalData.username
+                    );
+                }
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                
+            } else {
+                alert('Transfer failed: ' + (response.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Transfer failed. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            alert(errorMessage);
+        },
+        complete: function() {
+            transferBtn.innerHTML = originalText;
+            transferBtn.disabled = false;
+        }
+    });
+}
+
+// Modal cleanup
 document.addEventListener('DOMContentLoaded', function() {
     const modalElement = document.getElementById('clientDetailsModal');
     if (modalElement) {
         modalElement.addEventListener('hidden.bs.modal', function() {
-            // Reset checkbox selections and transfer section when modal is closed
             if (typeof clearClientSelection === 'function') {
                 clearClientSelection();
             }
         });
     }
-});
-</script>
-
-@endsection
-
-@section('script')
-<script>
-// Real-time Updates System
-let updateInterval;
-let lastUpdateTime = Date.now();
-
-// Initialize real-time features
-document.addEventListener('DOMContentLoaded', function() {
+    
     initializeRealTimeUpdates();
     requestNotificationPermission();
     initializeUserSelectionCollapse();
@@ -1913,7 +2175,7 @@ function exportUserReport(username, period) {
     window.URL.revokeObjectURL(url);
 }
 
-}
+
 
 function showClientDetails(userId, status, days, username) {
     // Store global variables for filtering
@@ -1986,7 +2248,7 @@ function showStatusChangedClients(userId, username) {
     };
     
     $('#clientDetailsModal').modal('show');
-    $('#clientDetailsModalLabel').text(`${username} - New Clients Status Changes - Today's New Clients (New to No Answer/Callback)`);
+    $('#clientDetailsModalLabel').text(`${username} - Today's New Clients Status Changes`);
     
     // Show status change filter instead of comments filter
     $('#modalCommentsFilter').hide();
@@ -2159,8 +2421,8 @@ function renderStatusChangedClientsTable(response) {
         <div class="mb-4">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>New Clients Status Changes: <span class="badge bg-info">${response.total_changed}</span></h6>
-                    <p class="text-muted mb-0">Period: ${response.period || 'Today'} - New clients only</p>
+                    <h6>Today's New Clients Status Changes: <span class="badge bg-info">${response.total_changed}</span></h6>
+                    <p class="text-muted mb-0">Period: ${response.period || 'Today'} - New clients that changed status</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <h6>
@@ -2173,7 +2435,7 @@ function renderStatusChangedClientsTable(response) {
         
         <div class="row mb-4">
             <div class="col-12">
-                <h6 class="text-dark">New Clients with Status Changes:</h6>
+                <h6 class="text-dark">Today's New Clients with Status Changes:</h6>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-light">
@@ -2237,7 +2499,7 @@ function renderStatusChangedClientsTable(response) {
                             </small>
                             <i class="bx bx-down-arrow-alt text-muted"></i>
                             <small class="text-success d-block">
-                                <strong>Updated:</strong> ${new Date(client.updated_at).toLocaleDateString()} 
+                                <strong>Changed:</strong> ${new Date(client.updated_at).toLocaleDateString()} 
                                 <span class="badge ${statusBadgeClass}">${client.sales_status}</span>
                             </small>
                         </div>
@@ -2251,7 +2513,7 @@ function renderStatusChangedClientsTable(response) {
                 <td colspan="6" class="text-center py-4">
                     <div class="text-muted">
                         <i class="bx bx-info-circle mb-2" style="font-size: 2rem;"></i>
-                        <p class="mb-0">No new clients with status changes found matching the selected filter.</p>
+                        <p class="mb-0">No new clients with status changes found for today.</p>
                     </div>
                 </td>
             </tr>
