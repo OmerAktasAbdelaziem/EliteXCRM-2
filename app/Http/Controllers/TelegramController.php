@@ -91,6 +91,11 @@ class TelegramController extends Controller
     }*/
     public function inbound(Request $request)
 {
+        
+        if ($request->callback_query) {
+    \Log::info('TelegramAAAAAAAAAReceived callback_query:', $request->callback_query->all());
+  
+}
     // ========= Handle messages =========
     if ($request->message) {
         $reply_to_message = $request->message['message_id'];
