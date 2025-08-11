@@ -430,7 +430,7 @@ $clientService = app(ClientServiceInterface::class);
     {
         $update = $request->all();
 
-    // إذا جاء callback_query
+   
     if (isset($update['callback_query'])) {
         $chat_id = $update['callback_query']['from']['id'];
         $callbackData = $update['callback_query']['data'];
@@ -440,16 +440,29 @@ $clientService = app(ClientServiceInterface::class);
             $type   = $matches[2]; // deposit or withdraw
             $id     = $matches[3]; // ID 
 
+
+$telegramChat = TelegramChat::where('verification_level',1)->find($chat_id);
+
+
+         $authUser = User::findorFail($telegramChat->user_id);
+                   Auth::login($authUser);
+    
+          
+          
           
             if ($action === 'accept') {
-                
+                $request->status = 'accepted';
+                $request->comment = 'Accepted by Telegram Bot';
                 // RequestModel::where('id', $id)->update(['status' => 'accepted']);
-                $dd = app(MainTPController::class)->handle_request($request, $id);
-                $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted. $dd");
+                
+                
             } elseif ($action === 'reject') {
-                // RequestModel::where('id', $id)->update(['status' => 'rejected']);
-                $this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");
+                 $request->status = 'rejected';
+                $request->comment = 'Rejected by Telegram Bot';
+                
             }
+            app(MainTPController::class)->handle_request($request, $id);
+            $this->sendNotification($chat_id, " $type Request #$id has been $request->status.");
 
             //Hide loading and answer telegram
             return response()->json([
