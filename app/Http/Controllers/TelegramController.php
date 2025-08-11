@@ -16,12 +16,12 @@ use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 class TelegramController extends Controller
 {
     protected $clientService;
-    public function __construct(
+    /*public function __construct(
             ClientServiceInterface $clientService,
             ) {
         $this->clientService = $clientService;
         
-    }
+    }*/
     public function inbound(Request $request)
     {//die('a');
         if ($request->message) {
@@ -183,8 +183,9 @@ class TelegramController extends Controller
                         'client_id' => $leadId,
                         'user_id'   => $userId,
                     ]);
-
-                    $ttt = $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
+                    //TODO:following line sohuld be called by Dependencies in constructor, but science telegram controller called as instance in requests command we called client service in this way, it should be fixed after handeling requests in commands
+$clientService = app(ClientServiceInterface::class);
+                    $clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Assigned User changed to {$user->username} successfully ✅";
                     break;
                     
@@ -201,8 +202,8 @@ class TelegramController extends Controller
                         'sales_status' => $status,
                         'client_id'    => $leadId,
                     ]);
-
-                    $this->clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
+//TODO:following line sohuld be called by Dependencies in constructor, but science telegram controller called as instance in requests command we called client service in this way, it should be fixed after handeling requests in commands
+                    $clientService->multiEdit($request, Auth::user());//$clientController->multiEdit($request);
                     $text = "✅ Status changed to {$status} successfully ✅";
                     break;
         
