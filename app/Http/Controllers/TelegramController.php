@@ -444,8 +444,8 @@ $clientService = app(ClientServiceInterface::class);
             if ($action === 'accept') {
                 
                 // RequestModel::where('id', $id)->update(['status' => 'accepted']);
-                app(MainTPController::class)->handle_request($request, $id);
-                $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted.");
+                $dd = app(MainTPController::class)->handle_request($request, $id);
+                $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted. $dd");
             } elseif ($action === 'reject') {
                 // RequestModel::where('id', $id)->update(['status' => 'rejected']);
                 $this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");

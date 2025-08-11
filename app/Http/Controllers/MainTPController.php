@@ -902,7 +902,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
 
     public function handle_request(Request $request,$id = null)
     {
-        
+        return "aa";
         
         //gohere request
         $moneyTrx = MoneyTrx::findOrFail($id??$request->id);
