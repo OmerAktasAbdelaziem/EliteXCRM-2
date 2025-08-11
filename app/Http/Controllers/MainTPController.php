@@ -94,8 +94,7 @@ protected $userService;
         $tab                  = $request->input('tab', 'info');
         $to                   = Carbon::now()->format('Y-m-d H:i:s');
         
-        $broker_id            = $client->broker_id;
-        
+        $broker_id            = $client->broker_id??0;
         $statuses = Status::where(function ($query) use ($parts) {
             $first = true;
             foreach ($parts as $part) {
@@ -243,19 +242,19 @@ protected $userService;
         $next = $nextClient ? 1 : 0;
         $pre  = $preClient ? 1 : 0;
 
-        $moneytrx_request_data = MoneyTrx::where('broker_id',$client->broker_id)->where('status', 'pending')->get();
-        $money_trx_data        = $this->get_trx_data($client->broker_id,$moneyTrx_fromTo);
+        $moneytrx_request_data = MoneyTrx::where('broker_id',$broker_id)->where('status', 'pending')->get();
+        $money_trx_data        = $this->get_trx_data($broker_id,$moneyTrx_fromTo);
         $scripts_data          = $this->get_scripts_data($client->id);
         //print_r($scripts_data);die('aaa');
-        $opened_data           = $this->get_opened_data($client->broker_id,$opened_fromTo);
-        $closed_data           = $this->get_closed_data($client->broker_id,$closed_fromTo);
+        $opened_data           = $this->get_opened_data($broker_id,$opened_fromTo);
+        $closed_data           = $this->get_closed_data($broker_id,$closed_fromTo);
          
         $bank_data             = Bank::latest()->get();
         $session = null;
         if ($client->source == 'BNC') {
             $session = 1;
         }
-        $finance               = $this->orderService->getFinancialData($client->broker_id);//$this->get_financial_data($client->broker_id,$session);
+        $finance               = $this->orderService->getFinancialData($broker_id);//$this->get_financial_data($client->broker_id,$session);
 
         if ($tab == 'opened') {
             $opened_data = $opened_data->latest()->paginate($limit, ['*'], 'page', $page);
