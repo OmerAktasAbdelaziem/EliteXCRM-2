@@ -48,8 +48,8 @@ class Requests extends Command
         $replyMarkup = [
             'inline_keyboard' => [
                 [
-                    ['text' => '✅ Accept', 'callback_data' => 'accept_' . $request->id],
-                    ['text' => '❌ Reject', 'callback_data' => 'reject_' . $request->id]
+                    ['text' => '✅ Accept', 'callback_data' => 'accept_' . $request->type . '_' . $request->id],
+                    ['text' => '❌ Reject', 'callback_data' => 'reject_' . $request->type . '_' . $request->id]
                 ]
             ]
         ];

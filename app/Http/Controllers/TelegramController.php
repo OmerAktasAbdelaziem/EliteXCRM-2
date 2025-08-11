@@ -22,7 +22,7 @@ class TelegramController extends Controller
         $this->clientService = $clientService;
         
     }*/
-    public function inbound(Request $request)
+    /*public function inbound(Request $request)
     {
         if ($request->message) {
             $reply_to_message = $request->message['message_id'];
@@ -88,7 +88,106 @@ class TelegramController extends Controller
                 }
             }
         }
+    }*/
+    public function inbound(Request $request)
+{
+    // ========= التعامل مع الرسائل العادية =========
+    if ($request->message) {
+        $reply_to_message = $request->message['message_id'];
+        $chat_id = $request->message['from']['id'];
+
+        if (isset($request->message['text'])) {
+            $message = strip_tags($request->message['text']);
+            $text = "Welcome to GlowUp CRM Bot🤩🤩🤩\nPlease write your Co Admin Email 🙏🙏🙏";
+            $telegramChat = TelegramChat::find($chat_id);
+
+            if ($telegramChat) {
+                info('Telegram Bot : '.$telegramChat->user?->username.' :'.$message);
+            }
+
+            if (!$telegramChat) {
+                $inputs = [
+                    'id' => $chat_id,
+                ];
+                TelegramChat::create($inputs);
+            } else {
+                $text = $this->tryAccess($telegramChat, $message);
+            }
+
+            if ($text) {
+                $telegramBot = new TelegramBot();
+                if ($text == 'options') {
+                    $options = 'options';
+                }
+                $result = $telegramBot->sendMessage($text, $chat_id, $reply_to_message, null, null , $options ?? null);
+
+                return response()->json($result, 200);
+            }
+        }
     }
+
+    // ========= التعامل مع ضغط أزرار Accept / Reject =========
+    if ($request->callback_query) {
+        $chat_id = $request->callback_query['from']['id'];
+        $callbackData = $request->callback_query['data'];
+
+        // مثال: accept_deposit_123
+        if (preg_match('/^(accept|reject)_(deposit|withdraw)_(\d+)$/', $callbackData, $matches)) {
+            $action = $matches[1]; // accept أو reject
+            $type   = $matches[2]; // deposit أو withdraw
+            $id     = $matches[3]; // ID الطلب
+
+            // هنا المنطق الخاص بك لقبول/رفض الطلب
+            if ($action === 'accept') {
+                // RequestModel::where('id', $id)->update(['status' => 'accepted']);
+                $this->sendNotification($chat_id, "✅ $type Request #$id has been accepted.");
+            } elseif ($action === 'reject') {
+                // RequestModel::where('id', $id)->update(['status' => 'rejected']);
+                $this->sendNotification($chat_id, "❌ $type Request #$id has been rejected.");
+            }
+
+            // الرد على الكول باك عشان يختفي الـ Loading
+            return response()->json([
+                'method' => 'answerCallbackQuery',
+                'callback_query_id' => $request->callback_query['id'],
+                'text' => 'Action processed successfully'
+            ]);
+        }
+
+        // ========= باقي منطق الـ callback_query القديم =========
+        if (isset($request->callback_query['message']['reply_to_message'])) {
+            $reply_to_message = $request->callback_query['message']['reply_to_message']['message_id'];
+            $leadId = $request->callback_query['message']['reply_to_message']['text'];
+
+            if (isset($callbackData)) {
+                $option = strip_tags($callbackData);
+
+                $telegramChat = TelegramChat::find($chat_id);
+                if ($telegramChat) {
+                    $user = User::find($telegramChat->user_id);
+                    if ($user && $user->co_pipeline()->exists()) {
+                        $pipeline_id = $user->co_pipeline->pluck('id');
+                        $text = $this->optionsResponse($leadId, $option, $pipeline_id, $user->id);
+                    }
+                }
+
+                if (isset($text)) {
+                    $telegramBot = new TelegramBot();
+                    $options = null;
+                    if ($text == 'change_assigned_user') {
+                        $options = 'users';
+                    }
+                    if ($text == 'change_status') {
+                        $options = 'statuses';
+                    }
+                    $result = $telegramBot->sendMessage($text, $chat_id, $reply_to_message, null, null, $options);
+
+                    return response()->json($result, 200);
+                }
+            }
+        }
+    }
+}
 
     public function tryAccess($telegramChat, $message)
     {
