@@ -59,6 +59,12 @@ class SubscriptionController extends Controller {
         $inputs['parts_count'] = $request->parts_count;
         $inputs['teams_count'] = $request->teams_count;
         $inputs['users_count'] = $request->users_count;
+        $inputs['real_accounts'] = $request->real_accounts;
+        $inputs['demo_accounts'] = $request->demo_accounts;
+        $inputs['active'] = $request->active??0;
+        if($request->active == 1){
+            $this->subscriptionService->updateByFilters([['field'=>'id','conditions'=>['='=>$request->pipeline]]], ['active'=>0]);
+        }
 
         $this->subscriptionService->create($inputs);
         return redirect()->route('pipeline.show', ['id' => $inputs['pipeline']])->with('success', 'Pipeline created successfully');
@@ -97,7 +103,12 @@ class SubscriptionController extends Controller {
         $inputs['parts_count'] = $request->parts_count;
         $inputs['teams_count'] = $request->teams_count;
         $inputs['users_count'] = $request->users_count;
-
+        $inputs['real_accounts'] = $request->real_accounts;
+        $inputs['demo_accounts'] = $request->demo_accounts;
+        $inputs['active'] = $request->active??0;
+        if($request->active == 1){
+            $this->subscriptionService->updateByFilters([['field'=>'id','conditions'=>['='=>$request->pipeline]]], ['active'=>0]);
+        }
         $this->subscriptionService->update($id, $inputs);
             
         return redirect()->route('pipeline.show', $subscription->pipeline)->with('success', 'Subscription updated successfully');

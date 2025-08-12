@@ -11,6 +11,7 @@ interface SubscriptionRepositoryInterface{
    public function create(array $data): Collection;
      public function update(int $id,array $data):int;
      public function updateBulk(array $ids,array $data):int;
+     public function updateByFilters(array $params,array $data): int;
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
 }

@@ -170,6 +170,8 @@
                                                 <th>Parts Count</th>
                                                 <th>Teams Count</th>
                                                 <th>Users Count</th>
+                                                <th>Real Accounts</th>
+                                                <th>Demo Account</th>
                                                 <th>Active</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -182,7 +184,9 @@
                                                 <td>{{$supscription->parts_count}}</td>
                                                 <td>{{$supscription->teams_count}}</td>
                                                 <td>{{$supscription->users_count}}</td>
-                                                <td></td>
+                                                <td>{{$supscription->real_accounts}}</td>
+                                                <td>{{$supscription->demo_accounts}}</td>
+                                                <td>{!!$supscription->active == 1? "<p style='color:green;'>Yes</p>" : "<p style='color:red;'>No</p>"!!}</td>
                                                 <td>
                                                     @if (isset($options['subscription_update']))<a  href="{{ route('subscription.edit', $supscription->id) }}" ><i class="fa-solid fa-pen-to-square"></i></a>@endif   
                                                     @if (isset($options['subscription_delete']))
@@ -221,6 +225,18 @@
 <script src="{{ url('assets/plugins/select2/js/select2.min.js?v2.944') }}"></script>
 <script src="{{ url('assets/js/form-select2.min.js?v2.944') }}"></script>
 <script>
-       new DataTable('#subscriptions');
+     
+       $(document).ready(function() {
+    $('#subscriptions').DataTable({
+        order: [
+            [0, 'desc'],  
+            [1, 'desc']  
+        ],
+       
+        columnDefs: [
+            { orderable: false, targets: -1 } // Lastt column not allowed to be ordered
+        ]
+    });
+});
 </script>
 @endsection

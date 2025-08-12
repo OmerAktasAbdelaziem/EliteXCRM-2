@@ -43,6 +43,11 @@ class SubscriptionService implements SubscriptionServiceInterface {
     {
         return $this->subscriptionRepository->updateBulk($ids, $data);
     }
+    
+    public function updateByFilters(array $params, array $data): int{
+        $results = $this->subscriptionRepository->updateByFilters($params,$data);
+        return $results;
+    }
 
     public function createBulk(array $data): bool {
         return $this->subscriptionRepository->createBulk($data);
@@ -50,6 +55,21 @@ class SubscriptionService implements SubscriptionServiceInterface {
 
     public function deleteByParams(array $params): int {
         return $this->subscriptionRepository->deleteByIDs($Ids);
+    }
+    public function checkActiveSubscription():void{
+        /*$activeSubscriptions = $this->getByFilters([['field'=>'active','conditions'=>['='=>1]]]);
+        foreach($activeSubscriptions as $activeSubscription){
+            
+        }*/
+        $this->updateByFilters([
+            ['field'=>'active','conditions'=>['='=>1]],
+            ['group'=>[
+            ['field'=>'start_date','conditions'=>['>=' => now()]],
+            ['field'=>'end_date','conditions'=>['<=' => now(),'or'=>true]],
+            ],
+                //'or' => true
+                ],
+             ],['active'=>0]);
     }
     
     

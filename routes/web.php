@@ -47,7 +47,7 @@ Auth::routes();
 Route::get('client/get_pnl/{client_id}/{asset_id?}/{from?}', [ClientsController::class, 'webtrader_get_pnl'])->name('webtrader.get_pnl');
 
 
-Route::middleware(['auth'])->group(function (Router $router) {
+Route::middleware(['auth', 'check.subscription'])->group(function (Router $router) {
 
     $router->middleware(['role:leads_list'])->group(function (Router $router) {
         $router->get('', function () {

@@ -38,18 +38,22 @@ use Mpdf\Mpdf;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
+use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 
 class ClientsController extends Controller
 {
     protected $clientService;
     protected $userService;
     protected $orderService;
+    protected $subscriptionService;
     public function __construct(
             UserServiceInterface $userService,
             OrderServiceInterface $orderService,
+            SubscriptionServiceInterface $subscriptionService,
             ) {
         $this->userService = $userService;
         $this->orderService = $orderService;
+        $this->subscriptionService = $subscriptionService;
         
     }
    /* public function __construct(
@@ -716,6 +720,7 @@ class ClientsController extends Controller
     
     public function create()
     {
+        
         $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams   = $this->getTeams($options);
         $users   = $this->getUsers($teams)->where('deleted', '!=', true);

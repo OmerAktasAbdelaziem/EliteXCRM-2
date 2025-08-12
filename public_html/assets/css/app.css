@@ -5340,3 +5340,6 @@ input::placeholder {
                                     padding: 20px;
                                     margin-bottom: 10px;
                                 }
+.error-area{
+    margin-top:60px;
+}

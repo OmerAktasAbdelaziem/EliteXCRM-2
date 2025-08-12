@@ -39,6 +39,12 @@
                                                     <tr>
                                                         <th>Name</th>
                                                         <th>Created At</th>
+                                                        <th>Parts<br>Used / Available</th>
+                                                        <th>Teams<br>Used / Available</th>
+                                                        <th>Users<br>Used / Available</th>
+                                                        <th>Real Accounts<br>Used / Available</th>
+                                                        <th>Demo Accounts <br>Used / Available</th>
+                                                        <th>Active Subscription</th>
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
@@ -49,6 +55,12 @@
                                                                 <a @if (isset($options['pipeline_show'])) href="{{ route('pipeline.show', $pipeline->id) }}" @endif>{{$pipeline->name}}</a>
                                                             </td>
                                                             <td>{{date('d/m/Y H:i', strtotime($pipeline->created_at))}}</td>
+                                                            <td>{{$statistics[$pipeline->id]['currentPartsCount']}} / {{$pipeline->subscription->where('active', 1)->first()->parts_count??'0'}}</td>
+                                                            <td>{{$statistics[$pipeline->id]['currentTeamsCount']}} / {{$pipeline->subscription->where('active', 1)->first()->teams_count??'0'}}</td>
+                                                            <td>{{$statistics[$pipeline->id]['currentUsersCount']}} / {{$pipeline->subscription->where('active', 1)->first()->users_count??'0'}}</td>
+                                                            <td>{{$statistics[$pipeline->id]['currentRealAccountsCount']}} / {{$pipeline->subscription->where('active', 1)->first()->real_accounts??'0'}}</td>
+                                                            <td>{{$statistics[$pipeline->id]['currentDemoAccountsCount']}} / {{$pipeline->subscription->where('active', 1)->first()->demo_accounts??'0'}}</td>
+                                                            <td>{!! $pipeline->subscription->where('active', 1)->isNotEmpty() ?"<p style='color:green;'>Yes</p>" : "<p style='color:red;'>No</p>" !!}</td>
                                                             <td><a @if (isset($options['pipeline_show'])) href="{{ route('pipeline.show', $pipeline->id) }}" @endif><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                         </tr>
                                                     @endforeach

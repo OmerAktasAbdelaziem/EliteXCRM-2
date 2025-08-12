@@ -42,6 +42,6 @@ class Pipeline extends Model
     }
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'pipeline');
+        return $this->hasMany(Subscription::class, 'pipeline');
     }
 }

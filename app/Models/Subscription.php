@@ -9,9 +9,12 @@ class Subscription extends Model
         'pipeline',
         'start_date',
         'end_date',
+        'active',
         'parts_count',
         'teams_count',
         'users_count',
+        'real_accounts',
+        'demo_accounts',
         'supscription_type',
     ];
 

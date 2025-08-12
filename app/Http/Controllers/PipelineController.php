@@ -13,28 +13,51 @@ use Illuminate\Support\Facades\Auth;
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
+use App\Http\Services\Organization\Interfaces\PartServiceInterface;
+use App\Http\Services\Organization\Interfaces\TeamServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 
 class PipelineController extends Controller
 {
     protected $clientService;
     protected $userService;
+    protected $partService;
+    protected $teamService;
     protected $subscriptionService;
     public function __construct(
             ClientServiceInterface $clientService,
             UserServiceInterface $userService,
+            PartServiceInterface $partService,
+            TeamServiceInterface $teamService,
             SubscriptionServiceInterface $subscriptionService,
             ) {
         $this->clientService = $clientService;
         $this->userService = $userService;
+        $this->partService = $partService;
+        $this->teamService = $teamService;
         $this->subscriptionService = $subscriptionService;
         
     }
     public function index()
     {
+        $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->first();
         $pipelines = Pipeline::latest()->get();
+        $statistics = [];
+        foreach($pipelines as $pipeline){
+        $currentUsersCount = count($this->userService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]]]));
+        $currentPartsCount = count($this->partService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]]]));
+        $currentTeamsCount = count($this->teamService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]]]));
+        $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]],['field'=>'account_type','conditions'=>['='=>'Real']]]));
+        $currentDemoAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
+        $statistics[$pipeline->id] = ['currentUsersCount'=>$currentUsersCount,'currentPartsCount'=>$currentPartsCount,'currentTeamsCount'=>$currentTeamsCount,'currentRealAccountsCount'=>$currentRealAccountsCount,'currentDemoAccountsCount'=>$currentDemoAccountsCount];
+        }
+        
+        
+        
         return view('pipeline.index',compact(
-            'pipelines'
+            'pipelines',
+            'subscription',
+            'statistics',
         ));
     }
     

@@ -64,6 +64,33 @@
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                    <div class="col-md-4">
+                                    <label for="real_accounts" class="form-label">Allowed Real Accounts</label>
+                                    <div class="input-group">
+                                        <input type="number" name="real_accounts" class="form-control" value="{{$subscription->real_accounts}}">
+                                    </div>
+                                    @error('real_accounts')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                    <div class="col-md-4">
+                                    <label for="demo_accounts" class="form-label">Allowed Demo Accounts</label>
+                                    <div class="input-group">
+                                        <input type="number" name="demo_accounts" class="form-control" value="{{$subscription->demo_accounts}}">
+                                    </div>
+                                    @error('demo_accounts')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                    <div class="col-md-4">
+                                    <label for="active" class="form-label">Active</label>
+                                    <div class="input-group">
+                                        <input type="checkbox" name="active" value="1" {{$subscription->active == 1?'checked':''}}>
+                                    </div>
+                                    @error('active')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 </div>
                                 </div>
                             <p><h3>Duration </h3></p>
@@ -73,18 +100,18 @@
                                     
                                 
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label">Start Date</label>
+                                    <label for="start_date" class="form-label">Start Date</label>
                                     <div class="input-group">
-                                        <input type="datetime-local" name="start_date" class="form-control" value="{{$subscription->start_date}}">
+                                        <input type="datetime-local" id="start_date" name="start_date" class="form-control" value="{{$subscription->start_date}}">
                                     </div>
                                     @error('start_date')
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label">End Date</label>
+                                    <label for="end_date" class="form-label">End Date</label>
                                     <div class="input-group">
-                                        <input type="datetime-local" name="end_date" class="form-control" value="{{$subscription->end_date}}">
+                                        <input type="datetime-local" id="end_date" name="end_date" class="form-control" value="{{$subscription->end_date}}">
                                     </div>
                                     @error('end_date')
                                     <div class="text-danger">{{ $message }}</div>
@@ -93,6 +120,9 @@
                                 </div>
                                 
                                     </div>
+                        
+                    
+                        
 <button type="submit" name="submit" value ="1" class="btn btn-danger px-5">Update</button>
                             </form>
                     @endif

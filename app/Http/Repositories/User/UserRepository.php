@@ -37,7 +37,7 @@ class UserRepository implements UserRepositoryInterface {
         $query->with($with);
     }
     $filteredQuery = $this->filterService->applyFilters($query, $params);
-
+//dd($filteredQuery->toSql());
     
     return $filteredQuery->get();
     }

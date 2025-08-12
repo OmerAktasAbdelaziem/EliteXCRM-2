@@ -60,6 +60,17 @@
         <div class="wrapper">
             @include("layouts.header")
             @include("layouts.top_nav")
+            <div class="error-area">
+                @if ($errors->any())
+                <div class="alert alert-danger" >
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+            </div>
             @yield("wrapper")
             <div class="overlay toggle-icon"></div>
             <footer class="page-footer">

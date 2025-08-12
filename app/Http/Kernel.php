@@ -23,7 +23,12 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\LastSeenMiddleware::class,
         
+        
     ];
+    
+     /*protected $routeMiddleware = [
+    'check.subscription' => \App\Http\Middleware\CheckSubscription::class,
+];*/
 
     /**
      * The application's route middleware groups.
@@ -70,5 +75,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check.api.key' => \App\Http\Middleware\CheckApiKey::class,
+        'check.subscription' => \App\Http\Middleware\CheckSubscription::class,
     ];
 }

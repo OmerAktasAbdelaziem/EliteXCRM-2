@@ -10,6 +10,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\GetAssets::class,
         \App\Console\Commands\HandleDemo::class,
+        \App\Console\Commands\CheckSubscription::class,
+        
         
     ];
 

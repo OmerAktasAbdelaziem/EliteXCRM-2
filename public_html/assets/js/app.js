@@ -185,3 +185,38 @@ $(document).ready(function() {
 	
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const start = document.getElementById('start_date');
+    const end = document.getElementById('end_date');
+
+    function syncConstraints() {
+        // set min for end based on start
+        if (start.value) {
+            end.min = start.value;
+        } else {
+            end.removeAttribute('min');
+        }
+
+        // set max for start based on end
+        if (end.value) {
+            start.max = end.value;
+        } else {
+            start.removeAttribute('max');
+        }
+
+        // if both present but invalid, correct according to your policy
+        // here: if start > end, set end = start
+        if (start.value && end.value && start.value > end.value) {
+            end.value = start.value;
+            end.min = start.value;
+            start.max = end.value;
+        }
+    }
+
+    // run once on load to apply constraints for prefilled values
+    syncConstraints();
+
+    // keep listening to changes afterwards
+    start.addEventListener('change', syncConstraints);
+    end.addEventListener('change', syncConstraints);
+});

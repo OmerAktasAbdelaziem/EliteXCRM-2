@@ -38,7 +38,7 @@
                                 <div class ="section-area">
                                 <div class="row">
                                     <div class="col-md-4">
-                                    <label for="name" class="form-label">Allowed Parts</label>
+                                    <label for="parts_count" class="form-label">Allowed Parts</label>
                                     <div class="input-group">
                                         <input type="number" name="parts_count" class="form-control" value="{{ old('parts_count', '0') }}">
                                     </div>
@@ -47,7 +47,7 @@
                                     @enderror
                                 </div>
                                     <div class="col-md-4">
-                                    <label for="name" class="form-label">Allowed Teams</label>
+                                    <label for="teams_count" class="form-label">Allowed Teams</label>
                                     <div class="input-group">
                                         <input type="number" name="teams_count" class="form-control" value="{{ old('teams_count', '0') }}">
                                     </div>
@@ -56,11 +56,39 @@
                                     @enderror
                                 </div>
                                     <div class="col-md-4">
-                                    <label for="name" class="form-label">Allowed Users</label>
+                                    <label for="users_count" class="form-label">Allowed Users</label>
                                     <div class="input-group">
                                         <input type="number" name="users_count" class="form-control" value="{{ old('users_count', '0') }}">
                                     </div>
                                     @error('users_count')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                   
+                                     <div class="col-md-4">
+                                    <label for="real_accounts" class="form-label">Allowed Real Accounts</label>
+                                    <div class="input-group">
+                                        <input type="number" name="real_accounts" class="form-control" value="{{ old('real_accounts', '0') }}">
+                                    </div>
+                                    @error('real_accounts')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                     <div class="col-md-4">
+                                    <label for="demo_accounts" class="form-label">Allowed Demo Accounts</label>
+                                    <div class="input-group">
+                                        <input type="number" name="demo_accounts" class="form-control" value="{{ old('demo_accounts', '0') }}">
+                                    </div>
+                                    @error('demo_accounts')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                    <div class="col-md-4">
+                                    <label for="active" class="form-label">Active</label>
+                                    <div class="input-group">
+                                        <input type="checkbox" name="active"  value="1" {{ old('active') !== null ? (old('active') == 1 ? 'checked' : '') : 'checked' }}>
+                                    </div>
+                                    @error('active')
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -73,18 +101,18 @@
                                     
                                 
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label">Start Date</label>
+                                    <label for="start_date" class="form-label">Start Date</label>
                                     <div class="input-group">
-                                        <input type="datetime-local" name="start_date" class="form-control" value="{{ old('start_date') }}">
+                                        <input type="datetime-local" id="start_date" name="start_date" class="form-control" value="{{ old('start_date') }}">
                                     </div>
                                     @error('start_date')
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label">End Date</label>
+                                    <label for="end_date" class="form-label">End Date</label>
                                     <div class="input-group">
-                                        <input type="datetime-local" name="end_date" class="form-control" value="{{ old('end_date') }}">
+                                        <input type="datetime-local" id="end_date" name="end_date" class="form-control" value="{{ old('end_date') }}">
                                     </div>
                                     @error('end_date')
                                     <div class="text-danger">{{ $message }}</div>
@@ -93,6 +121,9 @@
                                 </div>
                                 
                                     </div>
+                    
+                                
+                              
 <button type="submit" class="btn btn-danger px-5">Register</button>
                             </form>
                     @endif
