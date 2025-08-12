@@ -916,7 +916,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
         ]);
         $old_status = $moneyTrx->status;
         
-        $inputs = ['status'=>$request->status,'comment'=>$request->comment];
+        $inputs = ['status'=>$request->status,'comment'=>$request->comment,'updated'=>1];
         
         
         $client = $moneyTrx->client;

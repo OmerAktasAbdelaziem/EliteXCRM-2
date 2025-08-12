@@ -21,6 +21,7 @@ class MoneyTrx extends Model
         'status',
         'type',
         'usdt',
+        'updated',
     ];
 
     protected $casts = [

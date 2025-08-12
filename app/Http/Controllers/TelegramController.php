@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\Order\Interfaces\MoneyTransactionServiceInterface;
+
 class TelegramController extends Controller
 {
     protected $clientService;
@@ -343,10 +345,11 @@ $telegramChat = TelegramChat::where('verification_level',1)->find($chat_id);
 
          $authUser = User::findorFail($telegramChat->user_id);
                    Auth::login($authUser);
-    
+    //gohere
           
-          
-          
+          $moneyTransactionService = app(MoneyTransactionServiceInterface::class);
+          $moneyTransactionInfo = $moneyTransactionService->getById($id)->first();
+          if($moneyTransactionInfo->updated == 0){
             if ($action === 'accept') {
                 $request->status = 'accepted';
                 $request->comment = 'Accepted by Telegram Bot';
@@ -360,7 +363,9 @@ $telegramChat = TelegramChat::where('verification_level',1)->find($chat_id);
             }
             app(MainTPController::class)->handle_request($request, $id);
             $this->sendNotification($chat_id, " $type Request #$id has been $request->status.");
-
+}else{
+    $this->sendNotification($chat_id, " $type Request #$id has been updated already from other place.");
+}
             //Hide loading and answer telegram
             return response()->json([
                 'method' => 'answerCallbackQuery',
