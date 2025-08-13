@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 //Services
 use App\Http\Services\User\Interfaces\UserServiceInterface;
@@ -49,25 +50,31 @@ class CheckSubscription
      */
     public function handle(Request $request, Closure $next)
     {
+
+        // Only check subscription for authenticated users
+        if (!Auth::check()) {
+            return $next($request);
+        }
         
-        /*$this->pipelineService->getByFilters([['fields'=>'co_id'],['conditions'=>['='=>Auth::user()->id]]]);
-        //first check if user is admin for pipeline to use co_id in pipelines table instead of pipeline_id in user
-        $subscription = $this->subscriptionService->getByFilters([['fields'=>'active'],['conditions'=>['='=>1]]])->first();
-        //If he wasn't admin so get pipeline_id from users table
-        //TODO: this sould be edited in next version so we should depend only on pipeline_id in users table only
-        if(!$subscription){
-            $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
-        }*/
-        //dd(Auth::user()->pipeline->id);
+        // Skip subscription check for login/logout routes and subscription management
+        if ($request->routeIs(['login', 'logout', 'password.*', 'register', 'subscription.*'])) {
+            return $next($request);
+        }
+        
+
         $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
         //->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
 
     if (!$subscription) {
-        abort(403, 'Your subscription is not active');
+        // Pass subscription status to view instead of aborting
+        view()->share('subscription_inactive', true);
+        return $next($request);
+    } else {
+        view()->share('subscription_inactive', false);
     }
 
     
-    if ($request->routeIs(['user.create','user.store'])) { 
+    if ($request->routeIs(['user.create','user.store'])) {
         $currentUsersCount = count($this->userService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]]]));
     
 

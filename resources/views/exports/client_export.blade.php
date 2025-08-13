@@ -25,10 +25,12 @@
                 'bnc' => public_path('assets/images/bnc.png'),
                 'phoenix' => public_path('assets/images/phoenix.png'),
             ];
-            $logoPath = $logoMap[$logo] ?? $logoMap['bnc'];
+            
+            
+            $logoPath = storage_path('app/public/' . Auth::user()->pipeline->logo);
         @endphp
         @if(file_exists($logoPath))
-            <img src="{{ $logoPath }}" class="logo" alt="Logo">
+            <img src="{{ public_path('storage/'.Auth::User()->pipeline->logo) }}" class="logo" alt="Logo">
         @endif
     </div>
     <table>

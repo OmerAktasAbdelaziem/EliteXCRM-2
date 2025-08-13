@@ -50,6 +50,11 @@ Route::middleware(['auth'])->group(function (Router $router) {
 $router->get('switch/{id}',   [PipelineController::class, 'switch'])->name('pipeline.switch');
 });
 Route::middleware(['auth', 'check.subscription'])->group(function (Router $router) {
+    
+    // Debug route to test subscription middleware
+    $router->get('debug/subscription-test', function () {
+        return view('debug.subscription-test');
+    })->name('debug.subscription.test');
 
     $router->middleware(['role:leads_list'])->group(function (Router $router) {
         $router->get('', function () {

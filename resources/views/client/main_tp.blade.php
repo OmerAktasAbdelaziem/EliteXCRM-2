@@ -2642,6 +2642,6 @@
         document.getElementById('logo').addEventListener('change', function() {
             const val = this.value;
             document.getElementById('logoPreviewImg').src = logoMap[val] || logoMap['bnc'];
-        });
-    </script>
+    });
+</script>
 @endsection
