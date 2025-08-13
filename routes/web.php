@@ -46,7 +46,9 @@ Auth::routes();
 // });
 Route::get('client/get_pnl/{client_id}/{asset_id?}/{from?}', [ClientsController::class, 'webtrader_get_pnl'])->name('webtrader.get_pnl');
 
-
+Route::middleware(['auth'])->group(function (Router $router) {
+$router->get('switch/{id}',   [PipelineController::class, 'switch'])->name('pipeline.switch');
+});
 Route::middleware(['auth', 'check.subscription'])->group(function (Router $router) {
     
     // Debug route to test subscription middleware
@@ -374,7 +376,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     });
 
     $router->get('pipeline/{id}', [PipelineController::class, 'show'])->name('pipeline.show');
-    $router->get('switch/{id}',   [PipelineController::class, 'switch'])->name('pipeline.switch');
+    
 
     $router->middleware(['role:pipeline_update'])->group(function (Router $router) {
         $router->put('pipeline/{id}', [PipelineController::class, 'update'])->name('pipeline.update');

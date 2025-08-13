@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Log;
 //Services
 use App\Http\Services\User\Interfaces\UserServiceInterface;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
+use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
 use App\Http\Services\Organization\Interfaces\PartServiceInterface;
 use App\Http\Services\Organization\Interfaces\TeamServiceInterface;
+use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 
 class CheckSubscription
 {
@@ -20,18 +22,24 @@ class CheckSubscription
     protected $clientService;
     protected $partService;
     protected $teamService;
+    protected $pipelineService;
+    protected $subscriptionService;
 
     public function __construct(
             UserServiceInterface $userService,
             ClientServiceInterface $clientService,
+            PipelineServiceInterface $pipelineService,
             PartServiceInterface $partService,
             TeamServiceInterface $teamService,
+            SubscriptionServiceInterface $subscriptionService,
             )
     {
         $this->userService = $userService;
         $this->clientService = $clientService;
+        $this->pipelineService = $pipelineService;
         $this->partService = $partService;
         $this->teamService = $teamService;
+        $this->subscriptionService = $subscriptionService;
     }
     /**
      * Handle an incoming request.
@@ -42,6 +50,7 @@ class CheckSubscription
      */
     public function handle(Request $request, Closure $next)
     {
+
         // Only check subscription for authenticated users
         if (!Auth::check()) {
             return $next($request);
@@ -52,7 +61,9 @@ class CheckSubscription
             return $next($request);
         }
         
+
         $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
+        //->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
 
     if (!$subscription) {
         // Pass subscription status to view instead of aborting

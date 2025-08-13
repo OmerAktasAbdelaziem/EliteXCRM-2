@@ -118,7 +118,7 @@ class ClientsTransferController extends Controller
         $moneyTrx['broker_id'] = $broker_id;
         $moneyTrx['type'] = 'deposit';
         $moneyTrx['status'] = 'accepted';
-        $moneyTrx['amount'] = $request->amount;
+        $moneyTrx['amount'] = $request->amount??0;
         $this->moneyTransactionService->create($moneyTrx);
         
         $action = Action::create([

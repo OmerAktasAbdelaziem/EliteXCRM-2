@@ -48,10 +48,12 @@ class ClientsController extends Controller
     protected $orderService;
     protected $subscriptionService;
     public function __construct(
+            SubscriptionServiceInterface $clientService,
             UserServiceInterface $userService,
             OrderServiceInterface $orderService,
             SubscriptionServiceInterface $subscriptionService,
             ) {
+        $this->clientService = $clientService;
         $this->userService = $userService;
         $this->orderService = $orderService;
         $this->subscriptionService = $subscriptionService;
@@ -1722,6 +1724,7 @@ $broker_id      = $client->broker_id;
         $endDate = $request->input('end_date');
         $type = $request->input('type');
         $logo = $request->input('logo');
+        
         $client = Client::findOrFail($id);
         $brokerId = $client->broker_id;
 
@@ -1744,7 +1747,7 @@ $broker_id      = $client->broker_id;
 
         $balanceNow = $netDeposits + $totalClosedPnl;
 
-        $finance = (new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
+        $finance = $this->orderService->getFinancialData($brokerId);//(new MainTPController)->get_financial_data($brokerId);
         $freeMargin = $finance['freeMargin'] ?? 0.00;
 
         $moneyTrxes = collect();
