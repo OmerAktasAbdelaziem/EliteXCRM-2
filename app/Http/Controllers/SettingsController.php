@@ -49,15 +49,22 @@ class SettingsController extends Controller
 
         
 
+if(Auth::user()->pipeline?->co_id == Auth::id()){
         // upload image
-        $path = $request->file('logo')->store('pipeline/logos', 'public');
+        $path = $request->file('logo')->store('pipeline/'.Auth::user()->username.'/logos/', 'public');
 
         //Save in database
         //$pipeline->logo = $path;
         //$pipeline->save();
+        
+        //first check if user is admin for pipeline to use co_id in pipelines table instead of pipeline_id in user
+    
         $this->pipelineService->update(Auth::user()->pipeline_id, ['logo'=>$path]);
 
         return back()->with('success', 'Image uploaded successfully');
+}else{
+    return redirect()->back()->withErrors('You dont have permission to edit logo');
+}
     }
 
     public function update(Request $request)

@@ -103,7 +103,8 @@ class UserController extends Controller
         $roles              = Role::latest()->get();
 
         if (Auth::id() == 644033 || Auth::id() == 298274) {
-            $user = User::WithPipeline()->findOrfail($id);
+            //$user = User::WithPipeline()->findOrfail($id);
+            $user = User::findOrfail($id);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
