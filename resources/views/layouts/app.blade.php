@@ -97,5 +97,8 @@
         <script src="{{ url('assets/js/app.min.js?v2.944') }}"></script>
         <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
         @yield("script")
+        
+        <!-- Global Subscription Overlay - Shows on ALL pages when subscription is inactive -->
+        @include('partials.subscription-overlay')
     </body>
 </html>

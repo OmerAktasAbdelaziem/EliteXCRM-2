@@ -2644,6 +2644,4 @@
             document.getElementById('logoPreviewImg').src = logoMap[val] || logoMap['bnc'];
     });
 </script>
-
-@include('partials.subscription-overlay')
 @endsection

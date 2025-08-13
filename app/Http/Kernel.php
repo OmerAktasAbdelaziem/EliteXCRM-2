@@ -47,6 +47,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LastSeenMiddleware::class,
             \App\Http\Middleware\ForceLogoutIfPasswordChanged::class,
             \App\Http\Middleware\AutoLogout::class,
+            \App\Http\Middleware\CheckSubscription::class, // Global subscription check
 
         ],
 

@@ -465,6 +465,4 @@
             setInterval(updateChoices, 1);
         });
     </script>
-
-    @include('partials.subscription-overlay')
 @endsection

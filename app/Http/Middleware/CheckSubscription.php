@@ -42,6 +42,16 @@ class CheckSubscription
      */
     public function handle(Request $request, Closure $next)
     {
+        // Only check subscription for authenticated users
+        if (!Auth::check()) {
+            return $next($request);
+        }
+        
+        // Skip subscription check for login/logout routes and subscription management
+        if ($request->routeIs(['login', 'logout', 'password.*', 'register', 'subscription.*'])) {
+            return $next($request);
+        }
+        
         $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
 
     if (!$subscription) {
