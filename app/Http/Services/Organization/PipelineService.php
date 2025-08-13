@@ -8,11 +8,11 @@ use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
-class PipelineService implements PipelineRepositoryInterface {
+class PipelineService implements PipelineServiceInterface {
 
     protected $pipelineRepository;
 
-    public function __construct(PipelineServiceInterface $pipelineRepository) {
+    public function __construct(PipelineRepositoryInterface $pipelineRepository) {
         $this->pipelineRepository = $pipelineRepository;
     }
     

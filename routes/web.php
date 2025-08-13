@@ -412,6 +412,8 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('settings',        [SettingsController::class, 'index'])->name('settings.index');
         $router->put('settings/update', [SettingsController::class, 'update'])->name('settings.update');
         $router->put('settings/style',  [SettingsController::class, 'style'])->name('settings.style');
+        $router->get('settings/edit-logo',  [SettingsController::class, 'editLogo'])->name('settings.editLogo');
+        $router->post('settings.uploadLogo',  [SettingsController::class, 'uploadLogo'])->name('settings.uploadLogo');
     });
     
     $router->middleware(['role:overview'])->group(function (Router $router) {
@@ -479,6 +481,12 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->get('user-profile',                  [UserController::class, 'userprofile'])->name('user.profile');
     $router->put('usdt/{id}',                     [PipelineController::class, 'updateUsdt'])->name('usdt.update');
     $router->get('home',                          [HomeController::class, 'index'])->name('home');
+    
+    
+    //$router->middleware(['role:sender_email_update'])->group(function (Router $router) {
+     //   $router->get('/', [SettingController::class, 'update'])->name('sender_emails.update');
+    //});
+    
 });
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');

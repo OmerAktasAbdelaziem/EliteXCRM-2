@@ -79,7 +79,7 @@ class PipelineController extends Controller
     }
     
     public function store(CreatePipelineRequest $request)
-    {die('a');
+    {
         $inputs = $request->only([
             'category_id',
             'part_limit',

@@ -5335,11 +5335,40 @@ input::placeholder {
 
 }
 .section-area{
-                                    border:1px #ccc solid;
-                                    border-radius: 20px;
-                                    padding: 20px;
-                                    margin-bottom: 10px;
-                                }
+    border:1px #ccc solid;
+    border-radius:20px;
+    padding:20px;
+    margin: 30px 0;
+    position:relative;
+    background:#fff;
+}
+.section-title{
+    position:absolute;
+    top:-20px;
+    left:20px;
+    background:#fff;
+    padding:0 8px;
+    font-weight:bold;
+    font-size:25px;
+}
+.section-text{
+    font-weight: bold;
+}
 .error-area{
     margin-top:60px;
+}
+.setting-gear{
+    margin-left: 10px;
+    margin-right: 10px;
+    
+}
+.logo-img{
+    display:block;
+    width: 300px;
+    height: auto;
+    margin: 20px;
+    border-radius:24px;
+}
+.setting-gear{
+    font-size: 20px;
 }

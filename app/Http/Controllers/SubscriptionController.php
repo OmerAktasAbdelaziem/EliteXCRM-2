@@ -63,7 +63,7 @@ class SubscriptionController extends Controller {
         $inputs['demo_accounts'] = $request->demo_accounts;
         $inputs['active'] = $request->active??0;
         if($request->active == 1){
-            $this->subscriptionService->updateByFilters([['field'=>'id','conditions'=>['='=>$request->pipeline]]], ['active'=>0]);
+            $this->subscriptionService->updateByFilters([['field'=>'pipeline','conditions'=>['='=>$request->pipeline]]], ['active'=>0]);
         }
 
         $this->subscriptionService->create($inputs);
@@ -90,7 +90,6 @@ class SubscriptionController extends Controller {
             $inputs = $request->only([
             'start_date',
             'end_date',
-            'pipeline'
         ]);
 
         if (!empty($inputs['start_date'])) {
@@ -107,7 +106,7 @@ class SubscriptionController extends Controller {
         $inputs['demo_accounts'] = $request->demo_accounts;
         $inputs['active'] = $request->active??0;
         if($request->active == 1){
-            $this->subscriptionService->updateByFilters([['field'=>'id','conditions'=>['='=>$request->pipeline]]], ['active'=>0]);
+            $this->subscriptionService->updateByFilters([['field'=>'pipeline','conditions'=>['='=>$subscription->pipeline]]], ['active'=>0]);
         }
         $this->subscriptionService->update($id, $inputs);
             

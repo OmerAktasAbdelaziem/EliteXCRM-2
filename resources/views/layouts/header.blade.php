@@ -75,6 +75,7 @@
                         </ul>
                     </div>
                     <div class="user-box dropdown">
+                        <div class="setting-gear"><a href ="{{route('settings.index')}}"><i class="fa-solid fa-gear"></i></a></div>
                         <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             @if (Auth::user()->gender && Auth::user()->gender == 'Female')
                                 <img src="{{  Storage::disk('local')->url($system->femalePic) }}" class="user-img" alt="user avatar">

@@ -33,9 +33,10 @@
                         @if (isset($options['subscription_show']))
                         <form  method="POST" action="{{route('subscription.update', ['id' => $subscription->id])}}">
                             @csrf
-                            <p><h3>Details </h3></p>
+                            
                         <input type="hidden" name="subscription_id" value="{{$subscription->id}}">
                                 <div class ="section-area">
+                                    <span class="section-title">Details</span>
                                 <div class="row">
                                     <div class="col-md-4">
                                     <label for="name" class="form-label">Allowed Parts</label>
@@ -93,9 +94,10 @@
                                 </div>
                                 </div>
                                 </div>
-                            <p><h3>Duration </h3></p>
+                            
                             
                                 <div class ="section-area">
+                                    <span class="section-title">Duration</span>
                                 <div class="row">
                                     
                                 

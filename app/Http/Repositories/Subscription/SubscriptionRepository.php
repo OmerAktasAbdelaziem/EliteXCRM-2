@@ -57,7 +57,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface {
         $query = Subscription::query();
        
         $filteredQuery = $this->filterService->applyFilters($query, $params);
-//dd($filteredQuery->toSql());
+
         return $filteredQuery->update($data);
     }
 

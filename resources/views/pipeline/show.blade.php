@@ -40,8 +40,8 @@
 
                         <form  method="POST" action="{{ $pipeline->getKey()?route('pipeline.update',$pipeline->getKey()):route('pipeline.store') }}">
                             @csrf
-                            <p><h3>General info </h3></p>
                             <div class ="section-area">
+                                <span class="section-title">General info</span>
                                 <div class="row g-3">
                                     @if ($pipeline->getKey())
                                     @method('PUT')
@@ -55,7 +55,7 @@
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
                                         <label for="category_id" class="form-label">Category</label>
                                         <div class="input-group">
                                             <select class="form-select single-select" id="category_id" name="category_id">
@@ -71,58 +71,13 @@
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-md-3">
-                                        <label for="broker_id" class="form-label">Broker</label>
-                                        <div class="input-group">
-                                            <select class="form-select single-select" id="broker_id" name="broker_id">
-                                                <option value="">Select Broker</option>
-                                                @foreach ($brokers as $broker)
-                                                <option value="{{ $broker->id }}" @if($pipeline->broker_id == $broker->id) selected @endif>
-                                                    {{ $broker->name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        @error('broker_id')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                   
                                 </div>
                             </div>
-                            <p><h3>Users Details </h3></p>
+                            
+                            
                             <div class ="section-area">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label for="part_limit" class="form-label">Parts Limitation</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="part_limit" name="part_limit" value="{{ old('part_limit',$pipeline->part_limit) }}" placeholder="Enter Number" />
-                                        </div>
-                                        @error('part_limit')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="team_limit" class="form-label">Teams Limitation</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="team_limit" name="team_limit" value="{{ old('team_limit',$pipeline->team_limit) }}" placeholder="Enter Number" />
-                                        </div>
-                                        @error('team_limit')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="user_limit" class="form-label">User Limitation</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" id="user_limit" name="user_limit" value="{{ old('user_limit',$pipeline->user_limit) }}" placeholder="Enter Number" />
-                                        </div>
-                                        @error('user_limit')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <p><h3>Support Details </h3></p>
-                            <div class ="section-area">
+                                 <span class="section-title">Support Details</span>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="support_ids" class="form-label">Support Users</label>
@@ -158,8 +113,8 @@
                                 </div>
                             </div>
                             @if (isset($options['subscription_show']) && $pipeline->getKey())
-                            <p><h3>Supscription Details </h3></p>
                             <div class ="section-area">
+                                <span class="section-title">Supscription Details</span>
                                 <a href="{{ route('subscription.create', ['pipelineId' => $pipeline->getKey()]) }}" type="button" class="btn btn-primary">Add New</a>
                                 <div class="row g-12">
                                     <table id="subscriptions" class="display">

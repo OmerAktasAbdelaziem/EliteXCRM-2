@@ -1297,15 +1297,17 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    <label for="logo" class="form-label">Select Logo for PDF</label>
+                                    <!--<label for="logo" class="form-label">Select Logo for PDF</label>
                                     <select class="form-select" name="logo" id="logo" required>
                                         <option value="bnc">BNC Logo</option>
                                         <option value="phoenix">Phoenix Logo</option>
-                                    </select>
+                                    </select>-->
                                     <div class="mt-2">
-                                        <small>Preview:</small>
-                                        <div id="logoPreview" style="height:40px;">
-                                            <img src="{{ asset('assets/images/bnc.png') }}" alt="Logo Preview" id="logoPreviewImg" style="height:40px;">
+                                        <!--<small>Preview:</small>-->
+                                        <div id="logoPreview">
+                                            @if(isset(Auth::User()->pipeline->logo) && Auth::User()->pipeline->logo != null)
+        <img class="logo-img"  src="{{ asset('storage/'.Auth::User()->pipeline->logo) }}" alt="Logo">
+        @endif
                                         </div>
                                     </div>
                                 </div>
