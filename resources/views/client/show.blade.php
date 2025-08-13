@@ -1545,4 +1545,6 @@
             katex: katex
         });
     </script>
+
+    @include('partials.subscription-overlay')
 @endsection

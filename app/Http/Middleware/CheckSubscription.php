@@ -44,11 +44,15 @@ class CheckSubscription
         $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
 
     if (!$subscription) {
-        abort(403, 'Your subscription is not active');
+        // Pass subscription status to view instead of aborting
+        view()->share('subscription_inactive', true);
+        return $next($request);
+    } else {
+        view()->share('subscription_inactive', false);
     }
 
     
-    if ($request->routeIs(['user.create','user.store'])) { 
+    if ($request->routeIs(['user.create','user.store'])) {
         $currentUsersCount = count($this->userService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]]]));
     
 
