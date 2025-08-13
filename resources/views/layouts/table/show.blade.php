@@ -32,7 +32,7 @@
                     @enderror
                 </div>
             @endif
-            @if (Auth::user()->role->name === 'Admin')
+            @if (Auth::user() && Auth::user()->role && Auth::user()->role->name === 'Admin')
                 <button type="button" class="btn btn-success text-white text-center w-auto mx-1" data-bs-toggle="modal" data-bs-target="#exportModal-{{$check_type}}">
                     <i class="bx bx-download me-2"></i>
                     Export Clients
@@ -427,7 +427,7 @@
     </div>
 @endif
 
-@if (Auth::user()->role->name === 'Admin')
+@if (Auth::user() && Auth::user()->role && Auth::user()->role->name === 'Admin')
     <div class="modal fade" id="exportModal-{{$check_type}}" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -445,7 +445,7 @@
                                     <option value="">All Users</option>
                                     @if(isset($users))
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}">{{ $user->username }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -454,26 +454,11 @@
                                 <label class="form-label">Country</label>
                                 <select class="form-select" name="country">
                                     <option value="">All Countries</option>
-                                    <option value="Afghanistan">Afghanistan</option>
-                                    <option value="Albania">Albania</option>
-                                    <option value="Algeria">Algeria</option>
-                                    <option value="Argentina">Argentina</option>
-                                    <option value="Australia">Australia</option>
-                                    <option value="Austria">Austria</option>
-                                    <option value="Belgium">Belgium</option>
-                                    <option value="Brazil">Brazil</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="China">China</option>
-                                    <option value="France">France</option>
-                                    <option value="Germany">Germany</option>
-                                    <option value="India">India</option>
-                                    <option value="Italy">Italy</option>
-                                    <option value="Japan">Japan</option>
-                                    <option value="Mexico">Mexico</option>
-                                    <option value="Netherlands">Netherlands</option>
-                                    <option value="Spain">Spain</option>
-                                    <option value="United Kingdom">United Kingdom</option>
-                                    <option value="United States">United States</option>
+                                        @if(isset($countries))
+                                            @foreach($countries as $country)
+                                                <option value="{{ $country }}">{{ $country }}</option>
+                                            @endforeach
+                                        @endif
                                 </select>
                             </div>
                         </div>
