@@ -902,10 +902,11 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
 
     public function handle_request(Request $request,$id = null)
     {
-        
+       
         
         //gohere request
         $moneyTrx = MoneyTrx::findOrFail($id??$request->id);
+        
         //echo $moneyTrx->is_admin;die('asd');
         //print_r($moneyTrx->client->options['canWithdrawalCredit']);die;
         //$moneyTrx->client->options['canWithdrawalBonus']
@@ -914,6 +915,8 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
             'comment'
         ]);
         $old_status = $moneyTrx->status;
+        
+        $inputs = ['status'=>$request->status,'comment'=>$request->comment,'updated'=>1];
         
         
         $client = $moneyTrx->client;
@@ -933,7 +936,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
             
           
           $amount = $moneyTrx->amount;
-         
+          
          
           //die('aa');
       $moneyTrx->update($inputs);
@@ -945,7 +948,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
         //  }
       //  die;
         
-       
+    
 
         $history_inputs = [
             'operation_id' => $moneyTrx->id,
@@ -1071,6 +1074,8 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
 //            }
 //
 //        }
+
+
         if (!$id) {
             return redirect()->back()->with('success', 'Request has been updated successfully.');
         }
