@@ -40,6 +40,7 @@ use App\Http\Services\User\Interfaces\UserServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 
+
 class ClientsController extends Controller
 {
     protected $clientService;
@@ -54,6 +55,7 @@ class ClientsController extends Controller
         $this->userService = $userService;
         $this->orderService = $orderService;
         $this->subscriptionService = $subscriptionService;
+
         
     }
    /* public function __construct(
@@ -693,6 +695,9 @@ class ClientsController extends Controller
             }
         }
 
+        // Get countries that have clients for export dropdown
+        $countries = $this->getCountriesWithClients();
+
         return view('client.index',compact(
             'mycontact_filters',
             'created_by_users',
@@ -712,6 +717,7 @@ class ClientsController extends Controller
             'users',
             'teams',
             'options',
+            'countries',
             'tab',
             'hot',
             'new',
@@ -723,7 +729,7 @@ class ClientsController extends Controller
         
         $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $teams   = $this->getTeams($options);
-        $users   = $this->getUsers($teams)->where('deleted', '!=', true);
+        $users   = $this->getUsers($teams);
         $parts   = $this->getParts($teams);
 
         $statuses = Status::where(function ($query) use ($parts) {
@@ -1446,10 +1452,6 @@ $broker_id      = $client->broker_id;
             $client = Client::find($clientid);
             $clientName = $client->first_name.' '.$client->last_name;
             if ($client) {
-                if($client->username !== null){
-                $inputs['username'] = $client->username.'-#-deletet-#-'.Carbon::now();
-                }
-                $inputs['email'] = $client->email.'-#-deletet-#-'.Carbon::now();
                 $client->update($inputs);
             }
             Action::create([
@@ -1595,7 +1597,7 @@ $broker_id      = $client->broker_id;
         $rows = array_filter(array_slice($sheet, 1), function ($row) {
             return !empty(array_filter($row, fn($cell) => trim($cell) !== ''));
         });
-//print_r(count($headers));echo " - ".count($sheet);die;
+
         if (!empty($rows)) {
             return view('client.upload', compact(
                 'headers',
@@ -1742,7 +1744,7 @@ $broker_id      = $client->broker_id;
 
         $balanceNow = $netDeposits + $totalClosedPnl;
 
-        $finance = $this->orderService->getFinancialData($brokerId); //(new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
+        $finance = (new MainTPController)->get_financial_data($brokerId);//SHOULD BE REMOVED AFTER ADDING ORDER SERVICE GetFinancialData method, and resolce calling new maintp
         $freeMargin = $finance['freeMargin'] ?? 0.00;
 
         $moneyTrxes = collect();
@@ -1857,16 +1859,14 @@ $broker_id      = $client->broker_id;
         // Build query for clients export
         $query = Client::where('clients.deleted', 0)
             ->leftJoin('users', 'clients.user_id', '=', 'users.id')
-            ->leftJoin('statuses', 'clients.status_id', '=', 'statuses.id')
             ->select(
                 'clients.*',
-                'users.name as assigned_user',
-                'statuses.name as status_name'
+                'users.username as assigned_user'
             );
 
         // Apply user filter based on permissions
         $query->where(function ($q) use ($users, $options) {
-            $q->whereIn('clients.user_id', $users);
+            $q->whereIn('clients.user_id', $users->pluck('id'));
             if (isset($options['leads_data_show_unassigned_leads'])) {
                 $q->orWhereNull('clients.user_id');
             }
@@ -1885,12 +1885,17 @@ $broker_id      = $client->broker_id;
             $query->where('clients.account_type', $request->account_type);
         }
 
+        // Handle status filtering - since clients table has sales_status as text field
         if ($request->filled('include_status') && is_array($request->include_status)) {
-            $query->whereIn('clients.status_id', $request->include_status);
+            // Get status names from the status IDs
+            $statusNames = \App\Models\Status::whereIn('id', $request->include_status)->pluck('name');
+            $query->whereIn('clients.sales_status', $statusNames);
         }
 
         if ($request->filled('exclude_status') && is_array($request->exclude_status)) {
-            $query->whereNotIn('clients.status_id', $request->exclude_status);
+            // Get status names from the status IDs
+            $statusNames = \App\Models\Status::whereIn('id', $request->exclude_status)->pluck('name');
+            $query->whereNotIn('clients.sales_status', $statusNames);
         }
 
         if ($request->filled('date_from')) {
@@ -1937,12 +1942,12 @@ $broker_id      = $client->broker_id;
                     $client->first_name,
                     $client->last_name,
                     $client->email,
-                    $client->phone,
+                    $client->phone1,
                     $client->country,
                     $client->account_type,
-                    $client->status_name,
+                    $client->sales_status,
                     $client->assigned_user,
-                    $client->registration_date,
+                    $client->reg_date,
                     $client->ftd_date,
                     $client->created_at
                 ]);
@@ -1952,6 +1957,74 @@ $broker_id      = $client->broker_id;
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function getCountriesWithClients()
+    {
+        $options = $this->userService->getUserOptions(Auth::user());
+        $teams = $this->getTeams($options);
+        $users = $this->getUsers($teams);
+
+        // Get countries that have clients based on user permissions
+        $countries = Client::where('clients.deleted', 0)
+            ->where(function ($query) use ($users, $options) {
+                $query->whereIn('user_id', $users->pluck('id'));
+                if (isset($options['leads_data_show_unassigned_leads'])) {
+                    $query->orWhereNull('user_id');
+                }
+            })
+            ->whereNotNull('country')
+            ->where('country', '!=', '')
+            ->distinct()
+            ->orderBy('country')
+            ->pluck('country');
+
+        // If this is a direct HTTP request, return JSON
+        if (request()->expectsJson() || request()->is('*/client/countries')) {
+            return response()->json([
+                'success' => true,
+                'countries' => $countries,
+                'total_countries' => $countries->count()
+            ]);
+        }
+
+        // Otherwise return the collection for use in other methods
+        return $countries;
+    }
+
+    public function getCountriesWithClientCounts()
+    {
+        $options = $this->userService->getUserOptions(Auth::user());
+        $teams = $this->getTeams($options);
+        $users = $this->getUsers($teams);
+
+        // Get countries with client counts based on user permissions
+        $countriesWithCounts = Client::where('clients.deleted', 0)
+            ->where(function ($query) use ($users, $options) {
+                $query->whereIn('user_id', $users->pluck('id'));
+                if (isset($options['leads_data_show_unassigned_leads'])) {
+                    $query->orWhereNull('user_id');
+                }
+            })
+            ->whereNotNull('country')
+            ->where('country', '!=', '')
+            ->selectRaw('country, COUNT(*) as client_count')
+            ->groupBy('country')
+            ->orderBy('client_count', 'desc')
+            ->get();
+
+        // If this is a direct HTTP request, return JSON
+        if (request()->expectsJson() || request()->is('*/client/countries-stats')) {
+            return response()->json([
+                'success' => true,
+                'countries' => $countriesWithCounts,
+                'total_countries' => $countriesWithCounts->count(),
+                'total_clients' => $countriesWithCounts->sum('client_count')
+            ]);
+        }
+
+        // Otherwise return the collection
+        return $countriesWithCounts;
     }
 
 
