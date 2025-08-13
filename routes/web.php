@@ -48,6 +48,11 @@ Route::get('client/get_pnl/{client_id}/{asset_id?}/{from?}', [ClientsController:
 
 
 Route::middleware(['auth', 'check.subscription'])->group(function (Router $router) {
+    
+    // Debug route to test subscription middleware
+    $router->get('debug/subscription-test', function () {
+        return view('debug.subscription-test');
+    })->name('debug.subscription.test');
 
     $router->middleware(['role:leads_list'])->group(function (Router $router) {
         $router->get('', function () {
