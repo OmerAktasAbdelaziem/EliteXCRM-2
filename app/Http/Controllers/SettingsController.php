@@ -61,7 +61,7 @@ if(Auth::user()->pipeline?->co_id == Auth::id()){
     
         $this->pipelineService->update(Auth::user()->pipeline_id, ['logo'=>$path]);
 
-        return back()->with('success', 'Image uploaded successfully');
+        return redirect()->back()->with('success', 'Image uploaded successfully');
 }else{
     return redirect()->back()->withErrors('You dont have permission to edit logo');
 }
