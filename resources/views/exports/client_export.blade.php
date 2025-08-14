@@ -29,7 +29,7 @@
             
             $logoPath = storage_path('app/public/' . Auth::user()->pipeline->logo);
         @endphp
-        @if(file_exists($logoPath))
+        @if(is_file($logoPath) && file_exists($logoPath))
             <img src="{{ public_path('storage/'.Auth::User()->pipeline->logo) }}" class="logo" alt="Logo">
         @endif
     </div>
