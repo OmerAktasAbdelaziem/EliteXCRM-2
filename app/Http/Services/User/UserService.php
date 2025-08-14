@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 //Models
 use App\Models\User;
+use App\Models\OldRole;
 
 class UserService implements UserServiceInterface {
 
@@ -65,7 +66,7 @@ class UserService implements UserServiceInterface {
         $teamOptions = [];
         $partOptions = [];
         $roleIds     = json_decode($user->role_ids, true) ?? [];
-        $userRole    = $this->roleService->getByFilters([['field'=>'id','conditions' => ['in' => $roleIds]]])->first();//Role::whereIn('id', $roleIds)->first();
+        $userRole    = OldRole::whereIn('id', $roleIds)->first();//$userRole    = $this->roleService->getByFilters([['field'=>'id','conditions' => ['in' => $roleIds]]])->first();//
         if ($userRole && is_string($userRole->options)) {
             $userOptions = json_decode($userRole->options, true);
         }

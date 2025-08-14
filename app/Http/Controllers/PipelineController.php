@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreatePipelineRequest;
 use App\Models\Broker;
 use App\Models\Pipeline;
-use App\Models\Role;
+use App\Models\OldRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

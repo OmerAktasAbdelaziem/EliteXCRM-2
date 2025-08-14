@@ -23,6 +23,7 @@ use App\Http\Controllers\PartController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\OldRoleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserStatsController;
@@ -345,25 +346,47 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     });
 
     $router->middleware(['role:roles_create'])->group(function (Router $router) {
-        $router->get('role/create', [RoleController::class, 'create'])->name('role.create');
-        $router->post('role',       [RoleController::class, 'store'])->name('role.store');
+        $router->get('role2/create', [RoleController::class, 'create'])->name('role.create');
+        $router->post('role2',       [RoleController::class, 'store'])->name('role.store');
     });
-
+    
     $router->middleware(['role:roles_list'])->group(function (Router $router) {
-        $router->get('role', [RoleController::class, 'index'])->name('role.index');
+        $router->get('role2', [RoleController::class, 'index'])->name('role.index');
     });
 
     $router->middleware(['role:roles_show'])->group(function (Router $router) {
-        $router->get('role/{id}', [RoleController::class, 'show'])->name('role.show');
+        $router->get('role2/{id}', [RoleController::class, 'show'])->name('role.show');
     });
-
+    
     $router->middleware(['role:roles_update'])->group(function (Router $router) {
-        $router->put('role/{id}', [RoleController::class, 'update'])->name('role.update');
-        $router->put('clone/{id}', [RoleController::class, 'clone'])->name('role.clone');
+        $router->put('role2/{id}', [RoleController::class, 'update'])->name('role.update');
+        $router->put('clone2/{id}', [RoleController::class, 'clone'])->name('role.clone');
     });
 
     $router->middleware(['role:roles_delete'])->group(function (Router $router) {
-        $router->delete('role/{id}', [RoleController::class, 'delete'])->name('role.delete');
+        $router->delete('role2/{id}', [RoleController::class, 'delete'])->name('role.delete');
+    });
+    
+    $router->middleware(['role:roles_create'])->group(function (Router $router) {
+        $router->get('role/create', [OldRoleController::class, 'create'])->name('role.create');
+        $router->post('role',       [OldRoleController::class, 'store'])->name('role.store');
+    });
+
+    $router->middleware(['role:roles_list'])->group(function (Router $router) {
+        $router->get('role', [OldRoleController::class, 'index'])->name('role.index');
+    });
+
+    $router->middleware(['role:roles_show'])->group(function (Router $router) {
+        $router->get('role/{id}', [OldRoleController::class, 'show'])->name('role.show');
+    });
+
+    $router->middleware(['role:roles_update'])->group(function (Router $router) {
+        $router->put('role/{id}', [OldRoleController::class, 'update'])->name('role.update');
+        $router->put('clone/{id}', [OldRoleController::class, 'clone'])->name('role.clone');
+    });
+
+    $router->middleware(['role:roles_delete'])->group(function (Router $router) {
+        $router->delete('role/{id}', [OldRoleController::class, 'delete'])->name('role.delete');
     });
 
     $router->middleware(['role:pipeline_create'])->group(function (Router $router) {

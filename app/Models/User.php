@@ -8,10 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
 
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable,HasRoles;
 
     protected $hidden = [
         'password',
@@ -51,6 +54,23 @@ class User extends Authenticatable
         });
     }
 
+    public function assignRoleWithPipeline($roleName, $pipelineId = null)
+    {
+        $role = Role::where('name', $roleName)->firstOrFail();
+        $this->roles()->attach($role->id, [
+            'model_type' => static::class,
+            'pipeline_id' => $pipelineId
+        ]);
+    }
+    
+    public function hasRoleInPipeline($roleName, $pipelineId)
+    {
+        return $this->roles()
+            ->where('name', $roleName)
+            ->wherePivot('pipeline_id', $pipelineId)
+            ->exists();
+    }
+    
     public function scopeWithPipeline($query)
     {
         $query->where('pipeline_id', Auth::user()->pipeline_id);
@@ -122,7 +142,7 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(OldRole::class, 'role_id');
     }
 
     public function marketing_email_logs()

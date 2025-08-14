@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Role extends Model
+class OldRole extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'options', 'pipeline_id'];
