@@ -766,7 +766,7 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
 
         if ($request->receipt) {
             $receipt = $request->file('receipt')->store('public/receipts');
-            $inputs['receipt'] = url(str_replace('public/', 'storage/', $receipt));
+            $inputs['receipt'] = str_replace('public/', 'storage/', $receipt);
         }
 
         $trx = MoneyTrx::create($inputs);
