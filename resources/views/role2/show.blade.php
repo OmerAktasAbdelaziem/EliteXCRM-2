@@ -1402,914 +1402,8 @@
                                         </div>
                                         
                                         <div class="client-preview-container" style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); max-height: 800px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #cbd5e0 #f7fafc;">
-                                            <h5 style="margin-bottom: 20px; color: #2d3748; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
-                                                Client Information Preview
-                                                <small style="color: #718096; font-size: 12px; display: block; margin-top: 5px;">Configure field-level permissions for client data</small>
-                                            </h5>
-                                            
-                                            <!-- Personal Information Section -->
-                                            <div class="field-section">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Personal Information</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-                                                    
-                                                    <!-- First Name -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Name</label>
-                                                            <input type="text" value="John" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_name_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_name_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Last Name -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Last Name</label>
-                                                            <input type="text" value="Doe" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_last_name_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_last_name_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Email -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Email</label>
-                                                            <input type="email" value="john.doe@example.com" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_email_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_email_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Phone 1 -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Primary Phone</label>
-                                                            <input type="tel" value="+1 234 567 8900" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_phone1_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_phone1_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Phone 2 -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Secondary Phone</label>
-                                                            <input type="tel" value="+1 234 567 8901" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_phone2_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_phone2_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Country -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Country</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>United States</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_country_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_country_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Sales Information Section -->
-                                            <div class="field-section" style="margin-top: 24px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Sales Information</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-                                                    
-                                                    <!-- Sales Status -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Sales Status</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>Hot Lead</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_sales_status_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_sales_status_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Assigned User -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Assigned User</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>Sarah Johnson</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_user_id_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_user_id_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Account Type -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Account Type</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>Real</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_account_type_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_account_type_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- FTD Status -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">FTD Status</label>
-                                                            <div style="display: flex; align-items: center;">
-                                                                <input type="checkbox" checked disabled style="margin-right: 8px;">
-                                                                <span style="font-weight: 500; color: #2d3748;">First Time Deposit</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_is_ftd_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_is_ftd_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Enabled Status -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Enabled Status</label>
-                                                            <div style="display: flex; align-items: center;">
-                                                                <input type="checkbox" checked disabled style="margin-right: 8px;">
-                                                                <span style="font-weight: 500; color: #2d3748;">Enabled</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_enabled_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_enabled_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Username -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Username</label>
-                                                            <input type="text" value="johndoe2024" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_username_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_username_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Password -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Password</label>
-                                                            <input type="password" value="********" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_password_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_password_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- FTD Amount -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">FTD Amount</label>
-                                                            <input type="text" value="$500.00" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_ftd_amount_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_ftd_amount_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Asset Group -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Asset Group</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>Premium Assets</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_asset_group_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_asset_group_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- First Owner -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Owner</label>
-                                                            <input type="text" value="Michael Smith" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_owner_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_owner_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Team -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Team</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>Sales Team Alpha</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_team_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_team_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Last Deposit Amount -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Last Deposit Amount</label>
-                                                            <input type="text" value="$750.00" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_last_deposit_amount_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_last_deposit_amount_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- First Comment Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Comment Date</label>
-                                                            <input type="datetime-local" value="2024-03-12T10:15" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_comment_date_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_comment_date_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- First Comment Owner -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Comment Owner</label>
-                                                            <input type="text" value="Sarah Johnson" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_comment_owner_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_first_comment_owner_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Assigned Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Assigned Date</label>
-                                                            <input type="datetime-local" value="2024-03-11T09:00" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_assigned_date_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_assigned_date_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- FTD Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">FTD Date</label>
-                                                            <input type="date" value="2024-03-15" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_ftd_date_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_ftd_date_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Created Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created Date</label>
-                                                            <input type="datetime-local" value="2024-03-10T14:30" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_at_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_at_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Modified Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Modified Date</label>
-                                                            <input type="datetime-local" value="2024-03-16T16:45" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_modified_date_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_modified_date_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Registration Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Registration Date</label>
-                                                            <input type="datetime-local" value="2024-03-14T11:20" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_reg_date_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_reg_date_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Created By -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created By</label>
-                                                            <input type="text" value="admin" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_by_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_by_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Additional Information Section -->
-                                            <div class="field-section" style="margin-top: 24px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Additional Information</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-                                                    
-                                                    <!-- Source -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Source</label>
-                                                            <input type="text" value="Google Ads" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_source_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_source_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Campaign -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Campaign</label>
-                                                            <input type="text" value="Summer 2024" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_campaign_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_campaign_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Age -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Age</label>
-                                                            <input type="number" value="32" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_age_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_age_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Gender -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Gender</label>
-                                                            <select style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" disabled>
-                                                                <option>Male</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_gender_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_gender_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Created By -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created By</label>
-                                                            <input type="text" value="admin" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_by_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_by_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Created Date -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created Date</label>
-                                                            <input type="datetime-local" value="2024-03-10T14:30" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_at_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_created_at_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Age -->
-                                                    <div class="field-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
-                                                        <div style="flex: 1;">
-                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Age</label>
-                                                            <input type="text" value="35 years" style="border: none; background: transparent; font-weight: 500; color: #2d3748; padding: 0;" readonly>
-                                                        </div>
-                                                        <div class="field-permissions" style="display: flex; gap: 8px; margin-left: 12px;">
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_age_show]" style="margin-right: 4px;">
-                                                                Show
-                                                            </label>
-                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                <input type="checkbox" name="options[client_age_edit]" style="margin-right: 4px;">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Client Page Cards Structure -->
-                                            <div class="field-section" style="margin-top: 24px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Client Page Cards</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                                                    
-                                                    <!-- Card 1: Main Information & Tabs -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                            </svg>
-                                                            Information Card (Main)
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_info]">
-                                                    </div>
-
-                                                    <!-- Card 2: Comments & Communication -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Comments Card
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_comments_show]">
-                                                    </div>
-
-                                                    <!-- Card 3: Actions & Quick Info -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Actions & Quick Info Card
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_card_actions]">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Main Information Card Tabs -->
-                                            <div class="field-section" style="margin-top: 24px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Information Card Tabs</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                                                    
-                                                    <!-- Information Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                            </svg>
-                                                            Information Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_info]">
-                                                    </div>
-
-                                                    <!-- Opened Orders Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                                                            </svg>
-                                                            Opened Orders Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_opened_orders]">
-                                                    </div>
-
-                                                    <!-- Closed Orders Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
-                                                            </svg>
-                                                            Closed Orders Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_closed_orders]">
-                                                    </div>
-
-                                                    <!-- Money Transaction Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
-                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Money Transaction Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_money_transaction]">
-                                                    </div>
-
-                                                    <!-- Actions Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Actions Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_actions]">
-                                                    </div>
-
-                                                    <!-- Money History Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                                                            </svg>
-                                                            Money History Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_money_history]">
-                                                    </div>
-
-                                                    <!-- KYC Tab -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                                                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3h4v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm2.5 5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100-2 1 1 0 000 2zm-1 4a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            KYC Tab
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_tab_kyc]">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Comments Card Permissions -->
-                                            <div class="field-section" style="margin-top: 24px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Comments Card Permissions</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                                                    
-                                                    <!-- Show Comments -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Show Comments
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_comments_show]">
-                                                    </div>
-
-                                                    <!-- Add Comments Permission -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Add Comments
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_comments_add]">
-                                                    </div>
-
-                                                    <!-- Edit Comments Permission -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                                                            </svg>
-                                                            Edit Comments
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_comments_edit]">
-                                                    </div>
-
-                                                    <!-- Delete Comments Permission -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"/>
-                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v6a1 1 0 11-2 0V7zm4 0a1 1 0 112 0v6a1 1 0 11-2 0V7z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Delete Comments
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_comments_delete]">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Client Page Actions Permissions -->
-                                            <div class="field-section" style="margin-top: 24px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 15px; font-weight: 600;">Client Page Actions</h6>
-                                                <div class="field-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                                                    
-                                                    <!-- Send Email Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                                                            </svg>
-                                                            Send Email
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_send_email]">
-                                                    </div>
-
-                                                    <!-- Create Money Transaction Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Create Money Transaction
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_create_money_transaction]">
-                                                    </div>
-
-                                                    <!-- Create Request Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Create Request
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_create_request]">
-                                                    </div>
-
-                                                    <!-- Open Order Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Open Order
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_open_order]">
-                                                    </div>
-
-                                                    <!-- Export Data Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Export Data
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_export_data]">
-                                                    </div>
-
-                                                    <!-- View Requests Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                                                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3h4v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            View Requests
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_view_requests]">
-                                                    </div>
-
-                                                    <!-- Login As Client Action -->
-                                                    <div class="action-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                                        <div class="action-label" style="display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5568;">
-                                                            <svg class="action-icon" style="width: 16px; height: 16px; margin-right: 8px; color: #718096;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            Login As Client
-                                                        </div>
-                                                        <input type="checkbox" class="custom-checkbox" name="options[client_action_login_as_client]">
-                                                    </div>
-                                                </div>
-                                            </div>
-
                                             <!-- Client Page Preview -->
                                             <div class="field-section" style="margin-top: 32px;">
-                                                <h6 style="color: #4a5568; margin-bottom: 20px; font-weight: 600; font-size: 16px;">Client Page Preview</h6>
-                                                
                                                 <!-- Client Page Layout -->
                                                 <div style="display: grid; grid-template-columns: 1fr 300px; gap: 20px; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #f8f9fa;">
                                                     <!-- Main Content Area (for tabs) -->
@@ -2327,11 +1421,566 @@
                                                             </div>
                                                         </div>
                                                         <!-- Tab Content Preview -->
-                                                        <div style="color: #718096; text-align: center; padding: 40px 20px;">
-                                                            <svg style="width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            <p style="margin: 0; font-style: italic;">Tab content visibility controlled by permissions above</p>
+                                                        <div style="padding: 20px;">
+                                                            
+                                                            <!-- Personal Information Section -->
+                                                            <div style="margin-bottom: 32px;">
+                                                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); gap: 16px;">
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Name</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">John</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Last Name</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Doe</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Email</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">john.doe@example.com</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Primary Phone</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">+1 234 567 8900</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Secondary Phone</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">+1 234 567 8901</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Country</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">United States</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Sales Information Section -->
+                                                            <div style="margin-bottom: 32px;">
+                                                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); gap: 16px;">
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Sales Status</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Hot Lead</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Assigned User</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Sarah Johnson</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Account Type</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Real</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">FTD Status</label>
+                                                                            <span style="font-weight: 500; color: #10b981;">✓ First Time Deposit</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Enabled Status</label>
+                                                                            <span style="font-weight: 500; color: #10b981;">✓ Enabled</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Username</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">johndoe2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Password</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">********</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">FTD Amount</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">$500.00</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Asset Group</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Premium Assets</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Owner</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Michael Smith</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Team</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Sales Team Alpha</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Last Deposit Amount</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">$750.00</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Comment Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 10, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Comment Owner</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Sarah Johnson</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Assigned Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 08, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">FTD Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 12, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 05, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Modified Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 16, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Registration Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 15, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created By</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">admin</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Additional Information Section -->
+                                                            <div style="margin-bottom: 32px;">
+                                                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); gap: 16px;">
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Source</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Google Ads</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Campaign</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Summer 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Age</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">32</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Gender</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Male</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Created By</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">admin</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Registration Date</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Aug 15, 2024</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     
