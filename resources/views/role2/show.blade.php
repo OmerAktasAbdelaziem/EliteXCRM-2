@@ -4,122 +4,399 @@
     <link href="{{ url('assets/plugins/select2/css/select2-bootstrap4.min.css?v2.944') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <style>
+        .permissions-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .permission-item {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        
+        .permission-item:last-child {
+            border-bottom: none;
+        }
+        
+        .permission-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .permission-header:hover {
+            background: #f8f9fa;
+        }
+        
+        .permission-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .permission-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+        
+        .permission-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+        
+        .permission-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .permission-details p {
+            margin: 0;
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .permission-toggle {
+            margin-left: auto;
+            margin-right: 16px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e0;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #48bb78;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .expand-icon {
+            width: 20px;
+            height: 20px;
+            color: #a0aec0;
+            transition: transform 0.3s ease;
+        }
+        
+        .permission-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .permission-actions {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #f7fafc;
+        }
+        
+        .permission-item.expanded .permission-actions {
+            max-height: 300px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            padding: 20px 24px;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .action-item:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .action-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            color: #718096;
+        }
+        
+        .checkbox-wrapper {
+            position: relative;
+        }
+        
+        .custom-checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-checkbox:checked {
+            background: #4299e1;
+            border-color: #4299e1;
+        }
+        
+        .custom-checkbox:checked::before {
+            content: '✓';
+            display: block;
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            line-height: 14px;
+        }
+        
+        .permission-item.disabled {
+            opacity: 0.6;
+        }
+        
+        .permission-item.disabled .permission-actions {
+            display: none;
+        }
+        
+        .modern-form-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #f8f9fa;
+        }
+        
+        .section-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .section-subtitle {
+            margin: 4px 0 0 0;
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .section-content {
+            padding: 24px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            background: #f8f9fa;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3182ce;
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn-info {
+            background: #38b2ac;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #319795;
+        }
+    </style>
 @endsection
 @section("wrapper")
-    <div class="page-wrapper modern-bg">
+    <div class="page-wrapper">
         <div class="page-content">
-            <div class="modern-container">
+            <div class="container-fluid">
                 <!-- Success Alert -->
                 @if(session('success'))
-                    <div class="modern-alert modern-alert-success">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         </svg>
                         {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
                 @if(session('fail'))
-                    <div class="modern-alert modern-alert-danger">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
                         {{ session('fail') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
 
-                <!-- Main Card -->
-                <div class="modern-card">
-                    <!-- Header -->
-                    <div class="modern-card-header">
-                        <div class="modern-header-content">
-                            <h1 class="modern-title">
-                                {{ isset($role) ? 'Edit Role' : 'Create Role' }}
-                            </h1>
-                            <p class="modern-subtitle">
-                                {{ isset($role) ? 'Modify role permissions and settings' : 'Set up a new role with permissions' }}
+                <form name="addform" id="addform" method="POST" action="{{ $role->getKey()?route('role.update',$role->getKey()):route('role.store') }}">
+                    @csrf
+                    @if ($role->getKey())
+                        @method('PUT')
+                    @endif
+
+                    <!-- Basic Information Section -->
+                    <div class="modern-form-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                {{ isset($role) && $role->getKey() ? 'Edit Role' : 'Create Role' }}
+                            </h3>
+                            <p class="section-subtitle">
+                                {{ isset($role) && $role->getKey() ? 'Modify role permissions and settings' : 'Set up a new role with permissions' }}
                             </p>
                         </div>
-                    </div>
-
-                <!-- Main Form -->
-                <div class="simple-card">
-                    <!-- Header -->
-                    <div class="simple-header">
-                        <h3>
-                            @if ($role->getKey())
-                                Edit Role
-                            @else
-                                Create Role
-                            @endif
-                        </h3>
-                        <p>
-                            @if ($role->getKey())
-                                Modify role settings and permissions
-                            @else
-                                Set up new role with permissions
-                            @endif
-                        </p>
-                    </div>
-
-                    <!-- Form -->
-                    <form name="addform" id="addform" method="POST" action="{{ $role->getKey()?route('role.update',$role->getKey()):route('role.store') }}">
-                        @csrf
-                        @if ($role->getKey())
-                            @method('PUT')
-                        @endif
-
-                        <!-- Basic Information Section -->
-                        <div class="modern-section">
-                            <div class="modern-section-header">
-                                <div class="section-icon">
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div class="section-content">
-                                    <h4>Basic Information</h4>
-                                    <p>Define the role name and basic settings</p>
-                                </div>
-                            </div>
-                            
-                            <div class="modern-form-grid">
-                                <div class="modern-form-group">
-                                    <label for="name" class="modern-label">Role Name</label>
-                                    <input type="text" class="modern-input @error('name') is-invalid @enderror"
+                        
+                        <div class="section-content">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="name">Role Name</label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
                                            id="name" name="name"
                                            value="{{ old('name',$role->name) }}"
                                            placeholder="Enter role name" required>
                                     @error('name')
-                                        <div class="error-message">
-                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                            </svg>
-                                            {{ $message }}
-                                        </div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Team Assignment -->
-                        <!-- Team Assignment Section -->
-                        <div class="modern-section">
-                            <div class="modern-section-header">
-                                <div class="section-icon">
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-                                    </svg>
-                                </div>
-                                <div class="section-content">
-                                    <h4>Team Assignment</h4>
-                                    <p>Assign this role to specific teams</p>
-                                </div>
-                            </div>
-                            
-                            <div class="modern-form-grid">
-                                <div class="modern-form-group">
-                                    <label for="teams" class="modern-label">Select Teams</label>
-                                    <select class="multiple-select modern-select @error('teams') is-invalid @enderror"
+                                
+                                <div class="form-group">
+                                    <label for="teams">Select Teams</label>
+                                    <select class="form-control multiple-select @error('teams') is-invalid @enderror"
                                             id="teams" name="teams[]" multiple>
                                         @foreach ($teams as $team)
                                             <option value="{{ $team->id }}" @if($role->teams->contains($team->id)) selected @endif>
@@ -128,35 +405,13 @@
                                         @endforeach
                                     </select>
                                     @error('teams')
-                                        <div class="error-message">
-                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                            </svg>
-                                            {{ $message }}
-                                        </div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- User & System Assignment Section -->
-                        <div class="modern-section">
-                            <div class="modern-section-header">
-                                <div class="section-icon">
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                </div>
-                                <div class="section-content">
-                                    <h4>User & System Assignment</h4>
-                                    <p>Assign users and system components to this role</p>
-                                </div>
-                            </div>
-                            
-                            <div class="modern-form-grid modern-form-grid-2">
-                                <div class="modern-form-group">
-                                    <label for="users" class="modern-label">Assign Users</label>
-                                    <select class="multiple-select modern-select @error('users') is-invalid @enderror"
+                                
+                                <div class="form-group">
+                                    <label for="users">Assign Users</label>
+                                    <select class="form-control multiple-select @error('users') is-invalid @enderror"
                                             id="users" name="users[]" multiple>
                                         @foreach ($users as $user)
                                             <option value="{{ $user->id }}" @if (in_array($role->id, explode(',', trim($user->role_ids, '[]')))) selected @endif>
@@ -165,18 +420,13 @@
                                         @endforeach
                                     </select>
                                     @error('users')
-                                        <div class="error-message">
-                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                            </svg>
-                                            {{ $message }}
-                                        </div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 
-                                <div class="modern-form-group">
-                                    <label for="parts" class="modern-label">System Parts</label>
-                                    <select class="multiple-select modern-select @error('parts') is-invalid @enderror"
+                                <div class="form-group">
+                                    <label for="parts">System Parts</label>
+                                    <select class="form-control multiple-select @error('parts') is-invalid @enderror"
                                             id="parts" name="parts[]" multiple>
                                         @foreach ($parts as $part)
                                             <option value="{{ $part->id }}" @if($role->parts->contains($part->id)) selected @endif>
@@ -185,90 +435,477 @@
                                         @endforeach
                                     </select>
                                     @error('parts')
-                                        <div class="error-message">
-                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                            </svg>
-                                            {{ $message }}
-                                        </div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Permissions Section -->
-                        <div class="modern-section">
-                            <div class="modern-section-header">
-                                <div class="section-icon">
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    <!-- Permissions Section -->
+                    <div class="modern-form-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Role Permissions</h3>
+                            <p class="section-subtitle">Configure what this role can access and modify</p>
+                        </div>
+                        
+                        <div class="permissions-container">
+                            <!-- Leads Management -->
+                            <div class="permission-item" data-permission="leads">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Leads Management</h4>
+                                            <p>Access to lead data, viewing, and management features</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="leads">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                                     </svg>
                                 </div>
-                                <div class="section-content">
-                                    <h4>Permissions</h4>
-                                    <p>Configure role permissions and access levels</p>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View Leads
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[leads_show]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create Leads
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[leads_create]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Edit Leads
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[leads_edit]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Delete Leads
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[leads_delete]">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            @include("role.options",['role' => $role,'parts' => $parts,'teams' => $teams])
-                        </div>
 
-                        <!-- Action Buttons -->
-                        <div class="action-bar">
-                            <div class="action-group">
-                                <a href="{{ route('role.index') }}" class="modern-btn modern-btn-secondary">
-                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                            <!-- Trading Platform -->
+                            <div class="permission-item" data-permission="trading">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Trading Platform</h4>
+                                            <p>Access to trading platform and client trading management</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="trading">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                                     </svg>
-                                    Back to Roles
-                                </a>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View Trading
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[leads_main_tp]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create Orders
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[trading_create]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Manage Orders
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[trading_manage]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Demo Trading
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[leads_main_tp_demo]">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <div class="action-group">
-                                @if ($role->getKey())
-                                    <button type="submit" formaction="{{route('role.clone',$role->getKey())}}" class="modern-btn modern-btn-info">
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"/>
-                                            <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"/>
-                                        </svg>
-                                        Clone Role
-                                    </button>
-                                    <button type="submit" class="modern-btn modern-btn-primary">
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"/>
-                                        </svg>
-                                        Update Role
-                                    </button>
-                                @else
-                                    <button type="submit" class="modern-btn modern-btn-primary">
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-                                        </svg>
-                                        Create Role
-                                    </button>
-                                @endif
+
+                            <!-- Email Management -->
+                            <div class="permission-item" data-permission="emails">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Email Management</h4>
+                                            <p>Email templates, campaigns, and sender management</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="emails">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View Emails
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[emails_view]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create Templates
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[emails_create]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Edit Templates
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[emails_edit]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Sender Emails
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[emails_sender_emails]">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reports & Analytics -->
+                            <div class="permission-item" data-permission="reports">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Reports & Analytics</h4>
+                                            <p>Access to system reports and analytics dashboard</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="reports">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View Reports
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[reports_view]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create Reports
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[reports_create]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Edit Reports
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[reports_edit]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 000 2h8.905l-1.972 1.972a1 1 0 101.414 1.414L14.414 6H16a1 1 0 100-2H3zM3 10a1 1 0 100 2h5.905l-1.972 1.972a1 1 0 101.414 1.414L11.414 12H13a1 1 0 100-2H3zM9 16a1 1 0 01-1-1v-2a1 1 0 112 0v2a1 1 0 01-1 1z"/>
+                                                </svg>
+                                                Export Data
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[reports_export]">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- System Administration -->
+                            <div class="permission-item" data-permission="admin">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>System Administration</h4>
+                                            <p>System settings, user management, and admin functions</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="admin">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                User Management
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[admin_users]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15.586 13H14a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                System Settings
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[admin_settings]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Role Management
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[admin_roles]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                                </svg>
+                                                System Logs
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="options[admin_logs]">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <div class="btn-group">
+                            <a href="{{ route('role.index') }}" class="btn btn-secondary">
+                                <svg fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                                </svg>
+                                Back to Roles
+                            </a>
+                        </div>
+                        
+                        <div class="btn-group">
+                            @if ($role->getKey())
+                                <button type="submit" formaction="{{route('role.clone',$role->getKey())}}" class="btn btn-info">
+                                    <svg fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"/>
+                                        <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"/>
+                                    </svg>
+                                    Clone Role
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <svg fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"/>
+                                    </svg>
+                                    Update Role
+                                </button>
+                            @else
+                                <button type="submit" class="btn btn-primary">
+                                    <svg fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Create Role
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 @endsection
 @section("script")
     <script src="{{ url('assets/plugins/select2/js/select2.min.js?v2.944') }}"></script>
-    <script src="{{ url('assets/js/form-select2.min.js?v2.944') }}"></script>
-    <script src="{{ url('assets/js/new.min.js?v2.944') }}"></script>
+    <script src="{{ url('assets/plugins/select2/js/select2.min.js?v2.944') }}"></script>
     
     <script>
         $(document).ready(function() {
-            // Simple Select2 initialization
+            // Initialize Select2
             $('.multiple-select').select2({
                 theme: 'bootstrap4',
                 placeholder: 'Select options...',
                 allowClear: true
             });
 
-            // Simple form validation
+            // Permission item toggle functionality
+            $('.permission-header').on('click', function(e) {
+                // Don't trigger if clicking on toggle switch
+                if ($(e.target).closest('.permission-toggle').length) {
+                    return;
+                }
+                
+                const permissionItem = $(this).closest('.permission-item');
+                const isExpanded = permissionItem.hasClass('expanded');
+                
+                // Toggle expanded state
+                permissionItem.toggleClass('expanded');
+                
+                // Animate the expansion
+                const actions = permissionItem.find('.permission-actions');
+                if (isExpanded) {
+                    actions.slideUp(300);
+                } else {
+                    actions.slideDown(300);
+                }
+            });
+
+            // Master toggle functionality
+            $('.permission-master-toggle').on('change', function() {
+                const permissionItem = $(this).closest('.permission-item');
+                const isChecked = $(this).is(':checked');
+                const target = $(this).data('target');
+                
+                // Toggle permission item state
+                if (isChecked) {
+                    permissionItem.removeClass('disabled');
+                    // Auto-expand when enabled
+                    if (!permissionItem.hasClass('expanded')) {
+                        permissionItem.addClass('expanded');
+                        permissionItem.find('.permission-actions').slideDown(300);
+                    }
+                } else {
+                    permissionItem.addClass('disabled');
+                    // Uncheck all sub-permissions
+                    permissionItem.find('.custom-checkbox').prop('checked', false);
+                    // Collapse when disabled
+                    permissionItem.removeClass('expanded');
+                    permissionItem.find('.permission-actions').slideUp(300);
+                }
+            });
+
+            // Individual checkbox change
+            $('.custom-checkbox').on('change', function() {
+                const permissionItem = $(this).closest('.permission-item');
+                const masterToggle = permissionItem.find('.permission-master-toggle');
+                const allCheckboxes = permissionItem.find('.custom-checkbox');
+                const checkedCheckboxes = permissionItem.find('.custom-checkbox:checked');
+                
+                // Update master toggle based on individual checkboxes
+                if (checkedCheckboxes.length > 0) {
+                    masterToggle.prop('checked', true);
+                    permissionItem.removeClass('disabled');
+                } else {
+                    masterToggle.prop('checked', false);
+                    permissionItem.addClass('disabled');
+                }
+            });
+
+            // Form validation
             $('#addform').on('submit', function(e) {
                 const nameField = $('#name');
                 if (!nameField.val().trim()) {
@@ -288,299 +925,111 @@
                 }
             });
 
-            // Simple alert function
+            // Alert function
             function showAlert(message, type) {
                 const alertClass = type === 'danger' ? 'alert-danger' : 'alert-success';
-                const icon = type === 'danger' ? 'bx-error-circle' : 'bx-check-circle';
-                
                 const alert = `
                     <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                        <i class="bx ${icon} me-2"></i>
                         ${message}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 `;
-                
                 $('.container-fluid').prepend(alert);
-                
                 setTimeout(() => {
                     $('.alert').fadeOut();
                 }, 3000);
             }
 
-            // Enhanced permissions functionality
-            
-            // Handle select all functionality for both old and new permission designs
-            $(document).on('change', '.check-all', function() {
-                let container, checkboxes;
+            // Initialize permission states based on existing data
+            $('.permission-item').each(function() {
+                const permissionItem = $(this);
+                const checkedCheckboxes = permissionItem.find('.custom-checkbox:checked');
+                const masterToggle = permissionItem.find('.permission-master-toggle');
                 
-                // Check if it's the new permission card design
-                const permissionCard = $(this).closest('.permission-card');
-                const legacyCard = $(this).closest('.enhanced-legacy-card');
-                
-                if (permissionCard.length) {
-                    container = permissionCard;
-                    checkboxes = container.find('.permission-option input[type="checkbox"]');
-                } else if (legacyCard.length) {
-                    container = legacyCard;
-                    checkboxes = container.find('input[type="checkbox"]:not(.check-all)');
+                if (checkedCheckboxes.length > 0) {
+                    masterToggle.prop('checked', true);
+                    permissionItem.removeClass('disabled');
                 } else {
-                    // Handle old design (col-md containers)
-                    container = $(this).closest('.col-md-1, .col-md-4, .col-md-6, .col-md-7, .col-12');
-                    checkboxes = container.find('input[type="checkbox"]:not(.check-all)');
-                }
-                
-                const isChecked = $(this).is(':checked');
-                checkboxes.prop('checked', isChecked);
-                
-                if (permissionCard.length) {
-                    updatePermissionOptionStyles(permissionCard);
-                }
-                
-                // Trigger auto-show functionality when select-all is used
-                checkboxes.each(function() {
-                    if ($(this).attr('data-col') || $(this).attr('name')) {
-                        $(this).trigger('change');
-                    }
-                });
-            });
-
-            // Handle individual checkbox changes for both designs
-            $(document).on('change', 'input[type="checkbox"]:not(.check-all)', function() {
-                // Check if it's the new permission card design
-                const permissionCard = $(this).closest('.permission-card');
-                const legacyCard = $(this).closest('.enhanced-legacy-card');
-                
-                if (permissionCard.length) {
-                    updatePermissionOptionStyles(permissionCard);
-                    updateSelectAllState(permissionCard);
-                } else if (legacyCard.length) {
-                    updateLegacySelectAllState(legacyCard);
-                } else {
-                    // Handle old design
-                    const container = $(this).closest('.col-md-1, .col-md-4, .col-md-6, .col-md-7, .col-12');
-                    const allCheckboxes = container.find('input[type="checkbox"]:not(.check-all)');
-                    const checkedCheckboxes = container.find('input[type="checkbox"]:not(.check-all):checked');
-                    const selectAllCheckbox = container.find('.check-all');
-                    
-                    if (checkedCheckboxes.length === allCheckboxes.length && allCheckboxes.length > 0) {
-                        selectAllCheckbox.prop('checked', true);
-                    } else {
-                        selectAllCheckbox.prop('checked', false);
-                    }
+                    masterToggle.prop('checked', false);
+                    permissionItem.addClass('disabled');
                 }
             });
 
-            // Function to update visual styles based on checkbox state
-            function updatePermissionOptionStyles(card) {
-                card.find('.permission-option').each(function() {
-                    const checkbox = $(this).find('input[type="checkbox"]');
-                    if (checkbox.is(':checked')) {
-                        $(this).addClass('checked');
-                    } else {
-                        $(this).removeClass('checked');
-                    }
-                });
-            }
+            // Smooth animations for permission actions
+            $('.permission-actions').hide();
+            $('.permission-item.expanded .permission-actions').show();
 
-            // Function to update select all checkbox state for modern cards
-            function updateSelectAllState(card) {
-                const allCheckboxes = card.find('.permission-option input[type="checkbox"]');
-                const checkedCheckboxes = card.find('.permission-option input[type="checkbox"]:checked');
-                const selectAllCheckbox = card.find('.check-all');
-                
-                if (checkedCheckboxes.length === allCheckboxes.length && allCheckboxes.length > 0) {
-                    selectAllCheckbox.prop('checked', true);
-                } else {
-                    selectAllCheckbox.prop('checked', false);
+            // Add hover effects
+            $('.action-item').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-2px)');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
                 }
-            }
+            );
 
-            // Function to update select all checkbox state for legacy cards
-            function updateLegacySelectAllState(card) {
-                const allCheckboxes = card.find('input[type="checkbox"]:not(.check-all)');
-                const checkedCheckboxes = card.find('input[type="checkbox"]:not(.check-all):checked');
-                const selectAllCheckbox = card.find('.check-all');
-                
-                if (checkedCheckboxes.length === allCheckboxes.length && allCheckboxes.length > 0) {
-                    selectAllCheckbox.prop('checked', true);
-                } else {
-                    selectAllCheckbox.prop('checked', false);
-                }
-            }
-
-            // Function to toggle conditional sections with animation
-            function toggleConditionalSection(sectionClass, show) {
-                const sections = $('.permission-conditional-section.' + sectionClass);
-                
-                if (show) {
-                    sections.removeClass('collapsed').addClass('expanded');
-                } else {
-                    sections.removeClass('expanded').addClass('collapsed');
-                }
-            }
-
-            // Auto-show functionality for main permissions (enhanced for bulk selection)
-            $(document).on('change', 'input[data-col="sender_email"], input[name="options[emails_sender_emails]"]', function() {
-                const isChecked = $('input[data-col="sender_email"]:checked, input[name="options[emails_sender_emails]"]:checked').length > 0;
-                toggleConditionalSection('sender_email', isChecked);
-            });
-
-            $(document).on('change', 'input[data-col="leads_table"], input[name="options[leads_list]"]', function() {
-                const isChecked = $('input[data-col="leads_table"]:checked, input[name="options[leads_list]"]:checked').length > 0;
-                toggleConditionalSection('leads_table', isChecked);
-            });
-
-            $(document).on('change', 'input[data-col="leads"], input[name="options[leads_show]"]', function() {
-                const isChecked = $('input[data-col="leads"]:checked, input[name="options[leads_show]"]:checked').length > 0;
-                toggleConditionalSection('leads', isChecked);
-            });
-
-            $(document).on('change', 'input[data-col="main_tp"], input[name="options[leads_main_tp]"], input[name="options[leads_main_tp_demo]"]', function() {
-                const anyMainTpChecked = $('input[data-col="main_tp"]:checked, input[name="options[leads_main_tp]"]:checked, input[name="options[leads_main_tp_demo]"]:checked').length > 0;
-                toggleConditionalSection('main_tp', anyMainTpChecked);
-            });
-
-            $(document).on('change', 'input[data-col="leads_comments"], input[name="options[leads_cards_comments]"]', function() {
-                const isChecked = $('input[data-col="leads_comments"]:checked, input[name="options[leads_cards_comments]"]:checked').length > 0;
-                toggleConditionalSection('leads_comments', isChecked);
-            });
-
-            $(document).on('change', 'input[data-col="mainTp_comments"], input[name="options[mainTp_cards_comments]"]', function() {
-                const isChecked = $('input[data-col="mainTp_comments"]:checked, input[name="options[mainTp_cards_comments]"]:checked').length > 0;
-                toggleConditionalSection('mainTp_comments', isChecked);
-            });
-
-            $(document).on('change', 'input[data-col="mainTp_chat"], input[name="options[mainTp_cards_chat]"]', function() {
-                const isChecked = $('input[data-col="mainTp_chat"]:checked, input[name="options[mainTp_cards_chat]"]:checked').length > 0;
-                toggleConditionalSection('mainTp_chat', isChecked);
-            });
-
-            // Handle update_leads conditional display
-            $(document).on('change', 'input[data-col="update_leads"], input[name="options[leads_can_update]"]', function() {
+            // Custom checkbox styling enhancement
+            $('.custom-checkbox').each(function() {
                 if ($(this).is(':checked')) {
-                    $('.update_leads').show();
-                } else {
-                    $('.update_leads').hide();
+                    $(this).closest('.action-item').addClass('selected');
                 }
             });
 
-            // Handle update_mainTp conditional display
-            $(document).on('change', 'input[data-col="update_mainTp"], input[name="options[mainTp_can_update]"]', function() {
+            $('.custom-checkbox').on('change', function() {
                 if ($(this).is(':checked')) {
-                    $('.update_mainTp').show();
+                    $(this).closest('.action-item').addClass('selected');
                 } else {
-                    $('.update_mainTp').hide();
+                    $(this).closest('.action-item').removeClass('selected');
                 }
             });
 
-            // Initialize conditional displays and auto-show functionality
-            function initializeConditionalSections() {
-                // First, hide ALL conditional sections by default
-                $('.permission-conditional-section').addClass('collapsed').removeClass('expanded');
-                
-                // Then show only the ones that should be visible based on checked inputs
-                
-                // Initialize sender_email sections
-                const senderEmailChecked = $('input[data-col="sender_email"]:checked, input[name="options[emails_sender_emails]"]:checked').length > 0;
-                if (senderEmailChecked) {
-                    $('.permission-conditional-section.sender_email').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize leads_table sections
-                const leadsTableChecked = $('input[data-col="leads_table"]:checked, input[name="options[leads_list]"]:checked').length > 0;
-                if (leadsTableChecked) {
-                    $('.permission-conditional-section.leads_table').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize leads sections
-                const leadsChecked = $('input[data-col="leads"]:checked, input[name="options[leads_show]"]:checked').length > 0;
-                if (leadsChecked) {
-                    $('.permission-conditional-section.leads').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize main_tp sections
-                const mainTpChecked = $('input[data-col="main_tp"]:checked, input[name="options[leads_main_tp]"]:checked, input[name="options[leads_main_tp_demo]"]:checked').length > 0;
-                if (mainTpChecked) {
-                    $('.permission-conditional-section.main_tp').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize leads_comments sections
-                const leadsCommentsChecked = $('input[data-col="leads_comments"]:checked, input[name="options[leads_cards_comments]"]:checked').length > 0;
-                if (leadsCommentsChecked) {
-                    $('.permission-conditional-section.leads_comments').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize mainTp_comments sections
-                const mainTpCommentsChecked = $('input[data-col="mainTp_comments"]:checked, input[name="options[mainTp_cards_comments]"]:checked').length > 0;
-                if (mainTpCommentsChecked) {
-                    $('.permission-conditional-section.mainTp_comments').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize mainTp_chat sections
-                const mainTpChatChecked = $('input[data-col="mainTp_chat"]:checked, input[name="options[mainTp_cards_chat]"]:checked').length > 0;
-                if (mainTpChatChecked) {
-                    $('.permission-conditional-section.mainTp_chat').removeClass('collapsed').addClass('expanded');
-                }
-                
-                // Initialize update conditional displays
-                if (!$('input[name="options[leads_can_update]"]').is(':checked')) {
-                    $('.update_leads').hide();
-                }
-                
-                if (!$('input[name="options[mainTp_can_update]"]').is(':checked')) {
-                    $('.update_mainTp').hide();
-                }
-            }
-
-            // Initialize on page load
-            initializeConditionalSections();
-
-            // Initialize styles on page load
-            $('.permission-card').each(function() {
-                updatePermissionOptionStyles($(this));
-                updateSelectAllState($(this));
-            });
-
-            $('.enhanced-legacy-card').each(function() {
-                updateLegacySelectAllState($(this));
-            });
-
-            // Handle conditional permissions (legacy support)
-            $(document).on('change', 'input[data-col="sender_email"]', function() {
+            // Toggle switch animation enhancement
+            $('.toggle-switch input').on('change', function() {
+                const slider = $(this).siblings('.toggle-slider');
                 if ($(this).is(':checked')) {
-                    $('.sender_email').removeClass('d-none');
+                    slider.addClass('checked');
                 } else {
-                    $('.sender_email').addClass('d-none');
+                    slider.removeClass('checked');
                 }
             });
 
-            // Handle leads table conditional display (legacy support)
-            $(document).on('change', 'input[data-col="leads_table"], input[name="options[leads_list]"]', function() {
-                if ($(this).is(':checked')) {
-                    $('.leads_table').removeClass('d-none');
-                } else {
-                    $('.leads_table').addClass('d-none');
-                }
-            });
-
-            // Handle main_tp conditional display (legacy support)
-            $(document).on('change', 'input[data-col="main_tp"]', function() {
-                if ($('input[data-col="main_tp"]:checked').length > 0) {
-                    $('.main_tp').removeClass('d-none');
-                } else {
-                    $('.main_tp').addClass('d-none');
-                }
-            });
-
-            // Handle leads conditional display (legacy support)
-            $(document).on('change', 'input[data-col="leads"]', function() {
-                if ($(this).is(':checked')) {
-                    $('.leads').removeClass('d-none');
-                } else {
-                    $('.leads').addClass('d-none');
-                }
+            // Initialize toggle switches
+            $('.toggle-switch input:checked').each(function() {
+                $(this).siblings('.toggle-slider').addClass('checked');
             });
         });
     </script>
+
+    <style>
+        .action-item.selected {
+            border-color: #4299e1;
+            background: #f0f8ff;
+        }
+        
+        .toggle-slider.checked {
+            background-color: #48bb78 !important;
+        }
+        
+        .permission-item {
+            transition: all 0.3s ease;
+        }
+        
+        .permission-item.disabled .permission-header {
+            opacity: 0.6;
+        }
+        
+        .action-item {
+            transition: all 0.3s ease;
+        }
+        
+        .action-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .permission-actions {
+            overflow: hidden;
+        }
+    </style>
 @endsection
