@@ -1358,11 +1358,11 @@
                                                     <div style="flex: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Balance</small>
-                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #28a745;">$ 5,250.75</h3>
+                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #00ff3a;">$ 5,250.75</h3>
                                                         </div>
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">PnL</small>
-                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #28a745;">$ 125.500</h3>
+                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #00ff3a;">$ 125.500</h3>
                                                         </div>
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Total Deposits</small>
@@ -1378,15 +1378,15 @@
                                                         </div>
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Equity</small>
-                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #28a745;">$ 5,376.25</h3>
+                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #00ff3a;">$ 5,376.25</h3>
                                                         </div>
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Used Margin</small>
-                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #28a745;">$ 1,250.00</h3>
+                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #00ff3a;">$ 1,250.00</h3>
                                                         </div>
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Free Margin</small>
-                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #28a745;">$ 4,126.25</h3>
+                                                            <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #00ff3a;">$ 4,126.25</h3>
                                                         </div>
                                                         <div>
                                                             <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Total Withdrawals</small>
@@ -1410,14 +1410,26 @@
                                                     <div style="background: white; padding: 20px;">
                                                         <!-- Tab Navigation -->
                                                         <div style="border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;">
-                                                            <div style="display: flex; gap: 20px; overflow-x: auto;">
-                                                                <div style="padding: 10px 16px; border-bottom: 2px solid #0d6efd; color: #0d6efd; font-weight: 500; cursor: pointer; white-space: nowrap;">Information</div>
-                                                                <div style="padding: 10px 16px; color: #718096; cursor: pointer; white-space: nowrap;">Opened Orders</div>
-                                                                <div style="padding: 10px 16px; color: #718096; cursor: pointer; white-space: nowrap;">Closed Orders</div>
-                                                                <div style="padding: 10px 16px; color: #718096; cursor: pointer; white-space: nowrap;">Money Transaction</div>
-                                                                <div style="padding: 10px 16px; color: #718096; cursor: pointer; white-space: nowrap;">Actions</div>
-                                                                <div style="padding: 10px 16px; color: #718096; cursor: pointer; white-space: nowrap;">Money History</div>
-                                                                <div style="padding: 10px 16px; color: #718096; cursor: pointer; white-space: nowrap;">KYC</div>
+                                                            <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                                                <small style="color: #718096; font-size: 12px;">
+                                                                    <svg style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle;" fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                                    </svg>
+                                                                    Click tabs to select multiple sections (multi-select enabled)
+                                                                </small>
+                                                                <div style="display: flex; gap: 8px;">
+                                                                    <button type="button" class="btn-select-all" style="background: none; border: 1px solid #e2e8f0; color: #4299e1; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">Select All</button>
+                                                                    <button type="button" class="btn-clear-all" style="background: none; border: 1px solid #e2e8f0; color: #718096; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">Clear All</button>
+                                                                </div>
+                                                            </div>
+                                                            <div style="display: flex; gap: 20px; overflow-x: auto;" class="tab-navigation">
+                                                                <div class="tab-item active" data-tab="information">Information</div>
+                                                                <div class="tab-item" data-tab="opened-orders">Opened Orders</div>
+                                                                <div class="tab-item" data-tab="closed-orders">Closed Orders</div>
+                                                                <div class="tab-item" data-tab="money-transaction">Money Transaction</div>
+                                                                <div class="tab-item" data-tab="actions">Actions</div>
+                                                                <div class="tab-item" data-tab="money-history">Money History</div>
+                                                                <div class="tab-item" data-tab="kyc">KYC</div>
                                                             </div>
                                                         </div>
                                                         <!-- Tab Content Preview -->
@@ -1988,14 +2000,27 @@
                                                     <div style="background: #f8f9fa; padding: 16px; display: flex; flex-direction: column; gap: 20px;">
                                                         <!-- Chat Cards -->
                                                         <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                                            <div style="display: flex; align-items: center; justify-content: between; margin-bottom: 16px;">
+                                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                                                 <h4 style="margin: 0; color: #2d3748; font-weight: 600; font-size: 16px;">
                                                                     <svg style="width: 18px; height: 18px; margin-right: 8px; vertical-align: middle;" fill="currentColor" viewBox="0 0 20 20">
                                                                         <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
                                                                     </svg>
                                                                     Chat Messages
                                                                 </h4>
-                                                                <span style="background: #e53e3e; color: white; border-radius: 10px; padding: 2px 8px; font-size: 12px; font-weight: 500;">3</span>
+                                                                <div style="display: flex; gap: 12px; align-items: center;">
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[chat_messages_show]" style="margin-right: 6px;">
+                                                                        Show
+                                                                    </label>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[chat_messages_edit]" style="margin-right: 6px;">
+                                                                        Edit
+                                                                    </label>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[chat_messages_delete]" style="margin-right: 6px;">
+                                                                        Delete
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                             
                                                             <div style="space-y: 12px;">
@@ -2061,16 +2086,26 @@
 
                                                         <!-- Support Chat Card -->
                                                         <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                                            <div style="display: flex; align-items: center; justify-content: between; margin-bottom: 16px;">
+                                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                                                 <h4 style="margin: 0; color: #2d3748; font-weight: 600; font-size: 16px;">
                                                                     <svg style="width: 18px; height: 18px; margin-right: 8px; vertical-align: middle;" fill="currentColor" viewBox="0 0 20 20">
                                                                         <path fill-rule="evenodd" d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.894A1 1 0 0018 16V3z" clip-rule="evenodd"/>
                                                                     </svg>
                                                                     Support Chat
                                                                 </h4>
-                                                                <div style="display: flex; align-items: center; gap: 6px;">
-                                                                    <div style="width: 8px; height: 8px; background: #48bb78; border-radius: 50%;"></div>
-                                                                    <span style="font-size: 12px; color: #48bb78; font-weight: 500;">Online</span>
+                                                                <div style="display: flex; gap: 12px; align-items: center;">
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[support_chat_show]" style="margin-right: 6px;">
+                                                                        Show
+                                                                    </label>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[support_chat_edit]" style="margin-right: 6px;">
+                                                                        Edit
+                                                                    </label>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[support_chat_delete]" style="margin-right: 6px;">
+                                                                        Delete
+                                                                    </label>
                                                                 </div>
                                                             </div>
 
@@ -2136,54 +2171,104 @@
                                                             
                                                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
                                                                 <!-- Send Email Action -->
-                                                                <button style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: #2d3748;">
-                                                                    <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                                                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                                                                    </svg>
-                                                                    Send Email
-                                                                </button>
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                                                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                                                        </svg>
+                                                                        Send Email
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[send_email_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
 
-                                                                <!-- Create Task Action -->
-                                                                <button style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: #2d3748;">
-                                                                    <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                                                                    </svg>
-                                                                    Create Task
-                                                                </button>
+                                                                <!-- Create Money Transaction Action -->
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                                                        </svg>
+                                                                        Create Money Transaction
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[create_money_transaction_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
 
-                                                                <!-- Schedule Meeting Action -->
-                                                                <button style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: #2d3748;">
-                                                                    <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                                                    </svg>
-                                                                    Schedule Meeting
-                                                                </button>
+                                                                <!-- Create Request Action -->
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                                                        </svg>
+                                                                        Create Request
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[create_request_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
 
-                                                                <!-- Generate Report Action -->
-                                                                <button style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: #2d3748;">
-                                                                    <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
-                                                                    </svg>
-                                                                    Generate Report
-                                                                </button>
+                                                                <!-- Export Data Action -->
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
+                                                                        </svg>
+                                                                        Export Data
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[export_data_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
 
-                                                                <!-- Create Transaction Action -->
-                                                                <button style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: #2d3748;">
-                                                                    <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
-                                                                        <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
-                                                                    </svg>
-                                                                    Money Transaction
-                                                                </button>
+                                                                <!-- Open Order Action -->
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                                                                            <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+                                                                        </svg>
+                                                                        Open Order
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[open_order_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
 
-                                                                <!-- Add Note Action -->
-                                                                <button style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: #2d3748;">
-                                                                    <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                                                                    </svg>
-                                                                    Add Note
-                                                                </button>
+                                                                <!-- Requests Action -->
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                                        </svg>
+                                                                        Requests
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[requests_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
+
+                                                                <!-- Login As Client Action -->
+                                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #2d3748;">
+                                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                                        <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                                        </svg>
+                                                                        Login As Client
+                                                                    </div>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="options[login_as_client_show]" style="margin-right: 4px;">
+                                                                        Show
+                                                                    </label>
+                                                                </div>
                                                             </div>
 
                                                             <!-- Action Footer -->
@@ -2361,6 +2446,40 @@
             $('.action-item').hover(function(){ $(this).css('transform','translateY(-2px)'); }, function(){ $(this).css('transform','translateY(0)'); });
             $('.toggle-switch input').on('change', function(){ $(this).siblings('.toggle-slider').toggleClass('checked', $(this).is(':checked')); });
             $('.toggle-switch input:checked').each(function(){ $(this).siblings('.toggle-slider').addClass('checked'); });
+            
+            // Tab functionality - Multi-select
+            $('.tab-item').on('click', function() {
+                // Toggle active class on clicked tab (allows multiple selections)
+                $(this).toggleClass('active');
+                
+                // Get selected tab name
+                const tabName = $(this).data('tab');
+                const isSelected = $(this).hasClass('active');
+                
+                console.log('Tab:', tabName, isSelected ? 'selected' : 'deselected');
+                
+                // Get all selected tabs
+                const selectedTabs = $('.tab-item.active').map(function() {
+                    return $(this).data('tab');
+                }).get();
+                
+                console.log('Currently selected tabs:', selectedTabs);
+                
+                // Optional: You can add content switching logic here for multiple tabs
+                // Show/hide content based on selected tabs
+            });
+            
+            // Select All functionality
+            $('.btn-select-all').on('click', function() {
+                $('.tab-item').addClass('active');
+                console.log('All tabs selected');
+            });
+            
+            // Clear All functionality
+            $('.btn-clear-all').on('click', function() {
+                $('.tab-item').removeClass('active');
+                console.log('All tabs cleared');
+            });
         });
     </script>
 
@@ -2372,5 +2491,80 @@
         .action-item { transition: all 0.3s ease; }
         .action-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .permission-actions { overflow: hidden; }
+        
+        /* Tab Styles */
+        .tab-item {
+            padding: 10px 16px;
+            color: #718096;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            position: relative;
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .tab-item:hover {
+            color: #4299e1;
+            background-color: #f0f8ff;
+            transform: translateY(-1px);
+        }
+        
+        .tab-item.active {
+            color: #0d6efd;
+            font-weight: 500;
+            border-bottom: 2px solid #0d6efd;
+            background-color: #fff;
+            box-shadow: 0 -2px 8px rgba(13, 110, 253, 0.1);
+            position: relative;
+        }
+        
+        .tab-item.active::before {
+            content: '✓';
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 10px;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+        
+        .tab-item.active:hover {
+            color: #0d6efd;
+            background-color: #fff;
+            transform: none;
+        }
+        
+        .tab-navigation {
+            position: relative;
+        }
+        
+        .tab-navigation::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+        
+        /* Button styles for Select All / Clear All */
+        .btn-select-all:hover {
+            background-color: #4299e1 !important;
+            color: white !important;
+            border-color: #4299e1 !important;
+        }
+        
+        .btn-clear-all:hover {
+            background-color: #718096 !important;
+            color: white !important;
+            border-color: #718096 !important;
+        }
+        
+        .btn-select-all, .btn-clear-all {
+            transition: all 0.3s ease;
+        }
     </style>
 @endsection
