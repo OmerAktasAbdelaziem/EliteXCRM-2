@@ -101,43 +101,7 @@
                             </div>
                         </div>
 
-                        <!-- Team Assignment -->
-                        <!-- Team Assignment Section -->
-                        <div class="modern-section">
-                            <div class="modern-section-header">
-                                <div class="section-icon">
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-                                    </svg>
-                                </div>
-                                <div class="section-content">
-                                    <h4>Team Assignment</h4>
-                                    <p>Assign this role to specific teams</p>
-                                </div>
-                            </div>
-                            
-                            <div class="modern-form-grid">
-                                <div class="modern-form-group">
-                                    <label for="teams" class="modern-label">Select Teams</label>
-                                    <select class="multiple-select modern-select @error('teams') is-invalid @enderror"
-                                            id="teams" name="teams[]" multiple>
-                                        @foreach ($teams as $team)
-                                            <option value="{{ $team->id }}" @if($role->teams->contains($team->id)) selected @endif>
-                                                {{ $team->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('teams')
-                                        <div class="error-message">
-                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                            </svg>
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
+                       
 
                         <!-- User & System Assignment Section -->
                         <div class="modern-section">
