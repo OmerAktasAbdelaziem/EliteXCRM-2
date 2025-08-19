@@ -1326,31 +1326,20 @@
                                                 <div style="display: flex; align-items: flex-start; gap: 20px; color: white;">
                                                     <!-- Left Section -->
                                                     <div style="flex: 1;">
-                                                        <div style="display: flex; gap: 20px; margin-bottom: 12px;">
+                                                        <div style="display: flex; align-items: center; gap: 12px;">
                                                             <div>
-                                                                <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">ID</small>
-                                                                <small style="font-size: 13px; font-weight: 500;">
-                                                                    <a href="#" style="color: white; text-decoration: none;">#12345</a>
-                                                                </small>
+                                                                <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">Name</small>
+                                                                <h3 style="font-size: 20px; font-weight: 600; margin: 0; color: white;">John Doe</h3>
                                                             </div>
                                                             <div style="display: flex; align-items: center; gap: 8px;">
-                                                                <div>
-                                                                    <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">TP</small>
-                                                                    <small style="font-size: 13px; font-weight: 500;">
-                                                                        <a href="#" style="color: white; text-decoration: none;">MT5-Live-001</a>
-                                                                    </small>
-                                                                </div>
-                                                                <div class="field-permissions" style="margin-left: 8px; margin-top: 12px;">
+                                                                <strong style="font-size: 12px; opacity: 0.9;">TP #12345</strong>
+                                                                <div class="field-permissions">
                                                                     <label style="display: flex; align-items: center; font-size: 11px; color: rgba(255,255,255,0.9); cursor: pointer;">
                                                                         <input type="checkbox" name="options[client_tp_show]" style="margin-right: 4px; accent-color: white;">
                                                                         Show TP
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div>
-                                                            <small style="font-size: 12px; opacity: 0.9; display: block; margin-bottom: 2px;">TP Name</small>
-                                                            <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 12px 0; color: white;">John Doe</h3>
                                                         </div>
                                                     </div>
                                                     
