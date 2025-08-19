@@ -28,9 +28,9 @@ class RoleController extends Controller
         $parts = Part::latest()->get();
         
         return view('role2.show',compact(
-            //'parts',
-            //'teams',
-            //'users',
+            'parts',
+            'teams',
+            'users',
             'role',
         ));
     }
