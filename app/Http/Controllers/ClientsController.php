@@ -207,6 +207,10 @@ class ClientsController extends Controller
         }
 
         //if (isset($options['leads_tabs_hot'])) {
+        /*foreach($users->pluck('id') as $ss){
+            echo $ss.',';
+        }
+        dd($users->pluck('id'));*/
         if($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'leads_tabs_hot')){
             $hot = Client::where('sales_status','Hot Lead')->where(function ($query) use ($users, $isSuperAdmin,$pipelineId) {
                 $query->whereIn('user_id', $users->pluck('id'));

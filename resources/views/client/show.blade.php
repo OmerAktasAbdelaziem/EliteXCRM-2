@@ -49,10 +49,13 @@
         }
     </style>
 @endsection
+<?php 
+/*
 @section('title',
     ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show')) ? $client->first_name : '') . ' ' .
     (UserPermission::isSuperAdmin(Auth::user()) ||  UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show')) ? $client->last_name : '')
 )
+*/ ?>
 @section("wrapper")
     <div class="page-wrapper">
         <div class="page-content">
