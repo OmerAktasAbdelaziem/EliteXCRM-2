@@ -660,49 +660,7 @@
                                             <input type="checkbox" class="custom-checkbox" name="roles[show_unassigned_leads]">
                                         </div>
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- Chat bubble icon -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
-                                                </svg>
-                                                Leads Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_cards_comments]">
-                                        </div>
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- Chat bubble icon -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
-                                                </svg>
-                                                Leads Add Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_add_comments]">
-                                        </div>
-                                       
-                                <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- Chat bubble icon -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
-                                                </svg>
-                                                Leads Edit Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_edit_comments]">
-                                        </div>
-                                        
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- Chat bubble icon -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
-                                                </svg>
-                                                Leads Delete Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_delete_comments]">
-                                        </div>
                                
                             <div class="action-item">
                                             <div class="action-label">
@@ -1074,16 +1032,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_comments]">
                                         </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Message Dots -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7zm-9-2a1 1 0 112 0 1 1 0 01-2 0zm4 1a1 1 0 100-2 1 1 0 000 2zm-8 0a1 1 0 100-2 1 1 0 000 2z"/>
-                                                </svg>
-                                                TP Chat
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_chat]">
-                                        </div>
+                                        
                                         
                                         
                                         <div class="action-item">
@@ -1173,49 +1122,7 @@
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_delete_comments]" >
                                         </div>
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Cards Chat
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_chat]">
-                                        </div>
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Add Chat
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_add_chat]" >
-                                        </div>
-                                        
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Edit Chat
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_edit_chat]" >
-                                        </div>
-                                        
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Delete Chat
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_delete_chat]" >
-                                        </div>
                                         
                                         
                                     </div>
@@ -2692,19 +2599,23 @@
                                                                     <svg style="width: 18px; height: 18px; margin-right: 8px; vertical-align: middle;" fill="currentColor" viewBox="0 0 20 20">
                                                                         <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
                                                                     </svg>
-                                                                    Chat Messages
+                                                                    Comments
                                                                 </h4>
                                                                 <div style="display: flex; gap: 12px; align-items: center;">
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[chat_messages_show]" style="margin-right: 6px;">
-                                                                        Show
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[leads_cards_comments]" style="margin-right: 6px;">
+                                                                        Show Card
                                                                     </label>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[chat_messages_edit]" style="margin-right: 6px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[leads_add_comments]" style="margin-right: 6px;">
+                                                                        Add
+                                                                    </label>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[leads_edit_comments]" style="margin-right: 6px;">
                                                                         Edit
                                                                     </label>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[chat_messages_delete]" style="margin-right: 6px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[leads_delete_comments]" style="margin-right: 6px;">
                                                                         Delete
                                                                     </label>
                                                                 </div>
@@ -2782,15 +2693,19 @@
                                                                 </h4>
                                                                 <div style="display: flex; gap: 12px; align-items: center;">
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[support_chat_show]" style="margin-right: 6px;">
-                                                                        Show
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_chat]" style="margin-right: 6px;">
+                                                                        Show Card
                                                                     </label>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[support_chat_edit]" style="margin-right: 6px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_add_chat]" style="margin-right: 6px;">
+                                                                        Add
+                                                                    </label>
+                                                                    <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_edit_chat]" style="margin-right: 6px;">
                                                                         Edit
                                                                     </label>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[support_chat_delete]" style="margin-right: 6px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_delete_chat]" style="margin-right: 6px;">
                                                                         Delete
                                                                     </label>
                                                                 </div>
