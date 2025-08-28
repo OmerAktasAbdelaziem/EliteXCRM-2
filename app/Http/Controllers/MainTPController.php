@@ -37,7 +37,9 @@ use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
-use App\Http\Services\User\Interfaces\UserServiceInterface;
+//use App\Http\Services\User\Interfaces\UserServiceInterface;
+
+use UserPermission;
 
 class MainTPController extends Controller
 {
@@ -46,24 +48,27 @@ class MainTPController extends Controller
 protected $assetService;
 protected $orderService;
 protected $clientService;
-protected $userService;
+//protected $userService;
 
     public function __construct(
             AssetGroupServiceInterface $assetGroupService,
             AssetServiceInterface $assetService,
             OrderServiceInterface $orderService,
             ClientServiceInterface $clientService,
-            UserServiceInterface $userService,
+            //UserServiceInterface $userService,
             ) {
         $this->assetGroupService = $assetGroupService;
         $this->assetService = $assetService;
         $this->orderService = $orderService;
         $this->clientService = $clientService;
-        $this->userService = $userService;
+        //$this->userService = $userService;
         
     }
     public function show($id,Request $request)
     {
+        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
+        $pipelineId   = Auth::user()->pipeline_id;
+        
         $formattedNowFromDate = Carbon::now()->subDays(30)->startOfDay()->format('d/m/Y');
         $formattedNowToDate   = Carbon::now()->endOfDay()->format('d/m/Y');        
         $moneyTrx_fromTo      = $request->moneyTrx_fromTo ?? $formattedNowFromDate.' - '.$formattedNowToDate;
@@ -77,12 +82,12 @@ protected $userService;
         $asset_groups         = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)->get();
         $email_logs           = EmailLog::where('client_id',$id)->where('type','real')->latest()->limit(6)->get();
         $comments             = Client_comment::where('client_id',$id)->latest()->get();
-        $options              = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        //$options              = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $actions              = Action::where('client_id',$id);
         $changes              = null;
         $client               = Client::findOrfail($id);
         $status               = $request->status ?? $client->sales_status;
-        $teams                = $this->clientService->getTeams($options, Auth::user()); //(new ClientsController)->getTeams($options);
+        $teams                = $this->clientService->getTeams(Auth::user()); //(new ClientsController)->getTeams($options);
         $limit                = $request->input('limit', 14);
         $users                = $this->clientService->getUsers($teams, Auth::user());//(new ClientsController)->getUsers($teams);
         $parts                = $this->clientService->getParts($teams, Auth::user());//(new ClientsController)->getParts($teams);
@@ -107,18 +112,20 @@ protected $userService;
             }
         })->latest()->get();
 
-        $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $options) {
+        $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$pipelineId) {
             $query->whereIn('user_id', $users->pluck('id'));
     
-            if (isset($options['leads_data_show_unassigned_leads'])) {
+            //if (isset($options['leads_data_show_unassigned_leads'])) {
+            if($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'show_unassigned_leads')){
                 $query->orWhere('user_id', null);
             }
         })->orderBy('created_at', 'desc');
 
-        $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $options) {
+        $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$pipelineId) {
             $query->whereIn('user_id', $users->pluck('id'));
     
-            if (isset($options['leads_data_show_unassigned_leads'])) {
+            //if (isset($options['leads_data_show_unassigned_leads'])) {
+            if($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'show_unassigned_leads')){
                 $query->orWhere('user_id', null);
             }
         })->orderBy('created_at', 'asc');
@@ -336,7 +343,7 @@ protected $userService;
 
     public function update(Request $request, $id)
     {
-        $options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        //$options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $client  = Client::findOrfail($id);
 
         $inputs = array_filter(
@@ -1553,13 +1560,13 @@ $assets->load(['groupAssignments' => function($query) use ($asset_group_id) {
         $asset_groups         = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)->get();
         $email_logs           = EmailLog::where('client_id',$id)->where('type','real')->latest()->limit(6)->get();
         $comments             = Client_comment::where('client_id',$id)->latest()->get();
-        $options              = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        //$options              = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $actions              = Action::where('client_id',$id);
         $changes              = null;
         $client               = null;
         $clients              = auth()->user()->retention_clients??[];
         $online               = false;
-        $teams                = $this->clientService->getTeams($options, Auth::user());//(new ClientsController)->getTeams($options);
+        $teams                = $this->clientService->getTeams(Auth::user());//(new ClientsController)->getTeams($options);
         $limit                = $request->input('limit', 6);
         $users                = $this->clientService->getUsers($teams, Auth::user());//(new ClientsController)->getUsers($teams);
         $parts                = $this->clientService->getParts($teams, Auth::user());//(new ClientsController)->getParts($teams);

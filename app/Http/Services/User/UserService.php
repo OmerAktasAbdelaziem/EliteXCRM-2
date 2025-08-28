@@ -5,7 +5,7 @@ namespace App\Http\Services\User;
 //Interfaces
 use App\Http\Repositories\User\Interfaces\UserRepositoryInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
-use App\Http\Services\Role\Interfaces\RoleServiceInterface;
+//use App\Http\Services\Role\Interfaces\RoleServiceInterface;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
@@ -16,13 +16,13 @@ use App\Models\OldRole;
 class UserService implements UserServiceInterface {
 
     protected $userRepository;
-    protected $roleService;
+   // protected $roleService;
 
     public function __construct(UserRepositoryInterface $userRepository,
-            RoleServiceInterface $roleService
+          //  RoleServiceInterface $roleService
             ) {
         $this->userRepository = $userRepository;
-        $this->roleService = $roleService;
+      //  $this->roleService = $roleService;
     }
 
     public function getAll(): Collection{

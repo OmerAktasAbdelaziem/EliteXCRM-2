@@ -34,7 +34,7 @@
                                             <span class="number">0</span>
                                             Selected
                                         </button>
-                                        @if (isset($options['bank_create']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'banks_create'))
                                             <a href="{{ route('asset.create') }}" class="btn btn-success btn-sm">
                                                 Add new asset
                                             </a>

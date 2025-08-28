@@ -15,7 +15,8 @@
                                     <h5 class="mb-1">Our Roles</h5>
                                 </div>
                                 <div class="font-22 ms-auto">
-                                    @if (isset($options['roles_create']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'roles_create') )
+                                    
                                         <a href="{{ route('role.create') }}" class="btn btn-success btn-sm">
                                             Add new role
                                         </a>
@@ -29,9 +30,9 @@
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Role Name</th>
-                                                    <th>Number of Users</th>
+                                                    <!--<th>Number of Users</th>
                                                     <th>Number of Teams</th>
-                                                    <th>Number of Parts</th>
+                                                    <th>Number of Parts</th>-->
                                                     <th>Created At</th>
                                                     <th></th>
                                                 </tr>
@@ -39,10 +40,10 @@
                                             <tbody>
                                                 @foreach ($roles as $role)
                                                     <tr>
-                                                        <td><a href="{{ route('role.show', $role->id) }}">{{$role->name}}</a></td>
-                                                        <td>{{$role->users->count()}}</td>
+                                                        <td><a href="{{ route('role.edit', $role->id) }}">{{$role->name}}</a></td>
+                                                        <?php /* <td>{{$role->users->count()}}</td>
                                                         <td>{{$role->teams->count()}}</td>
-                                                        <td>{{$role->parts->count()}}</td>
+                                                        <td>{{$role->parts->count()}}</td> */ ?>
                                                         <td>{{date('d/m/Y H:i', strtotime($role->created_at))}}</td>
                                                         <td>
                                                             <button type="button" formaction="{{ route('role.delete',$role->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#deleteModal">

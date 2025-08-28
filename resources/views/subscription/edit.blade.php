@@ -30,7 +30,8 @@
                             </h5>
                         </div>
                         <hr>
-                        @if (isset($options['subscription_show']))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'subscription_view') )
+                        
                         <form  method="POST" action="{{route('subscription.update', ['id' => $subscription->id])}}">
                             @csrf
                             

@@ -5,16 +5,43 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateRoleRequest;
 use App\Models\Part;
 use Illuminate\Http\Request;
-use App\Models\OldRole;
+use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+
+use App\Http\Services\Role\Interfaces\RoleServiceInterface;
+use App\Http\Services\Role\Interfaces\PermissionServiceInterface;
+
+use UserPermission;
+    
+
+
+    
+
+
+
+
 class RoleController extends Controller
 {
+    protected $roleService;
+    protected $permissionService;
+    public function __construct(
+            RoleServiceInterface $roleService,
+            PermissionServiceInterface $permissionService,
+
+            ) {
+        $this->roleService = $roleService;
+        $this->permissionService = $permissionService;
+
+        
+    }
+    
+    
     public function index()
     {
-        $roles = OldRole::select('id','name','created_at')->latest()->get();
+        $roles = Role::select('id','name','created_at')->latest()->get();
         return view('role.index',compact(
             'roles'
         ));
@@ -22,22 +49,34 @@ class RoleController extends Controller
     
     public function create()
     {
-        $role  = new OldRole;
+       /*$role  = new OldRole;
         $teams = Team::latest()->get();
         $users = User::WithPipeline()->latest()->get();
-        $parts = Part::latest()->get();
+        $parts = Part::latest()->get();*/
         
-        return view('role2.show',compact(
+        return view('role.create'/*,compact(
             'parts',
             'teams',
             'users',
             'role',
-        ));
+        )*/);
     }
     
     public function store(CreateRoleRequest $request)
     {
-        // dd($request->all());
+     
+$permissions = array_keys($request['roles']);
+//dd($permissions);
+ $this->roleService->create($request->name,Auth::user()->pipeline_id,$permissions);
+/*
+dd('a');
+    return response()->json([
+        'success' => true,
+        'role' => $role
+    ]);
+        
+        
+         dd($request['roles']);
 
         $inputs = $request->only(['name']);
         $inputs['options'] = json_encode($request->input('options'));
@@ -64,13 +103,18 @@ class RoleController extends Controller
         }
         if ($request->parts) {
             Part::whereIn('id', $request->parts)->update(['role_id' => $role->id]);
-        }
+        }*/
 
         return redirect()->route('role.index');
     }
     
     public function show($id)
     {
+        $role = $this->roleService->getByFilters(
+                [['field'=>'id','conditions'=>['='=>$id]]], 
+                ['permissions']
+                );
+        dd($role);
         $role  = OldRole::findOrfail($id);
        // $teams = Team::latest()->get();
         //$users = User::WithPipeline()->latest()->get();
@@ -79,7 +123,7 @@ class RoleController extends Controller
            // $role->options = json_decode($role->options, true);
        // }
 
-        return view('role2.show',compact(
+        return view('role.create',compact(
           //  'parts',
             //'teams',
           //  'users',
@@ -87,11 +131,61 @@ class RoleController extends Controller
         ));
     }
     
+    public function edit($id)
+    {
+        $pipelineId = Auth::user()->pipeline_id;
+       // dd(UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'open_order_show'));
+       // dd(UserPermission::hasRoleInPipeline(Auth::user(),$pipelineId , 'super_admin'));
+        
+        $role = $this->roleService->getByFilters([['field'=>'id','conditions'=>['='=>$id]]], ['permissions'])->first();
+   
+            return view('role.edit', compact(
+                        'role',
+                        //'subscription',
+                        //'brokers',
+                        //'users',
+                ));
+    }
+    
     public function update(Request $request, $id)
     {
+        
+        $pipelineId = Auth::user()->pipeline_id;
+        $role = $this->roleService->getById($id)->first();
+        $role->load('permissions');
+        //dd($role);
+        $permissions = array_keys($request['roles']);
+        //$permissionsString = implode(',',$permissions);
+        $existPermissions = $this->permissionService->getByFilters([
+            ['field'=>'name','conditions'=>['in'=>$permissions]],
+            ['field'=>'pipeline','conditions'=>['='=>$pipelineId]]
+            ]);
+        $existPermissionNames = $existPermissions->pluck('name')->toArray();
+        $notExistPermissions = array_diff($permissions, $existPermissionNames);
+        $newPermissionsData = [];
+        foreach($notExistPermissions as $notExistPermission){
+            $newPermissionsData[] = [
+                'pipeline'=>$pipelineId,
+                'guard_name'=>'web',
+                'name'=>$notExistPermission,
+                'created_at' => now(),
+                'updated_at' => now(),
+                ];
+            //$this->permissionService->
+        }
+        //dd($existPermissions);
+        $this->permissionService->createBulk($newPermissionsData);
+        $syncPermissions = $this->permissionService->getByFilters([
+            ['field'=>'name','conditions'=>['in'=>$permissions]],
+            ['field'=>'pipeline','conditions' => ['='=>$pipelineId]],
+        ]);
+        $syncPermissionsIds = $syncPermissions->pluck('id')->toArray();
+        //dd($syncPermissionsIds);
+        $role->syncPermissions($syncPermissions);
+        //die('a');
         // dd($request->all()); 
 
-        $role = OldRole::findOrFail($id);
+        /*$role = OldRole::findOrFail($id);
         $request->validate([
             'name'    => ['required' , 'string' , 'unique:roles,name,'.$id.',id,pipeline_id,'.Auth::user()->pipeline_id],
             'users.*' => ['nullable' , 'numeric' , 'exists:users,id'],
@@ -151,9 +245,9 @@ class RoleController extends Controller
 
                 $user->update(['role_ids' => $roleIds]);
             }
-        }
+        }*/
         
-        return redirect()->route('role.show', $id)->with('success', 'Role updated successfully');
+        return redirect()->route('role.edit', $id)->with('success', 'Role updated successfully');
     }
 
     public function clone(Request $request, $id)

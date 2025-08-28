@@ -234,6 +234,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Eod' => RadicalLoop\Eod\Facades\Eod::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'UserPermission' => App\Facades\UserPermission::class,
 
     ],
 

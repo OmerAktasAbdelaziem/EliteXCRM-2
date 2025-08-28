@@ -7,12 +7,14 @@
             <tr>
                 <th>
                     <input class="form-check-input me-3 check-all-table" data-target="check-{{$check_type}}" type="checkbox">
-                    @if (isset($options['leads_table_lead_id']))
+                 
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_lead_id_show'))
                         Lead ID
                     @endif
                 </th>
                 <th>Enabled</th>
-                @if (isset($options['leads_table_name']))
+                
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
                     <th onclick="sortTableByVar('first_name')" style="cursor: pointer">
                         Name
                         @if (request('sort') == 'first_name')
@@ -24,25 +26,33 @@
                         @endif
                     </th>
                 @endif
-                @if (isset($options['leads_table_country']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_show') )
+                
                     <th style="min-width: 100px;" class="max-w-160">Country</th>
                 @endif
-                @if (isset($options['leads_table_email']))
+                <?php /*@if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show') )*/?>
+                
                     <th>Email</th>
-                @endif
-                @if (isset($options['leads_table_phone']))
+                <?php /*@endif */?>
+                
+                <?php /* @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show')) */?>
                     <th>Phone Number</th>
-                @endif
-                @if (isset($options['leads_table_account_type']))
+                <?php /*
+                    @endif
+                */?>
+                
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_account_type_show') )
                     <th>Account type</th>
                 @endif
-                @if (isset($options['leads_table_user_id']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_show') )
                     <th>Assigned User</th>
                 @endif
-                @if (isset($options['leads_table_status']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_show') )
+                
                     <th style="min-width: 150px">Status</th>
                 @endif
-                @if (isset($options['leads_table_ftd_date']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_date_show') )
+                
                     <th style="min-width: 200px;cursor: pointer" onclick="sortTableByVar('ftd_date')">
                         FTD Date
                         @if (request('sort') == 'ftd_date')
@@ -54,27 +64,30 @@
                         @endif
                     </th>
                 @endif
-                @if (isset($options['leads_table_first_comment_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_comment_date_show') )
                     <th style="min-width: 200px;">
                         First Comment Date
                     </th>
                 @endif
-                @if (isset($options['leads_table_assigned_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_date_show') )
                     <th style="min-width: 200px;">
                         Assigned Date
                     </th>
                 @endif
-                @if (isset($options['leads_table_modified_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_modified_date_show') )
+                
                     <th style="min-width: 200px;">
                         Modified Date
                     </th>
                 @endif
-                @if (isset($options['leads_table_reg_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_registration_date_show') )
+                
                     <th style="min-width: 200px;">
                         Registration Date
                     </th>
                 @endif
-                @if (isset($options['leads_table_created_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_create_date_show') )
+                
                     <th style="min-width: 200px; cursor: pointer;" onclick="sortTableByVar('created_at')">
                         Created At 
                         @if (request('sort') == 'created_at' || !request('sort'))
@@ -87,10 +100,11 @@
                     </th>
                 @endif
                 <th></th>
-                @if (isset($options['leads_table_source']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_source_show') )
+                
                     <th class="max-w-160">Source</th>
                 @endif
-                @if (isset($options['leads_table_teams']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_team_show') )
                     <th onclick="sortTableByVar('team')" style="cursor: pointer">
                         Teams
                         @if (request('sort') == 'team')
@@ -102,7 +116,7 @@
                         @endif
                     </th>
                 @endif
-                @if (isset($options['leads_table_created_by']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_created_by_show') )
                     <th>Created by</th>
                 @endif
             </tr>
@@ -112,7 +126,7 @@
                 <th>
                     <button type="submit" style="display: none">Search</button>
                     <input type="hidden" name="tab" value="{{$tab}}" form="filter_form-{{$check_type}}">
-                    @if (isset($options['leads_table_lead_id']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_lead_id_show') )
                         <input type="text" class="form-control" name="{{$check_type}}_filters[id]" value="{{$filters?$filters['id']:''}}" placeholder="ID" form="filter_form-{{$check_type}}" />
                     @endif
                 </th>
@@ -127,12 +141,16 @@
                         </div>
                     </div>
                 </th>
-                @if (isset($options['leads_table_name']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
+                
                     <th>
                         <input type="text" class="form-control" name="{{$check_type}}_filters[name]" value="{{$filters?$filters['name']:''}}" placeholder="Name" form="filter_form-{{$check_type}}" />
                     </th>
+                    @else
+                    <th></th>
                 @endif
-                @if (isset($options['leads_table_country']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_show') )
+                
                     <th class="max-w-160">
                         <div class="input-group">
                             <select class="form-select multiple-select flag_country" name="{{$check_type}}_filters[country][]" form="filter_form-{{$check_type}}" multiple>
@@ -158,17 +176,24 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_email']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show') )
+                
                     <th>
                         <input type="mail" class="form-control" name="{{$check_type}}_filters[mail]" value="{{$filters?$filters['mail']:''}}" placeholder="Email" form="filter_form-{{$check_type}}" />
                     </th>
+                    @else
+                    <th></th>
                 @endif
-                @if (isset($options['leads_table_phone']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show') )
+                
                     <th>
                         <input type="text" class="form-control" name="{{$check_type}}_filters[phone]" value="{{$filters?$filters['phone']:''}}" placeholder="Phone Number" form="filter_form-{{$check_type}}" />
                     </th>
+                    else
+                    <th></th>
                 @endif
-                @if (isset($options['leads_table_account_type']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_account_type_show') )
+                
                     <th>
                         <div class="input-group">
                             <select class="single-select filter-select form-select" name="{{$check_type}}_filters[type]" form="filter_form-{{$check_type}}">
@@ -179,7 +204,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_user_id']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_show') )
+                
                     <th class="max-w-160">
                         <div class="input-group">
                             <select class="form-select multiple-select" name="{{$check_type}}_filters[user][]" form="filter_form-{{$check_type}}" multiple>
@@ -191,7 +217,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_status']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_show') )
+                
                     <th class="max-w-160">
                         <div class="input-group">
                             <select class="form-select multiple-select" name="{{$check_type}}_filters[status][]" form="filter_form-{{$check_type}}" multiple>
@@ -203,7 +230,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_ftd_date']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_date_show') )
+                
                     <th>
                         <div class="input-group">
                             <input type="text" class="form-control from-to-range" form="filter_form-{{$check_type}}" id="{{$check_type}}_ftd_fromTo" placeholder="{{$filters?$filters['ftd_fromTo']:'Select date range'}}">
@@ -211,7 +239,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_first_comment_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_comment_date_show') )
+                
                     <th>
                         <div class="input-group">
                             <input type="text" class="form-control from-to-range" form="filter_form-{{$check_type}}" id="{{$check_type}}_first_comment_at_fromTo" placeholder="{{$filters?$filters['first_comment_at_fromTo']:'Select date range'}}">
@@ -219,7 +248,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_assigned_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_date_show') )
+                
                     <th>
                         <div class="input-group">
                             <input type="text" class="form-control from-to-range" form="filter_form-{{$check_type}}" id="{{$check_type}}_assigned_at_fromTo" placeholder="{{$filters?$filters['assigned_at_fromTo']:'Select date range'}}">
@@ -227,7 +257,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_modified_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_modified_date_show') )
+                
                     <th>
                         <div class="input-group">
                             <input type="text" class="form-control from-to-range" form="filter_form-{{$check_type}}" id="{{$check_type}}_modified_at_fromTo" placeholder="{{$filters?$filters['modified_at_fromTo']:'Select date range'}}">
@@ -235,7 +266,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_reg_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_registration_date_show') )
+                
                     <th>
                         <div class="input-group">
                             <input type="text" class="form-control from-to-range" form="filter_form-{{$check_type}}" id="{{$check_type}}_reg_at_fromTo" placeholder="{{$filters?$filters['reg_at_fromTo']:'Select date range'}}">
@@ -243,7 +275,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_created_at']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_create_date_show') )
+                
                     <th>
                         <div class="input-group">
                             <input type="text" class="form-control from-to-range" form="filter_form-{{$check_type}}" id="{{$check_type}}_created_fromTo" placeholder="{{$filters?$filters['created_fromTo']:'Select date range'}}">
@@ -256,7 +289,8 @@
                         Filter
                     </button>
                 </th>
-                @if (isset($options['leads_table_source']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_source_show') )
+                
                     <th class="max-w-160">
                         <div class="input-group">
                             <select class="form-select multiple-select" name="{{$check_type}}_filters[source][]" form="filter_form-{{$check_type}}" multiple>
@@ -268,7 +302,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_teams']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_team_show') )
+                
                     <th>
                         <div class="input-group">
                             <select class="single-select filter-select form-select" name="{{$check_type}}_filters[teams]" form="filter_form-{{$check_type}}">
@@ -280,7 +315,8 @@
                         </div>
                     </th>
                 @endif
-                @if (isset($options['leads_table_created_by']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_created_by_show') )
+                
                     <th>
                         <div class="input-group">
                             <select class="form-select multiple-select" name="{{$check_type}}_filters[created_by][]" form="filter_form-{{$check_type}}" multiple>
@@ -300,8 +336,8 @@
                             <div>
                                 <input class="form-check-input me-3 check-{{$check_type}} check-number" type="checkbox" form="addemployee" name="clientid[]" value="{{$contact->id}}" aria-label="...">
                             </div>
-                            @if (isset($options['leads_table_lead_id']))
-                                <a @if (isset($options['leads_show'])) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_lead_id_show') )
+                                <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
                                     #{{$contact->id}}
                                 </a>
                             @endif
@@ -314,14 +350,14 @@
                         @endif
                         type="checkbox" aria-label="..." disabled>
                     </td>
-                    @if (isset($options['leads_table_name']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
                         <td style="width: fit-content">
                             <div class="ms-2">
-                                <a @if (isset($options['leads_show'])) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
+                                <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
                                     <h6 class="mb-1 font-14">
-                                        @if(isset($options['leads_show_first_name']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') )
                                             {{$contact->first_name}}
-                                        @elseif(isset($options['leads_show_first_name_hide']))
+                                        @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide') )
                                             <div>
                                                 {{ substr($contact->first_name, 0, ceil(strlen($contact->first_name) / 2)) }}******
                                             </div>
@@ -330,9 +366,9 @@
                                                 ******
                                             </div>
                                         @endif
-                                        @if(isset($options['leads_show_last_name']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show') )
                                             {{$contact->last_name}}
-                                        @elseif(isset($options['leads_show_last_name_hide']))
+                                        @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide') )
                                             <div>
                                                 {{ substr($contact->last_name, 0, ceil(strlen($contact->last_name) / 2)) }}******
                                             </div>
@@ -345,16 +381,16 @@
                             </div>
                         </td>
                     @endif
-                    @if (isset($options['leads_table_country']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_show') )
                         <td>{{$contact->country}}</td>
                     @endif
                     @if ($contact->email)
-                        @if (isset($options['leads_table_email']))
-                            @if(isset($options['leads_show_email']))
+                        
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show') )
                                 <td title="{{ $contact->email }}" style="max-width: 50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     {{ $contact->email }}
                                 </td>
-                            @elseif(isset($options['leads_show_email_hide']))
+                            @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_hide') )
                                 <td style="max-width: 50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     ********{{ substr($contact->email, 8) }}
                                 </td>
@@ -363,92 +399,92 @@
                                     ******
                                 </td>
                             @endif
-                        @endif
+                        
                     @else
                         <td></td>
                     @endif
-                    @if (isset($options['leads_table_phone']))
+                    
                         <td>
-                            @if(isset($options['leads_show_phone1']))
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show') )
                                 {{$contact->phone1}}
-                            @elseif(isset($options['leads_show_phone1_hide']))
+                            @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_hide') )
                                 {{ substr($contact->phone1, 0, ceil(strlen($contact->phone1) / 2)) }}******
                             @else
                                 ******
                             @endif
                             <br>
-                            @if(isset($options['leads_show_phone2']))
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show') )
                                 {{$contact->phone2}}
-                            @elseif(isset($options['leads_show_phone2_hide']))
+                            @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show') )
                                 {{ substr($contact->phone2, 0, ceil(strlen($contact->phone2) / 2)) }}******
                             @else
                                 ******
                             @endif
                         </td>
-                    @endif
-                    @if (isset($options['leads_table_account_type']))
+                  
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_account_type_show') )
                         <td>{{$contact->account_type}}</td>
                     @endif
-                    @if (isset($options['leads_table_user_id']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_show') )
                         <td>
                             @if ($contact->user_id != null)
-                                <a @if (isset($options['users_show'])) href="{{ route('user.show',$contact->user->id ) }}" @endif rel="noopener noreferrer">
+                                <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show') ) href="{{ route('user.show',$contact->user->id ) }}" @endif rel="noopener noreferrer">
                                     {{$contact->user->first_name}} {{$contact->user->last_name}}
                                     <p class="mb-0 font-13 text-secondary">{{$contact->user->username}}</p>
                                 </a>
                             @endif
                         </td>
                     @endif
-                    @if (isset($options['leads_table_status']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_show') )
                         <td>
-                            @if (isset($options['leads_status']))
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit') )
                                 <form id="status_form-{{$check_type}}-{{$contact->id}}" method="POST" action="{{ route('client.editStatus', $contact->id) }}">
                                     @csrf
                                     @method('PUT')
                             @endif
-                                <select class="single-select form-select filter-select" @if (isset($options['leads_status'])) name="sales_status" form="status_form-{{$check_type}}-{{$contact->id}}" @else disabled @endif>
+                                <select class="single-select form-select filter-select" @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit') ) name="sales_status" form="status_form-{{$check_type}}-{{$contact->id}}" @else disabled @endif>
                                     <option value="" selected >Select Status</option>
                                     @foreach ($statuses as $status)
                                         <option value="{{$status->name}}" @if ($contact->sales_status == $status->name) selected @endif>{{$status->name}}</option>
                                     @endforeach
                                 </select>
-                            @if (isset($options['leads_status']))
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit') )
                                 </form>
                             @endif
                         </td>
                     @endif
-                    @if (isset($options['leads_table_ftd_date']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_date_show') )
                         <td>{{ $contact->ftd_date?date('d/m/Y H:i', strtotime($contact->ftd_date)):'-' }}</td>
                     @endif
-                    @if (isset($options['leads_table_first_comment_at']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_comment_date_show') )
                         <td>{{ $contact->comments->count()>0?date('d/m/Y H:i', strtotime($contact->comments->first()->created_at)):'-' }}</td>
                     @endif
-                    @if (isset($options['leads_table_assigned_at']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_date_show') )
                         <td>{{ $contact->assigned_at?date('d/m/Y H:i', strtotime($contact->assigned_at)):'-' }}</td>
                     @endif
-                    @if (isset($options['leads_table_modified_at']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_modified_date_show') )
                         <td>{{ $contact->updated_at?date('d/m/Y H:i', strtotime($contact->updated_at)):'-' }}</td>
                     @endif
-                    @if (isset($options['leads_table_reg_at']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_registration_date_show') )
                         <td>{{ $contact->reg_date?date('d/m/Y H:i', strtotime($contact->reg_date)):'-' }}</td>
                     @endif
-                    @if (isset($options['leads_table_created_at']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_create_date_show') )
                         <td>{{ date('d/m/Y H:i', strtotime($contact->created_at)) }}</td>
                     @endif
                     <td class="text-center">
-                        @if (isset($options['leads_cards_comments']))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_cards_comments') )
                             <button type="button" data-client-id="{{ $contact->id }}" form="comment_form-{{$check_type}}" formaction="{{ route('client-comments.store',$contact->id) }}" title="{{$contact->comments->count()>0?strip_tags($contact->comments->last()->comment):''}}" class="btn btn-sm text-primary text-center w-auto modal-btn" data-bs-toggle="modal" data-bs-target="#commentModal-{{$check_type}}" style="background-color: transparent">
                                 <i class="bx bx-comment"></i>
                             </button>
                         @endif
                     </td>
-                    @if (isset($options['leads_table_source']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_source_show') )
                         <td style="max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{$contact->source}}</td>
                     @endif
-                    @if (isset($options['leads_table_teams']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_team_show') )
                         <td>{{$contact->user?->team?->name}}</td>
                     @endif
-                    @if (isset($options['leads_table_created_by']))
+                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_created_by_show') )
                         <td>{{$contact->created_by}}</td>
                     @endif
                 </tr>
@@ -478,7 +514,7 @@
                             0 Comments
                         </div>
                         <div class="col justify-content-end d-flex">
-                            @if(isset($options['leads_add_comments']))
+                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_add_comments'))
                                 <button type="submit" class="submit_comment btn my-0 px-0 d-none" style="background-color: transparent"><i class="text-success bx bx-check h6 mb-0"></i></button>
                                 <button type="button" class="plus_comment btn my-0 px-0" style="background-color: transparent"><i class="text-primary bx bx-plus h6 mb-0"></i></button>
                                 <button type="button" class="x_comment btn my-0 px-0 d-none" style="background-color: transparent"><i class="text-danger bx bx-x h6 mb-0"></i></button>

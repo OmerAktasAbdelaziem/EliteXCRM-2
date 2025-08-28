@@ -112,7 +112,8 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (isset($options['subscription_show']) && $pipeline->getKey())
+                            
+                            @if ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'subscription_view') ) && $pipeline->getKey())
                             <div class ="section-area">
                                 <span class="section-title">Supscription Details</span>
                                 <a href="{{ route('subscription.create', ['pipelineId' => $pipeline->getKey()]) }}" type="button" class="btn btn-primary">Add New</a>
@@ -143,8 +144,9 @@
                                                 <td>{{$supscription->demo_accounts}}</td>
                                                 <td>{!!$supscription->active == 1? "<p style='color:green;'>Yes</p>" : "<p style='color:red;'>No</p>"!!}</td>
                                                 <td>
-                                                    @if (isset($options['subscription_update']))<a  href="{{ route('subscription.edit', $supscription->id) }}" ><i class="fa-solid fa-pen-to-square"></i></a>@endif   
-                                                    @if (isset($options['subscription_delete']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'subscription_edit') )
+                                                    <a  href="{{ route('subscription.edit', $supscription->id) }}" ><i class="fa-solid fa-pen-to-square"></i></a>@endif   
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'subscription_delete') )
                                                     <a href="{{ route('subscription.destroy', $supscription->id) }}"
                                                        onclick="return confirm('Are you sure you want to delete this subscription?')">
                                                         <i class="fa-solid fa-trash"></i>

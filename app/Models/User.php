@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
+//use Spatie\Permission\Traits\HasRoles;
+use App\Traits\HasRolesWithPipeline;
 
 class User extends Authenticatable
 {
 
-    use HasFactory, Notifiable,HasRoles;
+    use HasFactory, Notifiable, HasRolesWithPipeline;//HasRoles;
 
     protected $hidden = [
         'password',
@@ -63,13 +64,29 @@ class User extends Authenticatable
         ]);
     }
     
-    public function hasRoleInPipeline($roleName, $pipelineId)
+    /*public function hasRoleInPipeline($roleName, $pipelineId)
     {
         return $this->roles()
             ->where('name', $roleName)
             ->wherePivot('pipeline_id', $pipelineId)
             ->exists();
-    }
+    }*/
+    
+    /**
+     * Check if user has permission in a specific pipeline
+     */
+    /*public function hasPermissionInPipeline(string $permissionName, $pipelineId = null): bool
+    {
+        return $this->permissions()
+                    ->where('name', $permissionName)
+                    ->wherePivot('pipeline_id', $pipelineId)
+                    ->exists()
+            || $this->rolesInPipeline($pipelineId)
+                    ->whereHas('permissions', function ($q) use ($permissionName, $pipelineId) {
+                        $q->where('name', $permissionName)
+                          ->wherePivot('pipeline_id', $pipelineId);
+                    })->exists();
+    }*/
     
     public function scopeWithPipeline($query)
     {

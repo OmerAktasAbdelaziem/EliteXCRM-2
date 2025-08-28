@@ -46,6 +46,20 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
+                                                    <label class="form-label">Role</label>
+                                                    <div class="input-group">
+                                                        <select name="role" class="form-select single-select">
+                                                            <option value="" selected>Select Role</option>
+                                                            @foreach ($roles as $role)
+                                                            <option value="{{$role->id}}" >{{$role->name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    @error('role')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                <div class="col-md-6">
                                     <label for="inputEmailAddress" class="form-label">Email Address</label>
                                     <div class="input-group">
                                         <input type="email" class="form-control" id="inputEmailAddress" name="email" value="{{ old('email') }}" form="addform" placeholder="Email Address" />

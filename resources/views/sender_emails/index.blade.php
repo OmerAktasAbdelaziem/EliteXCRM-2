@@ -17,12 +17,14 @@
                                         <h5 class="mb-1">Sender Emails</h5>
                                     </div>
                                     <div class="font-22 ms-auto">
-                                        @if (isset($options['sender_email_create']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_sender_email_create') )
+                                        
                                             <a href="{{ route('sender_emails.create') }}" class="btn btn-success btn-sm">
                                                 Add new Sender Email
                                             </a>
                                         @endif
-                                        @if (isset($options['emails_template_list']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_template_list') )
+                                        
                                             <a href="{{ route('emails.index') }}" class="btn btn-primary btn-sm">
                                                 Email Templates
                                             </a>
@@ -46,7 +48,7 @@
                                                     @foreach ($senderEmails as $senderEmail)
                                                         <tr>
                                                             <td>
-                                                                <a @isset($options['sender_email_show']) href="{{ route('sender_emails.show', $senderEmail->id) }}" @endisset>
+                                                                <a @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'sender_email_show') ) href="{{ route('sender_emails.show', $senderEmail->id) }}" @endif>
                                                                     {{$senderEmail->email}}
                                                                 </a>
                                                             </td>

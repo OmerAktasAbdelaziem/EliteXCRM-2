@@ -72,10 +72,10 @@
                                     </div>
                                     <small class="form-label">TP Name</small>
                                     <h3 class="text-white mb-3">
-                                        @if (isset($options['smart_show_first_name']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show'))
                                             {{$client->first_name.' '}}
                                         @endif
-                                        @if (isset($options['smart_show_first_name']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
                                             {{$client->last_name}}
                                         @endif
                                     </h3>
@@ -202,7 +202,8 @@
                                                 </div>
                                             </a>
                                         </li>
-                                        @if (isset($options['mainTp_actions']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions'))
+                                        
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link @if ($tab == 'actions') active @endif tab" data-bs-toggle="tab" href="#actions" id="view-tab" role="tab" aria-selected="true">
                                                     <div class="d-flex align-items-center">
@@ -245,10 +246,12 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="col-12 text-end">
-                                                    @if (isset($options['mainTp_yes_no']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_yes_no'))
+                                                    
                                                         <button type="button" class="btn p-0" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#optionsModal"><i class="text-secondary bx bx-cog h5 mb-0"></i></button>
                                                     @endif
-                                                    @if (isset($options['mainTp_can_update']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_can_update'))
+                                                    
                                                         <button type="button" id="edit_btn" class="btn p-0" style="background-color: transparent"><i class="text-primary bx bx-edit h5 mb-0"></i></button>
                                                         <a href="{{ route('main_tp.show', $client->id) }}" type="button" id="cancel_btn" class="btn p-0 d-none" style="background-color: transparent"><i class="text-secondary bx bx-x h5 mb-0"></i></a>
                                                         <button type="submit" id="save_btn" class="btn p-0 d-none" style="background-color: transparent"><i class="text-success bx bx-check h5 mb-0"></i></button>
@@ -256,14 +259,15 @@
                                                 </div>
                                                 <div class="col-md-6 mt-0">
                                                     <label for="first_name" class="form-label">First Name</label>
-                                                    @if (isset($options['leads_show_first_name']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show'))
+                                                    
                                                         <div class="input-group">
-                                                            <input type="text" @if(isset($options['mainTp_first_name'])) name="first_name" @endif readonly value="{{ old('first_name',$client->first_name) }}" class="form-control @if(isset($options['mainTp_first_name'])) editable @endif" id="first_name" placeholder="First Name"  />
+                                                            <input type="text" @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_edit')) name="first_name" @endif readonly value="{{ old('first_name',$client->first_name) }}" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_edit')) editable @endif" id="first_name" placeholder="First Name"  />
                                                         </div>
                                                         @error('first_name')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(isset($options['leads_show_first_name_hide']))
+                                                    @elseif ( UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide'))
                                                         <div>
                                                             {{ mb_substr($client->first_name, 0, ceil(mb_strlen($client->first_name) / 2)) }} ******
                                                         </div>
@@ -275,14 +279,14 @@
                                                 </div>
                                                 <div class="col-md-6 mt-0">
                                                     <label for="last_name" class="form-label">Last Name</label>
-                                                    @if (isset($options['leads_show_last_name']))
+                                                   @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control @if(isset($options['mainTp_last_name'])) editable @endif" id="last_name" @if(isset($options['mainTp_last_name'])) name="last_name" @endif readonly value="{{ old('last_name',$client->last_name) }}" placeholder="Last Name"/>
+                                                            <input type="text" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_edit')) editable @endif" id="last_name" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_edit')) name="last_name" @endif readonly value="{{ old('last_name',$client->last_name) }}" placeholder="Last Name"/>
                                                         </div>
                                                         @error('last_name')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(isset($options['leads_show_last_name_hide']))
+                                                    @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide'))
                                                         <div>
                                                             {{ mb_substr($client->last_name, 0, ceil(mb_strlen($client->last_name) / 2)) }} ******
                                                         </div>
@@ -294,14 +298,14 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="email" class="form-label">Email Address</label>
-                                                    @if (isset($options['leads_show_email']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show'))
                                                         <div class="input-group">
-                                                            <input type="mail" class="form-control @if(isset($options['mainTp_email'])) editable @endif" id="email" @if(isset($options['mainTp_email'])) name="email" @endif value="{{ old('email',$client->email) }}" readonly placeholder="Email Address" />
+                                                            <input type="mail" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_edit')) editable @endif" id="email" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_edit')) name="email" @endif value="{{ old('email',$client->email) }}" readonly placeholder="Email Address" />
                                                         </div>
                                                         @error('email')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(isset($options['leads_show_email_hide']))
+                                                    @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_hide'))
                                                         <div>
                                                             ********{{ substr($client->email, 8) }}
                                                         </div>
@@ -313,14 +317,15 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="phone1" class="form-label">Primary Number</label>
-                                                    @if (isset($options['leads_show_phone1']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show'))
+                                                    
                                                         <div class="input-group">
-                                                            <input type="tel" class="form-control @if(isset($options['mainTp_phone1'])) editable @endif" id="phone1" @if(isset($options['mainTp_phone1'])) name="phone1" @endif readonly value="{{ old('phone1',$client->phone1) }}" placeholder="Primary Number"/>
+                                                            <input type="tel" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_edit')) editable @endif" id="phone1" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_edit')) name="phone1" @endif readonly value="{{ old('phone1',$client->phone1) }}" placeholder="Primary Number"/>
                                                         </div>
                                                         @error('phone1')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(isset($options['leads_show_phone1_hide']))
+                                                    @elseif(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_hide'))
                                                         <div>
                                                             {{ substr($client->phone1, 0, ceil(strlen($client->phone1) / 2)) }}******
                                                         </div>
@@ -332,14 +337,14 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="phone2" class="form-label">Secondary Number</label>
-                                                    @if (isset($options['leads_show_phone2']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show'))
                                                         <div class="input-group">
-                                                            <input type="tel" class="form-control @if(isset($options['mainTp_phone2'])) editable @endif" id="phone2" @if(isset($options['mainTp_phone2'])) name="phone2" @endif readonly value="{{ $client->phone2 }}" placeholder="Secondary Number"/>
+                                                            <input type="tel" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_edit')) editable @endif" id="phone2" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_edit')) name="phone2" @endif readonly value="{{ $client->phone2 }}" placeholder="Secondary Number"/>
                                                         </div>
                                                         @error('phone2')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(isset($options['leads_show_phone2_hide']))
+                                                    @elseif(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_hide'))
                                                         <div>
                                                             {{ substr($client->phone2, 0, ceil(strlen($client->phone2) / 2)) }}******
                                                         </div>
@@ -351,9 +356,9 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="sales_status" class="form-label text-warning">Sales Status</label>
-                                                    @if (isset($options['leads_show_status']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_show'))
                                                         <div class="input-group">
-                                                            <select id="sales_status" class="single-select form-select @if(isset($options['leads_status'])) editable @endif" @if(isset($options['leads_status'])) name="sales_status" @endif disabled>
+                                                            <select id="sales_status" class="single-select form-select @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit')) editable @endif" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit')) name="sales_status" @endif disabled>
                                                                 <option value="">Select Status</option>
                                                                 @foreach ($statuses as $status)
                                                                     <option value="{{$status->name}}" @if (old('sales_status',$client->sales_status) == $status->name) selected @endif>{{$status->name}}</option>
@@ -371,7 +376,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="is_ftd" class="form-label">First Deposit Status</label>
-                                                    @if (isset($options['leads_show_ftd']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_status_show'))
                                                         <div class="form-check form-switch p-0 pt-2" style="display: flex; flex-wrap: wrap;">
                                                             <label class="form-check-label" for="is_ftd" style="order: 1; margin-right: 45px;">Inactive</label>
                                                             <input class="form-check-input is_ftd" disabled value="1" type="checkbox" id="is_ftd" style="order: 2; margin-right: 10px;" @if ($client->is_ftd) checked @endif>
@@ -385,7 +390,8 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="enabled" class="form-label">Enabled</label>
-                                                    @if (isset($options['leads_show_enabled']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_leads_enabled_show'))
+                                                    
                                                         <div class="form-check form-switch p-0 pt-2" style="display: flex; flex-wrap: wrap;">
                                                             <label class="form-check-label" for="enabled" style="order: 1; margin-right: 45px;">Inactive</label>
                                                             <input class="form-check-input is_ftd" disabled value="1" type="checkbox" id="enabled" style="order: 2; margin-right: 10px;" @if ($client->account_type == 'Real') checked @endif>
@@ -400,9 +406,10 @@
 
                                                 <div class="col-md-6">
                                                     <label for="user_id" class="form-label">Assigned User</label>
-                                                    @if (isset($options['leads_show_user_id']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_show'))
+                                                    
                                                         <div class="input-group">
-                                                            <select id="user_id" class="single-select form-select @if(isset($options['leads_user_id'])) editable @endif" @if(isset($options['leads_user_id'])) name="user_id" @endif disabled>
+                                                            <select id="user_id" class="single-select form-select @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_edit')) editable @endif" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_edit')) name="user_id" @endif disabled>
                                                                 <option value="">Select User</option>
                                                                 @foreach ($users as $user)
                                                                     <option value="{{$user->id}}" @if (old('user_id',$client->user_id) == $user->id) selected @endif>{{$user->username}}</option>
@@ -421,9 +428,9 @@
                                                 
                                                 <div class="col-md-6">
                                                     <label for="username" class="form-label">Username</label>
-                                                    @if (isset($options['leads_show_username']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_username_show'))
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control @if(isset($options['mainTp_username'])) editable @endif" id="username" @if(isset($options['mainTp_username'])) name="username" @endif value="{{ old('username',$client->username) }}" readonly placeholder="Username" />
+                                                            <input type="text" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_username_edit')) editable @endif" id="username" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_username_edit')) name="username" @endif value="{{ old('username',$client->username) }}" readonly placeholder="Username" />
                                                         </div>
                                                         @error('username')
                                                             <div class="text-danger">{{ $message }}</div>
@@ -436,9 +443,9 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="password" class="form-label">Password</label>
-                                                    @if (isset($options['leads_show_pass']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_password_show'))
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control password @if(isset($options['mainTp_pass'])) editable @endif" id="password" readonly @if(isset($options['mainTp_pass'])) name="password" @endif value="{{ old('password',$client->password_text) }}"/>
+                                                            <input type="text" class="form-control password @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_password_edit')) editable @endif" id="password" readonly @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_password_edit')) name="password" @endif value="{{ old('password',$client->password_text) }}"/>
                                                             <button class="btn d-none generate-password" style="border:1px solid #ced4da;" title="Generate Password" type="button"><i class='bx bx-reset'></i></button>
                                                         </div>
                                                         @error('password')
@@ -452,9 +459,10 @@
                                                 </div>
                                                 <div class="col-12">
                                                     <label for="usdt" class="form-label">USDT Address (Leave Blank to use default)</label>
-                                                    @if (isset($options['leads_show_usdt']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_usdt_address_show'))
+                                                    
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control @if(isset($options['mainTp_usdt'])) editable @endif" readonly id="usdt" @if(isset($options['mainTp_usdt'])) name="usdt" @endif value="{{ old('usdt',$client->usdt) }}" placeholder="USDT Address" />
+                                                            <input type="text" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_usdt_address_edit')) editable @endif" readonly id="usdt" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_usdt_address_edit')) name="usdt" @endif value="{{ old('usdt',$client->usdt) }}" placeholder="USDT Address" />
                                                         </div>
                                                         @if (!$client->usdt)
                                                             <div class="text-red">
@@ -474,7 +482,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="ftd_amount" class="form-label">FTD Amount</label>
-                                                    @if (isset($options['leads_show_ftd_amount']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_amount_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" readonly id="ftd_amount" value="{{ number_format($finance['ftd_amount'], 2, '.', ',') }}" placeholder="Amount" />
                                                         </div>
@@ -486,9 +495,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="leverage" class="form-label">Leverage</label>
-                                                    @if (isset($options['leads_show_leverage']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_leads_leverage_show'))
+                                                    
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control @if(isset($options['mainTp_leverage'])) editable @endif" @if(isset($options['mainTp_leverage'])) name="leverage" @endif readonly id="leverage" value="{{$client->leverage }}" placeholder="Leverage" />
+                                                            <input type="text" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_leads_leverage_edit')) editable @endif" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_leads_leverage_edit')) name="leverage" @endif readonly id="leverage" value="{{$client->leverage }}" placeholder="Leverage" />
                                                         </div>
                                                     @else
                                                         <div>
@@ -498,7 +508,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="account_type" class="form-label">Account type</label>
-                                                    @if (isset($options['leads_show_account_type']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_account_type_show'))
                                                         <div class="input-group">
                                                             <select id="account_type" class="single-select form-select editable" name="account_type" disabled>
                                                                 <option value="" @if (!$client->broker_id) selected @endif></option>
@@ -517,9 +527,9 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="asset_group_id" class="form-label">Asset Group</label>
-                                                    @if(isset($options['leads_show_asset_group']))
+                                                    @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_asset_group_show'))
                                                         <div class="input-group">
-                                                            <select id="asset_group_id" class="single-select form-select @if(isset($options['leads_asset_group'])) editable @endif" @if(isset($options['leads_asset_group'])) name="asset_group_id" @endif disabled>
+                                                            <select id="asset_group_id" class="single-select form-select @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_asset_group_edit')) editable @endif" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_asset_group_edit')) name="asset_group_id" @endif disabled>
                                                                 <option value="">Select Group</option>
                                                                 @foreach ($asset_groups as $asset_group)
                                                                     <option value="{{$asset_group->id}}" @if ($asset_group->id == $client->asset_group_id) selected @endif>{{$asset_group->name}}</option>
@@ -537,9 +547,9 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="country" class="form-label">Country</label>
-                                                    @if (isset($options['leads_show_country']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_show'))
                                                         <div class="input-group">
-                                                            <select id="country" class="single-select form-select @if(isset($options['mainTp_country'])) editable @endif" @if(isset($options['mainTp_country'])) name="country" @endif disabled>
+                                                            <select id="country" class="single-select form-select @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_edit')) editable @endif" @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_edit')) name="country" @endif disabled>
                                                                 <option value="{{old('country',$client->country)}}" selected>{{old('country',$client->country)}}</option>
                                                                 <option value="Afghanistan">Afghanistan</option>
                                                                 <option value="Åland Islands">Åland Islands</option>
@@ -799,7 +809,8 @@
                                                 
                                                 <div class="col-md-6">
                                                     <label for="first_owner" class="form-label">First Owner</label>
-                                                    @if (isset($options['leads_show_first_owner']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_owner_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="first_owner" readonly value="{{$client->firstOwner?->username}}" placeholder="First Owner"/>
                                                         </div>
@@ -812,7 +823,7 @@
                                                 
                                                 <div class="col-md-6">
                                                     <label for="team" class="form-label">Team</label>
-                                                    @if (isset($options['leads_show_team']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_team_show'))
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="team" readonly value="{{ $client->user?->team?->name }}" placeholder="Team"/>
                                                         </div>
@@ -824,7 +835,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="last_deposit_amount" class="form-label">Last Deposit Amount</label>
-                                                    @if (isset($options['leads_show_lda']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_deposite_amount_show'))
                                                         <div class="input-group">
                                                             <input type="text" step="any" class="form-control" readonly id="last_deposit_amount" value="{{ old('last_deposit_amount',number_format($finance['last_deposit_amount'], 2, '.', ',')) }}" placeholder="Last Deposit Amount" />
                                                         </div>
@@ -836,7 +847,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="last_comment_at" class="form-label">First Comment Date</label>
-                                                    @if (isset($options['leads_show_first_comment_date']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_comment_date_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="last_comment_at"  readonly value="{{ $client->comments->count()>0?date('d/m/Y H:i', strtotime($client->comments->first()->created_at)):'' }}" placeholder="Last Comment Date"/>
                                                         </div>
@@ -848,7 +860,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="first_comment_owner" class="form-label">First Comment Owner</label>
-                                                    @if (isset($options['leads_show_first_comment_owner']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_comment_owner_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="first_comment_owner"  readonly value="{{ $client->comments->count()>0?$client->comments->first()->user->username:'' }}" placeholder="First Comment Owner"/>
                                                         </div>
@@ -860,7 +873,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="assigned_at" class="form-label">Assigned Date</label>
-                                                    @if (isset($options['leads_show_assigned_date']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_date_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="assigned_at" readonly value="{{ $client->assigned_at ? date('d/m/Y H:i', strtotime($client->assigned_at)) : '' }}" placeholder="Assigned Date"/>
                                                         </div>
@@ -872,7 +886,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="ftd_date" class="form-label">First Deposit Date</label>
-                                                    @if (isset($options['leads_show_ftd_date']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_date_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="ftd_date" readonly value="{{ $client->ftd_date ? date('d/m/Y H:i', strtotime($client->ftd_date)) : '' }}" placeholder="FTD Date"/>
                                                         </div>
@@ -884,7 +899,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="created_at" class="form-label">Created Date</label>
-                                                    @if (isset($options['leads_show_created_date']))
+                                                    
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_create_date_show'))
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="created_at"  readonly value="{{ date('d/m/Y H:i', strtotime($client->created_at)) }}" placeholder="Created At"/>
                                                         </div>
@@ -896,7 +912,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="modified_at" class="form-label">Modified Date</label>
-                                                    @if (isset($options['leads_show_modified_date']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_modified_date_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="modified_at"  readonly value="{{ date('d/m/Y H:i', strtotime($client->updated_at)) }}" placeholder="Modified At"/>
                                                         </div>
@@ -908,7 +925,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="reg_at" class="form-label">Registration Date</label>
-                                                    @if (isset($options['leads_show_registration_date']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_registration_date_show'))
+                                                    
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" id="reg_at" readonly value="{{ date('d/m/Y H:i', strtotime($client->reg_date)) }}" placeholder="Registration Date"/>
                                                         </div>
@@ -920,9 +938,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="age" class="form-label">Age</label>
-                                                    @if (isset($options['leads_show_age']))
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_age_show'))
+                                                    
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control @if(isset($options['leads_age'])) editable @endif" id="age" @if(isset($options['leads_age'])) name="age" @endif value="{{ old('age',$client->age) }}" readonly placeholder="Age" />
+                                                            <input type="number" class="form-control @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_age_edit')) editable @endif" id="age" @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_age_edit')) name="age" @endif value="{{ old('age',$client->age) }}" readonly placeholder="Age" />
                                                         </div>
                                                         @error('age')
                                                             <div class="text-danger">{{ $message }}</div>
@@ -1254,12 +1273,14 @@
                                                                             {{$money_trx->is_admin ? 'Admin' : 'Client'}}
                                                                         </td>
                                                                         <td class="text-end">
-                                                                            @if (isset($options['mainTp_money_trx_update']))
+                                                                             @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_money_trx_update'))
+                                                                            
                                                                                 <button type="button" data-type="{{$money_trx->type}}" data-amount="{{$money_trx->amount}}" data-comment="{{$money_trx->comment}}" data-trxdate="{{$money_trx->created_at}}" formaction="{{ route('main_tp.update_money_trx', $money_trx->id) }}" class="btn btn-sm text-primary text-center w-auto modal-btn edit_money_trx" data-bs-toggle="modal" data-bs-target="#editTransactionModal" style="background-color: transparent">
                                                                                     <i class="bx bx-edit"></i>
                                                                                 </button>
                                                                             @endif
-                                                                            @if (isset($options['mainTp_money_trx_delete']))
+                                                                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_money_trx_delete'))
+                                                                            
                                                                                 <button type="button" formaction="{{ route('main_tp.delete_money_trx', $money_trx->id) }}" data-tab="trx" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                                                     <i class="bx bx-trash"></i>
                                                                                 </button>
@@ -1275,7 +1296,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if (isset($options['mainTp_actions']) && isset($options['mainTp_actions']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions'))
+                                        
                                             <div class="tab-pane fade @if ($tab == 'actions') active show @endif" id="actions" role="tabpanel">
                                                 <div class="row">
                                                     <div class="col-12">
@@ -1311,7 +1333,7 @@
                                                                                 </td>
                                                                                 <th>
                                                                                     @if ($action->user?->id)
-                                                                                        <a @if (isset($options['users_show'])) href="{{ route('user.show',$action->user->id ) }}" @endif >
+                                                                                        <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show')) href="{{ route('user.show',$action->user->id ) }}" @endif >
                                                                                             <h6 class="mb-1 font-14">
                                                                                                 {{$action->user->first_name}} {{$action->user->last_name}} ({{$action->user->username}})
                                                                                             </h6>
@@ -1436,7 +1458,7 @@
                                                                         </td>
                                                                         <th>
                                                                             @if ($history->user?->id)
-                                                                                <a @if (isset($options['users_show'])) href="{{ route('user.show',$history->user->id ) }}" @endif >
+                                                                                <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show')) href="{{ route('user.show',$history->user->id ) }}" @endif >
                                                                                     <h6 class="mb-1 font-14">
                                                                                         {{$history->user->first_name}} {{$history->user->last_name}} ({{$history->user->username}})
                                                                                     </h6>
@@ -1555,18 +1577,20 @@
                         </div>
                     </div>
                 </div>
-                @if(isset($options['mainTp_cards_comments']) || isset($options['mainTp_cards_chat']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_comments') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_chat'))
+                
                     <div class="col-lg-3 col-md-6 col-12 mt-2 comment-tab @if ($tab == 'history') d-none @endif">
-                        @if(isset($options['mainTp_cards_comments']))
-                            @include("client.comments",['client' => $client,'comments' => $comments,'add' => isset($options['mainTp_add_comments']), 'update' => isset($options['mainTp_update_comments']), 'delete' => isset($options['mainTp_delete_comments'])])
+                        @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_comments'))
+                            @include("client.comments",['client' => $client,'comments' => $comments,'add' => (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_add_comments')), 'update' => (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_edit_comments')), 'delete' => (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_delete_comments'))])
                         @endif
                         <br>
-                        @if(isset($options['mainTp_cards_chat']))
-                            @include("client.chat",['client' => $client,'chat' => $chat,'add' => isset($options['mainTp_add_chat']), 'update' => true, 'delete' => true])
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_chat'))
+                        
+                            @include("client.chat",['client' => $client,'chat' => $chat,'add' => (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_add_chat')), 'update' => true, 'delete' => true])
                         @endif
                     </div>
                 @endif
-                @if(isset($options['mainTp_cards_actions']))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_actions'))
                     <div class="col-lg-2 col-md-6 col-12 mt-2 action-tab @if ($tab == 'history') d-none @endif">
                         <div class="card">
                             <div class="card-body text-center">
@@ -1592,22 +1616,25 @@
                                 </div>
                                 <hr class="my-3" />
                                 <div class="row text-start">
-                                    @if (isset($options['mainTp_actions_send_email']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions_send_email'))
                                         <div class="col-12">
                                             <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#emailModal" style="background-color: transparent">Send Email</button>
                                         </div>
                                     @endif
-                                    @if (isset($options['mainTp_actions_create_money_transaction']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions_create_money_transaction'))
+                                    
                                         <div class="col-12">
                                             <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#transactionModal" style="background-color: transparent">Create Money Transaction</button>
                                         </div>
                                     @endif
-                                    @if (isset($options['mainTp_actions_create_request']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions_create_request'))
+                                    
                                         <div class="col-12">
                                             <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#requestModal" style="background-color: transparent">Create Request</button>
                                         </div>
                                     @endif
-                                    @if (isset($options['mainTp_actions_open_order']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions_open_order'))
+                                    
                                         <div class="col-12">
                                             <button type="button" class="btn btn-sm text-primary" id="fetchScripts" data-bs-toggle="modal" data-bs-target="#openOrderModal" style="background-color: transparent">Open Order</button>
                                         </div>
@@ -1616,7 +1643,8 @@
                                         <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#exportModal" style="background-color: transparent">Export Data</button>
                                     </div>
                                     <hr>
-                                    @if (isset($options['mainTp_actions_Requests']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_actions_Requests'))
+                                    
                                         <div class="col-12">
                                             <button type="button" class="btn btn-sm text-primary position-relative" id="fetchScripts" data-bs-toggle="modal" data-bs-target="#requestsModal" style="background-color: transparent">
                                                 Requests
@@ -2507,8 +2535,8 @@
             </div>
         </div>
     </div>
+@if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_yes_no'))
 
-    @if (isset($options['mainTp_yes_no']))
         <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="max-width: 800px;">
                 <div class="modal-content">
@@ -2623,7 +2651,8 @@
         var client_id          = {{ $client->id }};
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
-    @if (isset($options['mainTp_can_update']))
+    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_can_update'))
+    
         <script>
             $('#edit_btn').on('click', function() {
                 $('.editable').removeAttr('readonly disabled');

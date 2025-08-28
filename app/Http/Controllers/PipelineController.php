@@ -66,8 +66,8 @@ class PipelineController extends Controller
         //$clientsController = new ClientsController;
         //$userController    = new UserController;
         $pipeline          = new Pipeline;
-        $options           = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
-        $teams             = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+        //$options           = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
+        $teams             = $this->clientService->getTeams(Auth::user());//$clientsController->getTeams($options);
         $users             = $this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
         $brokers           = Broker::latest()->get();
         

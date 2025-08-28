@@ -3,7 +3,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\Blade;
 
 //interfaces & repositiries
 use App\Http\Repositories\Organization\PipelineRepository;
@@ -28,6 +28,8 @@ use App\Http\Repositories\User\UserRepository;
 use App\Http\Repositories\User\Interfaces\UserRepositoryInterface;
 use App\Http\Repositories\Role\RoleRepository;
 use App\Http\Repositories\Role\Interfaces\RoleRepositoryInterface;
+use App\Http\Repositories\Role\PermissionRepository;
+use App\Http\Repositories\Role\Interfaces\PermissionRepositoryInterface;
 use App\Http\Repositories\Subscription\SubscriptionRepository;
 use App\Http\Repositories\Subscription\Interfaces\SubscriptionRepositoryInterface;
 use App\Http\Repositories\Action\ActionRepository;
@@ -58,6 +60,10 @@ use App\Http\Services\Filter\FilterService;
 use App\Http\Services\Filter\Interfaces\FilterServiceInterface;
 use App\Http\Services\Role\RoleService;
 use App\Http\Services\Role\Interfaces\RoleServiceInterface;
+use App\Http\Services\Role\PermissionService;
+use App\Http\Services\Role\Interfaces\PermissionServiceInterface;
+use App\Http\Services\Role\UserPermissionService;
+use App\Http\Services\Role\Interfaces\UserPermissionServiceInterface;
 use App\Http\Services\Subscription\SubscriptionService;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 use App\Http\Services\Action\ActionService;
@@ -80,6 +86,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ClientRepositoryInterface::class, ClientRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
         $this->app->bind(ActionRepositoryInterface::class, ActionRepository::class);
         
@@ -97,8 +104,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(FilterServiceInterface::class, FilterService::class);
         $this->app->bind(RoleServiceInterface::class, RoleService::class);
+        $this->app->bind(PermissionServiceInterface::class, PermissionService::class);
         $this->app->bind(SubscriptionServiceInterface::class, SubscriptionService::class);
         $this->app->bind(ActionServiceInterface::class, ActionService::class);
+        
+        $this->app->singleton(UserPermissionServiceInterface::class, UserPermissionService::class);
       
     }
 
@@ -109,5 +119,9 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             DB::reconnect();
         }
+        
+        Blade::if('roleHasPermission', function ($role, $permission) {
+    return app(RoleServiceInterface::class)->safeHasPermission($role, $permission);
+});
     }
 }

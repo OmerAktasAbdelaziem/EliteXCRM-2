@@ -30,10 +30,12 @@
     </style>
 @endsection
 @section('title',
-    (isset($options['smart_show_first_name']) && $client->smart_data ? ($client->smart_data['first_name'] ?? '') : '') . ' ' .
-    (isset($options['smart_show_last_name']) && $client->smart_data ? ($client->smart_data['last_name'] ?? '') : '')
+    ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') ) && $client->smart_data ? ($client->smart_data['first_name'] ?? '') : '') . ' ' .
+    ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show') ) && $client->smart_data ? ($client->smart_data['last_name'] ?? '') : '')
 )
-
+<?php
+//this code no used anymore
+/*
 @section("wrapper")
     <div class="page-wrapper">
         <div class="page-content">
@@ -810,3 +812,6 @@
         </script>
     @endif
 @endsection
+ * 
+ */
+?>

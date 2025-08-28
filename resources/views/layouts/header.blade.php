@@ -88,12 +88,13 @@
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
-                            @if (isset($options['overview']))
+                            
+                            @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'overview') )
                                 <li>
                                     <a class="dropdown-item" href="{{ route('overview.index') }}"><i class="bx bx-stats"></i><span>Overview</span></a>
                                 </li>
                             @endif
-                            @if (isset($options['settings']))
+                            @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'settings') )
                                 <li>
                                     <a class="dropdown-item" href="{{ route('settings.index') }}"><i class="bx bx-cog"></i><span>Settings</span></a>
                                 </li>

@@ -8,26 +8,26 @@ use Illuminate\Support\Facades\Auth;
 
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
-use App\Http\Services\User\Interfaces\UserServiceInterface;
+//use App\Http\Services\User\Interfaces\UserServiceInterface;
 
 class StatusController extends Controller
 {
     protected $clientService;
-    protected $userService;
+    //protected $userService;
     public function __construct(
             ClientServiceInterface $clientService,
-            UserServiceInterface $userService,
+            //UserServiceInterface $userService,
             ) {
         $this->clientService = $clientService;
-        $this->userService = $userService;
+        //$this->userService = $userService;
         
     }
     public function index()
     {
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
-        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
+        //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         $parts              = $this->clientService->getParts($teams, Auth::user());//$clients_controller->getParts($teams);
         $statuses           = Status::where(function ($query) use ($parts) {
             foreach ($parts as $part) {
@@ -50,8 +50,8 @@ class StatusController extends Controller
     {
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
-        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
+        //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         $parts              = $this->clientService->getParts($teams, Auth::user());//$clients_controller->getParts($teams);
         $status             = new Status();
 
@@ -95,9 +95,9 @@ class StatusController extends Controller
     {
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
-        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $status             = Status::findOrfail($id);
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
+        $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         $parts              = $this->clientService->getParts($teams, Auth::user());//$clients_controller->getParts($teams);
         if (is_string($status->part_ids)) {
             $status->part_ids = json_decode($status->part_ids, true);

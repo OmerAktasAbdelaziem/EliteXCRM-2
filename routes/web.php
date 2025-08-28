@@ -37,6 +37,7 @@ Auth::routes(['verify' => true]);
 
 Auth::routes();
 
+
 // Route::get('change', function () {
 //     $assets = Asset::get();
 //     foreach ($assets as $asset) {
@@ -77,11 +78,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->post('client/delete', [ClientsController::class, 'destroy'])->name('client.delete');
     });
 
-    $router->middleware(['role:leads_can_renew'])->group(function (Router $router) {
+    $router->middleware(['role:leads_renew'])->group(function (Router $router) {
         $router->post('client/renew/{id}', [ClientsController::class, 'renew'])->name('client.renew');
     });
 
-    $router->middleware(['role:leads_can_update'])->group(function (Router $router) {
+    $router->middleware(['role:leads_edit'])->group(function (Router $router) {
         $router->post('client/multiEdit', [ClientsController::class, 'multiEdit'])->name('client.multiEdit');
         $router->put('client/{client}',   [ClientsController::class, 'update'])->name('client.update');
     });
@@ -94,7 +95,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('email/{id}',                         [PrivateEmailController::class, 'previewEmail'])->name('email.preview');
     });
 
-    $router->middleware(['role:leads_status'])->group(function (Router $router) {
+    $router->middleware(['role:field_sales_status_edit'])->group(function (Router $router) {
         $router->put('clients/{id}', [ClientsController::class, 'editStatus'])->name('client.editStatus');
     });
 
@@ -122,7 +123,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->delete('client/mainTp/delete_money_trx/{id?}', [MainTPController::class, 'delete_money_trx'])->name('main_tp.delete_money_trx');
     });
 
-    $router->middleware(['role:retention'])->group(function (Router $router) {
+    $router->middleware(['role:retention_view'])->group(function (Router $router) {
         $router->put('client/mainTp/retention/removeClient/{id}', [MainTPController::class, 'remove_client_from_retention'])->name('main_tp.retention.remove_client');
         $router->post('client/mainTp/retention/addClient',        [MainTPController::class, 'add_client_to_retention'])->name('main_tp.retention.add_client');
         $router->get('client/mainTp/retention/{id?}',             [MainTPController::class, 'retention'])->name('main_tp.retention');
@@ -178,11 +179,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('team', [TeamController::class, 'index'])->name('team.index');
     });
 
-    $router->middleware(['role:teams_show'])->group(function (Router $router) {
+    $router->middleware(['role:teams_view'])->group(function (Router $router) {
         $router->get('team/{id}', [TeamController::class, 'show'])->name('team.show');
     });
 
-    $router->middleware(['role:teams_update'])->group(function (Router $router) {
+    $router->middleware(['role:teams_edit'])->group(function (Router $router) {
         $router->put('team/{id}', [TeamController::class, 'update'])->name('team.update');
     });
 
@@ -195,11 +196,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('status', [StatusController::class, 'index'])->name('status.index');
     });
 
-    $router->middleware(['role:status_show'])->group(function (Router $router) {
+    $router->middleware(['role:status_view'])->group(function (Router $router) {
         $router->get('status/{id}', [StatusController::class, 'show'])->name('status.show');
     });
 
-    $router->middleware(['role:status_update'])->group(function (Router $router) {
+    $router->middleware(['role:status_edit'])->group(function (Router $router) {
         $router->put('status/{id}', [StatusController::class, 'update'])->name('status.update');
     });
 
@@ -207,7 +208,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->delete('status/{id}', [StatusController::class, 'delete'])->name('status.delete');
     });
 
-    $router->middleware(['role:bank_create'])->group(function (Router $router) {
+    $router->middleware(['role:banks_create'])->group(function (Router $router) {
         $router->get('bank/create', [BankController::class, 'create'])->name('bank.create');
         $router->post('bank',       [BankController::class, 'store'])->name('bank.store');
     });
@@ -216,19 +217,19 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('bank', [BankController::class, 'index'])->name('bank.index');
     });
 
-    $router->middleware(['role:bank_show'])->group(function (Router $router) {
+    $router->middleware(['role:bank_view'])->group(function (Router $router) {
         $router->get('bank/{id}', [BankController::class, 'show'])->name('bank.show');
     });
 
-    $router->middleware(['role:bank_update'])->group(function (Router $router) {
+    $router->middleware(['role:banks_edit'])->group(function (Router $router) {
         $router->put('bank/{id}', [BankController::class, 'update'])->name('bank.update');
     });
 
-    $router->middleware(['role:bank_delete'])->group(function (Router $router) {
+    $router->middleware(['role:banks_delete'])->group(function (Router $router) {
         $router->delete('bank/{id}', [BankController::class, 'delete'])->name('bank.delete');
     });
 
-    $router->middleware(['role:asset_create'])->group(function (Router $router) {
+    $router->middleware(['role:assets_create'])->group(function (Router $router) {
         $router->get('asset/create', [AssetController::class, 'create'])->name('asset.create');
         $router->post('asset',       [AssetController::class, 'store'])->name('asset.store');
     });
@@ -237,20 +238,20 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('asset', [AssetController::class, 'index'])->name('asset.index');
     });
 
-    $router->middleware(['role:asset_show'])->group(function (Router $router) {
+    $router->middleware(['role:assets_view'])->group(function (Router $router) {
         $router->get('asset/{id}', [AssetController::class, 'show'])->name('asset.show');
     });
 
-    $router->middleware(['role:asset_update'])->group(function (Router $router) {
+    $router->middleware(['role:assets_edit'])->group(function (Router $router) {
         $router->put('asset/multiEdit', [AssetController::class, 'multiEdit'])->name('asset.multiEdit');
         $router->put('asset/{id}',      [AssetController::class, 'update'])->name('asset.update');
     });
 
-    $router->middleware(['role:asset_delete'])->group(function (Router $router) {
+    $router->middleware(['role:assets_delete'])->group(function (Router $router) {
         $router->delete('asset/{id}', [AssetController::class, 'delete'])->name('asset.delete');
     });
 
-    $router->middleware(['role:assetGroup_create'])->group(function (Router $router) {
+    $router->middleware(['role:asset_groups_create'])->group(function (Router $router) {
         $router->get('assetGroup/create', [AssetGroupController::class, 'create'])->name('assetGroup.create');
         $router->post('assetGroup',       [AssetGroupController::class, 'store'])->name('assetGroup.store');
     });
@@ -259,17 +260,17 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('assetGroup', [AssetGroupController::class, 'index'])->name('assetGroup.index');
     });
 
-    $router->middleware(['role:assetGroup_show'])->group(function (Router $router) {
+    $router->middleware(['role:assetGroup_view'])->group(function (Router $router) {
         $router->get('assetGroup/{id}', [AssetGroupController::class, 'show'])->name('assetGroup.show');
     });
 
-    $router->middleware(['role:assetGroup_update'])->group(function (Router $router) {
+    $router->middleware(['role:asset_groups_edit'])->group(function (Router $router) {
         $router->post('assetGroup/deleteAsset/{id}', [AssetGroupController::class, 'deleteAsset'])->name('assetGroup.deleteAsset');
         $router->post('assetGroup/multiEdit/{id}',   [AssetGroupController::class, 'multiEdit'])->name('assetGroup.multiEdit');
         $router->put('assetGroup/{id}',              [AssetGroupController::class, 'update'])->name('assetGroup.update');
     });
 
-    $router->middleware(['role:assetGroup_delete'])->group(function (Router $router) {
+    $router->middleware(['role:asset_groups_delete'])->group(function (Router $router) {
         $router->delete('assetGroup/{id}', [AssetGroupController::class, 'delete'])->name('assetGroup.delete');
     });
 
@@ -282,11 +283,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('part', [PartController::class, 'index'])->name('part.index');
     });
 
-    $router->middleware(['role:parts_show'])->group(function (Router $router) {
+    $router->middleware(['role:parts_view'])->group(function (Router $router) {
         $router->get('part/{id}', [PartController::class, 'show'])->name('part.show');
     });
 
-    $router->middleware(['role:parts_update'])->group(function (Router $router) {
+    $router->middleware(['role:parts_edit'])->group(function (Router $router) {
         $router->put('part/{id}', [PartController::class, 'update'])->name('part.update');
     });
 
@@ -298,7 +299,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->post('clients/{id}/comments', [Client_CommentController::class, 'store'])->name('client-comments.store');
     });
 
-    $router->middleware(['role:leads_update_comments'])->group(function (Router $router) {
+    $router->middleware(['role:leads_edit_comments'])->group(function (Router $router) {
         $router->put('clients/{id}/update', [Client_CommentController::class, 'update'])->name('client-comments.update');
     });
 
@@ -316,7 +317,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->delete('chat/{id}', [ChatController::class, 'delete'])->name('client-chat.delete');
     });
 
-    $router->middleware(['role:mainTp_update_chat'])->group(function (Router $router) {
+    $router->middleware(['role:mainTp_edit_chat'])->group(function (Router $router) {
     });
 
     $router->middleware(['role:mainTp_delete_chat'])->group(function (Router $router) {
@@ -341,52 +342,53 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('user/{id}', [UserController::class, 'show'])->name('user.show');
     });
 
-    $router->middleware(['role:users_update'])->group(function (Router $router) {
+    $router->middleware(['role:users_edit'])->group(function (Router $router) {
         $router->put('user/{id}', [UserController::class, 'update'])->name('user.update');
     });
 
     $router->middleware(['role:roles_create'])->group(function (Router $router) {
-        $router->get('role2/create', [RoleController::class, 'create'])->name('role.create');
-        $router->post('role2',       [RoleController::class, 'store'])->name('role.store');
+        $router->get('role/create', [RoleController::class, 'create'])->name('role.create');
+        $router->post('role',       [RoleController::class, 'store'])->name('role.store');
     });
     
     $router->middleware(['role:roles_list'])->group(function (Router $router) {
-        $router->get('role2', [RoleController::class, 'index'])->name('role.index');
+        $router->get('role', [RoleController::class, 'index'])->name('role.index');
     });
 
-    $router->middleware(['role:roles_show'])->group(function (Router $router) {
-        $router->get('role2/{id}', [RoleController::class, 'show'])->name('role.show');
+    $router->middleware(['role:roles_view'])->group(function (Router $router) {
+        $router->get('role/{id}', [RoleController::class, 'show'])->name('role.show');
     });
     
-    $router->middleware(['role:roles_update'])->group(function (Router $router) {
-        $router->put('role2/{id}', [RoleController::class, 'update'])->name('role.update');
-        $router->put('clone2/{id}', [RoleController::class, 'clone'])->name('role.clone');
+    $router->middleware(['role:roles_edit'])->group(function (Router $router) {
+        $router->get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
+        $router->post('role/update/{id}', [RoleController::class, 'update'])->name('role.update');
+        $router->put('clone/{id}', [RoleController::class, 'clone'])->name('role.clone');
     });
 
     $router->middleware(['role:roles_delete'])->group(function (Router $router) {
-        $router->delete('role2/{id}', [RoleController::class, 'delete'])->name('role.delete');
+        $router->delete('role/{id}', [RoleController::class, 'delete'])->name('role.delete');
     });
     
     $router->middleware(['role:roles_create'])->group(function (Router $router) {
-        $router->get('role/create', [OldRoleController::class, 'create'])->name('role.create');
-        $router->post('role',       [OldRoleController::class, 'store'])->name('role.store');
+        $router->get('role2/create', [OldRoleController::class, 'create'])->name('role2.create');
+        $router->post('role2',       [OldRoleController::class, 'store'])->name('role2.store');
     });
 
     $router->middleware(['role:roles_list'])->group(function (Router $router) {
-        $router->get('role', [OldRoleController::class, 'index'])->name('role.index');
+        $router->get('role2', [OldRoleController::class, 'index'])->name('role2.index');
     });
 
     $router->middleware(['role:roles_show'])->group(function (Router $router) {
-        $router->get('role/{id}', [OldRoleController::class, 'show'])->name('role.show');
+        $router->get('role2/{id}', [OldRoleController::class, 'show'])->name('role2.show');
     });
 
     $router->middleware(['role:roles_update'])->group(function (Router $router) {
-        $router->put('role/{id}', [OldRoleController::class, 'update'])->name('role.update');
-        $router->put('clone/{id}', [OldRoleController::class, 'clone'])->name('role.clone');
+        $router->put('role2/{id}', [OldRoleController::class, 'update'])->name('role2.update');
+        $router->put('clone2/{id}', [OldRoleController::class, 'clone'])->name('role2.clone');
     });
 
     $router->middleware(['role:roles_delete'])->group(function (Router $router) {
-        $router->delete('role/{id}', [OldRoleController::class, 'delete'])->name('role.delete');
+        $router->delete('role2/{id}', [OldRoleController::class, 'delete'])->name('role2.delete');
     });
 
     $router->middleware(['role:pipeline_create'])->group(function (Router $router) {
@@ -401,7 +403,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->get('pipeline/{id}', [PipelineController::class, 'show'])->name('pipeline.show');
     
 
-    $router->middleware(['role:pipeline_update'])->group(function (Router $router) {
+    $router->middleware(['role:pipeline_edit'])->group(function (Router $router) {
         $router->put('pipeline/{id}', [PipelineController::class, 'update'])->name('pipeline.update');
     });
 
@@ -413,7 +415,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->middleware(['role:subscription_list'])->group(function (Router $router) {
         $router->get('subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
     });
-    $router->middleware(['role:subscription_update'])->group(function (Router $router) {
+    $router->middleware(['role:subscription_edit'])->group(function (Router $router) {
         $router->get('subscription/edit/{id}', [SubscriptionController::class, 'edit'])->name('subscription.edit');
         $router->post('subscription/update/{id}', [SubscriptionController::class, 'update'])->name('subscription.update');
     });
@@ -456,7 +458,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('reports', [ReportsController::class, 'index'])->name('reports.index');
     });
 
-    $router->middleware(['role:requests'])->group(function (Router $router) {
+    $router->middleware(['role:requests_show'])->group(function (Router $router) {
         $router->get('request', [RequestController::class, 'index'])->name('request.index');
     });
 
@@ -464,7 +466,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('emails', [EmailsController::class, 'index'])->name('emails.index');
     });
 
-    $router->middleware(['role:emails_send'])->group(function (Router $router) {
+    $router->middleware(['role:send_emails'])->group(function (Router $router) {
         $router->post('emails/send', [EmailsController::class, 'send'])->name('emails.send');
     });
 
@@ -485,11 +487,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->delete('emails/{id}', [EmailsController::class, 'delete'])->name('emails.delete');
     });
 
-    $router->middleware(['role:sender_email_list'])->group(function (Router $router) {
+    $router->middleware(['role:emails_sender_email_list'])->group(function (Router $router) {
         $router->get('sender_emails', [SenderEmailsController::class, 'index'])->name('sender_emails.index');
     });
 
-    $router->middleware(['role:sender_email_create'])->group(function (Router $router) {
+    $router->middleware(['role:emails_sender_emails_create'])->group(function (Router $router) {
         $router->get('sender_emails/create', [SenderEmailsController::class, 'create'])->name('sender_emails.create');
         $router->post('sender_emails',       [SenderEmailsController::class, 'store'])->name('sender_emails.store');
     });
@@ -498,11 +500,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('sender_emails/{id}', [SenderEmailsController::class, 'show'])->name('sender_emails.show');
     });
 
-    $router->middleware(['role:sender_email_update'])->group(function (Router $router) {
+    $router->middleware(['role:emails_sender_emails_update'])->group(function (Router $router) {
         $router->put('sender_emails/{id}', [SenderEmailsController::class, 'update'])->name('sender_emails.update');
     });
 
-    $router->middleware(['role:sender_email_delete'])->group(function (Router $router) {
+    $router->middleware(['role:emails_sender_emails_delete'])->group(function (Router $router) {
         $router->delete('sender_emails/{id}', [SenderEmailsController::class, 'delete'])->name('sender_emails.delete');
     });
 

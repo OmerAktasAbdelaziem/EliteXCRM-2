@@ -43,8 +43,8 @@ class EmailsController extends Controller
         $emailTemplates     = EmailTemplate::latest()->get();
         $senderEmails       = SenderEmail::select('id','email')->latest()->get();
         $statuses           = Status::select('id', 'name')->latest()->get();
-        $options            = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+        //$options            = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
+        $teams              = $this->clientService->getTeams( Auth::user());//$clientsController->getTeams($options);
         $limit              = $request->input('limit', 6);
 
         $leads = Client::select('id', 'first_name', 'last_name', 'email', 'phone1', 'phone2', 'country', 'sales_status')

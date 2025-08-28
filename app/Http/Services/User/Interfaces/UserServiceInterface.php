@@ -17,4 +17,5 @@ interface UserServiceInterface{
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
      public function getUserOptions(User $user):array;
+    
 }

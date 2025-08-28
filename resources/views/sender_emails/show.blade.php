@@ -110,10 +110,10 @@
                                 </div>
                                 <div class="col-12">
                                     @if ($senderEmail->getKey())
-                                        @if (isset($options['sender_email_update']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_sender_email_update') )
                                             <button type="submit" class="btn btn-primary px-5">Update</button>
                                         @endif
-                                        @if (isset($options['sender_email_delete']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_sender_email_update') )
                                             <button type="button" class="btn btn-danger px-5" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
                                         @endif
                                     @else
@@ -128,7 +128,7 @@
             <!--end row-->
         </div>
     </div>
-    @if ($senderEmail->getKey() && isset($options['sender_email_delete']))
+    @if ($senderEmail->getKey() && ($senderEmail->getKey() && (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_sender_email_delete') ) ))
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

@@ -18,7 +18,7 @@ interface ClientServiceInterface{
      public function updateBulk(array $ids,array $data):int;
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
-     public function getTeams(array $options,User $user): supportCollection;
+     public function getTeams(User $user): supportCollection;
      public function getUsers(supportCollection $teams,User $user): supportCollection;
      public function getParts(supportCollection $teams,User $user): supportCollection;
      public function multiEdit(Request $request,User $user): RedirectResponse;

@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="font-22 ms-auto">
                                         <div class="d-flex justify-content-end">
-                                            @if (isset($options['bank_create']))
+                                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'banks_create'))
                                                 <a href="{{ route('bank.create') }}" class="btn btn-success btn-sm">
                                                     Add new bank
                                                 </a>

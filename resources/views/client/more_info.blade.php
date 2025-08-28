@@ -19,8 +19,8 @@
     </style>
 @endsection
 @section('title',
-    (isset($options['leads_show_first_name']) ? $client->first_name : '') . ' ' .
-    (isset($options['leads_show_last_name']) ? $client->last_name : '')
+    ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show')) ? $client->first_name : '') . ' ' .
+    ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show')) ? $client->last_name : '')
 )
 @section("wrapper")
     <div class="page-wrapper">
@@ -36,16 +36,16 @@
                                         @if ($client->is_renew)
                                             <i class="text-red bx bx-caret-down h2 mb-0"></i>
                                         @endif
-                                        @if(isset($options['leads_show_first_name']))
+                                        @if((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show'))
                                             {{$client->first_name}}
-                                        @elseif(isset($options['leads_show_first_name_hide']))
+                                        @elseif((UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide'))
                                             {{ substr($client->first_name, 0, ceil(strlen($client->first_name) / 2)) }}******
                                         @else
                                             ******
                                         @endif
-                                        @if(isset($options['leads_show_last_name']))
+                                        @if((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
                                             {{$client->last_name}}
-                                        @elseif(isset($options['leads_show_last_name_hide']))
+                                        @elseif((UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide'))
                                             {{ substr($client->last_name, 0, ceil(strlen($client->last_name) / 2)) }}******
                                         @else
                                             ******
@@ -63,7 +63,9 @@
                                         <a class="text-white" href="{{ route('client.show', $client->id) }}" target="_blank" rel="noopener noreferrer">{{$client->id}}</a>
                                     </h4>
                                 </div>
-                                @if ($client->smart_user_id && isset($options['leads_smart']))
+                                <?php /* @if ($client->smart_user_id && isset($options['leads_smart']))*/ ?>
+                                
+                                @if ($client->smart_user_id)
                                     <div class="col-md-1 col-6">
                                         <small class="form-label">Smart ID</small>
                                         <h4>
@@ -71,7 +73,8 @@
                                         </h4>
                                     </div>
                                 @endif
-                                @if (isset($options['leads_main_tp']) && Auth::user()->pipeline->category_id == 1)
+                                
+                                @if ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_main_tp')) && Auth::user()->pipeline->category_id == 1)
                                     <div class="col-md-1 col-6">
                                         <small class="form-label">TP</small>
                                         <h4>

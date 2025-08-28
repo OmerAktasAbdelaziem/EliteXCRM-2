@@ -3,10 +3,10 @@ namespace App\Http\Services\Role\Interfaces;
 
 //Other
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Role;
+use App\Models\Permission;
 
 
-interface RoleServiceInterface{
+interface PermissionServiceInterface{
     public function getAll(): Collection;
     public function getById(int $id): Collection;
     public function getByFilters(array $params, array $with = []): Collection;
@@ -15,5 +15,4 @@ interface RoleServiceInterface{
      public function updateBulk(array $ids,array $data):int;
      public function createBulk(array $data): bool;
      public function deleteByParams(array $params): int;
-     public function safeHasPermission(Role $role, string $permission): bool;
 }

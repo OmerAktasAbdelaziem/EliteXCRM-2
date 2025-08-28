@@ -402,26 +402,24 @@
                     </div>
                 @endif
 
-                <form name="addform" id="addform" method="POST" action="{{ $role->getKey()?route('role.update',$role->getKey()):route('role.store') }}">
+                <form name="addform" id="addform" method="POST" action="{{ route('role.store') }}">
                     @csrf
-                    @if ($role->getKey())
-                        @method('PUT')
-                    @endif
+                  
                     <!-- Basic Information Section -->
                     <div class="modern-form-section">
                         <div class="section-header">
                             <h3 class="section-title">
-                                {{ isset($role) && $role->getKey() ? 'Edit Role' : 'Create Role' }}
+                                Create Role
                             </h3>
                             <p class="section-subtitle">
-                                {{ isset($role) && $role->getKey() ? 'Modify role permissions and settings' : 'Set up a new role with permissions' }}
+                                Set up a new role with permissions
                             </p>
                         </div>
                         <div class="section-content">
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="name">Role Name</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name',$role->name) }}" placeholder="Enter role name" required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"  placeholder="Enter role name" required>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -437,6 +435,74 @@
                         </div>
 
                         <div class="permissions-container">
+                            
+                             <!-- Leads Management -->
+                            <div class="permission-item" data-permission="leads">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <!-- New icon: Users/People -->
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M13 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path fill-rule="evenodd" d="M2 13a5 5 0 0110 0v1H2v-1zm12 1v-1a7 7 0 10-14 0v1a2 2 0 002 2h10a2 2 0 002-2z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>General</h4>
+                                            <p>General Permissions</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="leads">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Settings
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[settings]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Overview
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[overview]">
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            
+                            
+                            
+                            
                             <!-- Leads Management -->
                             <div class="permission-item" data-permission="leads">
                                 <div class="permission-header">
@@ -465,6 +531,20 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Leads List
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_list]">
+                                        </div>
+                                        
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Eye icon -->
@@ -488,6 +568,16 @@
                                         </div>
                                         <div class="action-item">
                                             <div class="action-label">
+                                                <!-- Plus icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Renew Leads
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_renew]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
                                                 <!-- Pencil icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9A2 2 0 004 14v2a2 2 0 002 2h2a2 2 0 001.414-.586l9.9-9.9a2 2 0 000-2.828l-2-2zM5 16v-2.586l9-9L16.586 7l-9 9H5z"/>
@@ -507,18 +597,69 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_delete]">
                                         </div>
+                                        
                                         <div class="action-item">
                                             <div class="action-label">
-                                                <!-- Table icon -->
+                                                <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
-                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
-                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
                                                 </svg>
-                                                Leads Table
+                                                Lead Actions
                                             </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_list]">
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_actions_actions]">
                                         </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Leads Cards Actions
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_cards_actions]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Open Real
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_actions_open_real]">
+                                        </div>
+                                        
+                                        
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Open Demo
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_actions_open_demo]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Show unassigned leads
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[show_unassigned_leads]">
+                                        </div>
+                                        
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Chat bubble icon -->
@@ -529,10 +670,251 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_cards_comments]">
                                         </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Chat bubble icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
+                                                </svg>
+                                                Leads Add Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_add_comments]">
+                                        </div>
                                        
+                                <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Chat bubble icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
+                                                </svg>
+                                                Leads Edit Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_edit_comments]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Chat bubble icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
+                                                </svg>
+                                                Leads Delete Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_delete_comments]">
+                                        </div>
+                               
+                            <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                New Clients Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_new_clients]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Call back Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_call_back]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                No Answer Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_no_answer]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Not Now Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_not_now]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Wrong Number Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_wrong_number]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                All Leads Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_all_leads]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Call Back Later Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_call_back_later]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                My Leads Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_my_leads]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                User Test Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_user_test]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Not Interested Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_not_interested]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Dont Call Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_do_not_call]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Follow up
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_follow_up]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                b2b
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_b2b]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                New
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_new]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Hot Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_hot]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Actions Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_actions]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                History Tab
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_history]">
+                                        </div>
+                                        
+                                        
                                     </div>
                                 </div>
+                                
+                                
                             </div>
+                            
 
                             <!-- Maint TP -->
                             <div class="permission-item" data-permission="maint_tp">
@@ -607,10 +989,81 @@
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
                                                 </svg>
-                                                Update Trading
+                                                Main TP Actions
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Actions Send Email
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_send_email]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Actions Create money transaction
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_create_money_transaction]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Actions Create request
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_create_request]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Actions Open Orders
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_open_order]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Actions Requests
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_Requests]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Yes No
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_yes_no]">
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Update Trading
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_can_update]">
                                         </div>
+                                        
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Chat Bubble -->
@@ -631,6 +1084,140 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_chat]">
                                         </div>
+                                        
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Money TRX Update
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_money_trx_update]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Money TRX Delete
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_money_trx_delete]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Login as client
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_login_as_client]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Cards Actions
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_actions]" >
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Cards Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_comments]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Add Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_add_comments]" >
+                                        </div>
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Edit Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_edit_comments]" >
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Delete Comments
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_delete_comments]" >
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Cards Chat
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_chat]">
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Add Chat
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_add_chat]" >
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Edit Chat
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_edit_chat]" >
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- New icon: Refresh/Sync -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Main TP Delete Chat
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_delete_chat]" >
+                                        </div>
+                                        
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -661,10 +1248,81 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Users List</div><input type="checkbox" class="custom-checkbox" name="roles[users_list]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Users</div><input type="checkbox" class="custom-checkbox" name="roles[users_show]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create User</div><input type="checkbox" class="custom-checkbox" name="roles[users_create]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit User</div><input type="checkbox" class="custom-checkbox" name="roles[users_edit]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg>Delete User</div><input type="checkbox" class="custom-checkbox" name="roles[users_delete]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Pipeline Permission -->
+                             <div class="permission-item" data-permission="user">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Pipelines</h4>
+                                            <p>Access to pipelines management</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="user">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline List</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_list]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline View</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_view]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline Create</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_create]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline Update</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_edit]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline Delete</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_delete]" ></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Subscriptions Permission -->
+                             <div class="permission-item" data-permission="user">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Subscriptions</h4>
+                                            <p>Access to subscriptions management</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="user">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Subscription List</div><input type="checkbox" class="custom-checkbox" name="roles[subscription_list]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Subscription View</div><input type="checkbox" class="custom-checkbox" name="roles[subscription_view]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Subscription Create</div><input type="checkbox" class="custom-checkbox" name="roles[subscription_create]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Subscription Update</div><input type="checkbox" class="custom-checkbox" name="roles[subscription_edit]" ></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Subscription Delete</div><input type="checkbox" class="custom-checkbox" name="roles[subscription_delete]" ></div>
                                     </div>
                                 </div>
                             </div>
@@ -696,6 +1354,7 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Parts List</div><input type="checkbox" class="custom-checkbox" name="roles[parts_list]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_view]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_create]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_edit]"></div>
@@ -730,6 +1389,7 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Teams List</div><input type="checkbox" class="custom-checkbox" name="roles[teams_list]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Teams</div><input type="checkbox" class="custom-checkbox" name="roles[teams_view]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Team</div><input type="checkbox" class="custom-checkbox" name="roles[teams_create]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Team</div><input type="checkbox" class="custom-checkbox" name="roles[teams_edit]"></div>
@@ -764,6 +1424,7 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Reports List</div><input type="checkbox" class="custom-checkbox" name="roles[reports_list]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Reports</div><input type="checkbox" class="custom-checkbox" name="roles[reports_view]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Reports</div><input type="checkbox" class="custom-checkbox" name="roles[reports_create]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Reports</div><input type="checkbox" class="custom-checkbox" name="roles[reports_edit]"></div>
@@ -799,8 +1460,7 @@
                                 <div class="permission-actions">
                                     <div class="actions-grid">
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Retention</div><input type="checkbox" class="custom-checkbox" name="roles[retention_view]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Retention</div><input type="checkbox" class="custom-checkbox" name="roles[retention_create]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg>Delete Retention</div><input type="checkbox" class="custom-checkbox" name="roles[retention_delete]"></div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -873,6 +1533,7 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Status List</div><input type="checkbox" class="custom-checkbox" name="roles[status_list]"></div>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Eye -->
@@ -880,7 +1541,7 @@
                                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                                     <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
                                                 </svg>
-                                                View Status Page
+                                                View Status
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[status_view]">
                                         </div>
@@ -945,7 +1606,8 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Roles Page</div><input type="checkbox" class="custom-checkbox" name="roles[roles_view]"></div>
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Roles List</div><input type="checkbox" class="custom-checkbox" name="roles[roles_list]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Roles</div><input type="checkbox" class="custom-checkbox" name="roles[roles_view]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Role</div><input type="checkbox" class="custom-checkbox" name="roles[roles_create]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Role</div><input type="checkbox" class="custom-checkbox" name="roles[roles_edit]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Delete Role</div><input type="checkbox" class="custom-checkbox" name="roles[roles_delete]"></div>
@@ -980,10 +1642,19 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template List</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_list]"></div>
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template Show</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_show]"></div>
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template Update</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_update]"></div>
+                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template Delete</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_delete]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Emails</div><input type="checkbox" class="custom-checkbox" name="roles[emails_view]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Templates</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_create]"></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Templates</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_edit]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Send Emails</div><input type="checkbox" class="custom-checkbox" name="roles[send_emails]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails List</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_email_list]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Show</div><input type="checkbox" class="custom-checkbox" name="roles[sender_email_show]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Create</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_create]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Update</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_update]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Delete</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_delete]"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1015,6 +1686,7 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Banks List</div><input type="checkbox" class="custom-checkbox" name="roles[bank_list]"></div>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Eye -->
@@ -1024,7 +1696,7 @@
                                                 </svg>
                                                 View Banks
                                             </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[banks_view]">
+                                            <input type="checkbox" class="custom-checkbox" name="roles[bank_view]">
                                         </div>
                                         <div class="action-item">
                                             <div class="action-label">
@@ -1090,6 +1762,7 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Assets List</div><input type="checkbox" class="custom-checkbox" name="roles[asset_list]"></div>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Eye -->
@@ -1163,6 +1836,8 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Asset Group List</div><input type="checkbox" class="custom-checkbox" name="roles[assetGroup_list]"></div>
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Asset Group View</div><input type="checkbox" class="custom-checkbox" name="roles[assetGroup_view]"></div>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Eye -->
@@ -1210,11 +1885,11 @@
                             </div>
 
                             <!-- Pipeline Management -->
-                            <div class="permission-item" data-permission="pipeline">
+                            <!--<div class="permission-item" data-permission="pipeline">
                                 <div class="permission-header">
                                     <div class="permission-info">
                                         <div class="permission-icon">
-                                            <!-- New icon: Pipeline/Flow -->
+                                          
                                             <svg fill="currentColor" viewBox="0 0 20 20">
                                                 <rect x="2" y="8" width="16" height="4" rx="2"/>
                                                 <circle cx="4" cy="10" r="2"/>
@@ -1240,7 +1915,7 @@
                                     <div class="actions-grid">
                                         <div class="action-item">
                                             <div class="action-label">
-                                                <!-- New icon: Eye -->
+                                             
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                                     <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
@@ -1251,7 +1926,7 @@
                                         </div>
                                         <div class="action-item">
                                             <div class="action-label">
-                                                <!-- New icon: Plus -->
+                                            
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
                                                 </svg>
@@ -1261,7 +1936,7 @@
                                         </div>
                                         <div class="action-item">
                                             <div class="action-label">
-                                                <!-- New icon: Pencil/Edit -->
+                                            
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9A2 2 0 004 14v2a2 2 0 002 2h2a2 2 0 001.414-.586l9.9-9.9a2 2 0 000-2.828l-2-2zM5 16v-2.586l9-9L16.586 7l-9 9H5z"/>
                                                 </svg>
@@ -1271,7 +1946,7 @@
                                         </div>
                                         <div class="action-item">
                                             <div class="action-label">
-                                                <!-- New icon: Trash/Delete -->
+                                               
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
                                                     <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
@@ -1282,7 +1957,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
 
                             <!-- Client Page Permissions -->
                             <div class="permission-item" data-permission="client_page">
@@ -1420,16 +2095,33 @@
                                                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); gap: 16px;">
                                                                     <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
                                                                         <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Lead Id</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">12345678</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_lead_id_show]"  style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                           
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
                                                                             <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">First Name</label>
                                                                             <span style="font-weight: 500; color: #2d3748;">John</span>
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_first_name_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_first_name_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_first_name_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_first_name_hide]"  style="margin-right: 4px;">
+                                                                                Hide
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_first_name_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1442,11 +2134,15 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_last_name_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_last_name_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_last_name_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_last_name_hide]"  style="margin-right: 4px;">
+                                                                                Hide
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_last_name_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1459,15 +2155,21 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_email_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_email_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_email_edit"  name="field_first_name_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_email_hide]"  style="margin-right: 4px;">
+                                                                                Hide
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_email_edit]" style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
                                                                     </div>
+                                                                    
+                                                                    
                                                                     
                                                                     <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
                                                                         <div style="flex: 1;">
@@ -1476,11 +2178,15 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_primary_phone_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_primary_phone_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_primary_phone_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_primary_phone_hide]"  style="margin-right: 4px;">
+                                                                                Hide
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_primary_phone_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1493,11 +2199,15 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_secondary_phone_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_secondary_phone_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_secondary_phone_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_secondary_phone_hide]"  style="margin-right: 4px;">
+                                                                                Hide
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_secondary_phone_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1510,15 +2220,51 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_country_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_country_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_country_edit"   style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_country_edit]"   style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
                                                                     </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">USDT Address</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Usdt Adress</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_usdt_address_show]"  style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_usdt_address_edit]"   style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Leads Leverage</label>
+                                                                            <span style="font-weight: 500; color: #2d3748;">Leads Leverage</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_leads_leverage_show]" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_leads_leverage_edit]" style="margin-right: 4px;">
+                                                                                Edit
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
                                                                 </div>
                                                             </div>
 
@@ -1532,11 +2278,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_sales_status_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_sales_status_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_sales_status_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_sales_status_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1549,11 +2295,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox"  name="field_assigned_user_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox"  name="roles[field_assigned_user_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_assigned_user_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_assigned_user_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1566,11 +2312,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_account_type_show" style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_account_type_show]" style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_account_type_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_account_type_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1583,13 +2329,27 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_ftd_status_show" style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_ftd_status_show]" style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_ftd_status_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_ftd_status_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div style="display: flex; align-items: center; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f7fafc;">
+                                                                        <div style="flex: 1;">
+                                                                            <label style="font-size: 12px; color: #718096; margin-bottom: 4px; display: block;">Enabled</label>
+                                                                            <span style="font-weight: 500; color: #10b981;">Enabled</span>
+                                                                        </div>
+                                                                        <div style="display: flex; gap: 8px; margin-left: 12px;">
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_leads_enabled_show]" style="margin-right: 4px;">
+                                                                                Show
+                                                                            </label>
+                                                                           
                                                                         </div>
                                                                     </div>
                                                                     
@@ -1600,11 +2360,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_enabled_status_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_enabled_status_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_enabled_status_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_enabled_status_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1617,11 +2377,15 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_username_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_username_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_username_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_username_hide]"  style="margin-right: 4px;">
+                                                                                Hide
+                                                                            </label>
+                                                                            <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
+                                                                                <input type="checkbox" name="roles[field_username_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1634,11 +2398,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_password_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_password_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox"  name="field_password_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox"  name="roles[field_password_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1651,11 +2415,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_ftd_amount_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_ftd_amount_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_ftd_amount_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_ftd_amount_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1668,11 +2432,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_asset_group_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_asset_group_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_asset_group_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_asset_group_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1685,11 +2449,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_first_owner_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_first_owner_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_first_owner_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_first_owner_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1702,11 +2466,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_team_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_team_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_team_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_team_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1719,7 +2483,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_last_deposite_amount_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_last_deposite_amount_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             
@@ -1733,7 +2497,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_first_comment_date_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_first_comment_date_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             
@@ -1747,7 +2511,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_first_comment_owner_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_first_comment_owner_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             
@@ -1761,7 +2525,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_assigned_date_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_assigned_date_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                              
@@ -1775,7 +2539,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_ftd_date_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_ftd_date_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                       
@@ -1789,7 +2553,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_create_date_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_create_date_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                            
@@ -1803,7 +2567,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_modified_date_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_modified_date_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                            
@@ -1817,7 +2581,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_registration_date_show" style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_registration_date_show]" style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             
@@ -1831,7 +2595,7 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_created_by_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_created_by_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                           
@@ -1850,11 +2614,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_source_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_source_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_source_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_source_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1867,11 +2631,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_campaign_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_campaign_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_campaign_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_campaign_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1884,11 +2648,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_age_show" style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_age_show]" style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_age_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_age_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -1901,11 +2665,11 @@
                                                                         </div>
                                                                         <div style="display: flex; gap: 8px; margin-left: 12px;">
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_gender_show"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_gender_show]"  style="margin-right: 4px;">
                                                                                 Show
                                                                             </label>
                                                                             <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568;">
-                                                                                <input type="checkbox" name="field_gender_edit"  style="margin-right: 4px;">
+                                                                                <input type="checkbox" name="roles[field_gender_edit]"  style="margin-right: 4px;">
                                                                                 Edit
                                                                             </label>
                                                                         </div>
@@ -2225,28 +2989,14 @@
                         </div>
                         
                         <div class="btn-group">
-                            @if ($role->getKey())
-                                <button type="submit" formaction="{{route('role.clone',$role->getKey())}}" class="btn btn-info">
-                                    <svg fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"/>
-                                        <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"/>
-                                    </svg>
-                                    Clone Role
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <svg fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"/>
-                                    </svg>
-                                    Update Role
-                                </button>
-                            @else
+                      
                                 <button type="submit" class="btn btn-primary">
                                     <svg fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
                                     </svg>
                                     Create Role
                                 </button>
-                            @endif
+                   
                         </div>
                     </div>
                 </form>

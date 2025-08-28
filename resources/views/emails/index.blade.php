@@ -61,17 +61,20 @@
                                     <h5 class="mb-1">Email Templates</h5>
                                 </div>
                                 <div class="font-22 ms-auto">
-                                    @if (isset($options['sender_email_list']))
+                                    @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_sender_email_list') )
+                                    
                                         <a href="{{ route('sender_emails.index') }}" class="btn btn-danger btn-sm">
                                             Sender Emails
                                         </a>
                                     @endif
-                                    @if (isset($options['emails_template_create']))
+                                    @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_template_create') )
+                                    
                                         <a href="{{ route('emails.create') }}" class="btn btn-primary btn-sm">
                                             Add new Template
                                         </a>
                                     @endif
-                                    @if (isset($options['emails_send']))
+                                    @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'send_emails') )
+                                    
                                         <a href="javascript:;" class="btn btn-success btn-sm compose-mail-btn">
                                             Send Email
                                         </a>
@@ -96,7 +99,7 @@
                                             <tbody>
                                                 @foreach ($emailTemplates as $emailTemplate)
                                                     <tr>
-                                                        <td><a @isset($options['emails_template_show']) href="{{ route('emails.show', $emailTemplate->id) }}" @endisset>{{$emailTemplate->name}}</a></td>
+                                                        <td><a @(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_template_show') ) href="{{ route('emails.show', $emailTemplate->id) }}" @endisset>{{$emailTemplate->name}}</a></td>
                                                         <td>{{$emailTemplate->subject}}</td>
                                                         <td>{{ \Illuminate\Support\Str::limit($emailTemplate->body, 40) }}</td>
                                                         <td>{{date('d/m/Y H:i', strtotime($emailTemplate->created_at))}}</td>
@@ -111,7 +114,8 @@
                     </div>
                 </div>
             </div>
-            @if (isset($options['emails_send']))
+            @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'send_emails') )
+            
                 <div class="compose-mail-popup">
                     <div class="card">
                         <div class="card-header bg-dark text-white py-2 cursor-pointer">
@@ -346,7 +350,7 @@
                                             <div>
                                                 <input class="form-check-input me-3 check-contact check-number" type="checkbox" value="{{$contact->email}}" aria-label="...">
                                             </div>
-                                            <a @if (isset($options['leads_show'])) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
+                                            <a @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
                                                 {{$contact->first_name}} {{$contact->last_name}}
                                             </a>
                                         </div>
@@ -400,7 +404,7 @@
                                                 {{ date('d/m/Y H:i', strtotime($marketingEmailLog->created_at)) }}
                                             </td>
                                             <th>
-                                                <a @if (isset($options['users_show'])) href="{{ route('user.show',$marketingEmailLog->user->id ) }}" @endif >
+                                                <a @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show') ) href="{{ route('user.show',$marketingEmailLog->user->id ) }}" @endif >
                                                     <h6 class="mb-1 font-14">
                                                         {{$marketingEmailLog->user->first_name}} {{$marketingEmailLog->user->last_name}} ({{$marketingEmailLog->user->username}})
                                                     </h6>
@@ -408,7 +412,7 @@
                                             </th>
                                             <td>
                                                 @if ($marketingEmailLog->client)
-                                                    <a @isset($options['leads_show']) href="{{ route('client.show', $marketingEmailLog->client->id) }}" @endisset>
+                                                    <a @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show') ) href="{{ route('client.show', $marketingEmailLog->client->id) }}" @endif>
                                                         <h6 class="mb-1 font-14">
                                                             {{$marketingEmailLog->client->first_name}} {{$marketingEmailLog->client->last_name}}
                                                         </h6>
@@ -418,7 +422,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a @isset($options['sender_email_show']) href="{{ route('sender_emails.show', $marketingEmailLog->sender_email_id) }}" @endisset>
+                                                <a @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'sender_email_show') ) href="{{ route('sender_emails.show', $marketingEmailLog->sender_email_id) }}" @endif>
                                                     <h6 class="mb-1 font-14">
                                                         {{$marketingEmailLog->sender_email->email}}
                                                     </h6>
@@ -426,7 +430,7 @@
                                             </td>
                                             <td>
                                                 @if ($marketingEmailLog->template_id)
-                                                    <a @isset($options['emails_template_show']) href="{{ route('emails.show', $marketingEmailLog->template_id) }}" @endisset>
+                                                    <a @if(UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'emails_template_show') ) href="{{ route('emails.show', $marketingEmailLog->template_id) }}" @endif>
                                                         <h6 class="mb-1 font-14">
                                                             {{$marketingEmailLog->template?->name}}
                                                         </h6>

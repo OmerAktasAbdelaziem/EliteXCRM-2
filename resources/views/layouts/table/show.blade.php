@@ -24,7 +24,7 @@
             
         </div>
         <div class="col-sm-12 col-md-6 justify-content-end d-flex">
-            @if (isset($options['leads_create']))
+            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_create'))
                 <div class="ms-auto mx-1">
                     <input class="form-control" type="file" form="excel-{{$check_type}}" name="excel_file" accept=".xls, .xlsx, .csv" onchange="$('#excel-{{$check_type}}').submit();">
                     @error('excel_file')
@@ -38,13 +38,13 @@
                     Export Clients
                 </button>
             @endif
-            @if (isset($options['leads_can_update']))
+            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_edit'))
                 <button type="button" class="btn btn-primary text-white text-center w-auto modal-btn multi-edit-btn mx-1" data-bs-toggle="modal" data-bs-target="#multiEdit-{{$check_type}}">
                     <span class="number">0</span>
                     Selected
                 </button>
             @endif
-            @if (isset($options['leads_delete']))
+            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_delete'))
                 <button type="button" class="btn btn-danger text-center w-auto mx-1" data-bs-toggle="modal" data-bs-target="#deleteModal-{{$check_type}}">
                     <i class="bx bx-trash me-2"></i>
                     Delete
@@ -54,13 +54,13 @@
     </div>
 </form>
 
-@if (isset($options['leads_create']))
+@if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_create'))
     <form action="{{ route('client.excel.check') }}" method="POST" enctype="multipart/form-data" id="excel-{{$check_type}}">
         @csrf
     </form>
 @endif
-
-@if (isset($options['leads_can_update']) ||isset($options['smart_can_update']) )
+@if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_edit'))
+<?php /* @if (isset($options['leads_can_update']) ||isset($options['smart_can_update']) ) */ ?>
     <div class="modal fade" id="multiEdit-{{$check_type}}" tabindex="-1" aria-labelledby="multiEditLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -73,7 +73,7 @@
                     @csrf
                     <input type="hidden" class="client_id" name="client_id">
                     <div class="row">
-                        @if (isset($options['leads_country']))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_country_show'))
                             <div class="col-12">
                                 <label class="form-label">Country</label>
                                 <div class="input-group">
@@ -332,7 +332,7 @@
                                 @enderror
                             </div>
                         @endif
-                        @if (isset($options['leads_ftd']))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_ftd_date_show'))
                             <div class="col-12 mt-2">
                                 <label for="is_ftd" class="form-label">FTD</label>
                                 <div class="input-group"><span class="input-group-text bg-transparent"><i class='bx bx-dollar-circle' ></i></span>
@@ -347,7 +347,8 @@
                                 @enderror
                             </div>
                         @endif
-                        @if (isset($options['smart_amount']))
+                        <?php /* @if (isset($options['smart_amount']))*/ ?>
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'smart_amount'))
                             <div class="col-12 mt-2">
                                 <label for="ftd_amount" class="form-label">FTD Amount</label>
                                 <div class="input-group"><span class="input-group-text bg-transparent"><i class='bx bx-dollar' ></i></span>
@@ -358,14 +359,15 @@
                                 @enderror
                             </div>
                         @endif
-                        @if (isset($options['leads_user_id']))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_assigned_user_show'))
+                        
                             <div class="col-12 mt-2">
                                 <label class="form-label">Assigned User</label>
                                 <div class="input-group">
                                     <button class="btn" style="border:1px solid #ced4da;border-right:none" type="button"><i class='bx bx-support'></i></button>
                                     <select class="single-select form-select inside-modal" name="user_id">
                                         <option value="" >Select User</option>
-                                        @if (isset($options['leads_data_show_unassigned_leads']))
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'show_unassigned_leads'))
                                             <option value="no" >No User</option>
                                         @endif
                                         @foreach ($users as $user)
@@ -378,7 +380,8 @@
                                 @enderror
                             </div>
                         @endif
-                        @if (isset($options['leads_status']))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_show'))
+                        
                             <div class="col-12 mt-2">
                                 <label class="form-label">Sales Status</label>
                                 <div class="input-group">
@@ -407,7 +410,7 @@
     </div>
 @endif
 
-@if (isset($options['leads_delete']))
+@if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_delete'))
     <div class="modal fade" id="deleteModal-{{$check_type}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

@@ -73,7 +73,7 @@ class ClientService implements ClientServiceInterface {
         return $this->clientRepository->deleteByIDs($Ids);
     }
     
-    public function getTeams(array $options,User $user): supportCollection
+    public function getTeams(User $user): supportCollection
     {
         //$user is Authinticated User
         $teams = collect();
@@ -94,7 +94,7 @@ class ClientService implements ClientServiceInterface {
             }
         }
         
-        if (isset($options['leads_data_show_teams']) && !empty($options['leads_data_show_teams'])) {
+        /*if (isset($options['leads_data_show_teams']) && !empty($options['leads_data_show_teams'])) {
             //$specificTeams = Team::whereIn('id', $options['leads_data_show_teams'])->get();
             $specificTeams = $this->teamService->getByFilters([['field' => 'id', 'conditions' => ['in' => $options['leads_data_show_teams']]]]);
             foreach ($specificTeams as $specificTeam) {
@@ -102,7 +102,7 @@ class ClientService implements ClientServiceInterface {
                     $teams = $teams->merge([$specificTeam]);
                 }
             }
-        }
+        }*/
         $pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
         
         if (in_array($user->id, $pipelineSupportIds) || $user->pipeline->co_id == $user->id || $user->id == 644033 || $user->id == 298274) {

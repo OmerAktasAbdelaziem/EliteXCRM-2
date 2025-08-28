@@ -14,27 +14,34 @@ use Illuminate\Support\Facades\Hash;
 
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
-use App\Http\Services\User\Interfaces\UserServiceInterface;
+use App\Http\Services\Role\Interfaces\RoleServiceInterface;
+//use App\Http\Services\User\Interfaces\UserServiceInterface;
+use UserPermission;
 
 class UserController extends Controller
 {
     protected $clientService;
-    protected $userService;
+    protected $roleService;
+    //protected $userService;
     public function __construct(
             ClientServiceInterface $clientService,
-            UserServiceInterface $userService,
+            RoleServiceInterface $roleService,
+            //UserServiceInterface $userService,
             ) {
         $this->clientService = $clientService;
-        $this->userService = $userService;
+        $this->roleService = $roleService;
+        //$this->userService = $userService;
         
     }
     public function index()
     {
+        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
-        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
-        if (Auth::id() == 644033 || Auth::id() == 298274) {
+        //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
+        //if (Auth::id() == 644033 || Auth::id() == 298274) {
+        if($isSuperAdmin){
             $deleted_users = User::WithPipeline()->where('deleted',true)->get();
             $users         = $this->clientService->getUsers($teams, Auth::user())->where('deleted', '!=', true);//$clients_controller->getUsers($teams);
         }else{
@@ -54,10 +61,17 @@ class UserController extends Controller
     {
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
-        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
+        //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
+        $roles = $this->roleService->getByFilters([
+            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
+            ['field'=>'guard_name','conditions'=>['='=>'web']],
+        ]);
 
-        return view('user.create',compact('teams'));
+        return view('user.create',compact(
+                'teams',
+                'roles'
+                ));
     }
     
     public function store(CreateUserRequest $request)
@@ -84,8 +98,10 @@ class UserController extends Controller
             return redirect()->route('user.index')->with('fail','User Limit Reached');
         }
 
-        User::create($inputs);
-
+        $user = User::create($inputs);
+        
+$role   = $request->input('role');
+ $user->assignRole($role, Auth::user()->pipeline_id);
         Text::create([
             'user_id' => $id,
             'text' => $Password
@@ -96,13 +112,19 @@ class UserController extends Controller
     
     public function show($id)
     {
+        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
-        $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-        $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
-        $roles              = OldRole::latest()->get();
+        //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
+        //$roles              = OldRole::latest()->get();
+        $roles = $this->roleService->getByFilters([
+            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
+            ['field'=>'guard_name','conditions'=>['='=>'web']],
+        ]);
 
-        if (Auth::id() == 644033 || Auth::id() == 298274) {
+        //if (Auth::id() == 644033 || Auth::id() == 298274) {
+        if ($isSuperAdmin) {
             //$user = User::WithPipeline()->findOrfail($id);
             $user = User::findOrfail($id);
         }else{
@@ -124,12 +146,14 @@ class UserController extends Controller
             $status_text='Offline';
             $status='offline';
         }
-        
+        $currentRole = $user->rolesInPipeline(Auth::user()->pipeline_id)->first();
+     
         return view('user.show',compact(
             'status_text',
             'status',
             'teams',
             'roles',
+                'currentRole',
             'user',
         ));
     }
@@ -157,6 +181,7 @@ class UserController extends Controller
         $country   = $request->input('country');
         $city      = $request->input('city');
         $address   = $request->input('address');
+        //$role   = $request->input('role');
 
         $employee->first_name = $firstname;
         $employee->last_name  = $lastname;
@@ -168,6 +193,9 @@ class UserController extends Controller
         $employee->address    = $address;
         $employee->updated_by = Auth::id();
 
+      
+        //$employee->assignRole($role, Auth::user()->pipeline_id);
+        
         $employee->save();
 
         return redirect('/user-profile');
@@ -202,7 +230,10 @@ class UserController extends Controller
             'password' => Hash::make($Password),
             'password_changed_at' => now(),
         ]);
-
+        
+        $role   = $request->input('role');
+ $employee->assignRole($role, Auth::user()->pipeline_id);
+ 
         $employee->update($inputs);
 
         if ($employee->text) {
@@ -227,12 +258,13 @@ class UserController extends Controller
     
     public function destroy(Request $request)
     {
+        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $userids = $request->input('userid', []);
 
         foreach ($userids as $userid) {
             if ($userid != Auth::id()) {
                 $supportCheck = Pipeline::where('support_ids', 'LIKE', '%"'.$userid.'"%')->get();
-                if ($supportCheck->count() <= 0 || Auth::id() != 644033 || Auth::id() != 298274) {
+                if ($supportCheck->count() <= 0 || $isSuperAdmin) {
                     User::destroy($userid);
                 }
             }
@@ -251,10 +283,11 @@ class UserController extends Controller
     
     public function delete(Request $request,$id = null)
     {
+        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         if ($id) {
             if ($id != Auth::id()) {
                 $supportCheck = Pipeline::where('support_ids', 'LIKE', '%"'.$id.'"%')->get();
-                if ($supportCheck->count() > 0 || Auth::id() == 644033 || Auth::id() == 298274) {
+                if ($supportCheck->count() > 0 || $isSuperAdmin) {
                     return redirect()->back()->with('error', 'User is assigned as support to a pipeline');
                 }
 
@@ -270,7 +303,7 @@ class UserController extends Controller
             foreach ($userids as $userid) {
                 if ($userid != Auth::id()) {
                     $supportCheck = Pipeline::where('support_ids', 'LIKE', '%"'.$userid.'"%')->get();
-                    if ($supportCheck->count() <= 0 || Auth::id() != 644033 || Auth::id() != 298274) {
+                    if ($supportCheck->count() <= 0 || $isSuperAdmin) {
                         $user = User::WithPipeline()->find($userid);
                         $user ->deleted = true;
                         $user->username = $user ->username.'-#-deleted-#-'.Carbon::now();
@@ -302,6 +335,7 @@ class UserController extends Controller
 
     public function get_user_options()
     {
+        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $user        = Auth::user();
         $userOptions = [];
         $teamOptions = [];
@@ -325,7 +359,7 @@ class UserController extends Controller
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isSuperAdmin) {
             $adminPipeline = array_merge($adminPipeline,[
                 'pipeline_create' => 1,
                 'pipeline_update' => 1,

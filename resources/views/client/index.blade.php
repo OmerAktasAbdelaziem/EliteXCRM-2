@@ -43,7 +43,8 @@
                         <div class="card w-100" style="border-radius: 0 0 10px 10px">
                             <div class="card-body">
                                 <ul class="nav nav-tabs nav-primary" role="tablist">
-                                    @if (isset($options['leads_tabs_all_leads']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_all_leads'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link @if ($tab == "contacts") active @endif" data-bs-toggle="tab" href="#AllContact" role="tab" aria-selected="true">
                                                 <div class="d-flex align-items-center">
@@ -54,7 +55,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (isset($options['leads_tabs_b2b']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_b2b'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link @if ($tab == "broker") active @endif" data-bs-toggle="tab" href="#broker" role="tab" aria-selected="false">
                                                 <div class="d-flex align-items-center">
@@ -65,7 +67,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (isset($options['leads_tabs_my_leads']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_my_leads'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link @if ($tab == "myContact") active @endif" data-bs-toggle="tab" href="#MyContact" role="tab" aria-selected="false">
                                                 <div class="d-flex align-items-center">
@@ -76,7 +79,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (isset($options['leads_tabs_new']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_new'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link position-relative @if ($tab == "new") active @endif" data-bs-toggle="tab" href="#new_lead" role="tab" aria-selected="false">
                                                 <div class="d-flex align-items-center">
@@ -90,7 +94,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (isset($options['leads_tabs_actions']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_actions'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link @if ($tab == "actions") active @endif" data-bs-toggle="tab" href="#History" role="tab" id="action_tab" aria-selected="true">
                                                 <div class="d-flex align-items-center">
@@ -101,7 +106,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (isset($options['leads_tabs_history']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_history'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link @if ($tab == 'history') active @endif" data-bs-toggle="tab" href="#history" id="view-tab" role="tab" aria-selected="true">
                                                 <div class="d-flex align-items-center">
@@ -112,7 +118,8 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (isset($options['leads_tabs_hot']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_hot'))
+                                    
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link position-relative @if ($tab == "hot") active @endif" data-bs-toggle="tab" href="#hot_lead" role="tab" id="hot_lead_tab" aria-selected="true">
                                                 <div class="d-flex align-items-center @if ($hot->total() > 0) text-danger @endif">
@@ -131,27 +138,33 @@
                                     <form id="addemployee" name="addemployee" method="GET">
                                         @csrf
                                     </form>
-                                    @if (isset($options['leads_tabs_all_leads']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_all_leads'))
+                                    
                                         <div class="tab-pane fade @if ($tab == "contacts") active show @endif" id="AllContact" role="tabpanel">
                                             @include("layouts.table.leads_table",['model' => $contacts,'check_type' => 'contacts','filters' => $contacts_filters ,'tab' => 'contacts','statuses' => $statuses])
                                         </div>
                                     @endif
-                                    @if (isset($options['leads_tabs_b2b']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_b2b'))
+                                    
                                         <div class="tab-pane fade @if ($tab == "broker") active show @endif" id="broker" role="tabpanel">
                                             @include("layouts.table.leads_table",['model' => $broker,'check_type' => 'broker','filters' => $broker_filters,'tab' => 'broker','statuses' => $statuses])
                                         </div>
                                     @endif
-                                    @if (isset($options['leads_tabs_my_leads']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_my_leads'))
+                                    
                                         <div class="tab-pane fade @if ($tab == "myContact") active show @endif" id="MyContact" role="tabpanel">
                                             @include("layouts.table.leads_table",['model' => $mycontact,'check_type' => 'mycontact','filters' => $mycontact_filters,'tab' => 'myContact','statuses' => $statuses])
                                         </div>
                                     @endif
-                                    @if (isset($options['leads_tabs_new']))
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_new'))
+                                    
                                         <div class="tab-pane fade @if ($tab == "new") active show @endif" id="new_lead" role="tabpanel">
                                             @include("layouts.table.leads_table",['model' => $new,'check_type' => 'new','filters' => $new_filters,'tab' => 'new','statuses' => $statuses])
                                         </div>
                                     @endif
-                                    @if (isset($options['leads_tabs_actions']))
+                                    
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_actions'))
+                                    
                                         <div class="tab-pane fade @if ($tab == "actions") active show @endif" id="History" role="tabpanel">
                                             @include("layouts.table.pagination.from_to",['type' => 'actions'])
                                             @include("layouts.table.pagination.header",['model' => $actions, 'tab' =>'actions', 'type' => 'actions'])
@@ -174,7 +187,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @if (strpos($action->text, '<span class="text-primary">Uploaded') === false && $action->client)
-                                                                        <a @if (isset($options['leads_show'])) href="{{ route('client.show', $action->client?->id) }}" @endif>
+                                                                        <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show')) href="{{ route('client.show', $action->client?->id) }}" @endif>
                                                                             <h6 class="mb-1 font-14">
                                                                                 {{$action->client?->first_name}} {{$action->client?->last_name}}
                                                                             </h6>
@@ -187,7 +200,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <th>
-                                                                    <a @if (isset($options['users_show'])) href="{{ route('user.show',$action->user->id ) }}" @endif>
+                                                                    <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show')) href="{{ route('user.show',$action->user->id ) }}" @endif>
                                                                         <h6 class="mb-1 font-14">
                                                                             {{$action->user->first_name}} {{$action->user->last_name}} ({{$action->user->username}})
                                                                         </h6>
@@ -204,7 +217,8 @@
                                             @include("layouts.table.pagination.footer",['model' => $actions, 'tab' =>'actions'])
                                         </div>
                                     @endif
-                                    @if (isset($options['leads_tabs_history']))
+                                    
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_history'))
                                         <div class="tab-pane fade @if ($tab == 'history') active show @endif" id="history" role="tabpanel">
                                             <div class="row">
                                                 <form action="" id="filter_form_history">
@@ -309,7 +323,7 @@
                                                                         </td>
                                                                         <th>
                                                                             @if ($history->user?->id)
-                                                                                <a @if (isset($options['users_show'])) href="{{ route('user.show',$history->user->id ) }}" @endif >
+                                                                                <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show')) href="{{ route('user.show',$history->user->id ) }}" @endif >
                                                                                     <h6 class="mb-1 font-14">
                                                                                         {{$history->user->first_name}} {{$history->user->last_name}} ({{$history->user->username}})
                                                                                     </h6>
@@ -343,7 +357,9 @@
                                             </div>
                                         </div>
                                     @endif
-                                    @if (isset($options['leads_tabs_hot']))
+                                    
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_tabs_hot'))
+                                    
                                         <div class="tab-pane fade @if ($tab == "hot") active show @endif" id="hot_lead" role="tabpanel">
                                             @include("layouts.table.leads_table",['model' => $hot,'check_type' => 'hot','filters' => $hot_filters ,'tab' => 'hot','statuses' => $statuses])
                                         </div>

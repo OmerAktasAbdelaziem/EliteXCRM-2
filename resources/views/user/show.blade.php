@@ -116,10 +116,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <small class="form-label">Role</small>
-                                                    @if ($user->role?->name)
+                                                    @if ($currentRole?->name)
                                                         <h5>
                                                             <span class="input-group-text bg-transparent">
-                                                                {{$user->role?->name}}
+                                                                {{$currentRole?->name}}
                                                             </span>
                                                         </h5>
                                                     @endif
@@ -189,10 +189,10 @@
                                                 <div class="col-md-6">
                                                     <label class="form-label">Role</label>
                                                     <div class="input-group">
-                                                        <select class="form-select single-select" disabled>
+                                                        <select name="role" class="form-select single-select">
                                                             <option value="" selected>Select Role</option>
                                                             @foreach ($roles as $role)
-                                                                <option value="{{$role->id}}" @if ($user->role_id == $role->id) selected @endif>{{$role->name}}</option>
+                                                            <option value="{{$role->id}}" @if ($currentRole?->id == $role->id) selected @endif>{{$role->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>

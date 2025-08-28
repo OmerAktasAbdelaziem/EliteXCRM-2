@@ -1,5 +1,5 @@
 <?php
-/*
+
 use App\Models\OldRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,7 +9,8 @@ class CreateOldRolesTable extends Migration
 {
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+    if (!Schema::hasTable('old_roles')) {
+        Schema::create('old_roles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -22,7 +23,7 @@ class CreateOldRolesTable extends Migration
             $role->name = $roleName;
             $role->save();
         }
-
+}
     }
 
     public function down()
@@ -30,4 +31,4 @@ class CreateOldRolesTable extends Migration
         Schema::dropIfExists('roles');
     }
 }
-*/
+

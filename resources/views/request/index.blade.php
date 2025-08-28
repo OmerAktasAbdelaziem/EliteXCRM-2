@@ -70,19 +70,22 @@
                                                                 <input class="form-check-input me-3 check-request check-number" type="checkbox" form="handleForm" name="request_ids[]" value="{{$request->id}}" aria-label="...">
                                                             </td>
                                                             <td>
-                                                                @if (isset($options['leads_table_lead_id']))
-                                                                    <a @if (isset($options['leads_show'])) href="{{ route('client.show', ['client' => $request->client->id , 'status' => $request->client->sales_status]) }}" @endif rel="noopener noreferrer">
+                                                                
+                                                                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_lead_id_show') )
+                                                                
+                                                                    <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show') ) href="{{ route('client.show', ['client' => $request->client->id , 'status' => $request->client->sales_status]) }}" @endif rel="noopener noreferrer">
                                                                         #{{$request->client->id}}
                                                                     </a>
                                                                 @endif
                                                             </td>
                                                             <td>
                                                                 <div class="ms-2">
-                                                                    <a @if (isset($options['leads_show'])) href="{{ route('client.show', ['client' => $request->client->id , 'status' => $request->client->sales_status]) }}" @endif rel="noopener noreferrer">
+                                                                    <a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show') ) href="{{ route('client.show', ['client' => $request->client->id , 'status' => $request->client->sales_status]) }}" @endif rel="noopener noreferrer">
                                                                         <h6 class="mb-1 font-14">
-                                                                            @if(isset($options['leads_show_first_name']))
+                                                                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') )
+                                                                            
                                                                                 {{$request->client->first_name}}
-                                                                            @elseif(isset($options['leads_show_first_name_hide']))
+                                                                            @elseif ( UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide') )
                                                                                 <div>
                                                                                     {{ substr($request->client->first_name, 0, ceil(strlen($request->client->first_name) / 2)) }}******
                                                                                 </div>
@@ -91,9 +94,9 @@
                                                                                     ******
                                                                                 </div>
                                                                             @endif
-                                                                            @if(isset($options['leads_show_last_name']))
+                                                                            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show') )
                                                                                 {{$request->client->last_name}}
-                                                                            @elseif(isset($options['leads_show_last_name_hide']))
+                                                                            @elseif (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide') )
                                                                                 <div>
                                                                                     {{ substr($request->client->last_name, 0, ceil(strlen($request->client->last_name) / 2)) }}******
                                                                                 </div>

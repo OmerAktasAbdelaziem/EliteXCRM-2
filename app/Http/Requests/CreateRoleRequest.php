@@ -10,7 +10,7 @@ class CreateRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'    => ['required' , 'string' , 'unique:roles,name,NULL,id,pipeline_id,'.Auth::user()->pipeline_id],
+            //'name'    => ['required' , 'string' , 'unique:roles,name,NULL,id,pipeline_id,'.Auth::user()->pipeline_id],
             'users.*' => ['nullable' , 'numeric' , 'exists:users,id'],
             'teams.*' => ['nullable' , 'numeric' , 'exists:teams,id'],
             'parts.*' => ['nullable' , 'numeric' , 'exists:parts,id'],

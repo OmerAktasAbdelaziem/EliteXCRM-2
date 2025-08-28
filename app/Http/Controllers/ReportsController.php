@@ -12,18 +12,18 @@ use Illuminate\Support\Facades\Auth;
 
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
-use App\Http\Services\User\Interfaces\UserServiceInterface;
+//use App\Http\Services\User\Interfaces\UserServiceInterface;
 
 class ReportsController extends Controller
 {
     protected $clientService;
-    protected $userService;
+   // protected $userService;
     public function __construct(
             ClientServiceInterface $clientService,
-            UserServiceInterface $userService,
+           // UserServiceInterface $userService,
             ) {
         $this->clientService = $clientService;
-        $this->userService = $userService;
+        //$this->userService = $userService;
         
     }
     public function index(Request $request)
@@ -33,13 +33,13 @@ class ReportsController extends Controller
         $timePeriod        = $request->input('time-period');
         $user_input        = $request->input('users');
         $employee          = null;
-        $options           = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+        //$options           = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $month             = null;
         $date              = $request->input('date');
         $year              = null;
         $day               = null;
         $data              = [];
-        $teams             = $this->clientService->getTeams($options, Auth::user());//$clientsController->getTeams($options);
+        $teams             = $this->clientService->getTeams(Auth::user());//$clientsController->getTeams($options);
         $parts             = $this->clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
         $users             = $this->clientService->getUsers($teams, Auth::user());//$this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
 
