@@ -362,7 +362,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->middleware(['role:roles_edit'])->group(function (Router $router) {
         $router->get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
         $router->post('role/update/{id}', [RoleController::class, 'update'])->name('role.update');
-        $router->put('clone/{id}', [RoleController::class, 'clone'])->name('role.clone');
+        $router->post('clone/{id}', [RoleController::class, 'clone'])->name('role.clone');
     });
 
     $router->middleware(['role:roles_delete'])->group(function (Router $router) {

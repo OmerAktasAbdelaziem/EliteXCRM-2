@@ -252,15 +252,32 @@ dd('a');
 
     public function clone(Request $request, $id)
     {
-        $role = OldRole::findOrFail($id);
+        /*$role = OldRole::findOrFail($id);
 
         $new = OldRole::create([
             'pipeline_id' => $role->pipeline_id,
             'options'     => $role->options,
             'name'        => $role->name . ' Copy',
-        ]);
+        ]);*/
         
-        return redirect()->route('role.show', $new->id)->with('success', 'Role cloned successfully');
+        $originalRole = Role::findOrFail($id);
+
+        
+        $newName = $originalRole->name . ' Copy';
+
+        //Create new role with same pipeline and guard
+        $newRole = Role::create([
+            'name'        => $newName,
+            'guard_name'  => $originalRole->guard_name,
+            'pipeline' => $originalRole->pipeline ?? null,
+        ]);
+
+        // copy all related permissions
+        $permissions = $originalRole->permissions->pluck('id')->toArray();
+        $newRole->permissions()->sync($permissions);
+       
+        
+        return redirect()->route('role.edit', $newRole->id)->with('success', 'Role cloned successfully');
     }
 
     public function delete($id)
