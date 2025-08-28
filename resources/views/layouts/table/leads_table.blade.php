@@ -30,16 +30,16 @@
                 
                     <th style="min-width: 100px;" class="max-w-160">Country</th>
                 @endif
-                <?php /*@if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show') )*/?>
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show') )
                 
                     <th>Email</th>
-                <?php /*@endif */?>
+                @endif 
                 
-                <?php /* @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show')) */?>
+                 @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show')) */?>
                     <th>Phone Number</th>
-                <?php /*
+                
                     @endif
-                */?>
+               
                 
                 @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_account_type_show') )
                     <th>Account type</th>
@@ -141,7 +141,7 @@
                         </div>
                     </div>
                 </th>
-                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide'))
                 
                     <th>
                         <input type="text" class="form-control" name="{{$check_type}}_filters[name]" value="{{$filters?$filters['name']:''}}" placeholder="Name" form="filter_form-{{$check_type}}" />
@@ -176,7 +176,7 @@
                         </div>
                     </th>
                 @endif
-                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show') )
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_show')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_hide') )
                 
                     <th>
                         <input type="mail" class="form-control" name="{{$check_type}}_filters[mail]" value="{{$filters?$filters['mail']:''}}" placeholder="Email" form="filter_form-{{$check_type}}" />
@@ -184,12 +184,11 @@
                     @else
                     <th></th>
                 @endif
-                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show') )
-                
+                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_show')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_show')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_hide')|| UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_hide') )
                     <th>
                         <input type="text" class="form-control" name="{{$check_type}}_filters[phone]" value="{{$filters?$filters['phone']:''}}" placeholder="Phone Number" form="filter_form-{{$check_type}}" />
                     </th>
-                    else
+                    @else
                     <th></th>
                 @endif
                 @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_account_type_show') )
