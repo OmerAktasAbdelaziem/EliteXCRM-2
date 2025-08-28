@@ -319,9 +319,9 @@
                                                 <div class="col-md-6">
                                                     <label for="sales_status" class="form-label text-warning">Sales Status</label>
                                                     
-                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_enabled_status_show') )
+                                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_show') )
                                                         <div class="input-group">
-                                                            <select id="sales_status" class="single-select form-select @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_enabled_status_edit') ) editable @endif" @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_enabled_status_edit') ) name="sales_status" @endif disabled>
+                                                            <select id="sales_status" class="single-select form-select @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit') ) editable @endif" @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_sales_status_edit') ) name="sales_status" @endif disabled>
                                                                 <option value="">Select Status</option>
                                                                 @foreach ($statuses as $status)
                                                                     <option value="{{$status->name}}" @if (old('sales_status',$client->sales_status) == $status->name) selected @endif>{{$status->name}}</option>
