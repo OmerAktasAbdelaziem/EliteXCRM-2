@@ -6,7 +6,7 @@ use App\Models\Client;
 use App\Models\Client_comment;
 use App\Models\MoneyTrx;
 use App\Models\Part;
-use App\Models\Role;
+use App\Models\OldRole;
 use App\Models\Status;
 use App\Models\Team;
 use App\Models\User;
@@ -72,7 +72,7 @@ class OverviewController extends Controller
         $usersCount = $users->count();
         $partsCount = Part::count();
         $teamsCount = Team::count();
-        $rolesCount = Role::count();
+        $rolesCount = OldRole::count();
 
         function generateDaysInMonth($startDate, $endDate) {
             $days = [];

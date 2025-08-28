@@ -10,7 +10,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class RoleController extends Controller
+class OldRoleController extends Controller
 {
     public function index()
     {
@@ -27,10 +27,10 @@ class RoleController extends Controller
         $users = User::WithPipeline()->latest()->get();
         $parts = Part::latest()->get();
         
-        return view('role2.show',compact(
-            //'parts',
-            //'teams',
-            //'users',
+        return view('role.show',compact(
+            'parts',
+            'teams',
+            'users',
             'role',
         ));
     }
@@ -72,17 +72,17 @@ class RoleController extends Controller
     public function show($id)
     {
         $role  = OldRole::findOrfail($id);
-       // $teams = Team::latest()->get();
-        //$users = User::WithPipeline()->latest()->get();
-        //$parts = Part::latest()->get();
-       // if (is_string($role->options)) {
-           // $role->options = json_decode($role->options, true);
-       // }
+        $teams = Team::latest()->get();
+        $users = User::WithPipeline()->latest()->get();
+        $parts = Part::latest()->get();
+        if (is_string($role->options)) {
+            $role->options = json_decode($role->options, true);
+        }
 
-        return view('role2.show',compact(
-          //  'parts',
-            //'teams',
-          //  'users',
+        return view('role.show',compact(
+            'parts',
+            'teams',
+            'users',
             'role',
         ));
     }

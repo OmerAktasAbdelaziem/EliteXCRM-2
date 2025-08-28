@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Models\Pipeline;
-use App\Models\Role;
+use App\Models\OldRole;
 use App\Models\Text;
 use App\Models\User;
 use Carbon\Carbon;
@@ -100,7 +100,7 @@ class UserController extends Controller
         //$user_controller    = new UserController;
         $options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams($options, Auth::user());//$clients_controller->getTeams($options);
-        $roles              = Role::latest()->get();
+        $roles              = OldRole::latest()->get();
 
         if (Auth::id() == 644033 || Auth::id() == 298274) {
             //$user = User::WithPipeline()->findOrfail($id);
@@ -307,7 +307,7 @@ class UserController extends Controller
         $teamOptions = [];
         $partOptions = [];
         $roleIds     = json_decode($user->role_ids, true) ?? [];
-        $userRole    = Role::whereIn('id', $roleIds)->first();
+        $userRole    = OldRole::whereIn('id', $roleIds)->first();
 
         if ($userRole && is_string($userRole->options)) {
             $userOptions = json_decode($userRole->options, true);

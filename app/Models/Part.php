@@ -47,6 +47,6 @@ class Part extends Model
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(OldRole::class, 'role_id');
     }
 }
