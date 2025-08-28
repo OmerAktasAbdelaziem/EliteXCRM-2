@@ -28,16 +28,16 @@ class Requests extends Command
                         $message .= "Details: " . $request->usdt;
                     } else {
                         $message .= "Details: \n" .
-                            "Iban: " . $request->bank_details['iban'] . "\n" .
-                            "Swift: " . $request->bank_details['swift'] . "\n" .
-                            "Currency: " . $request->bank_details['currency'] . "\n" .
-                            "Bank Name: " . $request->bank_details['bank_name'] . "\n" .
-                            "Bank Country: " . $request->bank_details['bank_country'] . "\n" .
-                            "Bank Address: " . $request->bank_details['bank_address'] . "\n" .
-                            "Beneficiary Name: " . $request->bank_details['beneficiary_name'] . "\n" .
-                            "Beneficiary Address: " . $request->bank_details['beneficiary_address'] . "\n" .
-                            "ABA Routing Number: " . $request->bank_details['aba_routing_number'] . "\n" .
-                            "Beneficiary Country: " . $request->bank_details['beneficiary_country'];
+                            "Iban: " . ($request->bank_details['iban']??'') . "\n" .
+                            "Swift: " . ($request->bank_details['swift']??'') . "\n" .
+                           // "Currency: " . ($request->bank_details['currency'] . "\n" .
+                            "Bank Name: " . ($request->bank_details['bank_name']??'') . "\n" .
+                            "Bank Country: " . ($request->bank_details['bank_country']??'') . "\n" .
+                            "Bank Address: " . ($request->bank_details['bank_address']??'') . "\n" .
+                            "Beneficiary Name: " . ($request->bank_details['beneficiary_name']??'') ;
+                            //"Beneficiary Address: " . $request->bank_details['beneficiary_address'] . "\n" .
+                            //"ABA Routing Number: " . $request->bank_details['aba_routing_number'] . "\n" .
+                           // "Beneficiary Country: " . $request->bank_details['beneficiary_country'];
                     }
                 }
 
