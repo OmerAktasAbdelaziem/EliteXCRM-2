@@ -41,7 +41,11 @@ class RoleController extends Controller
     
     public function index()
     {
-        $roles = Role::select('id','name','created_at')->latest()->get();
+        //$roles = Role::select('id','name','created_at')->latest()->get();
+        $roles = $this->roleService->getByFilters([
+            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]]
+        ]);
+        
         return view('role.index',compact(
             'roles'
         ));
