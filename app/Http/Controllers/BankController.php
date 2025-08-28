@@ -5,29 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use UserPermission;
 
-class BankController extends Controller
-{
-    public function index()
-    {
+class BankController extends Controller {
+
+    public function index() {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+
         $banks = Bank::latest()->get();
 
-        return view('bank.index',compact(
-            'banks',
-        ));
+        return view('bank.index', compact(
+                        'isSuperAdmin',
+                        'pipelineId',
+                        'userAuth',
+                        'banks',
+                ));
     }
-    
-    public function create()
-    {
+
+    public function create() {
         $bank = new Bank();
 
-        return view('bank.show',compact(
-            'bank',
-        ));
+        return view('bank.show', compact(
+                        'bank',
+                ));
     }
-    
-    public function store(Request $request)
-    {
+
+    public function store(Request $request) {
         $inputs = $request->only([
             'beneficiary_address',
             'beneficiary_country',
@@ -42,23 +47,21 @@ class BankController extends Controller
             'name',
             'bic',
         ]);
-        
+
         Bank::Create($inputs);
 
-        return redirect()->route('bank.index')->with('success','Bank Created Successfully');
+        return redirect()->route('bank.index')->with('success', 'Bank Created Successfully');
     }
-    
-    public function show($id)
-    {
+
+    public function show($id) {
         $bank = Bank::findOrFail($id);
 
-        return view('bank.show',compact(
-            'bank',
-        ));
+        return view('bank.show', compact(
+                        'bank',
+                ));
     }
-    
-    public function update(Request $request, $id)
-    {
+
+    public function update(Request $request, $id) {
         $bank = Bank::findOrFail($id);
 
         $inputs = $request->only([
@@ -78,14 +81,13 @@ class BankController extends Controller
 
         $bank->update($inputs);
 
-        return redirect()->back()->with('success','Bank Updated Successfully');
+        return redirect()->back()->with('success', 'Bank Updated Successfully');
     }
 
-    public function delete($id)
-    {
+    public function delete($id) {
         $status = Bank::findOrFail($id);
         $status->delete();
 
-        return redirect()->route('bank.index')->with('success','Bank Deleted Successfully');
+        return redirect()->route('bank.index')->with('success', 'Bank Deleted Successfully');
     }
 }

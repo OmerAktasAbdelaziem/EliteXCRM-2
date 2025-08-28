@@ -360,7 +360,7 @@
                     </div>
                     <div class="col d-flex">
                         <div class="card radius-10 w-100">
-                            @include("client.last-comments",['comments' => $comments, 'update' => (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_update_comments') ), 'delete' => (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_delete_comments') )])
+                            @include("client.last-comments",['comments' => $comments, 'update' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_update_comments') ), 'delete' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_delete_comments') )])
                         </div>
                     </div>
                 </div>

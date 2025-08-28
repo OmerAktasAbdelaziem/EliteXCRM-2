@@ -8,7 +8,7 @@
                             @csrf
                             @method('PUT')
                             
-                            <p class="mb-0 chat-time"><a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show')) href="{{ route('user.show',$comment->user_id ) }}" @endif>{{$comment->user->first_name}} ({{$comment->user->username}})</a>, {{ date('d/m/Y H:i', strtotime($comment->created_at)) }} ,<a @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show')) href="{{ route('client.show',$comment->client_id ) }}" @endif>{{$comment->client->first_name}}</a></p>
+                            <p class="mb-0 chat-time"><a @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'users_show')) href="{{ route('user.show',$comment->user_id ) }}" @endif>{{$comment->user->first_name}} ({{$comment->user->username}})</a>, {{ date('d/m/Y H:i', strtotime($comment->created_at)) }} ,<a @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_show')) href="{{ route('client.show',$comment->client_id ) }}" @endif>{{$comment->client->first_name}}</a></p>
                             <textarea class="form-control border-0" name="comment" placeholder="Type Comment..." readonly style="resize: none;cursor: default;">{{$comment->comment}}</textarea>
                             @error('comment')
                                 <div class="text-danger">{{ $message }}</div>
@@ -38,8 +38,8 @@
 </div>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script>
-    let users_show = @json((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'users_show')));
-    let leads_show = @json((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_show')));
+    let users_show = @json(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'users_show')));
+    let leads_show = @json(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_show')));
     let update = @json($update);
     let deleteRole = @json($delete);
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

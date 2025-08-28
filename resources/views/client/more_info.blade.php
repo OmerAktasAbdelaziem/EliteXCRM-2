@@ -19,8 +19,8 @@
     </style>
 @endsection
 @section('title',
-    ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show')) ? $client->first_name : '') . ' ' .
-    ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show')) ? $client->last_name : '')
+    (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show')) ? $client->first_name : '') . ' ' .
+    (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_show')) ? $client->last_name : '')
 )
 @section("wrapper")
     <div class="page-wrapper">
@@ -36,14 +36,14 @@
                                         @if ($client->is_renew)
                                             <i class="text-red bx bx-caret-down h2 mb-0"></i>
                                         @endif
-                                        @if((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_show'))
+                                        @if(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show'))
                                             {{$client->first_name}}
                                         @elseif((UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide'))
                                             {{ substr($client->first_name, 0, ceil(strlen($client->first_name) / 2)) }}******
                                         @else
                                             ******
                                         @endif
-                                        @if((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
+                                        @if(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_show'))
                                             {{$client->last_name}}
                                         @elseif((UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide'))
                                             {{ substr($client->last_name, 0, ceil(strlen($client->last_name) / 2)) }}******
@@ -74,7 +74,7 @@
                                     </div>
                                 @endif
                                 
-                                @if ((UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_main_tp')) && Auth::user()->pipeline->category_id == 1)
+                                @if (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp')) && Auth::user()->pipeline->category_id == 1)
                                     <div class="col-md-1 col-6">
                                         <small class="form-label">TP</small>
                                         <h4>

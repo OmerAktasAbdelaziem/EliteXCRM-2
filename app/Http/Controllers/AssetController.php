@@ -7,11 +7,16 @@ use Illuminate\Support\Arr;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Http;
 use RadicalLoop\Eod\Facades\Eod;
+use Illuminate\Support\Facades\Auth;
+use UserPermission;
 
-class AssetController extends Controller
-{
-    public function index(Request $request)
-    {
+class AssetController extends Controller {
+
+    public function index(Request $request) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+
         $assets = Asset::whereNotNull('created_at');
         $currencies = Asset::select('currency')->distinct()->pluck('currency');
         if ($filters = $request->get('filters', [])) {
@@ -33,24 +38,25 @@ class AssetController extends Controller
         }
         $assets = $assets->paginate(200);
         $filters = collect($filters);
-        return view('asset.index',compact(
-            'currencies',
-            'filters',
-            'assets',
-        ));
+        return view('asset.index', compact(
+                        'isSuperAdmin',
+                        'pipelineId',
+                        'userAuth',
+                        'currencies',
+                        'filters',
+                        'assets',
+                ));
     }
-    
-    public function create()
-    {
+
+    public function create() {
         $asset = new Asset();
 
-        return view('asset.show',compact(
-            'asset',
-        ));
+        return view('asset.show', compact(
+                        'asset',
+                ));
     }
-    
-    public function store(Request $request)
-    {
+
+    public function store(Request $request) {
         $inputs = $request->only([
             'currency',
             'category',
@@ -64,25 +70,23 @@ class AssetController extends Controller
             $img = $request->file('img')->store('public/img');
             $inputs['img'] = str_replace('public/', 'storage/', $img);
         }
-        
+
         Asset::Create($inputs);
-        
+
         // Cache::put('all_assets', Asset::all());
 
-        return redirect()->route('asset.index')->with('success','Asset Created Successfully');
+        return redirect()->route('asset.index')->with('success', 'Asset Created Successfully');
     }
-    
-    public function show($id)
-    {
+
+    public function show($id) {
         $asset = Asset::findOrFail($id);
 
-        return view('asset.show',compact(
-            'asset',
-        ));
+        return view('asset.show', compact(
+                        'asset',
+                ));
     }
-    
-    public function update(Request $request, $id)
-    {
+
+    public function update(Request $request, $id) {
         $asset = Asset::findOrFail($id);
 
         $inputs = $request->only([
@@ -100,14 +104,13 @@ class AssetController extends Controller
         }
 
         $asset->update($inputs);
-        
+
         // Cache::put('all_assets', Asset::all());
 
-        return redirect()->back()->with('success','Asset Updated Successfully');
+        return redirect()->back()->with('success', 'Asset Updated Successfully');
     }
 
-    public function multiEdit(Request $request)
-    {
+    public function multiEdit(Request $request) {
         $inputs = [];
         if ($request->category) {
             $inputs['category'] = $request->category;
@@ -117,24 +120,23 @@ class AssetController extends Controller
         }
 
         if ($request->category || $request->is_active) {
-            $assets = Asset::whereIn('id',$request->asset_ids)->get();
+            $assets = Asset::whereIn('id', $request->asset_ids)->get();
             foreach ($assets as $asset) {
                 $asset->update($inputs);
             }
-            
+
             // Cache::put('all_assets', Asset::all());
         }
 
-        return redirect()->back()->with('success','Asset Updated Successfully');
+        return redirect()->back()->with('success', 'Asset Updated Successfully');
     }
 
-    public function delete($id)
-    {
+    public function delete($id) {
         $asset = Asset::findOrFail($id);
         $asset->delete();
-        
+
         // Cache::put('all_assets', Asset::all());
 
-        return redirect()->route('asset.index')->with('success','Asset Deleted Successfully');
+        return redirect()->route('asset.index')->with('success', 'Asset Deleted Successfully');
     }
 }

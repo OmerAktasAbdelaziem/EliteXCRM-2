@@ -14,61 +14,60 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 //use App\Http\Services\User\Interfaces\UserServiceInterface;
-
 use UserPermission;
 
-class OverviewController extends Controller
-{
+class OverviewController extends Controller {
+
     protected $clientService;
+
     //protected $userService;
     public function __construct(
             ClientServiceInterface $clientService,
             //UserServiceInterface $userService,
-            ) {
+    ) {
         $this->clientService = $clientService;
         //$this->userService = $userService;
-        
     }
-    public function index(Request $request)
-    {
-        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
-        $pipelineId   = Auth::user()->pipeline_id;
-        
+
+    public function index(Request $request) {
+
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+
         $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
-        $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
-        $date               = $request->subMonth??Carbon::now()->subMonthNoOverflow()->format('m/Y');
+        $pipelineSupportIds = array_merge($pipelineSupportIds, [644033, 298274]);
+        $date = $request->subMonth ?? Carbon::now()->subMonthNoOverflow()->format('m/Y');
 
         $currentMonthStartDate = Carbon::now()->startOfMonth();
         $last_month_days_leads = [];
         $currentMonthDaysCount = 0;
-        $currentMonthEndDate   = Carbon::now()->endOfDay();
-        $lastMonthDaysCount    = 0;
-        $lastMonthStartDate    = Carbon::createFromFormat('m/Y', $date)->startOfMonth();
-        $lastMonthEndDate      = Carbon::createFromFormat('m/Y', $date)->endOfMonth();
-        $days_leads            = [];
-        $period                = 'Monthly';
-        
+        $currentMonthEndDate = Carbon::now()->endOfDay();
+        $lastMonthDaysCount = 0;
+        $lastMonthStartDate = Carbon::createFromFormat('m/Y', $date)->startOfMonth();
+        $lastMonthEndDate = Carbon::createFromFormat('m/Y', $date)->endOfMonth();
+        $days_leads = [];
+        $period = 'Monthly';
+
         //$clientsController = new ClientsController;
         // $mainTpController  = new MainTPController;
         //$user_controller   = new UserController;
-
         //$options = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-        $teams   = $this->clientService->getTeams(Auth::user());//$clientsController->getTeams($options);
-        
-        $users   = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds);//$clientsController->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
-        $parts   = $this->clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
+        $teams = $this->clientService->getTeams(Auth::user()); //$clientsController->getTeams($options);
 
-        $leads = Client::where(function ($query) use ($users, $isSuperAdmin,$pipelineId) {
-            $query->whereIn('user_id', $users->pluck('id'));
-    if($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'show_unassigned_leads')){
-            //if (isset($options['leads_data_show_unassigned_leads'])) {
-                $query->orWhere('user_id', null);
-            }
-        })->where('deleted',0)->get();
+        $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id', $pipelineSupportIds); //$clientsController->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
+        $parts = $this->clientService->getParts($teams, Auth::user()); //$clientsController->getParts($teams);
+
+        $leads = Client::where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+                    $query->whereIn('user_id', $users->pluck('id'));
+                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                        //if (isset($options['leads_data_show_unassigned_leads'])) {
+                        $query->orWhere('user_id', null);
+                    }
+                })->where('deleted', 0)->get();
 
         $comments = $this->getLastComments($leads->pluck('id'));
         $api_data = $this->get_total_financial_data($leads->pluck('id'));
@@ -88,23 +87,23 @@ class OverviewController extends Controller
         }
 
         $currentMonthDays = generateDaysInMonth($currentMonthStartDate, $currentMonthEndDate);
-        $lastMonthDays    = generateDaysInMonth($lastMonthStartDate, $lastMonthEndDate);
+        $lastMonthDays = generateDaysInMonth($lastMonthStartDate, $lastMonthEndDate);
 
         $current_month_days_leads = Client::selectRaw('DATE(created_at) as day, COUNT(*) as count')
-            ->where('created_at', '>=', $currentMonthStartDate)
-            ->where('created_at', '<=', $currentMonthEndDate)
-            ->groupBy('day')
-            ->orderBy('day', 'asc')
-            ->get()
-            ->keyBy('day');
+                ->where('created_at', '>=', $currentMonthStartDate)
+                ->where('created_at', '<=', $currentMonthEndDate)
+                ->groupBy('day')
+                ->orderBy('day', 'asc')
+                ->get()
+                ->keyBy('day');
 
         $last_month_leads = Client::selectRaw('DATE(created_at) as day, COUNT(*) as count')
-            ->where('created_at', '>=', $lastMonthStartDate)
-            ->where('created_at', '<=', $lastMonthEndDate)
-            ->groupBy('day')
-            ->orderBy('day', 'asc')
-            ->get()
-            ->keyBy('day');
+                ->where('created_at', '>=', $lastMonthStartDate)
+                ->where('created_at', '<=', $lastMonthEndDate)
+                ->groupBy('day')
+                ->orderBy('day', 'asc')
+                ->get()
+                ->keyBy('day');
 
         foreach ($currentMonthDays as $day) {
             $count = $current_month_days_leads->get($day)->count ?? 0;
@@ -119,52 +118,54 @@ class OverviewController extends Controller
         }
 
         $statuses = Status::where(function ($query) use ($parts) {
-            $first = true;
-            foreach ($parts as $part) {
-                if ($first) {
-                    $query->where('part_ids', 'LIKE', '%"'.$part->id.'"%');
-                    $first = false;
-                } else {
-                    $query->orWhere('part_ids', 'LIKE', '%"'.$part->id.'"%');
-                }
-            }
-        })->orwhere('part_ids', '')->orderByRaw('CHAR_LENGTH(name) DESC')->get();
+                    $first = true;
+                    foreach ($parts as $part) {
+                        if ($first) {
+                            $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
+                            $first = false;
+                        } else {
+                            $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
+                        }
+                    }
+                })->orwhere('part_ids', '')->orderByRaw('CHAR_LENGTH(name) DESC')->get();
 
         foreach ($statuses as $status) {
-            $status->leads = Client::where('sales_status', $status->name)->where('deleted',0)->count();
+            $status->leads = Client::where('sales_status', $status->name)->where('deleted', 0)->count();
         }
 
-        return view('overview.index',compact(
-            'last_month_days_leads',
-            'currentMonthDaysCount',
-            'lastMonthDaysCount',
-            'leadsCount',
-            'usersCount',
-            'partsCount',
-            'teamsCount',
-            'rolesCount',
-            'days_leads',
-            'statuses',
-            'api_data',
-            'comments',
-            'period',
-            'teams',
-            'date',
-        ));
+        return view('overview.index', compact(
+                        'isSuperAdmin',
+                        'pipelineId',
+                        'userAuth',
+                        'last_month_days_leads',
+                        'currentMonthDaysCount',
+                        'lastMonthDaysCount',
+                        'leadsCount',
+                        'usersCount',
+                        'partsCount',
+                        'teamsCount',
+                        'rolesCount',
+                        'days_leads',
+                        'statuses',
+                        'api_data',
+                        'comments',
+                        'period',
+                        'teams',
+                        'date',
+                ));
     }
 
-    public function get_total_financial_data($lead_ids)
-    {
+    public function get_total_financial_data($lead_ids) {
         $api_data['totalWithdrawal'] = 0.00;
-        $api_data['totalDeposit']    = 0.00;
-        $api_data['ftd_amount']      = 0.00;
-        $api_data['ftds']            = [];
+        $api_data['totalDeposit'] = 0.00;
+        $api_data['ftd_amount'] = 0.00;
+        $api_data['ftds'] = [];
 
-        $leads = Client::whereIn('id',$lead_ids)->where('deleted', 0)->where('broker_id','!=',null)->get();
+        $leads = Client::whereIn('id', $lead_ids)->where('deleted', 0)->where('broker_id', '!=', null)->get();
 
         foreach ($leads as $index => $lead) {
             if ($lead->broker_id) {
-                $MoneyTrxs = MoneyTrx::where('broker_id',$lead->broker_id)->where('status','accepted')->select('amount','type')->get();
+                $MoneyTrxs = MoneyTrx::where('broker_id', $lead->broker_id)->where('status', 'accepted')->select('amount', 'type')->get();
                 foreach ($MoneyTrxs as $MoneyTrx) {
                     if ($MoneyTrx->type == 'deposit') {
                         $api_data['totalDeposit'] += $MoneyTrx->amount;
@@ -174,24 +175,23 @@ class OverviewController extends Controller
                     }
                 }
             }
-            $api_data['ftd_amount'] += $api_data['ftds'][$index]??0.00;
+            $api_data['ftd_amount'] += $api_data['ftds'][$index] ?? 0.00;
         }
 
         return $api_data;
     }
 
-    public function filter(Request $request)
-    {
+    public function filter(Request $request) {
         // $mainTpController = new MainTPController;
 
         $api_data['totalWithdrawal'] = 0.00;
-        $api_data['totalDeposit']    = 0.00;
-        $api_data['ftd_amount']      = 0.00;
-        $api_data['ftds']            = [];
-        $from_date                   = '2020-06-20 00:00:00';
-        $to_date                     = '2035-08-30 00:00:00';
+        $api_data['totalDeposit'] = 0.00;
+        $api_data['ftd_amount'] = 0.00;
+        $api_data['ftds'] = [];
+        $from_date = '2020-06-20 00:00:00';
+        $to_date = '2035-08-30 00:00:00';
 
-        $leads = Client::where('deleted', 0)->where('broker_id','!=',null);
+        $leads = Client::where('deleted', 0)->where('broker_id', '!=', null);
 
         if ($request->users) {
             if ($request->model_type == 'user') {
@@ -208,24 +208,24 @@ class OverviewController extends Controller
 
         if ($fromDate = $request->fromTo) {
             $dates = preg_split('/\s*-\s*/', trim($fromDate));
-        
+
             if (isset($dates[0]) && !empty($dates[0])) {
                 $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->format('Y-m-d');
-                $from_date = $formattedFromDate.' 00:00:00';
+                $from_date = $formattedFromDate . ' 00:00:00';
             }
-        
+
             if (isset($dates[1]) && !empty($dates[1]) && $dates[1] != "") {
                 $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->format('Y-m-d');
-                $to_date = $formattedToDate.' 23:59:59';
-            }else{
+                $to_date = $formattedToDate . ' 23:59:59';
+            } else {
                 $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->format('Y-m-d');
-                $to_date = $formattedToDate.' 23:59:59';
+                $to_date = $formattedToDate . ' 23:59:59';
             }
         }
 
         foreach ($leads as $index => $lead) {
             if ($lead->broker_id) {
-                $MoneyTrxs = MoneyTrx::where('broker_id',$lead->broker_id)->where('status','accepted')->select('amount','type')->where('created_at','>=',$from_date)->where('created_at','<=',$to_date)->get();
+                $MoneyTrxs = MoneyTrx::where('broker_id', $lead->broker_id)->where('status', 'accepted')->select('amount', 'type')->where('created_at', '>=', $from_date)->where('created_at', '<=', $to_date)->get();
                 foreach ($MoneyTrxs as $MoneyTrx) {
                     if ($MoneyTrx->type == 'deposit') {
                         $api_data['totalDeposit'] += $MoneyTrx->amount;
@@ -235,7 +235,7 @@ class OverviewController extends Controller
                     }
                 }
             }
-            $api_data['ftd_amount'] += $api_data['ftds'][$index]??0.00;
+            $api_data['ftd_amount'] += $api_data['ftds'][$index] ?? 0.00;
         }
 
         if ($request->fiter_type == 'FTD') {
@@ -251,33 +251,32 @@ class OverviewController extends Controller
         return $net;
     }
 
-    public function getLastComments($lead_ids = null)
-    {
+    public function getLastComments($lead_ids = null) {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
-        $pipelineId   = Auth::user()->pipeline_id;
-        
+        $pipelineId = Auth::user()->pipeline_id;
+
         if (!$lead_ids) {
             //$clientsController = new ClientsController;
             //$user_controller   = new UserController;
             //$options = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
-            $teams   = $this->clientService->getTeams(Auth::user());//$clientsController->getTeams($options);
-            $users   = $this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
+            $teams = $this->clientService->getTeams(Auth::user()); //$clientsController->getTeams($options);
+            $users = $this->clientService->getUsers($teams, Auth::user()); //$clientsController->getUsers($teams);
 
-            $lead_ids = Client::where(function ($query) use ($users, $isSuperAdmin,$pipelineId) {
-                $query->whereIn('user_id', $users->pluck('id'));
-        
-                //if (isset($options['leads_data_show_unassigned_leads'])) {
-                if($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'show_unassigned_leads')){
-                    $query->orWhere('user_id', null);
-                }
-            })->where('deleted',0)->pluck('id');
+            $lead_ids = Client::where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+                        $query->whereIn('user_id', $users->pluck('id'));
+
+                        //if (isset($options['leads_data_show_unassigned_leads'])) {
+                        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                            $query->orWhere('user_id', null);
+                        }
+                    })->where('deleted', 0)->pluck('id');
         }
 
         $comments = Client_comment::whereIn('client_id', $lead_ids)->with(['user', 'client'])->latest()->take(50)->get();
-        
+
         if (!$lead_ids) {
             return response()->json([
-                'comments' => $comments
+                        'comments' => $comments
             ]);
         }
         return $comments;
