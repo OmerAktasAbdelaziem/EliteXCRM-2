@@ -99,9 +99,10 @@ class UserController extends Controller
         }
 
         $user = User::create($inputs);
-        
+        if($request->input('role') !== null){
 $role   = $request->input('role');
  $user->assignRole($role, Auth::user()->pipeline_id);
+        }
         Text::create([
             'user_id' => $id,
             'text' => $Password
@@ -230,10 +231,10 @@ $role   = $request->input('role');
             'password' => Hash::make($Password),
             'password_changed_at' => now(),
         ]);
-        
+        if($request->input('role') !== null){
         $role   = $request->input('role');
  $employee->assignRole($role, Auth::user()->pipeline_id);
- 
+        }
         $employee->update($inputs);
 
         if ($employee->text) {
