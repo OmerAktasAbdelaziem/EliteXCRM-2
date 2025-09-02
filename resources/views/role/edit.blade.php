@@ -600,6 +600,18 @@
                                                     <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
                                                     <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
                                                 </svg>
+                                                Import Clients
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[import_clients]" @roleHasPermission($role, 'import_clients') checked @endroleHasPermission  >
+                                        </div>
+                                        
+                                        <div class="action-item">
+                                            <div class="action-label">
+                                                <!-- Trash icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
                                                 Lead Actions
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_actions_actions]" @roleHasPermission($role, 'leads_actions_actions') checked @endroleHasPermission  >
@@ -654,7 +666,8 @@
                                         </div>
                                        
                                         
-                                        
+                                        <?php
+                                        /*
                                         
                                         <div class="action-item">
                                             <div class="action-label">
@@ -691,7 +704,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_no_answer]" @roleHasPermission($role, 'leads_tabs_no_answer') checked @endroleHasPermission>
                                         </div>
-                                        
+                                       
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
@@ -715,7 +728,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_wrong_number]" @roleHasPermission($role, 'leads_tabs_wrong_number') checked @endroleHasPermission>
                                         </div>
-                                        
+                                         */
+                                        ?>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
@@ -727,7 +741,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_all_leads]" @roleHasPermission($role, 'leads_tabs_all_leads') checked @endroleHasPermission>
                                         </div>
-                                        
+                                         <?php /*
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
@@ -739,7 +753,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_call_back_later]" @roleHasPermission($role, 'leads_tabs_call_back_later') checked @endroleHasPermission>
                                         </div>
-                                        
+                                         */
+                                        ?>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
@@ -751,7 +766,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_my_leads]" @roleHasPermission($role, 'leads_tabs_my_leads') checked @endroleHasPermission>
                                         </div>
-                                        
+                                        <?php /*
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
@@ -799,7 +814,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_tabs_follow_up]" @roleHasPermission($role, 'leads_tabs_follow_up') checked @endroleHasPermission>
                                         </div>
-                                        
+                                        */?>
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
@@ -893,36 +908,9 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Chart/Graph -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M3 17a1 1 0 01-1-1V7a1 1 0 112 0v9a1 1 0 01-1 1zm4-4a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 11-2 0v-4zm5-7a1 1 0 011 1v11a1 1 0 11-2 0V7a1 1 0 011-1zm4 3a1 1 0 011 1v8a1 1 0 11-2 0v-8a1 1 0 011-1z"/>
-                                                </svg>
-                                                View Trading
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_main_tp]" @roleHasPermission($role, 'leads_main_tp') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Plus Circle -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Create Orders
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[trading_create]" @roleHasPermission($role, 'trading_create') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Clipboard List -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9 2a1 1 0 00-1 1v1H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2h-3V3a1 1 0 00-1-1H9zm0 2V3h2v1H9zm-2 4a1 1 0 100 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h6a1 1 0 100-2H7z"/>
-                                                </svg>
-                                                Manage Orders
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[trading_manage]" @roleHasPermission($role, 'trading_manage') checked @endroleHasPermission>
-                                        </div>
+                                        
+                                       
+                                        
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Beaker (Demo) -->
@@ -943,56 +931,11 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions]" @roleHasPermission($role, 'mainTp_actions') checked @endroleHasPermission>
                                         </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Actions Send Email
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_send_email]" @roleHasPermission($role, 'mainTp_actions_send_email') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Actions Create money transaction
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_create_money_transaction]" @roleHasPermission($role, 'mainTp_actions_create_money_transaction') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Actions Create request
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_create_request]" @roleHasPermission($role, 'mainTp_actions_create_request') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Actions Open Orders
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_open_order]" @roleHasPermission($role, 'mainTp_actions_open_order') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Actions Requests
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_Requests]" @roleHasPermission($role, 'mainTp_actions_Requests') checked @endroleHasPermission>
-                                        </div>
+                                        
+                                        
+                                        
+                                       
+                                       
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Refresh/Sync -->
@@ -1014,16 +957,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_can_update]" @roleHasPermission($role, 'mainTp_can_update') checked @endroleHasPermission>
                                         </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Chat Bubble -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M18 10c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.468-.684l-4.032 1.008a1 1 0 01-1.224-1.224l1.008-4.032A8.96 8.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/>
-                                                </svg>
-                                                TP Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_comments]" @roleHasPermission($role, 'mainTp_cards_comments') checked @endroleHasPermission>
-                                        </div>
+                                      
                                         
                                         
                                         <div class="action-item">
@@ -1047,19 +981,9 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_money_trx_delete]" @roleHasPermission($role, 'mainTp_money_trx_delete') checked @endroleHasPermission>
                                         </div>
+                                       
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Login as client
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_login_as_client]" @roleHasPermission($role, 'mainTp_actions_login_as_client') checked @endroleHasPermission>
-                                        </div>
-                                        
-                                        
+                                        <?php /*
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Refresh/Sync -->
@@ -1070,49 +994,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_actions]" @roleHasPermission($role, 'mainTp_cards_actions') checked @endroleHasPermission>
                                         </div>
+                                        */ ?>
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Cards Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_cards_comments]" @roleHasPermission($role, 'mainTp_cards_comments') checked @endroleHasPermission>
-                                        </div>
-                                        
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Add Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_add_comments]" @roleHasPermission($role, 'mainTp_add_comments') checked @endroleHasPermission>
-                                        </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Edit Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_edit_comments]" @roleHasPermission($role, 'mainTp_edit_comments') checked @endroleHasPermission>
-                                        </div>
-                                        
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Refresh/Sync -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Main TP Delete Comments
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[mainTp_delete_comments]" @roleHasPermission($role, 'mainTp_delete_comments') checked @endroleHasPermission>
-                                        </div>
                                         
                                         
                                         
@@ -1326,9 +1209,8 @@
                                     <div class="actions-grid">
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Reports List</div><input type="checkbox" class="custom-checkbox" name="roles[reports_list]" @roleHasPermission($role, 'reports_list') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Reports</div><input type="checkbox" class="custom-checkbox" name="roles[reports_view]" @roleHasPermission($role, 'reports_view') checked @endroleHasPermission></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Reports</div><input type="checkbox" class="custom-checkbox" name="roles[reports_create]" @roleHasPermission($role, 'reports_create') checked @endroleHasPermission></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Reports</div><input type="checkbox" class="custom-checkbox" name="roles[reports_edit]" @roleHasPermission($role, 'reports_edit') checked @endroleHasPermission></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4h8.905l-1.972 1.972a1 1 0 101.414 1.414L14.414 6H16a1 1 0 100-2H3z"/></svg>Export Data</div><input type="checkbox" class="custom-checkbox" name="roles[reports_export]" @roleHasPermission($role, 'reports_export') checked @endroleHasPermission></div>
+                                        
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -1360,6 +1242,38 @@
                                 <div class="permission-actions">
                                     <div class="actions-grid">
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Retention</div><input type="checkbox" class="custom-checkbox" name="roles[retention_view]" @roleHasPermission($role, 'retention_view') checked @endroleHasPermission></div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                             <!-- Statistics Permission -->
+                            <div class="permission-item" data-permission="retention">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Statistics</h4>
+                                            <p>Access to statistics</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="retention">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Statistics</div><input type="checkbox" class="custom-checkbox" name="roles[statistics_view]" @roleHasPermission($role, 'statistics_view') checked @endroleHasPermission></div>
                                         
                                     </div>
                                 </div>
@@ -1507,7 +1421,7 @@
                                 <div class="permission-actions">
                                     <div class="actions-grid">
                                         <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Roles List</div><input type="checkbox" class="custom-checkbox" name="roles[roles_list]" @roleHasPermission($role, 'roles_list') checked @endroleHasPermission></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Roles</div><input type="checkbox" class="custom-checkbox" name="roles[roles_view]" @roleHasPermission($role, 'roles_view') checked @endroleHasPermission></div>
+<?php /*                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Roles</div><input type="checkbox" class="custom-checkbox" name="roles[roles_view]" @roleHasPermission($role, 'roles_view') checked @endroleHasPermission></div>*/ ?>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Role</div><input type="checkbox" class="custom-checkbox" name="roles[roles_create]" @roleHasPermission($role, 'roles_create') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Role</div><input type="checkbox" class="custom-checkbox" name="roles[roles_edit]" @roleHasPermission($role, 'roles_edit') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Delete Role</div><input type="checkbox" class="custom-checkbox" name="roles[roles_delete]" @roleHasPermission($role, 'roles_delete') checked @endroleHasPermission></div>
@@ -1903,7 +1817,7 @@
                                                                 <strong style="font-size: 12px; opacity: 0.9;">TP #12345</strong>
                                                                 <div class="field-permissions">
                                                                     <label style="display: flex; align-items: center; font-size: 11px; color: rgba(255,255,255,0.9); cursor: pointer;">
-                                                                        <input type="checkbox" name="roles[client_tp_show]" @roleHasPermission($role, 'client_tp_show') checked @endroleHasPermission style="margin-right: 4px; accent-color: white;">
+                                                                        <input type="checkbox" name="roles[leads_main_tp]" @roleHasPermission($role, 'leads_main_tp') checked @endroleHasPermission style="margin-right: 4px; accent-color: white;">
                                                                         Show TP
                                                                     </label>
                                                                 </div>
@@ -2777,7 +2691,7 @@
                                                                         Send Email
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[send_email_show]" @roleHasPermission($role, 'send_email_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_send_email]" @roleHasPermission($role, 'mainTp_actions_send_email') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>
@@ -2791,7 +2705,7 @@
                                                                         Create Money Transaction
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[create_money_transaction_show]" @roleHasPermission($role, 'create_money_transaction_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_create_money_transaction]" @roleHasPermission($role, 'mainTp_actions_create_money_transaction') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>
@@ -2805,7 +2719,7 @@
                                                                         Create Request
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[create_request_show]" @roleHasPermission($role, 'create_request_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_create_request]" @roleHasPermission($role, 'mainTp_actions_create_request') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>
@@ -2819,7 +2733,7 @@
                                                                         Export Data
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[export_data_show]" @roleHasPermission($role, 'export_data_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[export_clients]" @roleHasPermission($role, 'export_clients') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>
@@ -2834,7 +2748,7 @@
                                                                         Open Order
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[open_order_show]" @roleHasPermission($role, 'open_order_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_open_order]" @roleHasPermission($role, 'mainTp_actions_open_order') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>
@@ -2848,7 +2762,7 @@
                                                                         Requests
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[requests_show]" @roleHasPermission($role, 'requests_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_Requests]" @roleHasPermission($role, 'mainTp_actions_Requests') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>
@@ -2862,7 +2776,7 @@
                                                                         Login As Client
                                                                     </div>
                                                                     <label style="display: flex; align-items: center; font-size: 12px; color: #4a5568; cursor: pointer;">
-                                                                        <input type="checkbox" class="custom-checkbox" name="roles[login_as_client_show]" @roleHasPermission($role, 'login_as_client_show') checked @endroleHasPermission style="margin-right: 4px;">
+                                                                        <input type="checkbox" class="custom-checkbox" name="roles[mainTp_actions_login_as_client]" @roleHasPermission($role, 'mainTp_actions_login_as_client') checked @endroleHasPermission style="margin-right: 4px;">
                                                                         Show
                                                                     </label>
                                                                 </div>

@@ -48,6 +48,7 @@ class UserController extends Controller
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
             $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds)->where('deleted', '!=', true);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
+            
             $deleted_users = User::WithPipeline()->where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
         }
 
@@ -99,6 +100,7 @@ class UserController extends Controller
         }
 
         $user = User::create($inputs);
+        
         if($request->input('role') !== null){
 $role   = $request->input('role');
  $user->assignRole($role, Auth::user()->pipeline_id);
@@ -113,7 +115,9 @@ $role   = $request->input('role');
     
     public function show($id)
     {
-        $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
         //$clients_controller = new ClientsController;
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
@@ -156,6 +160,9 @@ $role   = $request->input('role');
             'roles',
                 'currentRole',
             'user',
+                'isSuperAdmin',
+                'pipelineId',
+                'userAuth',
         ));
     }
     
@@ -336,6 +343,7 @@ $role   = $request->input('role');
 
     public function get_user_options()
     {
+        
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $user        = Auth::user();
         $userOptions = [];

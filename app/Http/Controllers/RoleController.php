@@ -286,7 +286,7 @@ dd('a');
 
     public function delete($id)
     {
-        $role = OldRole::findOrFail($id);
+        $role = Role::findOrFail($id);
         $role->delete();
         return redirect()->route('role.index')->with('success', 'Role deleted successfully');
     }

@@ -1205,15 +1205,15 @@
                             </div>
                         </div>
                     </div>
-                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_cards_comments') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_chat') )
+                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_chat') )
                         <div class="col-lg-3 col-md-6 col-12 mt-2 comment-tab @if ($tab == 'history') d-none @endif">
-                            @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_cards_comments'))
+                            @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments'))
                                 @include("client.comments",['client' => $client,'comments' => $comments,'add' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_add_comments')), 'update' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_edit_comments')), 'delete' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_delete_comments'))])
                             @endif
                         </div>
                     @endif
                     
-                    @if(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_cards_actions')) && $client)
+                    @if(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments')) && $client)
                         <div class="col-lg-2 col-md-6 col-12 mt-2 action-tab">
                             <div class="card">
                                 <div class="card-body text-center">

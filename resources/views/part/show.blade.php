@@ -50,7 +50,7 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-6">
+                              <?php /*  <div class="col-md-6">
                                     <label for="role" class="form-label">Role</label>
                                     <div class="input-group">
                                         <select class="form-select single-select" id="role" name="role_id">
@@ -63,7 +63,7 @@
                                     @error('role')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div>*/ ?>
                                 <div class="col-md-6">
                                     <label for="leader" class="form-label">Part Leader</label>
                                     <div class="input-group">

@@ -50,6 +50,7 @@
                                                 </div>
                                             </a>
                                         </li>
+                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'users_edit'))
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link" data-bs-toggle="tab" href="#edit" role="tab" aria-selected="false">
                                                 <div class="d-flex align-items-center">
@@ -59,6 +60,7 @@
                                                 </div>
                                             </a>
                                         </li>
+                                        @endif
                                         @if ($user->id != Auth::id())
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" data-bs-toggle="tab" href="#delete" role="tab" aria-selected="false">

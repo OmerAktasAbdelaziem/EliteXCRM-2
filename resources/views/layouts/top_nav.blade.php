@@ -183,7 +183,7 @@
             @php
                 $supportCheck = \App\Models\Pipeline::where('support_ids', 'LIKE', '%"'.Auth::id().'"%')->get();
             @endphp
-            @if (UserPermission::isSuperAdmin(Auth::user()) || $supportCheck->count() > 0)
+            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'pipeline_list') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'pipeline_create')  || $supportCheck->count() > 0)
                 <li>
                     <a href="javascript:;">
                         <div class="parent-icon"><i class='bx bx-layer'></i>
@@ -191,17 +191,17 @@
                         <div class="menu-title">Pipelines</div>
                     </a>
                     <ul class="d-none">
-                        @if (UserPermission::isSuperAdmin(Auth::user()))
+                        @if (UserPermission::isSuperAdmin(Auth::user())  || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'pipeline_list'))
                             <li>
                                 <a href="{{ route('pipeline.index') }}"><i class="bx bx-layer"></i>Pipelines List</a>
                             </li>
                         @endif
-                        @if (UserPermission::isSuperAdmin(Auth::user()))
+                        @if (UserPermission::isSuperAdmin(Auth::user())  || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'pipeline_create'))
                             <li>
                                 <a href="{{ route('pipeline.create') }}"><i class="bx bx-layer-plus"></i>New Pipeline</a>
                             </li>
                         @endif
-                        @if (UserPermission::isSuperAdmin(Auth::user()))
+                        @if (UserPermission::isSuperAdmin(Auth::user())  || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'pipeline_view'))
                             @foreach ($nav_pipelines as $pipeline)
                                 <li>
                                     <a href="{{ route('pipeline.switch', $pipeline->id) }}"><i class="bx bx-layer"></i>{{$pipeline->name}}</a>
@@ -221,7 +221,7 @@
                 </li>
             @endif
             
-            @if (UserPermission::isSuperAdmin(Auth::user()))
+            @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'statistics_view'))
                 <li>
                     <a href="{{ route('user.stats') }}">
                         <div class="parent-icon"><i class='bx bx-bar-chart-alt-2'></i>

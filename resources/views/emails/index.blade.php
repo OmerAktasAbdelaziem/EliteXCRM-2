@@ -99,7 +99,7 @@
                                             <tbody>
                                                 @foreach ($emailTemplates as $emailTemplate)
                                                     <tr>
-                                                        <td><a @($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'emails_template_show') ) href="{{ route('emails.show', $emailTemplate->id) }}" @endisset>{{$emailTemplate->name}}</a></td>
+                                                        <td><a @if($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'emails_template_show') ) href="{{ route('emails.show', $emailTemplate->id) }}" @endif>{{$emailTemplate->name}}</a></td>
                                                         <td>{{$emailTemplate->subject}}</td>
                                                         <td>{{ \Illuminate\Support\Str::limit($emailTemplate->body, 40) }}</td>
                                                         <td>{{date('d/m/Y H:i', strtotime($emailTemplate->created_at))}}</td>

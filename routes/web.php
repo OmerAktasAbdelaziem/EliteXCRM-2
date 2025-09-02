@@ -430,6 +430,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     
     
     // User Statistics Routes (only for user 298274)
+    $router->middleware(['role:statistics_view'])->group(function (Router $router) {
     $router->get('user-stats', [UserStatsController::class, 'index'])->name('user.stats');
     $router->get('user-stats/report', [UserStatsController::class, 'getUserReport'])->name('user.stats.report');
     $router->get('user-stats/client-details/{userId}/{status}', [UserStatsController::class, 'getClientDetails'])->name('user.stats.client.details');
@@ -439,6 +440,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->post('user-stats/transfer-clients', [UserStatsController::class, 'transferClients'])->name('user.stats.transfer.clients');
     $router->get('user-stats/latest-notification', [UserStatsController::class, 'getLatestNotification'])->name('user.stats.latest.notification');
     $router->get('user-stats/notifications', [UserStatsController::class, 'getNotifications'])->name('user.stats.notifications');
+    });
 
     $router->middleware(['role:settings'])->group(function (Router $router) {
         $router->get('settings',        [SettingsController::class, 'index'])->name('settings.index');
@@ -458,7 +460,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('reports', [ReportsController::class, 'index'])->name('reports.index');
     });
 
-    $router->middleware(['role:requests_show'])->group(function (Router $router) {
+    $router->middleware(['role:requests_page_view'])->group(function (Router $router) {
         $router->get('request', [RequestController::class, 'index'])->name('request.index');
     });
 
