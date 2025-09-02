@@ -217,7 +217,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('bank', [BankController::class, 'index'])->name('bank.index');
     });
 
-    $router->middleware(['role:bank_view'])->group(function (Router $router) {
+    $router->middleware(['role:banks_view'])->group(function (Router $router) {
         $router->get('bank/{id}', [BankController::class, 'show'])->name('bank.show');
     });
 
@@ -228,6 +228,9 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->middleware(['role:banks_delete'])->group(function (Router $router) {
         $router->delete('bank/{id}', [BankController::class, 'delete'])->name('bank.delete');
     });
+    
+   
+    
 
     $router->middleware(['role:assets_create'])->group(function (Router $router) {
         $router->get('asset/create', [AssetController::class, 'create'])->name('asset.create');
