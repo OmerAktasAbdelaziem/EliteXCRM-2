@@ -26,9 +26,9 @@ class PartController extends Controller
         $part  = new Part;
         $teams = Team::latest()->get();
         $users = User::WithPipeline()->latest()->get();
-        $roles = OldRole::latest()->get();
+      //  $roles = OldRole::latest()->get();
         return view('part.show',compact(
-            'roles',
+          //  'roles',
             'teams',
             'users',
             'part',
@@ -62,9 +62,9 @@ class PartController extends Controller
         $part  = Part::findOrfail($id);
         $teams = Team::latest()->get();
         $users = User::WithPipeline()->latest()->get();
-        $roles = OldRole::latest()->get();
+     //   $roles = OldRole::latest()->get();
         return view('part.show',compact(
-            'roles',
+          //  'roles',
             'teams',
             'users',
             'part',

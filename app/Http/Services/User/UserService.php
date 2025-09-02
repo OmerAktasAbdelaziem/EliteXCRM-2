@@ -62,6 +62,7 @@ class UserService implements UserServiceInterface {
     }
     public function getUserOptions(User $user):array
     {
+        
         $userOptions = [];
         $teamOptions = [];
         $partOptions = [];
@@ -109,6 +110,7 @@ class UserService implements UserServiceInterface {
         );
 
         return $options;
+        
     }
    
     
