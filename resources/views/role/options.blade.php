@@ -1,470 +1,470 @@
 <style>
-/* CRITICAL OVERRIDES - Ensure all permission elements stay within form-section */
-.form-section .permission-card,
-.form-section .enhanced-legacy-card,
-.form-section .permission-conditional-section,
-.form-section .permissions-container,
-.form-section .permissions-grid,
-.form-section .permission-section-full-width,
-.form-section .permission-section-two-columns,
-.form-section .permission-section-three-columns {
-    position: relative !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: none !important;
-    float: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    contain: layout !important;
-}
-
-/* Override any child card styling that breaks containment */
-.form-section .permission-card.child-card,
-.form-section .permission-card.conditional-child {
-    margin-left: 0 !important;
-    border-left: none !important;
-    background: white !important;
-}
-
-/* Modern Permissions Design for updated form */
-.modern-section .permissions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-    width: 100%;
-    max-width: 100%;
-    position: relative;
-    contain: layout;
-}
-
-/* Update permission cards for modern design */
-.modern-section .permission-card {
-    background: white;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.modern-section .permission-card:hover {
-    border-color: #4f46e5;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
-    transform: translateY(-2px);
-}
-
-.modern-section .permission-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.modern-section .permission-title {
-    font-weight: 600;
-    color: #111827;
-    font-size: 1.1rem;
-}
-
-/* Modern Permissions Design */
-.permissions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 100%;
-    position: relative;
-    contain: layout;
-}
-
-/* Ensure permissions grid stays within form section */
-.form-section .permissions-grid {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    overflow: hidden;
-}
-
-/* Container for all permission sections */
-.permissions-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    position: relative !important;
-    contain: layout !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Ensure form sections maintain proper containment */
-.form-section .permissions-container {
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-}
-
-/* Override any potential z-index or positioning issues */
-.form-section .permission-card,
-.form-section .enhanced-legacy-card,
-.form-section .permission-conditional-section {
-    position: relative !important;
-    z-index: auto !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* Ensure all permission sections respect form-section boundaries */
-.form-section .permission-section-full-width,
-.form-section .permission-section-two-columns,
-.form-section .permission-section-three-columns {
-    max-width: 100%;
-    overflow: hidden;
-    contain: layout;
-}
-
-/* Full width permission sections - for standalone sections like Leads Inputs (Show) */
-.permission-section-full-width {
-    width: 100%;
-    margin: 1.5rem 0;
-    display: block;
-    position: relative;
-    contain: layout;
-}
-
-/* Two column permission sections - for paired sections like MainTp */
-.permission-section-two-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-    position: relative;
-    contain: layout;
-}
-
-/* Three column grid for conditional child sections */
-.permission-section-three-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-    position: relative;
-    contain: layout;
-}
-
-.permission-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    position: relative;
-    margin-bottom: 1rem;
-    width: 100%;
-    max-width: 100%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Ensure permission cards stay within form boundaries */
-.form-section .permission-card {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    position: relative !important;
-    float: none !important;
-    clear: both;
-    contain: layout;
-}
-
-.permission-card:hover {
-    border-color: #6366f1;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
-}
-
-.permission-card.has-children {
-    margin-bottom: 0.5rem;
-}
-
-.permission-card.conditional-child {
-    margin-left: 2rem;
-    margin-top: 1rem;
-    border-left: 4px solid #6366f1;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    position: relative;
-}
-
-.permission-card.conditional-child::before {
-    content: '';
-    position: absolute;
-    left: -2rem;
-    top: 50%;
-    width: 1.5rem;
-    height: 2px;
-    background: #6366f1;
-    transform: translateY(-50%);
-}
-
-.permission-card.conditional-child .permission-header {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-}
-
-.permission-header {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: white;
-    padding: 1rem 1.25rem;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.permission-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-    color: white;
-}
-
-.select-all-toggle {
-    position: relative;
-}
-
-.select-all-checkbox {
-    width: 20px;
-    height: 20px;
-    accent-color: white;
-    cursor: pointer;
-}
-
-.permission-body {
-    padding: 1.25rem;
-}
-
-.permission-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.75rem;
-}
-
-.permission-option {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-    cursor: pointer;
-}
-
-.permission-option:hover {
-    background: #f8fafc;
-}
-
-.permission-option input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    margin-right: 0.5rem;
-    accent-color: #6366f1;
-    cursor: pointer;
-}
-
-.permission-option label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    cursor: pointer;
-    margin: 0;
-}
-
-.permission-option.checked {
-    background: #eff6ff;
-    border: 1px solid #dbeafe;
-}
-
-.permission-option.checked label {
-    color: #1e40af;
-}
-
-/* Animation for expanding conditional permissions */
-.permission-conditional-section {
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.permission-conditional-section.collapsed {
-    max-height: 0;
-    opacity: 0;
-    margin: 0;
-}
-
-.permission-conditional-section.expanded {
-    max-height: 1000px;
-    opacity: 1;
-    margin-top: 1rem;
-}
-
-/* Enhanced Legacy Permission Styling */
-.enhanced-legacy-card {
-    background: white;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-/* Ensure legacy cards stay within form boundaries */
-.form-section .enhanced-legacy-card {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    position: relative !important;
-    float: none !important;
-    clear: both;
-    contain: layout;
-}
-
-.enhanced-legacy-card:hover {
-    border-color: #6366f1 !important;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
-}
-
-.enhanced-legacy-card .form-label {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: white !important;
-    font-weight: 600;
-    margin: 0 !important;
-    padding: 1rem 1.25rem;
-    border-radius: 12px 12px 0 0;
-    position: relative;
-}
-
-.enhanced-legacy-card .row {
-    padding: 1.25rem;
-}
-
-.enhanced-legacy-card .row .col {
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-}
-
-.enhanced-legacy-card .row .col input[type="checkbox"] {
-    margin-left: 0.5rem;
-    width: 16px;
-    height: 16px;
-    accent-color: #6366f1;
-}
-
-.enhanced-legacy-card .position-absolute.badge {
-    top: 1rem !important;
-    right: 1.25rem !important;
-    background: transparent;
-    border: none;
-}
-
-.enhanced-legacy-card .position-absolute.badge input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: white;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .permissions-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+    /* CRITICAL OVERRIDES - Ensure all permission elements stay within form-section */
+    .form-section .permission-card,
+    .form-section .enhanced-legacy-card,
+    .form-section .permission-conditional-section,
+    .form-section .permissions-container,
+    .form-section .permissions-grid,
+    .form-section .permission-section-full-width,
+    .form-section .permission-section-two-columns,
+    .form-section .permission-section-three-columns {
+        position: relative !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        float: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        contain: layout !important;
     }
-    
+
+    /* Override any child card styling that breaks containment */
+    .form-section .permission-card.child-card,
+    .form-section .permission-card.conditional-child {
+        margin-left: 0 !important;
+        border-left: none !important;
+        background: white !important;
+    }
+
+    /* Modern Permissions Design for updated form */
+    .modern-section .permissions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+        contain: layout;
+    }
+
+    /* Update permission cards for modern design */
+    .modern-section .permission-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .modern-section .permission-card:hover {
+        border-color: #4f46e5;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .modern-section .permission-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modern-section .permission-title {
+        font-weight: 600;
+        color: #111827;
+        font-size: 1.1rem;
+    }
+
+    /* Modern Permissions Design */
+    .permissions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+        contain: layout;
+    }
+
+    /* Ensure permissions grid stays within form section */
+    .form-section .permissions-grid {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        overflow: hidden;
+    }
+
+    /* Container for all permission sections */
+    .permissions-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        position: relative !important;
+        contain: layout !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Ensure form sections maintain proper containment */
+    .form-section .permissions-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+    }
+
+    /* Override any potential z-index or positioning issues */
+    .form-section .permission-card,
+    .form-section .enhanced-legacy-card,
+    .form-section .permission-conditional-section {
+        position: relative !important;
+        z-index: auto !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Ensure all permission sections respect form-section boundaries */
+    .form-section .permission-section-full-width,
+    .form-section .permission-section-two-columns,
+    .form-section .permission-section-three-columns {
+        max-width: 100%;
+        overflow: hidden;
+        contain: layout;
+    }
+
+    /* Full width permission sections - for standalone sections like Leads Inputs (Show) */
+    .permission-section-full-width {
+        width: 100%;
+        margin: 1.5rem 0;
+        display: block;
+        position: relative;
+        contain: layout;
+    }
+
+    /* Two column permission sections - for paired sections like MainTp */
+    .permission-section-two-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        position: relative;
+        contain: layout;
+    }
+
+    /* Three column grid for conditional child sections */
+    .permission-section-three-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        position: relative;
+        contain: layout;
+    }
+
+    .permission-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+        margin-bottom: 1rem;
+        width: 100%;
+        max-width: 100%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Ensure permission cards stay within form boundaries */
+    .form-section .permission-card {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        position: relative !important;
+        float: none !important;
+        clear: both;
+        contain: layout;
+    }
+
+    .permission-card:hover {
+        border-color: #6366f1;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    }
+
+    .permission-card.has-children {
+        margin-bottom: 0.5rem;
+    }
+
+    .permission-card.conditional-child {
+        margin-left: 2rem;
+        margin-top: 1rem;
+        border-left: 4px solid #6366f1;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        position: relative;
+    }
+
+    .permission-card.conditional-child::before {
+        content: '';
+        position: absolute;
+        left: -2rem;
+        top: 50%;
+        width: 1.5rem;
+        height: 2px;
+        background: #6366f1;
+        transform: translateY(-50%);
+    }
+
+    .permission-card.conditional-child .permission-header {
+        background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    }
+
+    .permission-header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 1rem 1.25rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .permission-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0;
+        color: white;
+    }
+
+    .select-all-toggle {
+        position: relative;
+    }
+
+    .select-all-checkbox {
+        width: 20px;
+        height: 20px;
+        accent-color: white;
+        cursor: pointer;
+    }
+
+    .permission-body {
+        padding: 1.25rem;
+    }
+
     .permission-options {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
     }
-}
 
-@media (min-width: 1200px) {
-    .permissions-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .permission-option {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+        cursor: pointer;
     }
-}
 
-/* Form Section Integration - Ensure all permission elements stay within form boundaries */
-.form-section * {
-    box-sizing: border-box;
-}
+    .permission-option:hover {
+        background: #f8fafc;
+    }
 
-.form-section .permission-conditional-section,
-.form-section .permission-section-full-width,
-.form-section .permission-section-two-columns,
-.form-section .permission-section-three-columns,
-.form-section .permissions-grid {
-    max-width: 100% !important;
-    overflow: hidden !important;
-    position: relative !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
+    .permission-option input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-right: 0.5rem;
+        accent-color: #6366f1;
+        cursor: pointer;
+    }
 
-/* Prevent any absolute positioning that could break out of form */
-.form-section .permission-card,
-.form-section .enhanced-legacy-card {
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: none !important;
-}
+    .permission-option label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        margin: 0;
+    }
 
-/* CRITICAL: Override any margin/positioning from show.blade.php that causes cards to break out */
-.form-section .enhanced-legacy-card {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    margin-top: 1rem !important;
-    position: relative !important;
-    float: none !important;
-    clear: both !important;
-    border-left: none !important;
-    background: white !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    contain: layout !important;
-}
+    .permission-option.checked {
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+    }
 
-.form-section .permission-card.child-card,
-.form-section .permission-card.conditional-child {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    border-left: none !important;
-    background: white !important;
-    position: relative !important;
-}
+    .permission-option.checked label {
+        color: #1e40af;
+    }
 
-/* Force all permission sections to respect form boundaries */
-.form-section .permission-conditional-section {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    position: relative !important;
-    contain: layout !important;
-}
+    /* Animation for expanding conditional permissions */
+    .permission-conditional-section {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .permission-conditional-section.collapsed {
+        max-height: 0;
+        opacity: 0;
+        margin: 0;
+    }
+
+    .permission-conditional-section.expanded {
+        max-height: 1000px;
+        opacity: 1;
+        margin-top: 1rem;
+    }
+
+    /* Enhanced Legacy Permission Styling */
+    .enhanced-legacy-card {
+        background: white;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    /* Ensure legacy cards stay within form boundaries */
+    .form-section .enhanced-legacy-card {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        position: relative !important;
+        float: none !important;
+        clear: both;
+        contain: layout;
+    }
+
+    .enhanced-legacy-card:hover {
+        border-color: #6366f1 !important;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    }
+
+    .enhanced-legacy-card .form-label {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white !important;
+        font-weight: 600;
+        margin: 0 !important;
+        padding: 1rem 1.25rem;
+        border-radius: 12px 12px 0 0;
+        position: relative;
+    }
+
+    .enhanced-legacy-card .row {
+        padding: 1.25rem;
+    }
+
+    .enhanced-legacy-card .row .col {
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .enhanced-legacy-card .row .col input[type="checkbox"] {
+        margin-left: 0.5rem;
+        width: 16px;
+        height: 16px;
+        accent-color: #6366f1;
+    }
+
+    .enhanced-legacy-card .position-absolute.badge {
+        top: 1rem !important;
+        right: 1.25rem !important;
+        background: transparent;
+        border: none;
+    }
+
+    .enhanced-legacy-card .position-absolute.badge input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .permissions-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .permission-options {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .permissions-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* Form Section Integration - Ensure all permission elements stay within form boundaries */
+    .form-section * {
+        box-sizing: border-box;
+    }
+
+    .form-section .permission-conditional-section,
+    .form-section .permission-section-full-width,
+    .form-section .permission-section-two-columns,
+    .form-section .permission-section-three-columns,
+    .form-section .permissions-grid {
+        max-width: 100% !important;
+        overflow: hidden !important;
+        position: relative !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Prevent any absolute positioning that could break out of form */
+    .form-section .permission-card,
+    .form-section .enhanced-legacy-card {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+    }
+
+    /* CRITICAL: Override any margin/positioning from show.blade.php that causes cards to break out */
+    .form-section .enhanced-legacy-card {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 1rem !important;
+        position: relative !important;
+        float: none !important;
+        clear: both !important;
+        border-left: none !important;
+        background: white !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        contain: layout !important;
+    }
+
+    .form-section .permission-card.child-card,
+    .form-section .permission-card.conditional-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-left: none !important;
+        background: white !important;
+        position: relative !important;
+    }
+
+    /* Force all permission sections to respect form boundaries */
+    .form-section .permission-conditional-section {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        position: relative !important;
+        contain: layout !important;
+    }
 </style>
 
 <!-- Permissions Container - ensures all permissions stay within form -->
