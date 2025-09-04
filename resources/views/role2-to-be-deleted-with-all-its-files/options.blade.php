@@ -466,7 +466,8 @@
     contain: layout !important;
 }
 </style>
-
+<?php
+/*
 <!-- Permissions Container - ensures all permissions stay within form -->
 <div class="permissions-container">
 
@@ -1434,3 +1435,5 @@
 
 <!-- End Permissions Container -->
 </div>
+*/
+?>

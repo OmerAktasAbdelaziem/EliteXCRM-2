@@ -1,3 +1,5 @@
+<?php
+/*
 @extends("layouts.app")
 @section("style")
     <link href="{{ url('assets/plugins/datatable/css/dataTables.bootstrap5.min.css?v2.944') }}" rel="stylesheet" />
@@ -93,3 +95,6 @@
     <script src="{{ url('assets/js/table-datatable.min.js?v2.944') }}"></script>
     <script src="{{ url('assets/js/new.min.js?v2.944') }}"></script>
 @endsection
+ * 
+ */
+?>

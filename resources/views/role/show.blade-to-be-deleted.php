@@ -658,6 +658,8 @@
             align-self: flex-start;
         }
     </style>
+    <?php 
+    /*
 @endsection
 @section("wrapper")
     <div class="page-wrapper modern-bg">
@@ -1238,3 +1240,6 @@
         });
     </script>
 @endsection
+     * *
+     */
+    ?>

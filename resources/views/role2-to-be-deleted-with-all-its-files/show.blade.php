@@ -376,7 +376,8 @@
             background: #319795;
         }
     </style>
-
+<?php
+/*
 @endsection
 @section("wrapper")
     <div class="page-wrapper">
@@ -2405,7 +2406,8 @@
             });
         });
     </script>
-
+*/
+?>
     <style>
         .action-item.selected { border-color: #4299e1; background: #f0f8ff; }
         .toggle-slider.checked { background-color: #48bb78 !important; }
