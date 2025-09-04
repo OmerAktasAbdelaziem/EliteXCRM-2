@@ -56,7 +56,7 @@ class AssetGroupController extends Controller {
 
 
         //uncomment this code to handle old data of assets & asset groups just for once and then remove it
-        $groups = AssetGroup::all();
+       /* $groups = AssetGroup::all();
         try {
             foreach ($groups as $group) {
                 if (!empty($group->asset_ids)) {
@@ -91,7 +91,7 @@ class AssetGroupController extends Controller {
         } catch (QueryException $e) {
             print_r($group);
             die;
-        }die('done');
+        }die('done');*/
         //end of uncomment this code to handle old data of assets & asset groups just for once and then remove it
 
 
@@ -176,6 +176,7 @@ class AssetGroupController extends Controller {
         ]);
         $inputs['pipeline_id'] = auth()->user()->pipeline_id;
 //dd($request->asset_ids);
+        $group = $this->assetGroupService->create($inputs)->first();
         if ($asset_ids = $request->asset_ids) {
             $is_except = false;
             $is_all = false;
@@ -199,7 +200,7 @@ class AssetGroupController extends Controller {
                 $asset_ids = $request->asset_ids;
             }
             //$inputs['asset_ids'] = $asset_ids;
-        }
+        
         //percentage
         //leverage
         //size
@@ -208,7 +209,7 @@ class AssetGroupController extends Controller {
         //buy_commission
         //sell_commission
         //$group = AssetGroup::Create($inputs);
-        $group = $this->assetGroupService->create($inputs)->first();
+        
         foreach ($asset_ids as $asset_id) {
             //$asset = Asset::find($asset_id);
             $asset = $this->assetService->getByFilters([['field' => 'id', 'conditions' => ['=' => $asset_id]]])->first();
@@ -276,7 +277,7 @@ class AssetGroupController extends Controller {
                   ]); */
             }
         }
-
+}
         return redirect()->route('assetGroup.show', $group->id)->with('success', 'Group Created Successfully');
     }
 

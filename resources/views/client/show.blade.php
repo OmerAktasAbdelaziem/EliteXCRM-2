@@ -53,7 +53,7 @@
 /*
 @section('title',
     (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show')) ? $client->first_name : '') . ' ' .
-    (UserPermission::isSuperAdmin(Auth::user()) ||  UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show')) ? $client->last_name : '')
+    (UserPermission::isSuperAdmin(Auth::user()) ||  UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_show')) ? $client->last_name : '')
 )
 */ ?>
 @section("wrapper")
@@ -72,14 +72,14 @@
                                         @endif
                                         @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show') )
                                             {{$client->first_name}}
-                                        @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide'))
+                                        @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_hide'))
                                             {{ substr($client->first_name, 0, ceil(strlen($client->first_name) / 2)) }}******
                                         @else
                                             ******
                                         @endif
                                         @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_show') )
                                             {{$client->last_name}}
-                                        @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide'))
+                                        @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_hide'))
                                             {{ substr($client->last_name, 0, ceil(strlen($client->last_name) / 2)) }}******
                                         @else
                                             ******
@@ -93,7 +93,7 @@
                                     </h4>
                                 </div>
                                 
-                                @if (UserPermission::isSuperAdmin(Auth::user()) || (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_main_tp') || (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_main_tp_demo') && $client->account_type == 'Demo')) && Auth::user()->pipeline->category_id == 1)
+                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp') || (UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp_demo') && $client->account_type == 'Demo')) && Auth::user()->pipeline->category_id == 1)
                                 
                                     <div class="col-md-1 col-6">
                                         <small class="form-label">TP</small>
@@ -229,7 +229,7 @@
                                                         @error('first_name')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_first_name_hide'))
+                                                    @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_hide'))
                                                         <div>
                                                             {{ mb_substr($client->first_name, 0, ceil(mb_strlen($client->first_name) / 2)) }} ******
                                                         </div>
@@ -248,7 +248,7 @@
                                                         @error('last_name')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_hide'))
+                                                    @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_hide'))
                                                         <div>
                                                             {{ mb_substr($client->last_name, 0, ceil(mb_strlen($client->last_name) / 2)) }} ******
                                                         </div>
@@ -268,7 +268,7 @@
                                                         @error('email')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_email_hide'))
+                                                    @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_email_hide'))
                                                         <div>
                                                             ********{{ substr($client->email, 8) }}
                                                         </div>
@@ -289,7 +289,7 @@
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                         
-                                                    @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_primary_phone_hide'))
+                                                    @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_primary_phone_hide'))
                                                         <div>
                                                             {{ substr($client->phone1, 0, ceil(strlen($client->phone1) / 2)) }}******
                                                         </div>
@@ -309,7 +309,7 @@
                                                         @error('phone2')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_secondary_phone_hide'))
+                                                    @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_secondary_phone_hide'))
                                                         <div>
                                                             {{ substr($client->phone2, 0, ceil(strlen($client->phone2) / 2)) }}******
                                                         </div>
@@ -404,7 +404,7 @@
                                                         @error('username')
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
-                                                    @elseif(UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_username_hide'))
+                                                    @elseif(UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_username_hide'))
                                                         <div>
                                                             {{ substr($client->username, 0, ceil(strlen($client->username) / 2)) }}******
                                                         </div>
@@ -904,7 +904,7 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        @if (UserPermission::isSuperAdmin(Auth::user()) || (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_actions_actions') && UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_cards_actions')))
+                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_actions') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions')))
                                         
                                             <div class="tab-pane fade @if ($tab == 'actions') active show @endif" id="actions" role="tabpanel">
                                                 <div class="row">
@@ -1050,6 +1050,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
+                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_campaign_show')  )
                                         <div class="col-md-4">
                                             <small class="form-label">Campaign</small>
                                             <h5>
@@ -1059,6 +1060,8 @@
                                                 </span>
                                             </h5>
                                         </div>
+                                        @endif
+                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_source_show')  )
                                         <div class="col-md-4">
                                             <small class="form-label">Source</small>
                                             <h5>
@@ -1068,6 +1071,7 @@
                                                 </span>
                                             </h5>
                                         </div>
+                                        @endif
                                         <div class="col-md-4">
                                             <small class="form-label">Ad</small>
                                             <h5>
@@ -1133,7 +1137,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if ((UserPermission::isSuperAdmin(Auth::user()) || (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_actions_open_demo') && UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_cards_actions') )))
+                        @if (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_open_demo') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions') )))
                             <div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -1179,7 +1183,7 @@
                             </div>
                         @endif
                         
-                        @if (UserPermission::isSuperAdmin(Auth::user()) || (UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_actions_open_real') && UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_cards_actions') ))
+                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_open_real') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions') ))
                             <div class="modal fade" id="realModal" tabindex="-1" aria-labelledby="realModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">

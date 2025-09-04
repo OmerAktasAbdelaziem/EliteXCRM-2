@@ -35,9 +35,11 @@
                                         Add new bank
                                     </a>
                                     @endif
+                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'edit_default_usdt_address'))
                                     <a class="btn btn-primary btn-sm mx-2" data-bs-toggle="modal" data-bs-target="#usdtModal">
                                         USDT Address
                                     </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -131,7 +133,7 @@
     </div>
 </div>
 
-
+ @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_delete'))
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -153,7 +155,8 @@
             </div>
         </div>
     </div>
-
+ @endif
+@if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'edit_default_usdt_address'))
 <div class="modal fade" id="usdtModal" tabindex="-1" aria-labelledby="usdtModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -183,6 +186,7 @@
         </div>
     </div>
 </div>
+@endif
 @endsection
 
 @section("script")

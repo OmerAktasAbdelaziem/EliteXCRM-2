@@ -1051,7 +1051,11 @@ class ClientsController extends Controller {
                         'kycs',
                         'pre',
                         'tab',
+                'userAuth',
+                'pipelineId',
+                'isSuperAdmin',
                 ));
+        
     }
 
     public function slides($status, $move, $id) {

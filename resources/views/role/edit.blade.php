@@ -1706,6 +1706,19 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[banks_delete]" @roleHasPermission($role, 'banks_delete') checked @endroleHasPermission>
                                         </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- New icon: Trash/Delete -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Edit Default USDT Address
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[edit_default_usdt_address]" @roleHasPermission($role, 'edit_default_usdt_address') checked @endroleHasPermission>
+                                        </div>
+                                        
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -1771,17 +1784,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[assets_edit]" @roleHasPermission($role, 'assets_edit') checked @endroleHasPermission>
                                         </div>
-                                        <div class="action-item dependent-permission dependency-tooltip">
-                                            <div class="action-label">
-                                                <!-- New icon: Trash/Delete -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
-                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Delete Asset
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[assets_delete]" @roleHasPermission($role, 'assets_delete') checked @endroleHasPermission>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                             </div>
