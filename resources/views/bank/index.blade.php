@@ -110,9 +110,11 @@
                                                 </td>
                                                 <td>{{date('d/m/Y H:i', strtotime($bank->created_at))}}</td>
                                                 <td>
+                                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_delete'))
                                                     <button type="button" formaction="{{ route('bank.delete',$bank->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
+                                                    @endif
                                                 </td>
 
                                             </tr>
@@ -187,6 +189,7 @@
 <script src="{{ url('assets/plugins/datatable/js/jquery.dataTables.min.js?v2.944') }}"></script>
 <script src="{{ url('assets/plugins/datatable/js/dataTables.bootstrap5.min.js?v2.944') }}"></script>
 <script src="{{ url('assets/js/table-datatable.min.js?v2.944') }}"></script>
+  <script src="{{ url('assets/js/new.min.js?v2.944') }}"></script>
 
 
 @endsection
