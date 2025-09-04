@@ -375,6 +375,69 @@
         .btn-info:hover {
             background: #319795;
         }
+        
+        /* Alert Styles */
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #856404;
+        }
+        
+        .alert-warning .btn-close {
+            filter: invert(1) grayscale(100%) brightness(100%);
+        }
+        
+        /* List Permission Indicators */
+        .action-item.list-permission {
+            border-left: 4px solid #38b2ac;
+            background: linear-gradient(90deg, #f0fdfa 0%, #ffffff 100%);
+        }
+        
+        .action-item.dependent-permission {
+            border-left: 4px solid #e2e8f0;
+        }
+        
+        .action-item.dependent-permission.disabled-dependency {
+            opacity: 0.6;
+            background: #f8f9fa;
+            border-left-color: #fbb6ce;
+            cursor: not-allowed;
+        }
+        
+        .action-item.dependent-permission.disabled-dependency .custom-checkbox {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .action-item.dependent-permission.disabled-dependency .action-label {
+            color: #a0aec0;
+        }
+        
+        .dependency-tooltip {
+            position: relative;
+        }
+        
+        .dependency-tooltip.dependency-not-met::after {
+            content: "Requires list permission";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3748;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .dependency-tooltip.dependency-not-met:hover::after {
+            opacity: 1;
+        }
     </style>
 
 @endsection
@@ -532,7 +595,7 @@
                                 <div class="permission-actions">
                                     <div class="actions-grid">
                                         
-                                        <div class="action-item">
+                                        <div class="action-item list-permission">
                                             <div class="action-label">
                                                 <!-- Table icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -545,7 +608,7 @@
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_list]">
                                         </div>
                                         
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Eye icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -556,7 +619,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_show]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Plus icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -566,7 +629,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_create]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Plus icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -576,7 +639,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_renew]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Pencil icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -586,7 +649,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_edit]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -597,7 +660,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_delete]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -606,10 +669,10 @@
                                                 </svg>
                                                 Import Clients
                                             </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[import_clients]"   >
+                                            <input type="checkbox" class="custom-checkbox" name="roles[import_clients]">
                                         </div>
                                        
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -621,7 +684,7 @@
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_actions_actions]">
                                         </div>
                                         
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -633,7 +696,7 @@
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_cards_actions]">
                                         </div>
                                         
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -647,7 +710,7 @@
                                         
                                         
                                         
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -659,7 +722,7 @@
                                             <input type="checkbox" class="custom-checkbox" name="roles[leads_actions_open_demo]">
                                         </div>
                                         
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- Trash icon -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -1038,11 +1101,55 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Users List</div><input type="checkbox" class="custom-checkbox" name="roles[users_list]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Users</div><input type="checkbox" class="custom-checkbox" name="roles[users_show]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create User</div><input type="checkbox" class="custom-checkbox" name="roles[users_create]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit User</div><input type="checkbox" class="custom-checkbox" name="roles[users_edit]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg>Delete User</div><input type="checkbox" class="custom-checkbox" name="roles[users_delete]"></div>
+                                        <div class="action-item list-permission">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Users List
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[users_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View Users
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[users_show]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create User
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[users_create]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Edit User
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[users_edit]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Delete User
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[users_delete]">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1073,11 +1180,53 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline List</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_list]" ></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline View</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_view]" ></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline Create</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_create]" ></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline Update</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_edit]" ></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Pipeline Delete</div><input type="checkbox" class="custom-checkbox" name="roles[pipeline_delete]" ></div>
+                                        <div class="action-item list-permission">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Pipeline List
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[pipeline_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Pipeline View
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[pipeline_view]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Pipeline Create
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[pipeline_create]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Pipeline Update
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[pipeline_edit]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v4a1 1 0 11-2 0V7zM8 13a1 1 0 112 0 1 1 0 01-2 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Pipeline Delete
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[pipeline_delete]">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1463,19 +1612,136 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template List</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_list]"></div>
-                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template Show</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_show]"></div>
-                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template Update</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_update]"></div>
-                                        <div class="action-item"><div class="action-label"><!-- Table icon --><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><rect width="18" height="4" x="1" y="3" rx="1"/><rect width="18" height="4" x="1" y="9" rx="1"/><rect width="18" height="4" x="1" y="15" rx="1"/></svg>Emails Template Delete</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_delete]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Emails</div><input type="checkbox" class="custom-checkbox" name="roles[emails_view]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Templates</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_create]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Templates</div><input type="checkbox" class="custom-checkbox" name="roles[emails_template_edit]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Send Emails</div><input type="checkbox" class="custom-checkbox" name="roles[send_emails]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails List</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_email_list]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Show</div><input type="checkbox" class="custom-checkbox" name="roles[sender_email_show]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Create</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_create]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Update</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_update]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Sender Emails Delete</div><input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_delete]"></div>
+                                        <div class="action-item list-permission">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Emails Template List
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_template_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Emails Template Show
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_template_show]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Emails Template Update
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_template_update]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- Table icon -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <rect width="18" height="4" x="1" y="3" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="9" rx="1"/>
+                                                    <rect width="18" height="4" x="1" y="15" rx="1"/>
+                                                </svg>
+                                                Emails Template Delete
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_template_delete]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View Emails
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_view]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create Templates
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_template_create]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                                </svg>
+                                                Edit Templates
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_template_edit]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Send Emails
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[send_emails]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Sender Emails List
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_sender_email_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Sender Emails Show
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[sender_email_show]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Sender Emails Create
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_create]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Sender Emails Update
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_update]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                                </svg>
+                                                Sender Emails Delete
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[emails_sender_emails_delete]">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1507,19 +1773,26 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Banks List</div><input type="checkbox" class="custom-checkbox" name="roles[bank_list]"></div>
-                                        <div class="action-item">
+                                        <div class="action-item list-permission">
                                             <div class="action-label">
-                                                <!-- New icon: Eye -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                List Banks
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[banks_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                                     <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
                                                 </svg>
                                                 View Banks
                                             </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[bank_view]">
+                                            <input type="checkbox" class="custom-checkbox" name="roles[banks_view]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- New icon: Plus -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -1529,7 +1802,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[banks_create]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- New icon: Pencil/Edit -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -1539,7 +1812,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[banks_edit]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
                                                 <!-- New icon: Trash/Delete -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -1550,6 +1823,22 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[banks_delete]">
                                         </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- New icon: Trash/Delete -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Edit Default USDT Address
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[edit_default_usdt_address]">
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -1583,10 +1872,17 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Assets List</div><input type="checkbox" class="custom-checkbox" name="roles[asset_list]"></div>
-                                        <div class="action-item">
+                                        <div class="action-item list-permission">
                                             <div class="action-label">
-                                                <!-- New icon: Eye -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                List Assets
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[assets_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                                     <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
@@ -1595,9 +1891,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[assets_view]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
-                                                <!-- New icon: Plus -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
                                                 </svg>
@@ -1605,9 +1900,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[assets_create]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
-                                                <!-- New icon: Pencil/Edit -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9A2 2 0 004 14v2a2 2 0 002 2h2a2 2 0 001.414-.586l9.9-9.9a2 2 0 000-2.828l-2-2zM5 16v-2.586l9-9L16.586 7l-9 9H5z"/>
                                                 </svg>
@@ -1615,17 +1909,7 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[assets_edit]">
                                         </div>
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Trash/Delete -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
-                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Delete Asset
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[assets_delete]">
-                                        </div>
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -1657,11 +1941,17 @@
                                 </div>
                                 <div class="permission-actions">
                                     <div class="actions-grid">
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Asset Group List</div><input type="checkbox" class="custom-checkbox" name="roles[assetGroup_list]"></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>Asset Group View</div><input type="checkbox" class="custom-checkbox" name="roles[assetGroup_view]"></div>
-                                        <div class="action-item">
+                                        <div class="action-item list-permission">
                                             <div class="action-label">
-                                                <!-- New icon: Eye -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                List Asset Groups
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[asset_groups_list]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                                     <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
@@ -1670,9 +1960,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[asset_groups_view]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
-                                                <!-- New icon: Plus -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
                                                 </svg>
@@ -1680,9 +1969,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[asset_groups_create]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
-                                                <!-- New icon: Pencil/Edit -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9A2 2 0 004 14v2a2 2 0 002 2h2a2 2 0 001.414-.586l9.9-9.9a2 2 0 000-2.828l-2-2zM5 16v-2.586l9-9L16.586 7l-9 9H5z"/>
                                                 </svg>
@@ -1690,9 +1978,8 @@
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[asset_groups_edit]">
                                         </div>
-                                        <div class="action-item">
+                                        <div class="action-item dependent-permission dependency-tooltip">
                                             <div class="action-label">
-                                                <!-- New icon: Trash/Delete -->
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
                                                     <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
@@ -2901,14 +3188,213 @@
                 }
             });
 
-            // Child checkbox -> master toggle
+            // Child checkbox -> master toggle with dependency checking
             $('.custom-checkbox').on('change', function() {
+                const $checkbox = $(this);
                 const item = $(this).closest('.permission-item');
                 const master = item.find('.permission-master-toggle');
+                
+                // Check if this checkbox is being checked
+                if ($checkbox.is(':checked')) {
+                    // Check for dependencies
+                    const dependencyResult = checkDependencies($checkbox);
+                    if (!dependencyResult.valid) {
+                        // Prevent checking and show message
+                        $checkbox.prop('checked', false);
+                        showDependencyAlert(dependencyResult.message, 'warning');
+                        return;
+                    }
+                } else {
+                    // If unchecking a list permission, uncheck all dependent permissions
+                    const name = $checkbox.attr('name');
+                    if (name && name.includes('_list]')) {
+                        uncheckDependentPermissions(name);
+                    }
+                }
+                
                 const checked = item.find('.custom-checkbox:checked').length > 0;
                 master.prop('checked', checked);
                 item.toggleClass('disabled', !checked);
+                
+                // Update dependency states for all permissions
+                updateDependencyStates();
             });
+
+            // Function to uncheck all permissions that depend on a list
+            function uncheckDependentPermissions(listPermissionName) {
+                const dependencies = getDependencyMap();
+                
+                // Find all permissions that depend on this list
+                Object.keys(dependencies).forEach(function(permissionName) {
+                    if (dependencies[permissionName] === listPermissionName) {
+                        const $dependentCheckbox = $(`input[name="${permissionName}"]`);
+                        if ($dependentCheckbox.length && $dependentCheckbox.is(':checked')) {
+                            $dependentCheckbox.prop('checked', false);
+                            
+                            // Update the parent permission item state
+                            const dependentItem = $dependentCheckbox.closest('.permission-item');
+                            const dependentMaster = dependentItem.find('.permission-master-toggle');
+                            const stillChecked = dependentItem.find('.custom-checkbox:checked').length > 0;
+                            dependentMaster.prop('checked', stillChecked);
+                            dependentItem.toggleClass('disabled', !stillChecked);
+                        }
+                    }
+                });
+            }
+
+            // Function to get the dependency map
+            function getDependencyMap() {
+                return {
+                    // Leads Management Dependencies
+                    'roles[leads_show]': 'roles[leads_list]',
+                    'roles[leads_view]': 'roles[leads_list]',
+                    'roles[leads_create]': 'roles[leads_list]',
+                    'roles[leads_renew]': 'roles[leads_list]',
+                    'roles[leads_edit]': 'roles[leads_list]',
+                    'roles[leads_delete]': 'roles[leads_list]',
+                    'roles[import_clients]': 'roles[leads_list]',
+                    'roles[leads_actions_actions]': 'roles[leads_list]',
+                    'roles[leads_cards_actions]': 'roles[leads_list]',
+                    'roles[leads_actions_open_real]': 'roles[leads_list]',
+                    'roles[leads_actions_open_demo]': 'roles[leads_list]',
+                    'roles[show_unassigned_leads]': 'roles[leads_list]',
+                    'roles[leads_import]': 'roles[leads_list]',
+                    'roles[leads_export]': 'roles[leads_list]',
+                    
+                    // Users Management Dependencies
+                    'roles[users_show]': 'roles[users_list]',
+                    'roles[users_view]': 'roles[users_list]',
+                    'roles[users_create]': 'roles[users_list]',
+                    'roles[users_edit]': 'roles[users_list]',
+                    'roles[users_delete]': 'roles[users_list]',
+                    
+                    // Parts Management Dependencies
+                    'roles[parts_view]': 'roles[parts_list]',
+                    'roles[parts_create]': 'roles[parts_list]',
+                    'roles[parts_edit]': 'roles[parts_list]',
+                    'roles[parts_sender_parts]': 'roles[parts_list]',
+                    
+                    // Teams Management Dependencies
+                    'roles[teams_view]': 'roles[teams_list]',
+                    'roles[teams_create]': 'roles[teams_list]',
+                    'roles[teams_edit]': 'roles[teams_list]',
+                    'roles[teams_delete]': 'roles[teams_list]',
+                    
+                    // Reports Dependencies
+                    'roles[reports_view]': 'roles[reports_list]',
+                    'roles[reports_create]': 'roles[reports_list]',
+                    'roles[reports_edit]': 'roles[reports_list]',
+                    'roles[reports_delete]': 'roles[reports_list]',
+                    
+                    // Retention Dependencies
+                    'roles[retention_view]': 'roles[retention_list]',
+                    'roles[retention_create]': 'roles[retention_list]',
+                    'roles[retention_edit]': 'roles[retention_list]',
+                    'roles[retention_delete]': 'roles[retention_list]',
+                    
+                    // Request Dependencies
+                    'roles[requests_view]': 'roles[requests_list]',
+                    'roles[requests_create]': 'roles[requests_list]',
+                    'roles[requests_edit]': 'roles[requests_list]',
+                    'roles[requests_delete]': 'roles[requests_list]',
+                    
+                    // Status Dependencies
+                    'roles[status_view]': 'roles[status_list]',
+                    'roles[status_create]': 'roles[status_list]',
+                    'roles[status_edit]': 'roles[status_list]',
+                    'roles[status_delete]': 'roles[status_list]',
+                    
+                    // Roles Dependencies
+                    'roles[roles_view]': 'roles[roles_list]',
+                    'roles[roles_create]': 'roles[roles_list]',
+                    'roles[roles_edit]': 'roles[roles_list]',
+                    'roles[roles_delete]': 'roles[roles_list]',
+                    
+                    // Email Dependencies
+                    'roles[emails_template_show]': 'roles[emails_template_list]',
+                    'roles[emails_template_update]': 'roles[emails_template_list]',
+                    'roles[emails_template_delete]': 'roles[emails_template_list]',
+                    'roles[emails_view]': 'roles[emails_template_list]',
+                    'roles[emails_template_create]': 'roles[emails_template_list]',
+                    'roles[emails_template_edit]': 'roles[emails_template_list]',
+                    'roles[send_emails]': 'roles[emails_template_list]',
+                    'roles[emails_sender_email_list]': 'roles[emails_template_list]',
+                    'roles[sender_email_show]': 'roles[emails_template_list]',
+                    'roles[emails_sender_emails_create]': 'roles[emails_template_list]',
+                    'roles[emails_sender_emails_update]': 'roles[emails_template_list]',
+                    'roles[emails_sender_emails_delete]': 'roles[emails_template_list]',
+                    
+                    // Banks Dependencies
+                    'roles[banks_view]': 'roles[banks_list]',
+                    'roles[banks_create]': 'roles[banks_list]',
+                    'roles[banks_edit]': 'roles[banks_list]',
+                    'roles[banks_delete]': 'roles[banks_list]',
+                    
+                    // Assets Dependencies
+                    'roles[assets_view]': 'roles[assets_list]',
+                    'roles[assets_create]': 'roles[assets_list]',
+                    'roles[assets_edit]': 'roles[assets_list]',
+                    'roles[assets_delete]': 'roles[assets_list]',
+                    
+                    // Asset Groups Dependencies
+                    'roles[asset_groups_view]': 'roles[asset_groups_list]',
+                    'roles[asset_groups_create]': 'roles[asset_groups_list]',
+                    'roles[asset_groups_edit]': 'roles[asset_groups_list]',
+                    'roles[asset_groups_delete]': 'roles[asset_groups_list]',
+                    
+                    // Pipeline Dependencies
+                    'roles[pipeline_view]': 'roles[pipeline_list]',
+                    'roles[pipeline_create]': 'roles[pipeline_list]',
+                    'roles[pipeline_edit]': 'roles[pipeline_list]',
+                    'roles[pipeline_delete]': 'roles[pipeline_list]',
+                    
+                    // Subscription Dependencies
+                    'roles[subscription_view]': 'roles[subscription_list]',
+                    'roles[subscription_create]': 'roles[subscription_list]',
+                    'roles[subscription_edit]': 'roles[subscription_list]',
+                    'roles[subscription_delete]': 'roles[subscription_list]'
+                };
+            }
+
+            // Function to update visual states of dependent permissions
+            function updateDependencyStates() {
+                const dependencies = getDependencyMap();
+                
+                Object.keys(dependencies).forEach(function(permissionName) {
+                    const requiredPermission = dependencies[permissionName];
+                    const $checkbox = $(`input[name="${permissionName}"]`);
+                    const $requiredCheckbox = $(`input[name="${requiredPermission}"]`);
+                    const $actionItem = $checkbox.closest('.action-item');
+                    
+                    if ($checkbox.length && $requiredCheckbox.length) {
+                        const isRequiredActive = $requiredCheckbox.is(':checked');
+                        
+                        // Update visual state
+                        if (isRequiredActive) {
+                            $actionItem.removeClass('disabled-dependency dependency-not-met');
+                            $checkbox.prop('disabled', false);
+                        } else {
+                            $actionItem.addClass('disabled-dependency dependency-not-met');
+                            $checkbox.prop('disabled', true);
+                            // Uncheck if it was checked
+                            if ($checkbox.is(':checked')) {
+                                $checkbox.prop('checked', false);
+                            }
+                        }
+                    }
+                });
+                
+                // Hide warning alerts if dependencies are now met
+                $('.alert-warning').each(function() {
+                    const $alert = $(this);
+                    // Auto-hide warning alerts after checking dependencies
+                    setTimeout(function() {
+                        if ($alert.is(':visible')) {
+                            $alert.fadeOut();
+                        }
+                    }, 1000);
+                });
+            }
 
             // Validate
             $('#addform').on('submit', function(e) {
@@ -2928,10 +3414,145 @@
             });
 
             function showAlert(message, type) {
-                const klass = type === 'danger' ? 'alert-danger' : 'alert-success';
+                const klass = type === 'danger' ? 'alert-danger' : (type === 'warning' ? 'alert-warning' : 'alert-success');
                 const html = `<div class="alert ${klass} alert-dismissible fade show" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
                 $('.container-fluid').prepend(html);
-                setTimeout(() => { $('.alert').fadeOut(); }, 3000);
+                setTimeout(() => { $('.alert').fadeOut(); }, 5000);
+            }
+
+            function showDependencyAlert(message, type) {
+                showAlert(message, type);
+            }
+
+            // Function to check dependencies for permissions
+            function checkDependencies($checkbox) {
+                const name = $checkbox.attr('name');
+                const dependencies = getDependencyMap();
+                
+                // Check if this permission has a dependency
+                if (dependencies[name]) {
+                    const requiredPermission = dependencies[name];
+                    const $requiredCheckbox = $(`input[name="${requiredPermission}"]`);
+                    
+                    if ($requiredCheckbox.length && !$requiredCheckbox.is(':checked')) {
+                        // Get human-readable names
+                        const permissionName = getPermissionDisplayName(name);
+                        const requiredName = getPermissionDisplayName(requiredPermission);
+                        
+                        return {
+                            valid: false,
+                            message: `⚠️ Cannot activate "${permissionName}" without first activating "${requiredName}". Please enable the list permission first.`
+                        };
+                    }
+                }
+                
+                return { valid: true };
+            }
+            
+            // Function to get human-readable permission names
+            function getPermissionDisplayName(name) {
+                const displayNames = {
+                    // List permissions
+                    'roles[leads_list]': 'Leads List',
+                    'roles[users_list]': 'Users List',
+                    'roles[parts_list]': 'Parts List',
+                    'roles[teams_list]': 'Teams List',
+                    'roles[reports_list]': 'Reports List',
+                    'roles[retention_list]': 'Retention List',
+                    'roles[requests_list]': 'Requests List',
+                    'roles[status_list]': 'Status List',
+                    'roles[roles_list]': 'Roles List',
+                    'roles[emails_list]': 'Emails List',
+                    'roles[emails_template_list]': 'Emails Template List',
+                    'roles[banks_list]': 'Banks List',
+                    'roles[assets_list]': 'Assets List',
+                    'roles[asset_groups_list]': 'Asset Groups List',
+                    'roles[pipeline_list]': 'Pipeline List',
+                    'roles[subscription_list]': 'Subscription List',
+                    
+                    // Action permissions
+                    'roles[leads_show]': 'View Leads',
+                    'roles[leads_view]': 'View Leads',
+                    'roles[leads_create]': 'Create Leads',
+                    'roles[leads_renew]': 'Renew Leads',
+                    'roles[leads_edit]': 'Edit Leads',
+                    'roles[leads_delete]': 'Delete Leads',
+                    'roles[import_clients]': 'Import Clients',
+                    'roles[leads_actions_actions]': 'Lead Actions',
+                    'roles[leads_cards_actions]': 'Leads Cards Actions',
+                    'roles[leads_actions_open_real]': 'Open Real Account',
+                    'roles[leads_actions_open_demo]': 'Open Demo Account',
+                    'roles[show_unassigned_leads]': 'Show Unassigned Leads',
+                    'roles[leads_import]': 'Import Leads',
+                    'roles[leads_export]': 'Export Leads',
+                    'roles[users_show]': 'View Users',
+                    'roles[users_view]': 'View Users',
+                    'roles[users_create]': 'Create Users',
+                    'roles[users_edit]': 'Edit Users',
+                    'roles[users_delete]': 'Delete Users',
+                    'roles[emails_template_show]': 'View Email Template',
+                    'roles[emails_template_update]': 'Update Email Template',
+                    'roles[emails_template_delete]': 'Delete Email Template',
+                    'roles[emails_view]': 'View Emails',
+                    'roles[emails_template_create]': 'Create Email Template',
+                    'roles[emails_template_edit]': 'Edit Email Template',
+                    'roles[send_emails]': 'Send Emails',
+                    'roles[emails_sender_email_list]': 'Sender Emails List',
+                    'roles[sender_email_show]': 'View Sender Email',
+                    'roles[emails_sender_emails_create]': 'Create Sender Email',
+                    'roles[emails_sender_emails_update]': 'Update Sender Email',
+                    'roles[emails_sender_emails_delete]': 'Delete Sender Email',
+                    'roles[parts_view]': 'View Parts',
+                    'roles[parts_create]': 'Create Parts',
+                    'roles[parts_edit]': 'Edit Parts',
+                    'roles[parts_sender_parts]': 'Delete Parts',
+                    'roles[teams_view]': 'View Teams',
+                    'roles[teams_create]': 'Create Teams',
+                    'roles[teams_edit]': 'Edit Teams',
+                    'roles[teams_delete]': 'Delete Teams',
+                    'roles[banks_view]': 'View Banks',
+                    'roles[banks_create]': 'Create Banks',
+                    'roles[banks_edit]': 'Edit Banks',
+                    'roles[banks_delete]': 'Delete Banks',
+                    'roles[assets_view]': 'View Assets',
+                    'roles[assets_create]': 'Create Assets',
+                    'roles[assets_edit]': 'Edit Assets',
+                    'roles[assets_delete]': 'Delete Assets',
+                    'roles[asset_groups_view]': 'View Asset Groups',
+                    'roles[asset_groups_create]': 'Create Asset Groups',
+                    'roles[asset_groups_edit]': 'Edit Asset Groups',
+                    'roles[asset_groups_delete]': 'Delete Asset Groups',
+                    'roles[pipeline_view]': 'View Pipeline',
+                    'roles[pipeline_create]': 'Create Pipeline',
+                    'roles[pipeline_edit]': 'Edit Pipeline',
+                    'roles[pipeline_delete]': 'Delete Pipeline'
+                };
+                
+                return displayNames[name] || name.replace('roles[', '').replace(']', '').replace(/_/g, ' ');
+            }
+            
+            // Function to apply visual indicators to permissions
+            function applyPermissionIndicators() {
+                const dependencies = getDependencyMap();
+                
+                $('.custom-checkbox').each(function() {
+                    const $checkbox = $(this);
+                    const $actionItem = $checkbox.closest('.action-item');
+                    const name = $checkbox.attr('name');
+                    
+                    // Check if this is a list permission
+                    if (name && name.includes('_list]')) {
+                        $actionItem.addClass('list-permission');
+                    }
+                    
+                    // Check if this permission has dependencies
+                    if (dependencies[name]) {
+                        $actionItem.addClass('dependent-permission dependency-tooltip');
+                    }
+                });
+                
+                // Initial dependency state update
+                updateDependencyStates();
             }
 
             // Init states
@@ -2943,6 +3564,9 @@
                 item.find('.permission-master-toggle').prop('checked', checked);
                 if (checked) { item.addClass('expanded'); item.find('.permission-actions').show(); }
             });
+
+            // Apply visual indicators to permissions
+            applyPermissionIndicators();
 
             // UI polish
             $('.custom-checkbox').on('change', function() {
