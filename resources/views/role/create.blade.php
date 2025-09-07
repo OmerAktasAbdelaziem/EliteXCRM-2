@@ -3484,7 +3484,6 @@
                     'roles[parts_view]': 'View Parts',
                     'roles[parts_create]': 'Create Parts',
                     'roles[parts_edit]': 'Edit Parts',
-                    'roles[parts_sender_parts]': 'Delete Parts',
                     'roles[teams_view]': 'View Teams',
                     'roles[teams_create]': 'Create Teams',
                     'roles[teams_edit]': 'Edit Teams',
