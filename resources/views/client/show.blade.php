@@ -93,7 +93,7 @@
                                     </h4>
                                 </div>
                                 
-                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp') || (UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp_demo') && $client->account_type == 'Demo')) && Auth::user()->pipeline->category_id == 1)
+                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp') || (UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_main_tp_demo') && $client->account_type == 'Demo') && Auth::user()->pipeline->category_id == 1)
                                 
                                     <div class="col-md-1 col-6">
                                         <small class="form-label">TP</small>
