@@ -166,13 +166,13 @@
                                 <a href="{{ route('bank.index') }}"><i class="bx bx-money"></i>Banks</a>
                             </li>
                         @endif
-                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'asset_list'))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'assets_list'))
                         
                             <li>
                                 <a href="{{ route('asset.index') }}"><i class="bx bx-wallet-alt"></i>Assets</a>
                             </li>
                         @endif
-                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'assetGroup_list'))
+                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'asset_groups_list'))  
                             <li>
                                 <a href="{{ route('assetGroup.index') }}"><i class="bx bx-shield-quarter"></i>Asset Groups</a>
                             </li>
