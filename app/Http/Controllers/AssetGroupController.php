@@ -282,6 +282,12 @@ class AssetGroupController extends Controller {
     }
 
     public function show($id) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        
+        
+        
         //$group = AssetGroup::findOrFail($id);
         $group = $this->assetGroupService->getById($id)->first();
         //$assets      = Asset::select('name','id')->get();
@@ -297,6 +303,9 @@ class AssetGroupController extends Controller {
                         'assets',
                         'groupAssets',
                         'group',
+                'userAuth',
+        'pipelineId',
+        'isSuperAdmin',
                 ));
     }
 
