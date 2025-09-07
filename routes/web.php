@@ -263,7 +263,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('assetGroup', [AssetGroupController::class, 'index'])->name('assetGroup.index');
     });
 
-    $router->middleware(['role:assetGroup_view'])->group(function (Router $router) {
+    $router->middleware(['role:asset_groups_view'])->group(function (Router $router) {
         $router->get('assetGroup/{id}', [AssetGroupController::class, 'show'])->name('assetGroup.show');
     });
 
