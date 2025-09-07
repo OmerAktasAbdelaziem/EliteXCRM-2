@@ -1033,7 +1033,7 @@
                                                 <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M4 4v5h.582a7 7 0 11-1.06 7.032 1 1 0 011.415-1.415A5 5 0 1015 10h-1.5a1 1 0 010-2H17a1 1 0 011 1v5a1 1 0 11-2 0v-2.586A7 7 0 014 4z" clip-rule="evenodd"/>
                                                 </svg>
-                                                Main TP Update Trading
+                                                Main TP Update Informations
                                             </div>
                                             <input type="checkbox" class="custom-checkbox" name="roles[mainTp_can_update]" @roleHasPermission($role, 'mainTp_can_update') checked @endroleHasPermission>
                                         </div>

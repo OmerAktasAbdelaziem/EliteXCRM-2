@@ -237,7 +237,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->post('asset',       [AssetController::class, 'store'])->name('asset.store');
     });
 
-    $router->middleware(['role:asset_list'])->group(function (Router $router) {
+    $router->middleware(['role:assets_list'])->group(function (Router $router) {
         $router->get('asset', [AssetController::class, 'index'])->name('asset.index');
     });
 
@@ -259,7 +259,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->post('assetGroup',       [AssetGroupController::class, 'store'])->name('assetGroup.store');
     });
 
-    $router->middleware(['role:assetGroup_list'])->group(function (Router $router) {
+    $router->middleware(['role:asset_groups_list'])->group(function (Router $router) {
         $router->get('assetGroup', [AssetGroupController::class, 'index'])->name('assetGroup.index');
     });
 
