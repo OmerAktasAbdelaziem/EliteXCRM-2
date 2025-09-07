@@ -991,16 +991,7 @@
                                         
                                        
                                         
-                                        <div class="action-item">
-                                            <div class="action-label">
-                                                <!-- New icon: Beaker (Demo) -->
-                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v2a1 1 0 001 1v5.586l-3.293 3.293A1 1 0 004 16h12a1 1 0 00.707-1.707L13 10.586V5a1 1 0 001-1V3a1 1 0 00-1-1H6zm2 2V3h4v1H8zm-1 2h6v5.586l3.293 3.293A1 1 0 0116 16H4a1 1 0 01-.707-1.707L6 9.586V4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Demo Trading
-                                            </div>
-                                            <input type="checkbox" class="custom-checkbox" name="roles[leads_main_tp_demo]" @roleHasPermission($role, 'leads_main_tp_demo') checked @endroleHasPermission>
-                                        </div>
+                                       
                                         <div class="action-item">
                                             <div class="action-label">
                                                 <!-- New icon: Refresh/Sync -->
@@ -1265,7 +1256,6 @@
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_view]" @roleHasPermission($role, 'parts_view') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_create]" @roleHasPermission($role, 'parts_create') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_edit]" @roleHasPermission($role, 'parts_edit') checked @endroleHasPermission></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Delete Parts</div><input type="checkbox" class="custom-checkbox" name="roles[parts_sender_parts]" @roleHasPermission($role, 'parts_sender_parts') checked @endroleHasPermission></div>
                                     </div>
                                 </div>
                             </div>
@@ -1300,7 +1290,6 @@
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>View Teams</div><input type="checkbox" class="custom-checkbox" name="roles[teams_view]" @roleHasPermission($role, 'teams_view') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>Create Team</div><input type="checkbox" class="custom-checkbox" name="roles[teams_create]" @roleHasPermission($role, 'teams_create') checked @endroleHasPermission></div>
                                         <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>Edit Team</div><input type="checkbox" class="custom-checkbox" name="roles[teams_edit]" @roleHasPermission($role, 'teams_edit') checked @endroleHasPermission></div>
-                                        <div class="action-item"><div class="action-label"><svg class="action-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg>Delete Team</div><input type="checkbox" class="custom-checkbox" name="roles[teams_delete]" @roleHasPermission($role, 'teams_delete') checked @endroleHasPermission></div>
                                     </div>
                                 </div>
                             </div>
