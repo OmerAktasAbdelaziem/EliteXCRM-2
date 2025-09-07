@@ -1137,7 +1137,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_open_demo') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions') )))
+                        @if (($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_open_demo') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions') ))
                             <div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -1183,7 +1183,7 @@
                             </div>
                         @endif
                         
-                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_open_real') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions') ))
+                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_actions_open_real') && UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_actions') )
                             <div class="modal fade" id="realModal" tabindex="-1" aria-labelledby="realModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
