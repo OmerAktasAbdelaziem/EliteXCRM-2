@@ -9,7 +9,9 @@ use App\Traits\HasRolesWithPipeline;
 
 class Role extends SpatieRole
 {
-  public static function findOrCreateWithPipeline(string $name, ?string $guardName = null, ?int $pipelineId = null): RoleContract
+    protected $table = 'rl_roles';
+    
+    public static function findOrCreateWithPipeline(string $name, ?string $guardName = null, ?int $pipelineId = null): RoleContract
     {
         $guardName = $guardName ?? config('auth.defaults.guard');
 
