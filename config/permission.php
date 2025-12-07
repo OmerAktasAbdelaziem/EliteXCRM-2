@@ -199,8 +199,4 @@ return [
 
         'store' => 'default',
     ],
-    'models' => [
-    'role' => \App\Models\Role::class,
-    'permission' => \App\Models\Permission::class,
-],
 ];
