@@ -174,9 +174,9 @@
                                                             <td>{{$deleted_user->username}}</td>
                                                             <td>{{$deleted_user->created_at}}</td>
                                                             <td>
-                                                                Part Role : {{$deleted_user->team?->part->role?->name}} <br>
+                                                            {{-- Part Role : {{$deleted_user->team?->part->role?->name}} <br>
                                                                 Team Role : {{$deleted_user->team?->role?->name}} <br>
-                                                                User Role : {{$deleted_user->role?->name}} <br>
+                                                                User Role : {{$deleted_user->role?->name}} <br> --}}
                                                             </td>
                                                             <td>{{$deleted_user->email}}</td>
                                                             <td>{{$deleted_user->lastlogin_at}}</td>

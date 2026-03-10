@@ -38,7 +38,7 @@ use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 //use App\Http\Services\User\Interfaces\UserServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class ClientsController extends Controller {
 
@@ -80,6 +80,7 @@ class ClientsController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $mycontact_filters = null;
         $contacts_filters = null;
@@ -122,30 +123,30 @@ class ClientsController extends Controller {
                     }
                 })->latest()->get();
 
-        $sources = Client::where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $sources = Client::where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         //if (isset($options['leads_data_show_unassigned_leads'])) {
                         $query->orWhere('user_id', null);
                     }
                 })->where('deleted', 0)->where('source', '!=', null)->where('source', '!=', '')->orderBy('source', 'asc')->distinct()->pluck('source');
 
-        $created_by_users = Client::where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $created_by_users = Client::where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
 
                     //if (isset($options['leads_data_show_unassigned_leads'])) {
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
                 })->where('created_by', '!=', null)->where('created_by', '!=', '')->orderBy('created_by', 'asc')->distinct()->pluck('created_by');
 
         //if (isset($options['leads_tabs_all_leads'])) {
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_all_leads')) {
-            $contacts = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_all_leads')) {
+            $contacts = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                 $query->whereIn('user_id', $users->pluck('id'));
 
                 //if (isset($options['leads_data_show_unassigned_leads'])) {
-                if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_all_leads')) {
+                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_all_leads')) {
                     $query->orWhere('user_id', null);
                 }
             });
@@ -157,7 +158,7 @@ class ClientsController extends Controller {
         }
 
         //if (isset($options['leads_tabs_my_leads'])) {
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_my_leads')) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_my_leads')) {
             $mycontact = Client::where('user_id', Auth::id());
             if (!isset($tab)) {
                 $tab = $request->input('tab', 'myContact');
@@ -166,12 +167,12 @@ class ClientsController extends Controller {
         }
 
         //if (isset($options['leads_tabs_b2b'])) {
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_b2b')) {
-            $broker = Client::where('broker_id', '!=', null)->where('account_type', 'Real')->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_b2b')) {
+            $broker = Client::where('broker_id', '!=', null)->where('account_type', 'Real')->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                 $query->whereIn('user_id', $users->pluck('id'));
 
                 //if (isset($options['leads_data_show_unassigned_leads'])) {
-                if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                     $query->orWhere('user_id', null);
                 }
             });
@@ -183,12 +184,12 @@ class ClientsController extends Controller {
         }
 
         //if (isset($options['leads_tabs_new'])) {
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_new')) {
-            $new = Client::where('sales_status', 'New')->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_new')) {
+            $new = Client::where('sales_status', 'New')->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                 $query->whereIn('user_id', $users->pluck('id'));
 
                 //if (isset($options['leads_data_show_unassigned_leads'])) {
-                if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                     $query->orWhere('user_id', null);
                 }
             });
@@ -203,12 +204,12 @@ class ClientsController extends Controller {
           echo $ss.',';
           }
           dd($users->pluck('id')); */
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_hot')) {
-            $hot = Client::where('sales_status', 'Hot Lead')->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_hot')) {
+            $hot = Client::where('sales_status', 'Hot Lead')->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                 $query->whereIn('user_id', $users->pluck('id'));
 
                 //if (isset($options['leads_data_show_unassigned_leads'])) {
-                if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                     $query->orWhere('user_id', null);
                 }
             });
@@ -220,7 +221,7 @@ class ClientsController extends Controller {
         }
 
         //if (isset($options['leads_tabs_actions'])) {
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_actions')) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_actions')) {
             $actions = Action::where('client_id', '!=', null)->where(function ($query) use ($users) {
                 $query->whereIn('user_id', $users->pluck('id'));
             });
@@ -231,7 +232,7 @@ class ClientsController extends Controller {
         }
 
         //if (isset($options['leads_tabs_history'])) {
-        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_history')) {
+        if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'leads_tabs_history')) {
             $money_history = MoneyHistory::where('client_id', '!=', null)->where(function ($query) use ($users) {
                 $query->whereIn('user_id', $users->pluck('id'));
             });
@@ -246,7 +247,7 @@ class ClientsController extends Controller {
 
             $filters = ${$check_type . '_filters'};
             if (!empty($filters)) {
-                ${$check_type}->where(function ($query) use ($filters, $isSuperAdmin, $pipelineId) {
+                ${$check_type}->where(function ($query) use ($filters, $isSuperAdmin, $isPipelineAdmin, $pipelineId) {
 
                     if ($id = Arr::get($filters, 'id')) {
                         $query->where('id', 'like', $id . '%');
@@ -324,10 +325,10 @@ class ClientsController extends Controller {
                             }
                         }
                         if ($isExcept) {
-                            $query->where(function ($q) use ($user, $isSuperAdmin, $pipelineId) {
+                            $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId) {
                                 $q->whereNotIn('user_id', $user);
                                 //if (isset($options['leads_data_show_unassigned_leads'])) {
-                                if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                                     $q->orWhere('user_id', null);
                                 }
                             });
@@ -770,9 +771,11 @@ class ClientsController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         $client = Client::findOrFail($id);
         return view('client.more_info', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'client'
@@ -827,6 +830,7 @@ class ClientsController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         
         $client = Client::with('createdBy')->findOrFail($id);
 
@@ -855,11 +859,11 @@ class ClientsController extends Controller {
         $users = $this->getUsers($teams);
         $parts = $this->getParts($teams);
 
-        $contacts = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $contacts = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
             $query->whereIn('user_id', $users->pluck('id'));
 
             //if (isset($options['leads_data_show_unassigned_leads'])) {
-            if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+            if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                 $query->orWhere('user_id', null);
             }
         });
@@ -878,18 +882,18 @@ class ClientsController extends Controller {
                     }
                 })->latest()->get();
 
-        $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
 
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
                 })->orderBy('created_at', 'desc');
 
-        $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
 
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
                 })->orderBy('created_at', 'asc');
@@ -1061,16 +1065,17 @@ class ClientsController extends Controller {
     public function slides($status, $move, $id) {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         //$user_controller = new UserController;
         $old_client = Client::findOrfail($id);
         //$options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams = $this->getTeams();
         $users = $this->getUsers($teams);
 
-        $leads = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $leads = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
             $query->whereIn('user_id', $users->pluck('id'));
 
-            if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+            if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                 $query->orWhere('user_id', null);
             }
         });
@@ -1294,6 +1299,7 @@ class ClientsController extends Controller {
     public function update(Request $request, $id) {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
 
         //$options = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
         $client = Client::findOrfail($id);
@@ -1392,7 +1398,7 @@ class ClientsController extends Controller {
             }
         } else {
             //if (isset($options['leads_ftd'])) {
-            if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'field_ftd_status_edit')) {
+            if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'field_ftd_status_edit')) {
                 $inputs = array_merge($inputs, [
                     'ftd_date' => null,
                     'is_ftd' => 0,
@@ -1422,6 +1428,7 @@ class ClientsController extends Controller {
     public function editStatus(Request $request, $id) {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         //$user_controller = new UserController;
         //$options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $client = Client::findOrfail($id);
@@ -1457,7 +1464,7 @@ class ClientsController extends Controller {
         }
 
         if ($status != 'FTD') {
-            if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'field_ftd_status_edit')) {
+            if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'field_ftd_status_edit')) {
                 //if (isset($options['leads_ftd'])) {
                 $inputs = array_merge($inputs, [
                     'ftd_date' => null,
@@ -1666,6 +1673,7 @@ class ClientsController extends Controller {
         // return $this->clientService->getTeams($options, Auth::user());
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         $teams = collect();
 
         if (Auth::user()->ledTeams->count() > 0) {
@@ -1684,7 +1692,7 @@ class ClientsController extends Controller {
                 }
             }
         }
-        /* if($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'field_team_show')){
+        /* if($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(),$pipelineId , 'field_team_show')){
           if (isset($options['leads_data_show_teams']) && !empty($options['leads_data_show_teams'])) {
           $specificTeams = Team::whereIn('id', $options['leads_data_show_teams'])->get();
           foreach ($specificTeams as $specificTeam) {
@@ -1871,6 +1879,7 @@ class ClientsController extends Controller {
     public function export(Request $request) {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         // Check if user is Admin
         if (Auth::user()->role->name !== 'Admin') {
             abort(403, 'Unauthorized access to export functionality.');
@@ -1889,10 +1898,10 @@ class ClientsController extends Controller {
                 );
 
         // Apply user filter based on permissions
-        $query->where(function ($q) use ($users, $isSuperAdmin, $pipelineId) {
+        $query->where(function ($q) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
             $q->whereIn('clients.user_id', $users->pluck('id'));
             //if (isset($options['leads_data_show_unassigned_leads'])) {
-            if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+            if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                 $q->orWhereNull('clients.user_id');
             }
         });
@@ -1987,15 +1996,16 @@ class ClientsController extends Controller {
     public function getCountriesWithClients() {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         //$options = $this->userService->getUserOptions(Auth::user());
         $teams = $this->getTeams();
         $users = $this->getUsers($teams);
 
         // Get countries that have clients based on user permissions
         $countries = Client::where('clients.deleted', 0)
-                ->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+                ->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         //if (isset($options['leads_data_show_unassigned_leads'])) {
                         $query->orWhereNull('user_id');
                     }
@@ -2022,16 +2032,17 @@ class ClientsController extends Controller {
     public function getCountriesWithClientCounts() {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
+        $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         //$options = $this->userService->getUserOptions(Auth::user());
         $teams = $this->getTeams();
         $users = $this->getUsers($teams);
 
         // Get countries with client counts based on user permissions
         $countriesWithCounts = Client::where('clients.deleted', 0)
-                ->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+                ->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
                     //if (isset($options['leads_data_show_unassigned_leads'])) {
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhereNull('user_id');
                     }
                 })

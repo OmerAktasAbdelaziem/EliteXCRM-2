@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class BankController extends Controller {
 
@@ -13,11 +13,13 @@ class BankController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $banks = Bank::latest()->get();
 
         return view('bank.index', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'banks',
