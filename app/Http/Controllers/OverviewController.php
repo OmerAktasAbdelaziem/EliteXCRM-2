@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Http;
 //Services
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 //use App\Http\Services\User\Interfaces\UserServiceInterface;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class OverviewController extends Controller {
 
@@ -37,6 +37,7 @@ class OverviewController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
         $pipelineSupportIds = array_merge($pipelineSupportIds, [644033, 298274]);
@@ -61,9 +62,9 @@ class OverviewController extends Controller {
         $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id', $pipelineSupportIds); //$clientsController->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
         $parts = $this->clientService->getParts($teams, Auth::user()); //$clientsController->getParts($teams);
 
-        $leads = Client::where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $leads = Client::where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin ||  UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         //if (isset($options['leads_data_show_unassigned_leads'])) {
                         $query->orWhere('user_id', null);
                     }
@@ -135,6 +136,7 @@ class OverviewController extends Controller {
 
         return view('overview.index', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'last_month_days_leads',
@@ -262,11 +264,11 @@ class OverviewController extends Controller {
             $teams = $this->clientService->getTeams(Auth::user()); //$clientsController->getTeams($options);
             $users = $this->clientService->getUsers($teams, Auth::user()); //$clientsController->getUsers($teams);
 
-            $lead_ids = Client::where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+            $lead_ids = Client::where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                         $query->whereIn('user_id', $users->pluck('id'));
 
                         //if (isset($options['leads_data_show_unassigned_leads'])) {
-                        if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                        if ($isSuperAdmin || $isPipelineAdmin ||  UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                             $query->orWhere('user_id', null);
                         }
                     })->where('deleted', 0)->pluck('id');

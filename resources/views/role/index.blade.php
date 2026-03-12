@@ -40,13 +40,13 @@
                                             <tbody>
                                                 @foreach ($roles as $role)
                                                     <tr>
-                                                        <td>@if($role->name != 'system_super_admin')<a href="{{ route('role.edit', $role->id) }}">{{$role->name}}</a>@else {{$role->name}} @endif</td>
+                                                        <td>@if($role->name != 'system_super_admin' && $role->name != 'pipeline_admin')<a href="{{ route('role.edit', $role->id) }}">{{$role->name}}</a>@else {{$role->name}} @endif</td>
                                                         <?php /* <td>{{$role->users->count()}}</td>
                                                         <td>{{$role->teams->count()}}</td>
                                                         <td>{{$role->parts->count()}}</td> */ ?>
                                                         <td>{{date('d/m/Y H:i', strtotime($role->created_at))}}</td>
                                                         <td>
-                                                            @if($role->name != 'system_super_admin')
+                                                            @if($role->name != 'system_super_admin' && $role->name != 'pipeline_admin')
                                                             <button type="button" formaction="{{ route('role.delete',$role->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                                 <i class="bx bx-trash"></i>
                                                             </button>

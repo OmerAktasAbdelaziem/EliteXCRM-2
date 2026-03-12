@@ -715,6 +715,7 @@ class ClientsController extends Controller {
 
         return view('client.index', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'mycontact_filters',

@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Action;
 use App\Models\Client;
+use App\Facades\UserPermission;
 
 class ClientService implements ClientServiceInterface {
 
@@ -75,6 +76,10 @@ class ClientService implements ClientServiceInterface {
     
     public function getTeams(User $user): supportCollection
     {
+        $userAuth = $user;
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         //$user is Authinticated User
         $teams = collect();
         if ($user->ledTeams->count() > 0) {
@@ -105,7 +110,7 @@ class ClientService implements ClientServiceInterface {
         }*/
         $pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
         
-        if (in_array($user->id, $pipelineSupportIds) || $user->pipeline->co_id == $user->id || $user->id == 644033 || $user->id == 298274) {
+        if (in_array($user->id, $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
             $teams = $this->teamService->getByFilters([['field' => 'created_at', 'conditions' => ['order' => 'desc']]]);
             //$teams = Team::latest()->get();
         }
@@ -116,33 +121,56 @@ class ClientService implements ClientServiceInterface {
     
     public function getUsers(supportCollection $teams,User $user): supportCollection
     {
+
+        $userAuth = $user;
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         //$user is Authinticated User
         $with = ['pipeline'];
         //$users = collect();
-        $users = $this->userService->getByFilters([
-            ['field' => 'deleted', 'conditions' => ['!=' => true]],
+
+$pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
+
+
+$filters = [
+    ['field' => 'deleted', 'conditions' => ['!=' => true]],
     ['field' => 'team_id', 'conditions' => ['in' => $teams->pluck('id')]],
-    ['field' => 'id',      'conditions' => ['='  => $user->id, 'or' => true]],
-],$with);
-        $pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
-        if (in_array($user->id, $pipelineSupportIds) || $user->pipeline->co_id == $user->id || $user->id == 644033 || $user->id == 298274) {
-            //$users = User::WithPipeline()->latest()->get();
-            $users = $this->userService->getByFilters([
-                ['field' => 'deleted', 'conditions' => ['!=' => true]],
-                ['field' => 'created_at', 'conditions' => ['order' => 'desc']]
-                ],$with);
-        }
+    ['field' => 'id', 'conditions' => ['=' => $user->id, 'or' => true]],
+];
+
+
+if (in_array($user->id, $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
+
+    $filters = [
+        ['field' => 'deleted', 'conditions' => ['!=' => true]],
+        ['field' => 'created_at', 'conditions' => ['order' => 'desc']]
+    ];
+
+
+    if ($isPipelineAdmin) {
+        $filters[] = ['field' => 'pipeline_id', 'conditions' => ['=' => $pipelineId]];
+    }
+}
+
+
+$users = $this->userService->getByFilters($filters, $with);
+        //dd($users);
         return $users;
         
     }
     
     public function getParts(supportCollection $teams,User $user): supportCollection
     {
+        $userAuth = $user;
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
      //$user is Authinticated User
          $params = [];
         $parts = collect();
         $params[] = ['field' => 'id','conditions' => ['in' => $teams->pluck('part_id')->toArray()]];
-        
         
      
         if ($user->team) {
@@ -152,8 +180,9 @@ class ClientService implements ClientServiceInterface {
         }
         $params[] = ['field' => 'created_at','conditions' => ['order' => 'desc']];
         $parts = $this->partService->getByFilters($params);
+        //dd($user->team);
         $pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
-        if (in_array($user->id, $pipelineSupportIds) || $user->pipeline->co_id == $user->id || $user->id == 644033 || $user->id == 298274) {
+        if (in_array($user->id, $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
             $parts = $this->partService->getByFilters([['field' => 'created_at', 'conditions' => ['order' => 'desc']]]);
         }
         return $parts;

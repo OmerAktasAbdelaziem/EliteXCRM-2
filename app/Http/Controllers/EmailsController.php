@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
 
-use UserPermission;
+use App\Facades\UserPermission;
 
 class EmailsController extends Controller {
 
@@ -40,6 +40,7 @@ class EmailsController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         
         $marketingEmailLogs = MarketingEmailLog::where('user_id', '!=', null);
         //$clientsController  = new ClientsController;
@@ -106,6 +107,7 @@ class EmailsController extends Controller {
 
         return view('emails.index', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'marketingEmailLogs',

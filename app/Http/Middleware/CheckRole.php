@@ -30,7 +30,9 @@ class CheckRole
         }
         }
         $superAdmin = UserPermission::isSuperAdmin(Auth::user());
-        if ($hasPermission || $superAdmin) {
+        $pipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
+        //dd($pipelineId);
+        if ($hasPermission || $superAdmin || $pipelineAdmin) {
                 return $next($request);
             }
     //dd($roles);

@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 //use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasRolesWithPipeline;
+//use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
 
-    use HasFactory, Notifiable, HasRolesWithPipeline;//HasRoles;
+    use HasFactory, Notifiable, HasRolesWithPipeline;//;
 
     protected $hidden = [
         'password',

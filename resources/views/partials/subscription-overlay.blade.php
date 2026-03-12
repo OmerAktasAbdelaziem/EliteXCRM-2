@@ -1,5 +1,9 @@
+@php
+$isSuperAdmin = App\Facades\UserPermission::isSuperAdmin(Auth::user());
+
+@endphp
 <!-- Subscription Inactive Overlay -->
-@if(isset($subscription_inactive) && $subscription_inactive)
+@if(isset($subscription_inactive) && $subscription_inactive && Auth::user() && !$isSuperAdmin)
 <div id="subscription-overlay" class="subscription-overlay">
     <div class="subscription-blur-background"></div>
     <div class="subscription-popup-card">
@@ -11,7 +15,7 @@
                 <h3 class="text-danger mb-3">Your subscription is not active</h3>
                 <p class="text-muted mb-4">Please contact your administrator to renew your subscription to continue using the system.</p>
                 <div class="d-flex justify-content-center gap-3">
-                    @if(Auth::user() && Auth::user()->role && Auth::user()->role->name === 'Admin')
+                    @if(Auth::user() && !$isSuperAdmin)
                         <a href="{{ route('subscription.index') }}" class="btn btn-primary">
                             <i class="bx bx-cog me-2"></i>Manage Subscription
                         </a>
@@ -153,7 +157,7 @@
         window.addEventListener('beforeunload', function(e) {
             // Only allow navigation to subscription management for admins
             if (!window.location.href.includes('/subscription')) {
-                @if(Auth::user() && Auth::user()->role && Auth::user()->role->name !== 'Admin')
+                @if(Auth::user() && !$isSuperAdmin)
                 e.preventDefault();
                 e.returnValue = '';
                 return '';

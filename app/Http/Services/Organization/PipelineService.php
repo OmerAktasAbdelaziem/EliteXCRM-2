@@ -5,15 +5,24 @@ namespace App\Http\Services\Organization;
 //Interfaces
 use App\Http\Repositories\Organization\Interfaces\PipelineRepositoryInterface;
 use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
+use App\Http\Services\User\Interfaces\UserServiceInterface;
+use App\Http\Services\Role\Interfaces\RoleServiceInterface;
 //Other
 use Illuminate\Database\Eloquent\Collection;
+
 
 class PipelineService implements PipelineServiceInterface {
 
     protected $pipelineRepository;
+    protected $userService;
 
-    public function __construct(PipelineRepositoryInterface $pipelineRepository) {
+    public function __construct(PipelineRepositoryInterface $pipelineRepository,
+    UserServiceInterface $userService,
+    RoleServiceInterface $roleService,
+    ) {
         $this->pipelineRepository = $pipelineRepository;
+        $this->userService = $userService;
+        $this->roleService = $roleService;
     }
     
     public function getAll(): Collection{
@@ -31,12 +40,63 @@ class PipelineService implements PipelineServiceInterface {
         return $results;
     }
     public function create(array $data): Collection {
-        return $this->pipelineRepository->create($data);
+        $adminId = $data['co_id'];
+        unset($data['co_id']);
+        $pipeline = $this->pipelineRepository->create($data)->first();
+        $pipelineId = $pipeline->id;
+
+   $user = $this->userService->getById($adminId)->first();
+   /*$role = Role::firstOrCreate([
+    'name' => 'pipeline_admin',
+    'guard_name' => 'web',
+    'pipeline' => $pipelineId
+]);*/
+$this->roleService->create('pipeline_admin',$pipelineId);
+        $user->assignRoleWithPipeline('pipeline_admin', $pipelineId);
+
+ 
+ 
+
+  /*  $user->roles()->attach($role->id, [
+        'pipeline_id' => $pipelineId
+    ]);*/
+
+    return new Collection([$pipeline]);
     }
     
     public function update(int $id,array $data):int
     {
-        return $this->pipelineRepository->update($id, $data);
+       // return $this->pipelineRepository->update($id, $data);
+       $adminId = $data['co_id'];
+       unset($data['co_id']);
+   
+       $result = $this->pipelineRepository->update($id,$data);
+   
+       $pipelineId = $id;
+   
+     
+      /* $role = Role::firstOrCreate([
+           'name' => 'pipeline_admin',
+           'guard_name' => 'web',
+           'pipeline' => $pipelineId
+       ]);*/
+
+      
+   
+    
+       \DB::table('rl_model_has_roles')
+           ->where('role_id',$role->id)
+           ->where('pipeline_id',$pipelineId)
+           ->delete();
+   
+      
+       $user = User::find($adminId);
+   
+       $user->roles()->attach($role->id,[
+           'pipeline_id'=>$pipelineId
+       ]);
+   
+       return $result;
     }
     
     public function updateBulk(array $ids,array $data):int
@@ -49,7 +109,7 @@ class PipelineService implements PipelineServiceInterface {
     }
 
     public function deleteByParams(array $params): int {
-        return $this->pipelineRepository->deleteByIDs($Ids);
+        return $this->pipelineRepository->deleteByIDs($params);
     }
     
     

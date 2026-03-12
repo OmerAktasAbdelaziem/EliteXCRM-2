@@ -37,7 +37,7 @@ class RoleService implements RoleServiceInterface {
         $results = $this->roleRepository->getByFilters($params,$with);
         return $results;
     }
-    public function create(string $name,int $pipelineId ,array $permissions): void {
+    public function create(string $name,int $pipelineId ,array $permissions = []): void {
         //$pipelineId = 2;
         //$role = Role::create(['name' => $name,'pipeline'=>2]);//add pipeline
         $role = Role::where('name',  $name)

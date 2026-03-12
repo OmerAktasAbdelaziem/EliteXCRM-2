@@ -46,6 +46,7 @@ class TeamController extends Controller
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         $users              = $this->clientService->getUsers($teams, Auth::user());//$clients_controller->getUsers($teams);
         $parts              = $this->clientService->getParts($teams, Auth::user());//$clients_controller->getParts($teams);
+       // dd($parts);
         $team               = new Team;
         $users              = $users->merge($usersWithoutTeam);
 
