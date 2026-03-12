@@ -48,7 +48,7 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::saving(function ($model) {
+        static::creating(function ($model) {
             if (Auth::check()) {
                 $model->pipeline_id = Auth::user()->pipeline_id;
             }
@@ -58,7 +58,7 @@ class User extends Authenticatable
     public function assignRoleWithPipeline($roleName, $pipelineId = null)
     {
         $role = Role::where('name', $roleName)->firstOrFail();
-        $this->roles()->attach($role->id, [
+        $this->roles()->syncWithoutDetaching($role->id, [
             'model_type' => static::class,
             'pipeline_id' => $pipelineId
         ]);

@@ -146,6 +146,11 @@ class PipelineController extends Controller
         ]);
 
         $pipeline->update($inputs);
+        
+        $coAdmin = User::find($inputs['co_id']);
+        $coAdmin->pipeline_id = $pipeline->id;
+        $coAdmin->save();
+        $coAdmin->assignRoleWithPipeline('pipeline_admin', $pipeline->id);
 
         return redirect()->route('pipeline.show', $id)->with('success', 'Pipeline updated successfully');
     }

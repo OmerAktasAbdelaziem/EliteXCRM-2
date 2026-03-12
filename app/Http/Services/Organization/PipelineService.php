@@ -15,6 +15,7 @@ class PipelineService implements PipelineServiceInterface {
 
     protected $pipelineRepository;
     protected $userService;
+    protected $roleService;
 
     public function __construct(PipelineRepositoryInterface $pipelineRepository,
     UserServiceInterface $userService,
@@ -53,8 +54,8 @@ class PipelineService implements PipelineServiceInterface {
 ]);*/
 $this->roleService->create('pipeline_admin',$pipelineId);
         $user->assignRoleWithPipeline('pipeline_admin', $pipelineId);
-
- 
+        $user->pipeline_id = $pipelineId;
+        $user->save();
  
 
   /*  $user->roles()->attach($role->id, [
