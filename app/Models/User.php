@@ -8,7 +8,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
-use Spatie\Permission\Models\Role;
 //use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasRolesWithPipeline;
 

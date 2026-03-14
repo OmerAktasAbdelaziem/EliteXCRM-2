@@ -7,7 +7,9 @@ use Spatie\Permission\Contracts\Permission as PermissionContract;
 
 class Permission extends SpatiePermission
 {
-  public static function findOrCreateWithPipeline(string $name, ?string $guardName = null, ?int $pipelineId = null): PermissionContract
+    protected $table = 'rl_permissions';
+    
+    public static function findOrCreateWithPipeline(string $name, ?string $guardName = null, ?int $pipelineId = null): PermissionContract
     {
         $guardName = $guardName ?? config('auth.defaults.guard');
 
@@ -17,12 +19,7 @@ class Permission extends SpatiePermission
             ->first();
 
         if (! $permission) {
-            /*$role = static::create([
-                'name' => $name,
-                'guard_name' => $guardName,
-                'pipeline' => $pipelineId,
-            ]);*/
-             $permission = static::query()->insertGetId([
+            $permission = static::query()->insertGetId([
                 'name' => $name,
                 'guard_name' => $guardName,
                 'pipeline' => $pipelineId,

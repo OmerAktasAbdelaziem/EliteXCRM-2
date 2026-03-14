@@ -107,7 +107,7 @@
                                                             <td>{{$user->username}}</td>
                                                             <td>{{$user->created_at}}</td>
                                                             <td>
-                                                                Part Role : {{$user->team?->part->role?->name}} <br>
+                                                                Part Role : {{ $user->team->part->role->name ?? 'No Role Assigned' }} <br>
                                                                 Team Role : {{$user->team?->role?->name}} <br>
                                                                 User Role : {{$user->role?->name}} <br>
                                                             </td>

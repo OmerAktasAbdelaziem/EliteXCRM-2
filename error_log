@@ -1,0 +1,8 @@
+[07-Dec-2025 17:27:26 UTC] PHP Parse error:  Unclosed '(' in Command line code on line 1
+[07-Dec-2025 17:32:35 UTC] PHP Parse error:  syntax error, unexpected token "=", expecting end of file in /tmp/fix_trait.php on line 2
+[07-Dec-2025 17:36:41 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting variable or "${" or "{$" in Command line code on line 1
+[07-Dec-2025 17:36:50 UTC] PHP Parse error:  syntax error, unexpected identifier "Spatie", expecting "," or ";" in /tmp/test_spatie.php on line 3
+[07-Dec-2025 17:37:35 UTC] PHP Parse error:  syntax error, unexpected token "\", expecting variable in app/Models/Permission.php on line 10
+[07-Dec-2025 17:38:01 UTC] PHP Parse error:  syntax error, unexpected token "\", expecting variable in app/Models/Permission.php on line 10
+[07-Dec-2025 17:43:20 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting variable or "${" or "{$" in Command line code on line 1
+[07-Dec-2025 17:55:17 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting variable or "${" or "{$" in Command line code on line 1

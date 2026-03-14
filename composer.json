@@ -21,7 +21,7 @@
         "mpdf/mpdf": "^8.2",
         "radicalloop/eodhistoricaldata": "^8.0",
         "ratchet/pawl": "^0.4.2",
-        "spatie/laravel-permission": "^6.21",
+        "spatie/laravel-permission": "^6.23",
         "workerman/workerman": "^5.1"
     },
     "require-dev": {
