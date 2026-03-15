@@ -216,7 +216,8 @@ $role   = $request->input('role');
     
     public function update(Request $request, $id)
     {
-        $employee = User::WithPipeline()->findOrFail($id);
+   
+        $employee = User::find($id);
         $request->validate([
             'first_name' => ['required' , 'string'],
             'last_name'  => ['nullable' , 'string'],
