@@ -37,7 +37,7 @@ use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 //use App\Http\Services\User\Interfaces\UserServiceInterface;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class MainTPController extends Controller {
 
@@ -66,7 +66,7 @@ class MainTPController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
-
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         $formattedNowFromDate = Carbon::now()->subDays(30)->startOfDay()->format('d/m/Y');
         $formattedNowToDate = Carbon::now()->endOfDay()->format('d/m/Y');
         $moneyTrx_fromTo = $request->moneyTrx_fromTo ?? $formattedNowFromDate . ' - ' . $formattedNowToDate;
@@ -110,20 +110,20 @@ class MainTPController extends Controller {
                     }
                 })->latest()->get();
 
-        $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
 
                     //if (isset($options['leads_data_show_unassigned_leads'])) {
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin ||  UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
                 })->orderBy('created_at', 'desc');
 
-        $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin, $pipelineId) {
+        $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
 
                     //if (isset($options['leads_data_show_unassigned_leads'])) {
-                    if ($isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    if ($isSuperAdmin || $isPipelineAdmin ||  UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
                 })->orderBy('created_at', 'asc');
@@ -300,6 +300,7 @@ class MainTPController extends Controller {
 
         return view('client.main_tp', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'moneytrx_request_data',
@@ -1638,6 +1639,7 @@ class MainTPController extends Controller {
 
         return view('client.retention', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'moneytrx_request_data',

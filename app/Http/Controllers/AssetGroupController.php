@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 //Service
 use App\Http\Services\Asset\AssetGroupService;
 use App\Http\Services\Asset\AssetService;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class AssetGroupController extends Controller {
 
@@ -28,10 +28,12 @@ class AssetGroupController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $assetGroups = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)->get();
         return view('asset_group.index', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'assetGroups',
@@ -285,6 +287,7 @@ class AssetGroupController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         
         
         
@@ -306,6 +309,7 @@ class AssetGroupController extends Controller {
                 'userAuth',
         'pipelineId',
         'isSuperAdmin',
+        'isPipelineAdmin',
                 ));
     }
 

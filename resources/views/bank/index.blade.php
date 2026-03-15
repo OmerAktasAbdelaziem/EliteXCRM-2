@@ -30,12 +30,12 @@
                             </div>
                             <div class="font-22 ms-auto">
                                 <div class="d-flex justify-content-end">
-                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_create'))
+                                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_create'))
                                     <a href="{{ route('bank.create') }}" class="btn btn-success btn-sm">
                                         Add new bank
                                     </a>
                                     @endif
-                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'edit_default_usdt_address'))
+                                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'edit_default_usdt_address'))
                                     <a class="btn btn-primary btn-sm mx-2" data-bs-toggle="modal" data-bs-target="#usdtModal">
                                         USDT Address
                                     </a>
@@ -112,7 +112,7 @@
                                                 </td>
                                                 <td>{{date('d/m/Y H:i', strtotime($bank->created_at))}}</td>
                                                 <td>
-                                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_delete'))
+                                                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_delete'))
                                                     <button type="button" formaction="{{ route('bank.delete',$bank->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
@@ -133,7 +133,7 @@
     </div>
 </div>
 
- @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_delete'))
+ @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'banks_delete'))
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -156,7 +156,7 @@
         </div>
     </div>
  @endif
-@if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'edit_default_usdt_address'))
+@if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'edit_default_usdt_address'))
 <div class="modal fade" id="usdtModal" tabindex="-1" aria-labelledby="usdtModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

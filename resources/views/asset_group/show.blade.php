@@ -102,11 +102,11 @@
                                 </div>
                                 <div class="col-12">
                                     @if ($group->getKey())
-                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_edit'))
+                                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_edit'))
                                         <button type="submit" class="btn btn-danger px-5">Update</button>
                                         @endif
                                     @else
-                                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_create'))
+                                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_create'))
                                         <button type="submit" class="btn btn-danger px-5">Register</button>
                                         @endif
                                     @endif
@@ -125,7 +125,7 @@
                                             <span class="number">0</span>
                                             Selected
                                         </button>
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_delete'))
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_delete'))
                                         <button type="button" class="btn btn-danger text-center w-auto mx-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                             <i class="bx bx-trash me-2"></i>
                                             Delete

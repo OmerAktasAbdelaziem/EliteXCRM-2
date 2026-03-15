@@ -8,7 +8,7 @@ use App\Models\Asset;
 use Illuminate\Support\Facades\Http;
 use RadicalLoop\Eod\Facades\Eod;
 use Illuminate\Support\Facades\Auth;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class AssetController extends Controller {
 
@@ -16,7 +16,7 @@ class AssetController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
-
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         $assets = Asset::whereNotNull('created_at');
         $currencies = Asset::select('currency')->distinct()->pluck('currency');
         if ($filters = $request->get('filters', [])) {
@@ -40,6 +40,7 @@ class AssetController extends Controller {
         $filters = collect($filters);
         return view('asset.index', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'currencies',

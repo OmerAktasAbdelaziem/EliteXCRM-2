@@ -27,7 +27,7 @@ class ViewServiceProvider extends ServiceProvider
                 //$user_controller = new UserController;
                 $nav_pipelines   = Pipeline::select('id', 'name')->where('id','!=',Auth::user()->pipeline_id)->get();
                 $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
-                $options         = $userService->getUserOptions(Auth::user());//die;//$user_controller->get_user_options();
+               // $options         = $userService->getUserOptions(Auth::user());//die;//$user_controller->get_user_options();
                 $system          = SystemStyle::first();
                 $notifications   = Client::where('user_id', Auth::user()->id)->where('is_notified', 1)->orderby('notified_at')->get();
                 $totalRequests   = MoneyTrx::whereHas('client', function ($query) {
@@ -38,7 +38,7 @@ class ViewServiceProvider extends ServiceProvider
                     'totalRequests' => $totalRequests,
                     'nav_pipelines' => $nav_pipelines,
                     'notifications' => $notifications,
-                    'options'       => $options,
+                   // 'options'       => $options,
                     'system'        => $system,
                 ]);
             }

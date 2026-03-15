@@ -10,5 +10,6 @@ interface UserPermissionServiceInterface{
    public function hasRoleInPipeline(User $user,int $pipeline , string $roleName): bool;
    public function hasPermissionInPipeline(User $user,int $pipeline , string $permissionName): bool;
    public function isSuperAdmin(User $user): bool;
+   public function isPipelineAdmin(User $user,int $pipelineId): bool;
    public function hasPermissionOfMultiInPipeline(User $user, int $pipelineId, array $permissionNames): bool;
 }

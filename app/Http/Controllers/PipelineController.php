@@ -16,6 +16,7 @@ use App\Http\Services\User\Interfaces\UserServiceInterface;
 use App\Http\Services\Organization\Interfaces\PartServiceInterface;
 use App\Http\Services\Organization\Interfaces\TeamServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
+use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
 
 class PipelineController extends Controller
 {
@@ -24,18 +25,21 @@ class PipelineController extends Controller
     protected $partService;
     protected $teamService;
     protected $subscriptionService;
+    protected $pipelineService;
     public function __construct(
             ClientServiceInterface $clientService,
             UserServiceInterface $userService,
             PartServiceInterface $partService,
             TeamServiceInterface $teamService,
             SubscriptionServiceInterface $subscriptionService,
+            PipelineServiceInterface $pipelineService,
             ) {
         $this->clientService = $clientService;
         $this->userService = $userService;
         $this->partService = $partService;
         $this->teamService = $teamService;
         $this->subscriptionService = $subscriptionService;
+        $this->pipelineService = $pipelineService;
         
     }
     public function index()
@@ -94,8 +98,8 @@ class PipelineController extends Controller
             'support_ids' => json_encode($request->support_ids),
         ]);
 
-        Pipeline::Create($inputs);
-
+        //Pipeline::Create($inputs);
+        $this->pipelineService->create($inputs);
         return redirect()->route('pipeline.index')->with('success', 'Pipeline created successfully');
     }
     
@@ -142,6 +146,11 @@ class PipelineController extends Controller
         ]);
 
         $pipeline->update($inputs);
+        
+        $coAdmin = User::find($inputs['co_id']);
+        $coAdmin->pipeline_id = $pipeline->id;
+        $coAdmin->save();
+        $coAdmin->assignRoleWithPipeline('pipeline_admin', $pipeline->id);
 
         return redirect()->route('pipeline.show', $id)->with('success', 'Pipeline updated successfully');
     }

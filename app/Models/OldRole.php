@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class OldRole extends Model
 {
     use HasFactory;
+    protected $table = 'roles';
     protected $fillable = ['name', 'options', 'pipeline_id'];
 
     protected static function boot()

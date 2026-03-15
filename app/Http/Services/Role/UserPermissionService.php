@@ -31,7 +31,8 @@ protected static array $cache = [];
        // echo $roleName;die;
         return $user->roles()
     ->when($roleName !== 'system_super_admin', function ($query) use ($pipelineId) {
-        $query->wherePivot('pipeline_id', $pipelineId);
+    // $query->wherePivot('pipeline_id', $pipelineId);
+    $query->where('rl_model_has_roles.pipeline_id', $pipelineId);
     })
     ->where('name', $roleName)
     ->exists();
@@ -47,6 +48,19 @@ protected static array $cache = [];
         }
         
         $result = $this->hasRoleInPipeline($user, 0,'system_super_admin');
+        
+        return self::$cache[$cacheKey] = $result;
+    }
+
+    public function isPipelineAdmin(User $user,int $pipelineId): bool
+    {
+        $cacheKey = $user->id . '-'. $pipelineId .'-pipeline_admin';
+
+        if (isset(self::$cache[$cacheKey])) {
+            return self::$cache[$cacheKey];
+        }
+        
+        $result = $this->hasRoleInPipeline($user, $pipelineId,'pipeline_admin');
         
         return self::$cache[$cacheKey] = $result;
     }

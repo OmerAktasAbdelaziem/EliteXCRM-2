@@ -29,7 +29,7 @@
                                         <h5 class="mb-1">Our Asset Groups</h5>
                                     </div>
                                     <div class="font-22 ms-auto">
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_create'))
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_create'))
                                             <a href="{{ route('assetGroup.create') }}" class="btn btn-success btn-sm">
                                                 Add new Asset Group
                                             </a>

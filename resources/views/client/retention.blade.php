@@ -75,10 +75,10 @@
                                         <small class="form-label">TP Name</small>
                                         @if ($client)
                                             <h3 class="text-white mb-3">
-                                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show'))
+                                                @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show'))
                                                     {{$client->first_name.' '}}
                                                 @endif
-                                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_show'))
+                                                @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_last_name_show'))
                                                     {{$client->last_name}}
                                                 @endif
                                             </h3>
@@ -237,7 +237,7 @@
                                                     </div>
                                                 </a>
                                             </li>
-                                            @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions') )
+                                            @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions') )
                                             
                                                 <li class="nav-item" role="presentation">
                                                     <a class="nav-link closed_tab @if ($tab == 'actions') active @endif" data-bs-toggle="tab" href="#actions" id="view-tab" role="tab" aria-selected="true">
@@ -450,9 +450,9 @@
 
                                                         <div class="col-md-6">
                                                             <label for="country" class="form-label">Country</label>
-                                                            @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_show') )
+                                                            @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_show') )
                                                                 <div class="input-group">
-                                                                    <select id="country" class="single-select form-select @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_edit') ) editable @endif" @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_edit') ) name="country" @endif disabled>
+                                                                    <select id="country" class="single-select form-select @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_edit') ) editable @endif" @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_edit') ) name="country" @endif disabled>
                                                                         @if ($client && $tab == 'opened')
                                                                             <option value="{{ old('country', $client->country) }}" selected>{{ old('country', $client->country) }}</option>
                                                                             <option value="Afghanistan">Afghanistan</option>
@@ -1113,13 +1113,13 @@
                                                                                 {{$money_trx->is_admin ? 'Admin' : 'Client'}}
                                                                             </td>
                                                                             <td class="text-end">
-                                                                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_money_trx_update') )
+                                                                                @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_money_trx_update') )
                                                                                 
                                                                                     <button type="button" data-type="{{$money_trx->type}}" data-amount="{{$money_trx->amount}}" data-comment="{{$money_trx->comment}}" data-trxdate="{{$money_trx->created_at}}" formaction="{{ route('main_tp.update_money_trx', $money_trx->id) }}" class="btn btn-sm text-primary text-center w-auto modal-btn edit_money_trx" data-bs-toggle="modal" data-bs-target="#editTransactionModal" style="background-color: transparent">
                                                                                         <i class="bx bx-edit"></i>
                                                                                     </button>
                                                                                 @endif
-                                                                                @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_money_trx_delete') )
+                                                                                @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_money_trx_delete') )
                                                                                 
                                                                                     <button type="button" formaction="{{ route('main_tp.delete_money_trx', $money_trx->id) }}" data-tab="trx" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                                                         <i class="bx bx-trash"></i>
@@ -1138,7 +1138,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions') )
+                                            @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions') )
                                                 <div class="tab-pane fade @if ($tab == 'actions') active show @endif" id="actions" role="tabpanel">
                                                     <div class="row">
                                                         <div class="col-12">
@@ -1176,7 +1176,7 @@
                                                                                     </td>
                                                                                     <th>
                                                                                         @if ($action->user?->id)
-                                                                                            <a @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'users_show') ) href="{{ route('user.show',$action->user->id ) }}" @endif >
+                                                                                            <a @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'users_show') ) href="{{ route('user.show',$action->user->id ) }}" @endif >
                                                                                                 <h6 class="mb-1 font-14">
                                                                                                     {{$action->user->first_name}} {{$action->user->last_name}} ({{$action->user->username}})
                                                                                                 </h6>
@@ -1205,15 +1205,15 @@
                             </div>
                         </div>
                     </div>
-                    @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_chat') )
+                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'mainTp_cards_chat') )
                         <div class="col-lg-3 col-md-6 col-12 mt-2 comment-tab @if ($tab == 'history') d-none @endif">
-                            @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments'))
-                                @include("client.comments",['client' => $client,'comments' => $comments,'add' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_add_comments')), 'update' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_edit_comments')), 'delete' => ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_delete_comments'))])
+                            @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments'))
+                                @include("client.comments",['client' => $client,'comments' => $comments,'add' => ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_add_comments')), 'update' => ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_edit_comments')), 'delete' => ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_delete_comments'))])
                             @endif
                         </div>
                     @endif
                     
-                    @if(($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments')) && $client)
+                    @if(($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_cards_comments')) && $client)
                         <div class="col-lg-2 col-md-6 col-12 mt-2 action-tab">
                             <div class="card">
                                 <div class="card-body text-center">
@@ -1239,25 +1239,25 @@
                                     </div>
                                     <hr class="my-3" />
                                     <div class="row text-start flex-column">
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_send_email') )
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_send_email') )
                                         
                                             <div class="col-12 mb-2">
                                                 <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#emailModal" style="background-color: transparent">Send Email</button>
                                             </div>
                                         @endif
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_create_money_transaction') )
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_create_money_transaction') )
                                         
                                             <div class="col-12 mb-2">
                                                 <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#transactionModal" style="background-color: transparent">Create Money Transaction</button>
                                             </div>
                                         @endif
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_create_request') )
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_create_request') )
                                         
                                             <div class="col-12 mb-2">
                                                 <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#requestModal" style="background-color: transparent">Create Request</button>
                                             </div>
                                         @endif
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_open_order') )
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_open_order') )
                                         
                                             <div class="col-12 mb-2">
                                                 <button type="button" class="btn btn-sm text-primary" id="fetchScripts" data-bs-toggle="modal" data-bs-target="#openOrderModal" style="background-color: transparent">Open Order</button>
@@ -1267,7 +1267,7 @@
                                             <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#exportModal" style="background-color: transparent">Export Data</button>
                                         </div>
                                         <hr>
-                                        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_Requests') )
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_Requests') )
                                         
                                             <div class="col-12 mb-2">
                                                 <button type="button" class="btn btn-sm text-primary position-relative" id="fetchScripts" data-bs-toggle="modal" data-bs-target="#requestsModal" style="background-color: transparent">
@@ -2209,7 +2209,7 @@
         </script>
         <script src="{{ url('assets/js/main_tp.min.js?v2.944') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
-        @if ($isSuperAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_can_update') )
+        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_can_update') )
         
             <script>
                 $('#edit_btn').on('click', function() {
