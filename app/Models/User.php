@@ -56,13 +56,16 @@ class User extends Authenticatable
     }
 
     public function assignRoleWithPipeline($roleName, $pipelineId = null)
-    {
-        $role = Role::where('name', $roleName)->firstOrFail();
-        $this->roles()->syncWithoutDetaching($role->id, [
+{
+    $role = Role::where('name', $roleName)->firstOrFail();
+
+    $this->roles()->syncWithoutDetaching([
+        $role->id => [
             'model_type' => static::class,
             'pipeline_id' => $pipelineId
-        ]);
-    }
+        ]
+    ]);
+}
     
     /*public function hasRoleInPipeline($roleName, $pipelineId)
     {
@@ -157,10 +160,12 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class, 'team_id');
     }
 
-    public function role()
+    /*public function role()
     {
         return $this->belongsTo(OldRole::class, 'role_id');
-    }
+    }*/
+
+    
 
     public function marketing_email_logs()
     {

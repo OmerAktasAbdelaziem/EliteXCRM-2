@@ -31,7 +31,7 @@
                                         <h5 class="mb-1">Our Statuses</h5>
                                     </div>
                                     <div class="font-22 ms-auto">
-                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'status_create') )
+                                        @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::isPipelineAdmin(Auth::user(), Auth::user()->pipeline_id)  || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'status_create') )
                                         
                                             <a href="{{ route('status.create') }}" class="btn btn-success btn-sm">
                                                 Add new status
@@ -68,7 +68,7 @@
                                                             </td>
                                                             <td>{{date('d/m/Y H:i', strtotime($status->created_at))}}</td>
                                                             <td class="text-end">
-                                                                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'status_delete') )
+                                                                @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::isPipelineAdmin(Auth::user(), Auth::user()->pipeline_id)  || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'status_delete') )
                                                                 
                                                                     <button type="button" formaction="{{ route('status.delete', $status->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent"  data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                                         <i class="bx bx-trash"></i>

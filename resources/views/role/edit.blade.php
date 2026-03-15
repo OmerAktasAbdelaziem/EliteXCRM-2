@@ -561,6 +561,7 @@
                                                 </svg>
                                                 Settings
                                             </div>
+                                         
                                             <input type="checkbox" class="custom-checkbox" name="roles[settings]" @roleHasPermission($role, 'settings') checked @endroleHasPermission>
                                         </div>
                                         
@@ -1154,7 +1155,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+                            @if (UserPermission::isSuperAdmin(Auth::user()) ||  UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'roles_create') )
                             <!-- Pipeline Permission -->
                              <div class="permission-item" data-permission="user">
                                 <div class="permission-header">
@@ -1188,7 +1189,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+                           
                             <!-- Subscriptions Permission -->
                              <div class="permission-item" data-permission="user">
                                 <div class="permission-header">
@@ -1223,7 +1224,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            @endif
                             <!-- Parts Permission -->
                             <div class="permission-item" data-permission="parts">
                                 <div class="permission-header">

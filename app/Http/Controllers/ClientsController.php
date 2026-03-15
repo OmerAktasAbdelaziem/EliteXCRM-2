@@ -1035,6 +1035,7 @@ class ClientsController extends Controller {
 
         return view('client.show', compact(
                         'isSuperAdmin',
+                        'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
                         'marketingEmailLogs',
@@ -1056,9 +1057,9 @@ class ClientsController extends Controller {
                         'kycs',
                         'pre',
                         'tab',
-                'userAuth',
-                'pipelineId',
-                'isSuperAdmin',
+             //   'userAuth',
+          //      'pipelineId',
+             //   'isSuperAdmin',
                 ));
         
     }

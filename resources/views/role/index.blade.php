@@ -15,7 +15,7 @@
                                     <h5 class="mb-1">Our Roles</h5>
                                 </div>
                                 <div class="font-22 ms-auto">
-                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'roles_create') )
+                                    @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::isPipelineAdmin(Auth::user(), Auth::user()->pipeline_id) || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'roles_create') )
                                     
                                         <a href="{{ route('role.create') }}" class="btn btn-success btn-sm">
                                             Add new role
