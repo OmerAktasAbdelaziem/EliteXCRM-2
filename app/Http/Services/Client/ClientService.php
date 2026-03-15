@@ -149,13 +149,14 @@ if (in_array($user->id, $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmi
     ];
 
 
-    // if ($isPipelineAdmin) {
+    if(!$isSuperAdmin){
         $filters[] = ['field' => 'pipeline_id', 'conditions' => ['=' => $pipelineId]];
-    // }
+     }
 }
 
 
 $users = $this->userService->getByFilters($filters, $with);
+
         //dd($users);
         return $users;
         

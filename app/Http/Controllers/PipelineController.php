@@ -18,6 +18,8 @@ use App\Http\Services\Organization\Interfaces\TeamServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
 
+use App\Facades\UserPermission;
+
 class PipelineController extends Controller
 {
     protected $clientService;
@@ -67,6 +69,10 @@ class PipelineController extends Controller
     
     public function create()
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         //$clientsController = new ClientsController;
         //$userController    = new UserController;
         $pipeline          = new Pipeline;
@@ -79,6 +85,7 @@ class PipelineController extends Controller
             'pipeline',
             'brokers',
             'users',
+            'isSuperAdmin',
         ));
     }
     
@@ -105,6 +112,11 @@ class PipelineController extends Controller
     
     public function show($id)
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         $pipeline = Pipeline::with('subscription')->findOrFail($id);
         $users                 = User::latest()->get();
         $pipeline->support_ids = json_decode($pipeline->support_ids, true) ?? [];
@@ -117,6 +129,7 @@ class PipelineController extends Controller
             'brokers',
             'users',
             'supscriptions',
+            'isSuperAdmin',
         ));
     }
     

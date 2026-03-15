@@ -94,13 +94,17 @@ if (!$role) {
     public function deleteByParams(array $params): int {
         return $this->roleRepository->deleteByIDs($Ids);
     }
-    public function safeHasPermission(Role $role, string $permission): bool
+   /* public function safeHasPermission(Role $role, string $permission): bool
 {
     try {
         return $role->hasPermissionTo($permission);
     } catch (PermissionDoesNotExist $e) {
         return false;
     }
+}*/
+public function safeHasPermission(Role $role, string $permission): bool
+{
+    return $role->permissions->contains('name', $permission);
 }
     
     

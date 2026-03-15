@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Services\Role\Interfaces\RoleServiceInterface;
 use App\Http\Services\Role\Interfaces\PermissionServiceInterface;
 
-use UserPermission;
+use App\Facades\UserPermission;
     
 
 
