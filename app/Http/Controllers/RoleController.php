@@ -156,6 +156,11 @@ dd('a');
         
         $pipelineId = Auth::user()->pipeline_id;
         $role = $this->roleService->getById($id)->first();
+     
+
+        $this->roleService->update($id,['name'=>$request->name]);
+       
+
         $role->load('permissions');
         //dd($role);
         $permissions = array_keys($request['roles']);

@@ -78,7 +78,7 @@ class PipelineController extends Controller
         $pipeline          = new Pipeline;
         //$options           = $this->userService->getUserOptions(Auth::user());//$userController->get_user_options();
         $teams             = $this->clientService->getTeams(Auth::user());//$clientsController->getTeams($options);
-        $users             = $this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
+        $users             = UserPermission::getNotPipelineAdminUsers();//$this->clientService->getUsers($teams, Auth::user());//$clientsController->getUsers($teams);
         $brokers           = Broker::latest()->get();
         
         return view('pipeline.show',compact(
@@ -112,13 +112,18 @@ class PipelineController extends Controller
     
     public function show($id)
     {
+
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
         $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $pipeline = Pipeline::with('subscription')->findOrFail($id);
-        $users                 = User::latest()->get();
+
+        $pipelineAdmin = UserPermission::getPipelineAdmin($id);
+        //dd($pipelineAdmin->id);
+
+        $users                 = UserPermission::getNotPipelineAdminUsers($pipelineAdmin->id);
         $pipeline->support_ids = json_decode($pipeline->support_ids, true) ?? [];
         $brokers               = Broker::latest()->get();
         $supscriptions = $this->subscriptionService->getByFilters([['field' => 'pipeline', 'conditions' => ['=' => $id]],
@@ -130,6 +135,7 @@ class PipelineController extends Controller
             'users',
             'supscriptions',
             'isSuperAdmin',
+            'pipelineAdmin',
         ));
     }
     
@@ -154,16 +160,19 @@ class PipelineController extends Controller
             'name',
         ]);
 
+        
+
         $inputs = array_merge($inputs, [
             'support_ids' => json_encode($request->support_ids),
         ]);
 
-        $pipeline->update($inputs);
+       // $pipeline->update($inputs);
+       $this->pipelineService->update($id,$inputs);
         
         $coAdmin = User::find($inputs['co_id']);
         $coAdmin->pipeline_id = $pipeline->id;
         $coAdmin->save();
-        $coAdmin->assignRoleWithPipeline('pipeline_admin', $pipeline->id);
+        //$coAdmin->assignRoleWithPipeline('pipeline_admin', $pipeline->id);
 
         return redirect()->route('pipeline.show', $id)->with('success', 'Pipeline updated successfully');
     }

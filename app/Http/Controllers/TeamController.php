@@ -72,7 +72,7 @@ class TeamController extends Controller
         $team = Team::Create($inputs);
 
         if ($request->members) {
-            User::WithPipeline()->whereIn('id', $request->members)->update(['team_id' => $team->id]);
+            User::whereIn('id', $request->members)->update(['team_id' => $team->id]);
         }
 
         return redirect()->route('team.index')->with('success','Team Created Successfully');;
@@ -116,10 +116,10 @@ class TeamController extends Controller
 
         $team->update($inputs);
 
-        User::WithPipeline()->where('team_id', $team->id)->update(['team_id' => null]);
-
+        User::where('team_id', $team->id)->update(['team_id' => null]);
+//dd($request->members);
         if ($request->members) {
-            User::WithPipeline()->whereIn('id', $request->members)->update(['team_id' => $team->id]);
+            User::whereIn('id', $request->members)->update(['team_id' => $team->id]);
         }
 
         return redirect()->back()->with('success','Team Updated Successfully');

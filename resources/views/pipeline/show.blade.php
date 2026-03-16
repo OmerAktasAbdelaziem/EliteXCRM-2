@@ -101,7 +101,7 @@
                                                 <option value="">Select User</option>
                                                 @foreach ($users as $user)
                                                 <option value="{{ $user->id }}" 
-                                                        @if($pipeline->co_id == $user->id) selected @endif>{{ $user->username }}
+                                                        @if(isset($pipelineAdmin) && $pipelineAdmin->id == $user->id) selected @endif>{{ $user->username }}
                                                 </option>
                                                 @endforeach
                                             </select>

@@ -82,8 +82,17 @@ $this->roleService->create('pipeline_admin',$pipelineId);
            'pipeline' => $pipelineId
        ]);*/
 
-      
-   
+       $role = $this->roleService->getByFilters([
+        [
+            'field' => 'name',
+            'conditions' => ['=' => 'pipeline_admin']
+        ],
+        [
+            'field' => 'pipeline',
+            'conditions' => ['=' => $pipelineId]
+        ]
+    ])->first();
+  // dd($role->id);
     
        \DB::table('rl_model_has_roles')
            ->where('role_id',$role->id)
@@ -91,10 +100,13 @@ $this->roleService->create('pipeline_admin',$pipelineId);
            ->delete();
    
       
-       $user = User::find($adminId);
+     //  $user = User::find($adminId);
+     
+     $user = $this->userService->getById($adminId)->first();
    
        $user->roles()->attach($role->id,[
-           'pipeline_id'=>$pipelineId
+           'pipeline_id'=>$pipelineId,
+           'model_type'=>  \App\Models\User::class
        ]);
    
        return $result;
