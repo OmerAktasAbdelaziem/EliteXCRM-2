@@ -37,6 +37,38 @@ protected static array $cache = [];
     ->where('name', $roleName)
     ->exists();
     }
+
+    public function getPipelineAdmin(int $pipelineId):User|null
+{
+    
+    $pipelineAdmin = User::whereHas('roles', function ($query) use ($pipelineId) {
+        $query->where('name', 'pipeline_admin')
+              ->where('rl_model_has_roles.pipeline_id', $pipelineId);
+    })->first();
+
+//dd($pipelineAdmin);
+
+    return $pipelineAdmin;
+}
+
+public function getNotPipelineAdminUsers(int $pipelineAdmin = 0): Collection{
+    $users = User::where(function ($q) use ($pipelineAdmin) {
+
+   
+        $q->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'pipeline_admin');
+        });
+
+    
+        if ($pipelineAdmin != 0) {
+            $q->orWhere('id', $pipelineAdmin);
+        }
+
+    })
+    ->latest()
+    ->get();
+    return $users;
+}
     
     
     public function isSuperAdmin(User $user): bool

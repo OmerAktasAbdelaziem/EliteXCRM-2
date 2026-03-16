@@ -45,14 +45,14 @@ class UserController extends Controller
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         //if (Auth::id() == 644033 || Auth::id() == 298274) {
         if($isSuperAdmin || $isPipelineAdmin){
-            $deleted_users = User::WithPipeline()->where('deleted',true)->get();
+            $deleted_users = User::where('deleted',true)->get();
             $users         = $this->clientService->getUsers($teams, Auth::user())->where('deleted', '!=', true);//$clients_controller->getUsers($teams);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
             $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds)->where('deleted', '!=', true);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
             
-            $deleted_users = User::WithPipeline()->where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
+            $deleted_users = User::where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
         }
 
         return view('user.index',compact(
@@ -134,12 +134,12 @@ $role   = $request->input('role');
 
         //if (Auth::id() == 644033 || Auth::id() == 298274) {
         if ($isSuperAdmin || $isPipelineAdmin) {
-            //$user = User::WithPipeline()->findOrfail($id);
+            //$user = User::findOrfail($id);
             $user = User::findOrfail($id);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
-            $user = User::WithPipeline()->whereNotIn('id',$pipelineSupportIds)->findOrfail($id);
+            $user = User::whereNotIn('id',$pipelineSupportIds)->findOrfail($id);
         }
         
         if ($user->lastseen_at != null) {
@@ -311,7 +311,7 @@ $role   = $request->input('role');
                     return redirect()->back()->with('error', 'User is assigned as support to a pipeline');
                 }
 
-                $user = User::WithPipeline()->find($id);
+                $user = User::find($id);
                 $user->deleted = true;
                 $user->username = $user ->username.'-#-deleted-#-'.Carbon::now();
                 $user->email = $user ->email.'-#-deleted-#-'.Carbon::now();
@@ -324,7 +324,7 @@ $role   = $request->input('role');
                 if ($userid != Auth::id()) {
                     $supportCheck = Pipeline::where('support_ids', 'LIKE', '%"'.$userid.'"%')->get();
                     if ($supportCheck->count() <= 0 || $isSuperAdmin || $isPipelineAdmin) {
-                        $user = User::WithPipeline()->find($userid);
+                        $user = User::find($userid);
                         $user ->deleted = true;
                         $user->username = $user ->username.'-#-deleted-#-'.Carbon::now();
                         $user->email = $user ->email.'-#-deleted-#-'.Carbon::now();
@@ -341,7 +341,7 @@ $role   = $request->input('role');
         $userids = $request->input('userid', []);
 
         foreach ($userids as $userid) {
-            $user = User::WithPipeline()->find($userid);
+            $user = User::find($userid);
             $user ->deleted = false;
             $user ->save();
         }
