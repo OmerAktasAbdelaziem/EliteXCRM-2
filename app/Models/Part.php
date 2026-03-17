@@ -35,6 +35,8 @@ class Part extends Model
         return $builder;
     }
     
+
+    
     public function teams()
     {
         return $this->hasMany(Team::class,'part_id');

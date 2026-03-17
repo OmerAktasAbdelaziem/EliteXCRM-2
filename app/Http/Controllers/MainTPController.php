@@ -1492,6 +1492,7 @@ class MainTPController extends Controller {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $formattedNowFromDate = Carbon::now()->startOfMonth()->startOfDay()->format('d/m/Y');
         $formattedNowToDate = Carbon::now()->endOfDay()->format('d/m/Y');

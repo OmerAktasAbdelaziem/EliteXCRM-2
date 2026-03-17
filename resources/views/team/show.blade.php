@@ -53,7 +53,7 @@
                                 <div class="col-6">
                                     <label for="leader" class="form-label">Team Leader</label>
                                     <div class="input-group">
-                                        <select class="single-select form-select" id="leader" name="leader_id">
+                                        <select class="single-select form-select" id="leader" name="leader_id" required>
                                             <option value="" selected>Select Leader</option>
                                             @foreach ($users as $user)
                                                 <option value="{{$user->id}}" @if ($team->leader_id == $user->id) selected @endif >{{$user->username}}</option>

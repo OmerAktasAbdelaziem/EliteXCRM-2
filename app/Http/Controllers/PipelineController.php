@@ -52,12 +52,13 @@ class PipelineController extends Controller
         foreach($pipelines as $pipeline){
         $currentUsersCount = count($this->userService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]]]));
         $currentPartsCount = count($this->partService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]]]));
+        //dd($currentPartsCount);
         $currentTeamsCount = count($this->teamService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]]]));
         $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]],['field'=>'account_type','conditions'=>['='=>'Real']]]));
         $currentDemoAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipeline->id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
         $statistics[$pipeline->id] = ['currentUsersCount'=>$currentUsersCount,'currentPartsCount'=>$currentPartsCount,'currentTeamsCount'=>$currentTeamsCount,'currentRealAccountsCount'=>$currentRealAccountsCount,'currentDemoAccountsCount'=>$currentDemoAccountsCount];
         }
-        
+      //  dd($statistics)
         
         
         return view('pipeline.index',compact(
@@ -128,7 +129,7 @@ class PipelineController extends Controller
         $brokers               = Broker::latest()->get();
         $supscriptions = $this->subscriptionService->getByFilters([['field' => 'pipeline', 'conditions' => ['=' => $id]],
     ['field' => 'deleted', 'conditions' => ['!=' => 1]]]);
-        
+   // dd($supscriptions);
         return view('pipeline.show',compact(
             'pipeline',
             'brokers',

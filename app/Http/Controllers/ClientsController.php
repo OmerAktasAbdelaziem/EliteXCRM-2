@@ -48,7 +48,7 @@ class ClientsController extends Controller {
     protected $subscriptionService;
 
     public function __construct(
-            SubscriptionServiceInterface $clientService,
+            ClientServiceInterface $clientService,
             // UserServiceInterface $userService,
             OrderServiceInterface $orderService,
             SubscriptionServiceInterface $subscriptionService,
@@ -1320,11 +1320,33 @@ class ClientsController extends Controller {
                     'email',
                     'age',
                 ]),
+
+
+                
+
                 function ($value, $key) use ($request) {
                     return $request->has($key);
                 },
                 ARRAY_FILTER_USE_BOTH
         );
+        
+        if($inputs['account_type'] != $client->account_type){
+            $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
+            if($inputs['account_type'] == 'Real'){
+                $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Real']]]));
+
+                if ($currentRealAccountsCount >= $subscription->real_accounts) {
+                    return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
+                }
+            }else if($inputs['account_type'] == 'Demo')
+            {
+                $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
+
+    if ($currentRealAccountsCount >= $subscription->real_accounts) {
+        return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
+    }
+            }
+        }
 
         if ($request->user_id && !empty($request->user_id)) {
             $inputs = array_merge($inputs, [
@@ -1367,8 +1389,9 @@ class ClientsController extends Controller {
             'is_ftd',
             'email',
         ];
-
+       
         foreach ($fieldsToCheck as $field) {
+            
             if (isset($inputs[$field]) && $client->$field != $inputs[$field]) {
                 if ($field == 'user_id') {
                     $old_user = $client->user?->username;
