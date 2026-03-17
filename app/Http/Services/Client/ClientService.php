@@ -81,6 +81,8 @@ class ClientService implements ClientServiceInterface {
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
         $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         //$user is Authinticated User
+        //dd($user->ledTeams);
+       // dd($user->ledTeams);
         $teams = collect();
         if ($user->ledTeams->count() > 0) {
             foreach ($user->ledTeams as $ledTeam) {
@@ -98,7 +100,7 @@ class ClientService implements ClientServiceInterface {
                 }
             }
         }
-        
+        //dd($teams);
         /*if (isset($options['leads_data_show_teams']) && !empty($options['leads_data_show_teams'])) {
             //$specificTeams = Team::whereIn('id', $options['leads_data_show_teams'])->get();
             $specificTeams = $this->teamService->getByFilters([['field' => 'id', 'conditions' => ['in' => $options['leads_data_show_teams']]]]);
@@ -114,7 +116,7 @@ class ClientService implements ClientServiceInterface {
             $teams = $this->teamService->getByFilters([['field' => 'created_at', 'conditions' => ['order' => 'desc']]]);
             //$teams = Team::latest()->get();
         }
-
+        //dd($teams);
         return $teams;
         
     }

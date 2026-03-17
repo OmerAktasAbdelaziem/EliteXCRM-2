@@ -171,13 +171,15 @@
                 </form>
                 <div class="row g-2">
                     <div class="col-12">
-                        <label for="usdt" class="form-label">USDT Phoenix</label>
+                        <label for="usdt" class="form-label">USDT</label>
                         <input type="text" name="usdt[phoenix]" class="form-control" form="usdtForm" id="usdt" value="{{auth()->user()->pipeline->usdt['phoenix']??''}}">
                     </div>
-                    <div class="col-12">
+                    {{--
+                        <div class="col-12">
                         <label for="usdt" class="form-label">USDT BNC</label>
                         <input type="text" name="usdt[BNC]" class="form-control" form="usdtForm" id="usdt" value="{{auth()->user()->pipeline->usdt['BNC']??''}}">
                     </div>
+                    --}}
                 </div>
             </div>
             <div class="modal-footer">
