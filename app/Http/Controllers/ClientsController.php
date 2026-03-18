@@ -1238,6 +1238,10 @@ class ClientsController extends Controller {
                         ]);
                         $old_user = $client->user?->username;
                         $new_user = User::find($value);
+                        if (!$new_user) {
+                        
+                            continue;
+                        }
                         Action::create([
                             'client_id' => $client->id,
                             'user_id' => Auth::id(),
@@ -1358,6 +1362,10 @@ class ClientsController extends Controller {
                     'notified_at' => now(),
                 ]);
             }
+        }else{
+            $inputs = array_merge($inputs, [
+                'user_id' => null,
+            ]);
         }
 
         $status = $request->input('sales_status');
@@ -1396,6 +1404,10 @@ class ClientsController extends Controller {
                 if ($field == 'user_id') {
                     $old_user = $client->user?->username;
                     $new_user = User::find($inputs[$field]);
+                    if (!$new_user) {
+                        
+                        continue;
+                    }
                     $action = Action::create([
                         'client_id' => $id,
                         'user_id' => Auth::id(),

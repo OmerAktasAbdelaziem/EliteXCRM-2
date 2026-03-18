@@ -19,6 +19,7 @@ class Pipeline extends Model
         'broker_id',
         'co_id',
         'name',
+        'webtrader_url',
         'usdt',
     ];
 

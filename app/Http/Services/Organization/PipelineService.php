@@ -43,6 +43,7 @@ class PipelineService implements PipelineServiceInterface {
     public function create(array $data): Collection {
         $adminId = $data['co_id'];
         unset($data['co_id']);
+        //dd($data)
         $pipeline = $this->pipelineRepository->create($data)->first();
         $pipelineId = $pipeline->id;
 
