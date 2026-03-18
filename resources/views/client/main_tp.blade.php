@@ -1657,8 +1657,20 @@
                                             </button>
                                         </div>
                                     @endif
+                              
                                     <div class="col-12">
-                                        <a href="https://webtrader.bnc-ltd.co.uk/client/webtrader?id={{$client->id}}&token={{auth()->user()->remember_token}}&user_id={{auth()->id()}}" target="_blank" class="btn btn-sm text-primary" style="background-color: transparent">LogIn As Client</a>
+                                    @if(!empty($userAuth->pipeline->webtrader_url))
+        <a href="{{ $userAuth->pipeline->webtrader_url }}/client/webtrader?id={{ $client->id }}&token={{ auth()->user()->remember_token }}&user_id={{ auth()->id() }}"
+           target="_blank"
+           class="btn btn-sm text-primary"
+           style="background-color: transparent">
+            LogIn As Client
+        </a>
+    @else
+        <span class="text-danger">
+            Please ask admin to add webtrader url to login as client
+        </span>
+    @endif
                                     </div>
                                 </div>
                             </div>

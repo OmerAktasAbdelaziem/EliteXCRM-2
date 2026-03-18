@@ -151,9 +151,9 @@ if (in_array($user->id, $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmi
     ];
 
 
-    if(!$isSuperAdmin){
+   // if(!$isSuperAdmin){
         $filters[] = ['field' => 'pipeline_id', 'conditions' => ['=' => $pipelineId]];
-     }
+     //}
 }
 
 

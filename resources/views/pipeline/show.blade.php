@@ -71,6 +71,18 @@
                                         <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
+
+
+                                    <div class="col-md-6">
+                                        <label for="category_id" class="form-label">Webtrader URL</label>
+                                        <div class="input-group">
+                                        <input type="text" class="form-control" id="webtrader_url" name="webtrader_url" value="{{ old('webtrader_url',$pipeline->webtrader_url) }}" placeholder="Webtrader URL" />
+                                            
+                                        </div>
+                                        @error('category_id')
+                                        <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                    
                                 </div>
                             </div>

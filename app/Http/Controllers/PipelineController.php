@@ -100,6 +100,7 @@ class PipelineController extends Controller
             'broker_id',
             'co_id',
             'name',
+            'webtrader_url',
         ]);
 
         $inputs = array_merge($inputs, [
@@ -159,6 +160,7 @@ class PipelineController extends Controller
             'broker_id',
             'co_id',
             'name',
+            'webtrader_url',
         ]);
 
         
