@@ -655,13 +655,45 @@ class ClientsController extends Controller {
         }
 
         if ($tab == 'contacts' && $contacts) {
-            $contacts = $contacts->latest()->paginate($limit, ['*'], 'page', $page);
-        } else {
-            if ($contacts) {
-                $contacts = $contacts->where('clients.deleted', 0)->latest()->paginate($limit, ['*'], 'page', 1);
-            }
+            $contacts = $contacts
+    ->where(function ($query) use ($users, $isSuperAdmin, $isPipelineAdmin, $pipelineId) {
+
+        $query->whereIn('user_id', $users->pluck('id'));
+
+        if (
+            $isSuperAdmin ||
+            $isPipelineAdmin ||
+            UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')
+        ) {
+            $query->orWhereNull('user_id');
         }
 
+    })
+    ->latest()
+    ->paginate($limit, ['*'], 'page', $page);
+       
+        } else {
+            if ($contacts) {
+                $contacts = $contacts
+    ->where('clients.deleted', 0)
+    ->where(function ($query) use ($users, $isSuperAdmin, $isPipelineAdmin, $pipelineId) {
+
+        $query->whereIn('user_id', $users->pluck('id'));
+
+        if (
+            $isSuperAdmin ||
+            $isPipelineAdmin ||
+            UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')
+        ) {
+            $query->orWhereNull('user_id');
+        }
+
+    })
+    ->latest()
+    ->paginate($limit, ['*'], 'page', 1);
+             
+        }
+}
         if ($tab == 'myContact' && $mycontact) {
             $mycontact = $mycontact->latest()->paginate($limit, ['*'], 'page', $page);
         } else {
@@ -1757,7 +1789,7 @@ class ClientsController extends Controller {
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id()) {
             $users = User::WithPipeline()->latest()->get();
         }
 
