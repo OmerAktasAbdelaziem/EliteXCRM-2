@@ -7,6 +7,7 @@ use App\Http\Repositories\Organization\Interfaces\PipelineRepositoryInterface;
 use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
 use App\Http\Services\Role\Interfaces\RoleServiceInterface;
+use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
@@ -16,14 +17,17 @@ class PipelineService implements PipelineServiceInterface {
     protected $pipelineRepository;
     protected $userService;
     protected $roleService;
+    protected $assetGroupService;
 
     public function __construct(PipelineRepositoryInterface $pipelineRepository,
     UserServiceInterface $userService,
     RoleServiceInterface $roleService,
+    AssetGroupServiceInterface $assetGroupService,
     ) {
         $this->pipelineRepository = $pipelineRepository;
         $this->userService = $userService;
         $this->roleService = $roleService;
+        $this->assetGroupService = $assetGroupService;
     }
     
     public function getAll(): Collection{
@@ -54,6 +58,7 @@ class PipelineService implements PipelineServiceInterface {
     'pipeline' => $pipelineId
 ]);*/
 $this->roleService->create('pipeline_admin',$pipelineId);
+$this->assetGroupService->cloneAssetGroup($pipelineId);
         $user->assignRoleWithPipeline('pipeline_admin', $pipelineId);
         $user->pipeline_id = $pipelineId;
         $user->save();

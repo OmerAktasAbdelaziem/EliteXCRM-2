@@ -9,6 +9,8 @@ use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
+use App\Models\AssetGroup;
+
 class AssetGroupService implements AssetGroupServiceInterface {
 
 protected $assetGroupRepository;
@@ -97,6 +99,9 @@ protected $assetGroupAssignmentRepository;
         return $this->assetGroupAssignmentRepository->deleteByParams($params);
     }
     
-    
+    public function cloneAssetGroup(int $newPipelineId): ?AssetGroup
+    {
+        return $this->assetGroupRepository->cloneAssetGroup($newPipelineId);
+    }
     
 }
