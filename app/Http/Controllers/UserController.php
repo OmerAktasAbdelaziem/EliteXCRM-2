@@ -43,13 +43,13 @@ class UserController extends Controller
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
-        //if (Auth::id() == 644033 || Auth::id() == 298274) {
+ 
         if($isSuperAdmin || $isPipelineAdmin){
             $deleted_users = User::where('deleted',true)->get();
             $users         = $this->clientService->getUsers($teams, Auth::user())->where('deleted', '!=', true);//$clients_controller->getUsers($teams);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
-            $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
+            $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);//urgentEdit
             $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds)->where('deleted', '!=', true);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
             
             $deleted_users = User::where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
@@ -132,13 +132,13 @@ $role   = $request->input('role');
             ['field'=>'guard_name','conditions'=>['='=>'web']],
         ]);
 
-        //if (Auth::id() == 644033 || Auth::id() == 298274) {
+     
         if ($isSuperAdmin || $isPipelineAdmin) {
             //$user = User::findOrfail($id);
             $user = User::findOrfail($id);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
-            $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);
+            $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);//urgentEdit
             $user = User::whereNotIn('id',$pipelineSupportIds)->findOrfail($id);
         }
         

@@ -93,11 +93,11 @@ class RolesAndPermissionsSeeder extends Seeder
 //	$superAdmin->givePermissionTo(Permission::all());
 $pipeLineId = 0;
 	
-$user = User::find(644033);
-$user->assignRoleWithPipeline('system_super_admin',$pipeLineId);
+//$user = User::find(644033);
+//$user->assignRoleWithPipeline('system_super_admin',$pipeLineId);
 
-$user = User::find(298274);
-$user->assignRoleWithPipeline('system_super_admin',$pipeLineId);
+//$user = User::find(298274);
+//$user->assignRoleWithPipeline('system_super_admin',$pipeLineId);
 
 
 //$user->assignRole('pipeline_admin');

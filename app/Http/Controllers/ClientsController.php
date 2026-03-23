@@ -887,7 +887,7 @@ class ClientsController extends Controller {
         $kycs = Kyc::where('client_id', $id);
         $next = 1;
         $pre = 1;
-        // $options            = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();
+        // $options            = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();/
         $teams = $this->getTeams();
         $users = $this->getUsers($teams);
         $parts = $this->getParts($teams);
@@ -1773,7 +1773,7 @@ class ClientsController extends Controller {
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || $isSuperAdmin) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
             $teams = Team::latest()->get();
         }
 
@@ -1781,15 +1781,22 @@ class ClientsController extends Controller {
     }
 
     function getUsers($teams) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         $users = collect();
-        $users = User::WithPipeline()->where(function ($query) use ($teams) {
+     
+                $users = User::WithPipeline()->where(function ($query) use ($teams) {
                     $query->whereIn('team_id', $teams->pluck('id'))
                             ->orWhere('id', Auth::id());
                 })->latest()->get();
+            
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id()) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin) {
             $users = User::WithPipeline()->latest()->get();
         }
 
@@ -1797,6 +1804,10 @@ class ClientsController extends Controller {
     }
 
     function getParts($teams) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         $parts = collect();
         $parts = Part::whereIn('id', $teams->pluck('part_id'));
 
@@ -1810,7 +1821,7 @@ class ClientsController extends Controller {
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin || $isPipelineAdmin) {
             $parts = Part::latest()->get();
         }
 
