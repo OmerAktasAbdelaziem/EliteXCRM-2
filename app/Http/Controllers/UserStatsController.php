@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use App\Facades\UserPermission;
+
 class UserStatsController extends Controller
 {
     // Temporary debug flag - set to true to bypass auth checks for testing
