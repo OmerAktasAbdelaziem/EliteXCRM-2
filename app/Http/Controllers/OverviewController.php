@@ -40,7 +40,7 @@ class OverviewController extends Controller {
         $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
-        $pipelineSupportIds = array_merge($pipelineSupportIds, [644033, 298274]);
+        $pipelineSupportIds = array_merge($pipelineSupportIds, [644033, 298274]);//UrgentEdit: remove static id's
         $date = $request->subMonth ?? Carbon::now()->subMonthNoOverflow()->format('m/Y');
 
         $currentMonthStartDate = Carbon::now()->startOfMonth();

@@ -432,7 +432,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
      */
     
     
-    // User Statistics Routes (only for user 298274)
+    // User Statistics Routes (only for user admin)
     $router->middleware(['role:statistics_view'])->group(function (Router $router) {
     $router->get('user-stats', [UserStatsController::class, 'index'])->name('user.stats');
     $router->get('user-stats/report', [UserStatsController::class, 'getUserReport'])->name('user.stats.report');

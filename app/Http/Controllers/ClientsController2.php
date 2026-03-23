@@ -1628,6 +1628,10 @@ $broker_id      = $client->broker_id;
 
     function getTeams($options)
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
        // return $this->clientService->getTeams($options, Auth::user());
         $teams = collect();
 
@@ -1659,7 +1663,7 @@ $broker_id      = $client->broker_id;
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
             $teams = Team::latest()->get();
         }
 
@@ -1668,6 +1672,11 @@ $broker_id      = $client->broker_id;
 
     function getUsers($teams)
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         $users = collect();
         $users = User::WithPipeline()->where(function ($query) use ($teams) {
             $query->whereIn('team_id', $teams->pluck('id'))
@@ -1676,7 +1685,7 @@ $broker_id      = $client->broker_id;
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
             $users = User::WithPipeline()->latest()->get();
         }
 
@@ -1685,6 +1694,11 @@ $broker_id      = $client->broker_id;
 
     function getParts($teams)
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         $parts = collect();
         $parts = Part::whereIn('id', $teams->pluck('part_id'));
 
@@ -1698,7 +1712,7 @@ $broker_id      = $client->broker_id;
 
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
-        if (in_array(Auth::id(), $pipelineSupportIds) || Auth::user()->pipeline?->co_id == Auth::id() || Auth::id() == 644033 || Auth::id() == 298274) {
+        if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin || $isSuperAdmin) {
             $parts = Part::latest()->get();
         }
 

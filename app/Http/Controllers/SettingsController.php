@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 //Services
 use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
 
+use App\Facades\UserPermission;
+
 class SettingsController extends Controller
 {
     
@@ -31,10 +33,18 @@ class SettingsController extends Controller
     public function index()
     {
        
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         
         
-        
-        return view('settings.index');
+        return view('settings.index', compact(
+            'isSuperAdmin',
+            'isPipelineAdmin',
+            'pipelineId',
+            'userAuth',
+    ));
     }
     public function editLogo() {
         return view('settings.editLogo');
@@ -43,13 +53,19 @@ class SettingsController extends Controller
 
     public function uploadLogo(Request $request){
         
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+
         $request->validate([
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         
 
-if(Auth::user()->pipeline?->co_id == Auth::id()){
+if($isPipelineAdmin){
         // upload image
         $path = $request->file('logo')->store('pipeline/'.Auth::user()->username.'/logos/', 'public');
 

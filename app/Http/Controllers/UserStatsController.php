@@ -82,8 +82,12 @@ class UserStatsController extends Controller
     }
     public function index(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (!$this->debugMode && Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+        if (!$this->debugMode && !$isSuperAdmin) {
             abort(403, 'Unauthorized access');
         }
 
@@ -213,8 +217,12 @@ class UserStatsController extends Controller
 
     public function getClientDetails(Request $request, $userId, $status)
     {
-        // Check if user is authorized (only user 298274)
-        if (!$this->debugMode && Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+    
+        if (!$this->debugMode && !$isSuperAdmin) {
             abort(403, 'Unauthorized access');
         }
 
@@ -301,8 +309,12 @@ class UserStatsController extends Controller
      */
     public function getLiveUpdates(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+        
+        if (!$isSuperAdmin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -366,8 +378,12 @@ class UserStatsController extends Controller
      */
     public function getDailyTargetProgress(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+        if (!$isSuperAdmin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -442,8 +458,12 @@ class UserStatsController extends Controller
 
     public function getStatusChangedClients(Request $request, $userId)
     {
-        // Check if user is authorized (only user 298274)
-        if (!$this->debugMode && Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+        
+        if (!$this->debugMode && !$isSuperAdmin) {
             abort(403, 'Unauthorized access');
         }
 
@@ -465,8 +485,13 @@ class UserStatsController extends Controller
 
     public function transferClients(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (Auth::id() !== 298274) {
+        
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+        if (!$isSuperAdmin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -555,8 +580,12 @@ class UserStatsController extends Controller
 
     public function getLatestNotification(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+        if (!$isSuperAdmin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -607,8 +636,12 @@ class UserStatsController extends Controller
 
     public function getNotifications(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+        if (!$isSuperAdmin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -697,8 +730,12 @@ class UserStatsController extends Controller
     
     public function getUserReport(Request $request)
     {
-        // Check if user is authorized (only user 298274)
-        if (!$this->debugMode && Auth::id() !== 298274) {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+        if (!$this->debugMode && !$isSuperAdmin) {
             abort(403, 'Unauthorized access');
         }
 

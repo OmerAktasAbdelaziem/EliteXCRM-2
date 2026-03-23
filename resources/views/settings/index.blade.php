@@ -21,7 +21,7 @@
     <div class="col-md-3">
 <div class ="section-area">
     <span class="section-title">General Settings</span>
-    @if(Auth::user()->pipeline?->co_id == Auth::id())
+    @if($isPipelineAdmin)
     <a href = "{{ route('settings.editLogo') }}"><span class="section-text">Edit logo</span></a>
     @endif
 </div>        

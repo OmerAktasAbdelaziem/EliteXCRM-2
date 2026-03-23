@@ -196,17 +196,22 @@ class PipelineController extends Controller
 
     public function switch($id)
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         $pipeline    = Pipeline::findOrFail($id);
         $supoortIds  = json_decode($pipeline->support_ids, true);
         $oldPipeline = Auth::user()->pipeline_id;
 
-        if (!in_array(Auth::user()->id, $supoortIds??[]) && $pipeline->id != 1 && Auth::id() != 644033 && Auth::id() != 298274 ) {
+        if (!in_array(Auth::user()->id, $supoortIds??[]) && $pipeline->id != 1 && !$isSuperAdmin ) {
             return redirect()->route('client.index')->with('fail', 'You are not allowed to switch to this pipeline');
         }
         
         if ($pipeline->id == 1) {
             Auth::user()->update(['pipeline_id' => $pipeline->id]);
-            if (Auth::user()->team?->pipeline_id != 1 && Auth::id() != 644033 && Auth::id() != 298274) {
+            if (Auth::user()->team?->pipeline_id != 1 && !$isSuperAdmin) {
                 Auth::user()->update(['pipeline_id' => $oldPipeline]);
                 return redirect()->route('client.index')->with('fail', 'You are not allowed to switch to this pipeline');
             }

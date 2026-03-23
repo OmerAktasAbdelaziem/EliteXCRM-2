@@ -62,7 +62,12 @@ class UserService implements UserServiceInterface {
     }
     public function getUserOptions(User $user):array
     {
-        
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
+
         $userOptions = [];
         $teamOptions = [];
         $partOptions = [];
@@ -84,7 +89,7 @@ class UserService implements UserServiceInterface {
 
         $pipelineSupportIds = json_decode($user->pipeline->support_ids, true) ?? [];
 
-        if (in_array($user->id, $pipelineSupportIds) || $user->id == 644033 || $user->id == 298274) {
+        if (in_array($user->id, $pipelineSupportIds) || $isSuperAdmin) {
             $adminPipeline = array_merge($adminPipeline,[
                 'pipeline_create' => 1,
                 'pipeline_update' => 1,
