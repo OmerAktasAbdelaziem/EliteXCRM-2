@@ -27,12 +27,14 @@ class ClientImport implements ToModel, WithHeadingRow
         echo '<br><br><br><br><br><br>';
         print_r($row);die;*/
         //$mappedRow = [];
+        
         foreach ($this->headers as $header => $field) {
+            $header = strtolower($header);
             if(isset($row[$header])){
             $mappedRow[$field] = $row[$header];
             }
         }
-
+        //dd($mappedRow);
         $validator = Validator::make($mappedRow, [
             'first_name' => ['required'],
             'country'    => ['required'],

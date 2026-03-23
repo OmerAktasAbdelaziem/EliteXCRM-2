@@ -41,6 +41,11 @@ class AssetGroupController extends Controller {
     }
 
     public function create() {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
+        $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
+        $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
+
         $group = new AssetGroup();
         $assets = Asset::select('name', 'id')->get();
         $groupAssets = Asset::whereIn('id', $group->asset_ids ?? [])->get();
@@ -49,6 +54,9 @@ class AssetGroupController extends Controller {
                         'groupAssets',
                         'assets',
                         'group',
+                        'pipelineId',
+                        'isSuperAdmin',
+                        'isPipelineAdmin',
                 ));
     }
 

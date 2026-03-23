@@ -22,6 +22,24 @@ class AssetGroupRepository implements AssetGroupRepositoryInterface {
     return AssetGroup::all();
 }
 
+public function cloneAssetGroup(int $newPipelineId): ?AssetGroup
+{
+    $item = AssetGroup::find(1);
+
+    if (!$item) {
+        return null;
+    }
+
+    $newItem = AssetGroup::create([
+        'asset_ids'   => $item->asset_ids,
+        'name'        => $item->name,
+        'pipeline_id' => $newPipelineId,
+    ]);
+
+    return $newItem;
+}
+
+
 public function getById(int $id): Collection {
     $item = AssetGroup::where('id',$id)->get();
     return $item;

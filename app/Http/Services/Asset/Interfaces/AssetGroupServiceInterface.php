@@ -4,6 +4,8 @@ namespace App\Http\Services\Asset\Interfaces;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
+use App\Models\AssetGroup;
+
 interface AssetGroupServiceInterface{
     public function getAll(): Collection;
     public function getById(int $id): Collection;
@@ -18,4 +20,5 @@ interface AssetGroupServiceInterface{
      public function createBulkAssetGroupAssignment(array $params): Collection;
     public function updateAssetGroupAssignment(int $id, array $params):int;
     public function deleteAssetGroupAssignment(array $params): int;
+    public function cloneAssetGroup(int $newPipelineId): ?AssetGroup;
 }
