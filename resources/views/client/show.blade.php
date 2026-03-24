@@ -449,7 +449,7 @@
                                                     
                                                     @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_account_type_show') )
                                                         <div class="input-group">
-                                                            <select id="account_type" class="single-select form-select @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_account_type_edit') ) && $client->broker_id) editable @endif" name="account_type" disabled>
+                                                            <select id="account_type" class="single-select form-select @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_account_type_edit') ) && $client->broker_id) editable @endif" name="account_type" readonly>
                                                                 <option value="" @if (!$client->broker_id) selected @endif></option>
                                                                 <option value="Real" @if ($client->broker_id && $client->account_type == 'Real') selected @endif>Real</option>
                                                                 <option value="Demo" @if ($client->broker_id && $client->account_type == 'Demo') selected @endif>Demo</option>
