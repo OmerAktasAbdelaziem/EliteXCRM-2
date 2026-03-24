@@ -1395,6 +1395,7 @@ class ClientsController extends Controller {
                 ]);
             }
         }else{
+            if(!isset($client->user_id) )
             $inputs = array_merge($inputs, [
                 'user_id' => null,
             ]);
