@@ -1365,9 +1365,10 @@ class ClientsController extends Controller {
                 },
                 ARRAY_FILTER_USE_BOTH
         );
-        
+      
         if (isset($inputs['account_type']) && $inputs['account_type'] != $client->account_type) {
             $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
+            
             if($inputs['account_type'] == 'Real'){
                 $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Real']]]));
 
@@ -1395,7 +1396,7 @@ class ClientsController extends Controller {
                 ]);
             }
         }else{
-            if(!isset($client->user_id) )
+            if(!isset($client->user_id))
             $inputs = array_merge($inputs, [
                 'user_id' => null,
             ]);

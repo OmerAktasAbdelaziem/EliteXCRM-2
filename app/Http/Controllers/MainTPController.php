@@ -363,6 +363,25 @@ class MainTPController extends Controller {
                 ARRAY_FILTER_USE_BOTH
         );
 
+        if (isset($inputs['account_type']) && $inputs['account_type'] != $client->account_type) {
+            $subscription = Auth::user()->pipeline->subscription()->where('active', 1)->where('start_date', '<=', now())->where('end_date', '>=', now())->first();
+            
+            if($inputs['account_type'] == 'Real'){
+                $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Real']]]));
+
+                if ($currentRealAccountsCount >= $subscription->real_accounts) {
+                    return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
+                }
+            }else if($inputs['account_type'] == 'Demo')
+            {
+                $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
+
+    if ($currentRealAccountsCount >= $subscription->real_accounts) {
+        return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
+    }
+            }
+        }
+
         if ($request->user_id && !empty($request->user_id)) {
             $inputs = array_merge($inputs, [
                 'user_id' => $request->user_id,
