@@ -209,6 +209,9 @@
                         <div class="input-group">
                             <select class="form-select multiple-select" name="{{$check_type}}_filters[user][]" form="filter_form-{{$check_type}}" multiple>
                                 <option value="except" @if (isset($filters['user']) && in_array('except', $filters['user']) ) selected @endif>Except</option>
+                                @if($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads'))
+                                    <option value="unassigned" @if (isset($filters['user']) && in_array('unassigned', $filters['user']) ) selected @endif>Unassigned</option>
+                                @endif
                                 @foreach ($users as $user)
                                     <option value="{{$user->id}}" @if (isset($filters['user']) && in_array($user->id, $filters['user']) ) selected @endif>{{$user->username}}</option>
                                 @endforeach

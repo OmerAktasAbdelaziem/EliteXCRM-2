@@ -125,7 +125,7 @@ class PipelineController extends Controller
         $pipelineAdmin = UserPermission::getPipelineAdmin($id);
         //dd($pipelineAdmin->id);
 
-        $users                 = UserPermission::getNotPipelineAdminUsers($pipelineAdmin->id);
+        $users                 = UserPermission::getNotPipelineAdminUsers($pipelineAdmin?->id ?? 0);
         $pipeline->support_ids = json_decode($pipeline->support_ids, true) ?? [];
         $brokers               = Broker::latest()->get();
         $supscriptions = $this->subscriptionService->getByFilters([['field' => 'pipeline', 'conditions' => ['=' => $id]],
