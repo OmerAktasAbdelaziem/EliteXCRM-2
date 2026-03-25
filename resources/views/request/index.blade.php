@@ -147,9 +147,9 @@
                                                                     Beneficiary Country : {{$request->bank_details['beneficiary_country'] ?? ''}}
                                                                 @endif
                                                                 @if ($request->bank_id)
-                                                                    Bank Name           : {{$request->bank->name}}
+                                                                    Bank Name           : {{$request->bank->name??''}}
                                                                     <br>
-                                                                    Bank Country        : {{$request->bank->country}}
+                                                                    Bank Country        : {{$request->bank->country??''}}
                                                                 @endif
                                                                 {{$request->usdt}}
                                                             </td>
