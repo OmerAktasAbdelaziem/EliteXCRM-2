@@ -188,6 +188,8 @@ class ClientsTransferController extends Controller
 
    public function createAccountFromApp($isDemo, $password, $username, $clientData)
     {
+        $userAuth = Auth::user();
+        $pipelineId = $userAuth->pipeline_id;
        if(isset($clientData['id'])){
         $existingClient = Client::where('id', $clientData['id'])->first();   
        }else{
@@ -199,7 +201,7 @@ class ClientsTransferController extends Controller
                 return $existingClient->broker_id;
             } else {
                 $lastBrokerId = Client::max('broker_id');
-                $newBrokerId = $lastBrokerId ? $lastBrokerId + 1 : 1000;
+                $newBrokerId = $lastBrokerId ? $lastBrokerId + 1 : 1000000*$pipelineId;
     
                 $existingClient->broker_id = $newBrokerId;
                 $existingClient->username = $username;
@@ -213,7 +215,7 @@ class ClientsTransferController extends Controller
         }
     
         $lastBrokerId = Client::max('broker_id');
-        $newBrokerId = $lastBrokerId ? $lastBrokerId + 1 : 1000;
+        $newBrokerId = $lastBrokerId ? $lastBrokerId + 1 : 1000000*$pipelineId;
     
         $client = new Client();
         $client->username = $username;
