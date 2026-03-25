@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Http\Services\Order\Interfaces\MoneyTransactionServiceInterface;
+use App\Models\AssetGroup;
 
 class ClientsTransferController extends Controller
 {
@@ -96,10 +97,12 @@ class ClientsTransferController extends Controller
         if ($request->forceChangePassword) {
             $options['forceChangePassword'] = 1;
         }
-    
+        $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
+            ->where('name', 'Default')
+            ->first();
         $client->update([
             'favourite_assets' => ["1", "2", "3", "4", "5", "6", "20", "22", "10", "73", "74"],
-            'asset_group_id' => 1,
+            'asset_group_id' => $asset_group?->id,
             'password_text' => $request->password,
             'account_type' => 'Demo',
             'broker_id' => $broker_id,
@@ -157,9 +160,12 @@ class ClientsTransferController extends Controller
             $options['forceChangePassword'] = 1;
         }
 
+        $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
+            ->where('name', 'Default')
+            ->first();
         $client->update([
             'favourite_assets' => ["1","2","3","4","5","6","20","22","10","73","74"],
-            'asset_group_id'   => 1,
+            'asset_group_id' => $asset_group?->id,
             'password_text'    => $request->password,
             'account_type'     => 'Real',
             'broker_id'        => $broker_id,

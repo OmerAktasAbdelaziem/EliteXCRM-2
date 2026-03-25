@@ -368,17 +368,20 @@ class MainTPController extends Controller {
             
             if($inputs['account_type'] == 'Real'){
                 $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Real']]]));
-
                 if ($currentRealAccountsCount >= $subscription->real_accounts) {
-                    return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
+                    session()->flash('fail', 'You have reached your maximum count of real accounts');
+                    return response()->json([
+                        'success' => false  ,
+                    ]);
                 }
-            }else if($inputs['account_type'] == 'Demo')
-            {
-                $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
-
-    if ($currentRealAccountsCount >= $subscription->real_accounts) {
-        return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
-    }
+            } elseif($inputs['account_type'] == 'Demo') {
+                $currentDemoAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
+                if ($currentDemoAccountsCount >= $subscription->demo_accounts) {
+                    session()->flash('fail', 'You have reached your maximum count of demo accounts');
+                    return response()->json([
+                        'success' => false  ,
+                    ]);
+                }
             }
         }
 
