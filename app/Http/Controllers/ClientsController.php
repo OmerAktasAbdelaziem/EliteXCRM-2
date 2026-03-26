@@ -318,22 +318,39 @@ class ClientsController extends Controller {
                     }
 
                     if ($user = Arr::get($filters, 'user')) {
+
+                        $isUnassigned = false;
+                        foreach ($user as $key => $u) {
+                            if (str_contains($u, 'unassigned')) {
+                                unset($user[$key]);
+                                $isUnassigned = true;
+                            }
+                        }
                         $isExcept = false;
-                        foreach ($user as $u) {
+                        foreach ($user as $key => $u) {
                             if (str_contains($u, 'except')) {
+                                unset($user[$key]);
                                 $isExcept = true;
                             }
                         }
                         if ($isExcept) {
-                            $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId) {
+                            $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId, $isUnassigned) {
                                 $q->whereNotIn('user_id', $user);
                                 //if (isset($options['leads_data_show_unassigned_leads'])) {
-                               /* if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
-                                    $q->orWhere('user_id', null);
-                                }*///dont activate it, this field is for search
+
+                                if ($isUnassigned || $isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                                    $q->where('user_id', '!=' , null);
+                                }
+
                             });
                         } else {
-                            $query->whereIn('user_id', $user);
+                            $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId, $isUnassigned) {
+                                $q->whereIn('user_id', $user);
+                                if ($isUnassigned || $isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                                    $q->orWhere('user_id', null);
+                                }
+                            });
+
                         }
                     }
 
@@ -1377,11 +1394,18 @@ class ClientsController extends Controller {
                 }
             }else if($inputs['account_type'] == 'Demo')
             {
-                $currentRealAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
+                $currentDemoAccountsCount = count($this->clientService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'account_type','conditions'=>['='=>'Demo']]]));
 
-    if ($currentRealAccountsCount >= $subscription->real_accounts) {
+    if ($currentDemoAccountsCount >= $subscription->demo_accounts) {
         return redirect()->back()->withErrors('You have reached your maximum count of real accounts');
     }
+            }
+
+            if(!isset($inputs['asset_group_id']) && !$client->asset_group_id){
+                $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
+                ->where('name', 'Default')
+                ->first();
+                $inputs['asset_group_id'] = $asset_group?->id;
             }
         }
 
