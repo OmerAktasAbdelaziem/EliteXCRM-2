@@ -346,9 +346,9 @@ class ClientsController extends Controller {
                         } else {
                             $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId, $isUnassigned) {
                                 $q->whereIn('user_id', $user);
-                                if ($isUnassigned || $isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                               /* if ($isUnassigned || $isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                                     $q->orWhere('user_id', null);
-                                }
+                                }*/
                             });
 
                         }
