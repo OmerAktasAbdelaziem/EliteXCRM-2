@@ -10,6 +10,8 @@ use App\Models\AssetGroup;
 //Other
 use Illuminate\Database\Eloquent\Collection;
 
+use Illuminate\Support\Facades\DB;
+
 class AssetGroupRepository implements AssetGroupRepositoryInterface {
 
     protected FilterServiceInterface $filterService;
@@ -35,6 +37,34 @@ public function cloneAssetGroup(int $newPipelineId): ?AssetGroup
         'name'        => $item->name,
         'pipeline_id' => $newPipelineId,
     ]);
+
+    DB::table('asset_group_assignments')->insertUsing(
+        [
+            'asset',
+            'asset_group',
+            'size',
+            'leverage',
+            'bid_spread',
+            'ask_spread',
+            'buy_commission',
+            'sell_commission',
+            'is_percentage'
+        ],
+        DB::table('asset_group_assignments')
+            ->selectRaw('
+                asset,
+                '.$newItem->id.' as asset_group,
+                size,
+                leverage,
+                bid_spread,
+                ask_spread,
+                buy_commission,
+                sell_commission,
+                is_percentage
+            ')
+            ->where('asset_group', 1)
+    );
+
 
     return $newItem;
 }
