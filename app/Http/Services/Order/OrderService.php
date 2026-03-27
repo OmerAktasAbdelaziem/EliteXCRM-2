@@ -72,12 +72,15 @@ class OrderService implements OrderServiceInterface {
     
     public function calculatePnl(Order $order,int $commands = 0):int{
        // $commands = 1;
+      // $order = Order::find(86);
         $client = $order->client;
         $asset  = $this->assetService->getById($order->currency)->first();
+
         $groupId = $client->asset_group_id;
         $asset->load(['groupAssignments' => function($query) use ($groupId) {
     $query->where('asset_group', $groupId);  
 }]);
+
 $assetGroupAssignment = $asset->groupAssignments->first();
 
         if ($order->status == 'active') {
@@ -90,6 +93,8 @@ $assetGroupAssignment = $asset->groupAssignments->first();
                 $currentPrice = $asset->ask_price;
             }
             }
+            
+            
             if (!str_starts_with($order->asset->symbol, 'USD') && $order->ref_currency == 'USD') {
                 if ($order->type == 1) {
                     $def_price = $currentPrice - $order->open_price;

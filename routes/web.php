@@ -46,6 +46,9 @@ Auth::routes();
 //         ]);
 //     }
 // });
+Route::get('/test-financial/{broker_id}', [MainTPController::class, 'get_financial_data']);
+
+
 Route::get('client/get_pnl/{client_id}/{asset_id?}/{from?}', [ClientsController::class, 'webtrader_get_pnl'])->name('webtrader.get_pnl');
 
 Route::middleware(['auth'])->group(function (Router $router) {
