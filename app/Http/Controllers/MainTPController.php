@@ -22,7 +22,7 @@ use App\Models\Report;
 use App\Models\Status;
 use App\Models\Bank;
 use App\Models\Chat_ah;
-use App\Models\Kyc;
+use App\Models\ClientDocument;
 use App\Models\MoneyHistory;
 use App\Models\Notification;
 use App\Models\Token;
@@ -93,7 +93,7 @@ class MainTPController extends Controller {
         $chat = Chat_ah::where('client_id', $id)->latest()->get();
         $page = $request->query('page', 1);
         $from = Carbon::now()->subYears(10)->format('Y-m-d H:i:s');
-        $kycs = Kyc::where('client_id', $id);
+        $kycs = ClientDocument::where('client_id', $id)->where('type', 'kyc');
         $tab = $request->input('tab', 'info');
         $to = Carbon::now()->format('Y-m-d H:i:s');
 
@@ -575,7 +575,7 @@ class MainTPController extends Controller {
     }
 
     public function update_kyc(Request $request, $id) {
-        $kyc = Kyc::findOrfail($id);
+        $kyc = ClientDocument::findOrfail($id);
 
         $inputs = $request->only([
             'status',
@@ -1365,6 +1365,12 @@ class MainTPController extends Controller {
             'text' => 'Updated From <b>' . $old_text . '<br></b> To <b>' . $new_text . '</b>',
         ];
         MoneyHistory::create($history_inputs);
+
+        if ($moneyTrx->type == 'deposit') {
+            if ($moneyTrx->status == 'accepted') {
+                MoneyTrxDetail::where('money_trx', $moneyTrx->id)->update(['amount' => $moneyTrx->amount]);
+            }
+        }
 
         session()->flash('success', 'Money Transaction updated successfully.');
 

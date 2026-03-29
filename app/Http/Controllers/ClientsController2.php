@@ -19,7 +19,7 @@ use App\Models\EmailLog;
 use App\Models\Action;
 use App\Models\Asset;
 use App\Models\Client;
-use App\Models\Kyc;
+use App\Models\ClientDocument;
 use App\Models\MoneyHistory;
 use App\Models\MoneyTrx;
 use App\Models\Order;
@@ -804,7 +804,7 @@ class ClientsController2 extends Controller
         $actions            = Action::where('client_id',$id);
         $changes            = null;
         $page               = $request->query('page', 1);
-        $kycs               = Kyc::where('client_id',$id);
+        $kycs               = ClientDocument::where('client_id', $id)->where('type', 'kyc');
         $next               = 1;
         $pre                = 1;
         $userService = app(\App\Http\Services\User\Interfaces\UserServiceInterface::class);
