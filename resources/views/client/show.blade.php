@@ -113,6 +113,8 @@
                     </div>
                 </div>
             </div>
+            
+            @isset($status)                
             <div class="row mb-1 mt-0">
                 <div class="col-6">
                     @if ($pre == 1)
@@ -139,6 +141,8 @@
                     @endif
                 </div>
             </div>
+            @endisset
+
             <div class="row">
                 <div class="col">
                     @if(session('success'))

@@ -57,6 +57,7 @@ class AssetGroupController extends Controller {
                         'pipelineId',
                         'isSuperAdmin',
                         'isPipelineAdmin',
+                        'userAuth',
                 ));
     }
 
