@@ -26,7 +26,7 @@ class ClientImport implements ToModel, WithHeadingRow
         /*print_r($this->headers);
         echo '<br><br><br><br><br><br>';
         print_r($row);die;*/
-        //$mappedRow = [];
+        $mappedRow = [];
         
         foreach ($this->headers as $header => $field) {
             $header = strtolower($header);

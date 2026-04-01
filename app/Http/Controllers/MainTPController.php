@@ -1366,10 +1366,11 @@ class MainTPController extends Controller {
         ];
         MoneyHistory::create($history_inputs);
 
-        if ($moneyTrx->type == 'deposit') {
-            if ($moneyTrx->status == 'accepted') {
-                MoneyTrxDetail::where('money_trx', $moneyTrx->id)->update(['amount' => $moneyTrx->amount]);
-            }
+        if ($moneyTrx->status == 'accepted') {
+            MoneyTrxDetail::where('money_trx', $moneyTrx->id)->update([
+                'amount' => $moneyTrx->amount,
+                'type' => $moneyTrx->type
+            ]);
         }
 
         session()->flash('success', 'Money Transaction updated successfully.');
