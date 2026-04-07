@@ -26,10 +26,10 @@ class CalculatePnl extends Command
         $this->orderService = $orderService;
     }
 
-    public function handle()
+    /*public function handle()
     {//die('a');
         $loop = true;
-       // while ($loop) {
+        while ($loop) {
             $orders = Order::whereNull('closed_at')->orderBy('pnl')->get();
             foreach ($orders as $order) {
                   if(!isset($order->client) || !isset($order->client->asset_group_id)){
@@ -39,8 +39,28 @@ class CalculatePnl extends Command
                 $comands = 1;
                 $this->orderService->calculatePnl($order,$comands);//die;
             }
-       // }
+        }
+    }*/
+    
+    public function handle()
+{
+    $startTime = time(); 
+
+    while (time() - $startTime < 60) { 
+        $orders = Order::whereNull('closed_at')->orderBy('pnl')->get();
+
+        foreach ($orders as $order) {
+            if (!isset($order->client) || !isset($order->client->asset_group_id)) {
+                continue;
+            }
+
+            $comands = 1;
+            $this->orderService->calculatePnl($order, $comands);
+        }
+
+        usleep(250000);
     }
+}
 
     /*public function calculate_pnl($order)
     {
