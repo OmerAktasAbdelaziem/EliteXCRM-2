@@ -191,9 +191,9 @@ class OrderService implements OrderServiceInterface {
         $client = $this->clientService->getById($clientId)->first();
        
         
-        dd($clientId);
+        //dd($clientId);
         $groupId = $client->asset_group_id;
-        dd($groupId);
+       // dd($groupId);
         $asset->load(['groupAssignments' => function($query) use ($groupId) {
             $query->where('asset_group', $groupId);  
         }]);
