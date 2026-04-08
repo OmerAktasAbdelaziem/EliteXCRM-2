@@ -54,7 +54,7 @@ class OrderApiController extends Controller
         $amount = $request->amount;
         $clientId = $request->clientId;
 
-        $pnl = $this->orderService->calculatePnlWithoutOrder($clientId,$currentPrice, $asset ,$amount,$openPrice,$type);
+        $pnl = $this->orderService->calculatePnlWithoutOrder($clientId,$currentPrice, $asset ,$amount,$openPrice,$orderType);
 
         return response()->json([
             'success' => true,
