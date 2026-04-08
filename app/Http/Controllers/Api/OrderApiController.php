@@ -44,6 +44,7 @@ class OrderApiController extends Controller
             'openPrice' => 'required|float',
             'currentPrice' => 'required|float',
             'amount' => 'required|float',
+            'clientId' => 'required|integer',
         ]);
 
         $asset = $request->asset;
@@ -51,8 +52,9 @@ class OrderApiController extends Controller
         $openPrice = $request->openPrice;
         $currentPrice = $request->currentPrice;
         $amount = $request->amount;
+        $clientId = $request->clientId;
 
-        $pnl = $this->orderService->calculatePnlWithoutOrder($currentPrice, $asset ,$amount,$openPrice,$type);
+        $pnl = $this->orderService->calculatePnlWithoutOrder($clientId,$currentPrice, $asset ,$amount,$openPrice,$type);
 
         return response()->json([
             'success' => true,
