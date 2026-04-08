@@ -36,7 +36,7 @@ class OrderApiController extends Controller
         ]);
     }
 
-    public function pnlCalculateWithoutOrder(Request $request)
+    public function calculatePnlWithoutOrder(Request $request)
     {
         $request->validate([
             'asset' => 'required|integer',
