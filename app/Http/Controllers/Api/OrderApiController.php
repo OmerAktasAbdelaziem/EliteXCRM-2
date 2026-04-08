@@ -36,6 +36,30 @@ class OrderApiController extends Controller
         ]);
     }
 
+    public function pnlCalculateWithoutOrder(Request $request)
+    {
+        $request->validate([
+            'asset' => 'required|integer',
+            'orderType' => 'required|integer',
+            'openPrice' => 'required|float',
+            'currentPrice' => 'required|float',
+            'amount' => 'required|float',
+        ]);
+
+        $asset = $request->asset;
+        $orderType = $request->orderType;
+        $openPrice = $request->openPrice;
+        $currentPrice = $request->currentPrice;
+        $amount = $request->amount;
+
+        $pnl = $this->orderService->calculatePnlWithoutOrder($currentPrice, $asset ,$amount,$openPrice,$type);
+
+        return response()->json([
+            'success' => true,
+            'pnl' => $pnl,
+        ]);
+    }
+
 
     public function getRequiredMargin(Request $request, Asset $asset)
     {

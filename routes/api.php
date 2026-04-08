@@ -17,6 +17,7 @@ Route::get('/assets', function () {
 
 Route::middleware(['check.api.key'])->group(function () {
     Route::get('/getFinancialData', [OrderApiController::class, 'getFinancialData']);
+    Route::get('/calculatePnlWithoutOrder/{asset}/{orderType}/{openPrice}/{currentPrice}/{amount}', [OrderApiController::class, 'calculatePnlWithoutOrder']);
     Route::get('/getRequiredMargin/{asset}', [OrderApiController::class, 'getRequiredMargin']);
 });
 
