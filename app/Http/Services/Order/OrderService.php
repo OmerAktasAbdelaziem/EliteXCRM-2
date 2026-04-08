@@ -193,6 +193,8 @@ class OrderService implements OrderServiceInterface {
         
         //dd($clientId);
         $groupId = $client->asset_group_id;
+
+        
        // dd($groupId);
         $asset->load(['groupAssignments' => function($query) use ($groupId) {
             $query->where('asset_group', $groupId);  
@@ -201,7 +203,7 @@ class OrderService implements OrderServiceInterface {
         $assetGroupAssignment = $asset->groupAssignments->first();
 
 
-
+        //dd($assetGroupAssignment);
 
         $pnl = $this->pnLCalculation(null, $currentPrice, $assetGroupAssignment, $amount, $openPrice, $type);
         return $pnl;
@@ -236,6 +238,7 @@ class OrderService implements OrderServiceInterface {
             }
     
             $standardLot = $assetGroupAssignment?->size;
+            
             if ($standardLot === null) {
                 return 0.0;
             }
