@@ -185,9 +185,9 @@ class OrderService implements OrderServiceInterface {
     }
     
     public function calculatePnlWithoutOrder(int $clientId,float $currentPrice, $asset, $amount, $openPrice, $type): float
-    {
+    {print_r($clientId);die('aaa');
         $asset  = $this->assetService->getById($asset)->first();
-print_r($clientId);die;
+
         $groupId = $client->asset_group_id;
         $asset->load(['groupAssignments' => function($query) use ($groupId) {
             $query->where('asset_group', $groupId);  

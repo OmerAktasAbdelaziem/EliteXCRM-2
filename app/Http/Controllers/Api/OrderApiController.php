@@ -41,9 +41,9 @@ class OrderApiController extends Controller
         $request->validate([
             'asset' => 'required|integer',
             'orderType' => 'required|integer',
-            'openPrice' => 'required|float',
-            'currentPrice' => 'required|float',
-            'amount' => 'required|float',
+            'openPrice' => 'required|numeric',
+            'currentPrice' => 'required|numeric',
+            'amount' => 'required|numeric',
             'clientId' => 'required|integer',
         ]);
 
