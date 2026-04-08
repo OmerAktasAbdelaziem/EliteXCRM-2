@@ -17,6 +17,7 @@ Route::get('/assets', function () {
 
 Route::middleware(['check.api.key'])->group(function () {
     Route::get('/getFinancialData', [OrderApiController::class, 'getFinancialData']);
+    Route::get('/getRequiredMargin/{asset}', [OrderApiController::class, 'getRequiredMargin']);
 });
 
 Route::name('api.')->prefix('v1/')->group(function (Router $router) {

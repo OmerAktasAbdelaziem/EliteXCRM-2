@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 //Services
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
+use App\Models\Asset;
 
 class OrderApiController extends Controller
 {
@@ -35,5 +36,36 @@ class OrderApiController extends Controller
         ]);
     }
 
+
+    public function getRequiredMargin(Request $request, Asset $asset)
+    {
+        $request->validate([
+            'amount'        => 'required|numeric',
+            'open_price'    => 'required|numeric',
+        ]);
+
+        $size = $asset?->groupAssignments?->first()?->size;
+        $leverage = $asset?->groupAssignments?->first()?->leverage;
+        if ($size === null || $leverage === null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order currency had been removed from asset group assigned to user, please choose another currency for the order.'
+            ]);
+        }
+
+        if (str_starts_with($asset->symbol, 'USD') || (!strpos($asset->symbol, 'USD') && $asset->currency !== "USD")) {
+            $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1 / $request->open_price);
+        } else {
+            $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1 / $request->open_price);
+        }
+        if (($asset->groupAssignments->first()->is_percentage ?? 0) == 1) {
+            $reqMargin = ($request->amount * $request->open_price * $size) / $leverage;
+        }
+
+        return response()->json([
+            'success' => true,
+            'required_margin' => $reqMargin
+        ]);
+    }
     
 }

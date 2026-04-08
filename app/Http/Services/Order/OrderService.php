@@ -131,25 +131,48 @@ class OrderService implements OrderServiceInterface {
                     'close_price' => $currentPrice,
                 ]);
                 if($commands){
-                    if ($order->s_p && (float)$currentPrice >= (float)$order->s_p) {
-                        $this->update($order->id,[
-                            'closed_at' => Carbon::now(),
-                            'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
-                        ]);
-                        Notification::create([
-                            'client_id' => $order->client->id,
-                            'text'      => 'order_closedtp_notification',
-                        ]);
-                    }
-                    if ($order->s_l && (float)$currentPrice <= (float)$order->s_l) {
-                        $this->update($order->id, [
-                            'closed_at' => Carbon::now(),
-                            'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
-                        ]);
-                        Notification::create([
-                            'client_id' => $order->client->id,
-                            'text'      => 'order_closedsl_notification',
-                        ]);
+                    if ($order->type == 1) {
+                        if ($order->s_p && (float)$currentPrice >= (float)$order->s_p) {
+                            $this->update($order->id,[
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedtp_notification',
+                            ]);
+                        }
+                        if ($order->s_l && (float)$currentPrice <= (float)$order->s_l) {
+                            $this->update($order->id, [
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedsl_notification',
+                            ]);
+                        }
+                    } else {
+                        if ($order->s_p && (float)$currentPrice <= (float)$order->s_p) {
+                            $this->update($order->id,[
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedtp_notification',
+                            ]);
+                        }
+                        if ($order->s_l && (float)$currentPrice >= (float)$order->s_l) {
+                            $this->update($order->id, [
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedsl_notification',
+                            ]);
+                        }
                     }
                 }
             }
