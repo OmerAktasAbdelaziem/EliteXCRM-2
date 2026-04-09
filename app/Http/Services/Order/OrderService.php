@@ -14,6 +14,8 @@ use App\Models\Notification;
 //Models 
 use App\Models\Order;
 
+use Illuminate\Support\Facades\DB;
+
 //Other
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
