@@ -87,10 +87,10 @@ class OrderService implements OrderServiceInterface {
        $assetGroupAssignment = DB::table('asset_group_assignments')
     ->where('asset', $order->currency)
     ->where('asset_group', $groupId)
-    ->get();
+    ->first();
 
-    echo $asset->id.'-'.$groupId.'<br>';
-    dd($assetGroupAssignment);
+    /*echo $asset->id.'-'.$groupId.'<br>';
+    dd($assetGroupAssignment);*/
 
         if ($order->status == 'active') {
             if(!$commands){
@@ -216,7 +216,7 @@ class OrderService implements OrderServiceInterface {
         $assetGroupAssignment = DB::table('asset_group_assignments')
     ->where('asset', $asset->id)
     ->where('asset_group', $groupId)
-    ->get();
+    ->first();
 
 
 
