@@ -325,11 +325,18 @@ class OrderService implements OrderServiceInterface {
             $creditOut = $this->moneyTransactionService->getCreditOut($brokerId);
             $finance['credit'] = $creditIn - $creditOut;
             $finance['balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']) + $closedOrdersPL + $finance['credit'] ;
-            $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']);
+            
             $finance['pendingWithdrawal'] = $this->moneyTransactionService->getPendingWithdrawal($brokerId);
             $bonusIn = $this->moneyTransactionService->getBonusIn($brokerId);
             $bonusOut = $this->moneyTransactionService->getBonusOut($brokerId);
             $finance['bonus'] = $bonusIn - $bonusOut;
+            $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal'])+$closedOrdersPL;
+            if(isset($client->options['canWithdrawalBonus']) && $client->options['canWithdrawalBonus'] == 1){
+                $finance['withdraw_balance'] = $finance['withdraw_balance']+ $finance['bonus'];
+            }
+            if(isset($client->options['canWithdrawalCredit']) && $client->options['canWithdrawalCredit'] == 1){
+                $finance['withdraw_balance'] = $finance['withdraw_balance']+ $finance['credit'];
+            }
             $finance['equity'] = $finance['balance'] + $finance['currentPL'] +  $finance['bonus'];
             $finance['freeMargin'] = ($finance['balance'] - $finance['usedMargin']) + $finance['bonus'];
         }

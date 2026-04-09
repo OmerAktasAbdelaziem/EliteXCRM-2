@@ -525,7 +525,7 @@ class MainTPController extends Controller {
 
             //echo $finance['totalDeposit'] ."+". $finance['totalWithdrawal'] ."+".  $closedOrdersPL ."+".$finance['credit'];die;
 
-            $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal']);
+            $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal'])+$closedOrdersPL;
 
             //$bonusIn = MoneyTrx::where('broker_id', $broker_id)->where('status', 'accepted')->where('type', 'bonus in')->sum('amount');
 
