@@ -215,8 +215,8 @@ class OrderService implements OrderServiceInterface {
     ->where('asset_group', $groupId)
     ->get();
 
-
-        //dd($assetGroupAssignment);
+echo $asset->id.'-'.$groupId.'<br>';
+        dd($assetGroupAssignment);
 
         $pnl = $this->pnLCalculation(null, $currentPrice,$asset, $assetGroupAssignment, $amount, $openPrice, $type);
         return $pnl;
