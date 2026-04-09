@@ -94,7 +94,7 @@ class OrderService implements OrderServiceInterface {
                 }
             }
             
-            $pnl = $this->pnLCalculation($order, $currentPrice, $assetGroupAssignment);
+            $pnl = $this->pnLCalculation($order, $currentPrice, $assetGroupAssignment,$asset);
             
             if (($order->pnl != $pnl || !$order->pnl) || ($order->close_price != $currentPrice || !$order->close_price)) {
                 $this->update($order->id,[
@@ -205,18 +205,18 @@ class OrderService implements OrderServiceInterface {
 
         //dd($assetGroupAssignment);
 
-        $pnl = $this->pnLCalculation(null, $currentPrice, $assetGroupAssignment, $amount, $openPrice, $type);
+        $pnl = $this->pnLCalculation(null, $currentPrice,$asset, $assetGroupAssignment, $amount, $openPrice, $type);
         return $pnl;
     }
 
-    public function pnLCalculation($order = null, float $currentPrice, $assetGroupAssignment, $amount = null,$openPrice = null, $type = null): float
+    public function pnLCalculation($order = null, float $currentPrice,$asset, $assetGroupAssignment, $amount = null,$openPrice = null, $type = null): float
     {
         $type = $order?->type ?? $type;
         $openPrice = $order?->open_price ?? $openPrice;
         $amount = $order?->amount ?? $amount;
-        if ($order != null &&
+        if (($order == null && !str_starts_with($asset->symbol, 'USD')) || ($order != null &&
             !str_starts_with($order->asset->symbol, 'USD') &&
-            $order->ref_currency === 'USD'
+            $order->ref_currency === 'USD') 
         ) {
             // Direct calculation
             if ($type == 1) { // Buy
@@ -248,6 +248,7 @@ class OrderService implements OrderServiceInterface {
             $pipValue = $pipValueStandard * $amount;
     
             $pnl = $pipDiff * $pipValue;
+           // echo $pipValueStandard .'*'. $currentPrice;
 
             return $pnl;
         }
