@@ -10,7 +10,7 @@ use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\Asset\Interfaces\AssetServiceInterface;
 use App\Http\Services\Order\Interfaces\MoneyTransactionServiceInterface;
-
+use App\Models\Notification;
 //Models 
 use App\Models\Order;
 
@@ -72,80 +72,79 @@ class OrderService implements OrderServiceInterface {
     
     public function calculatePnl(Order $order,int $commands = 0):int{
        // $commands = 1;
+      // $order = Order::find(86);
         $client = $order->client;
         $asset  = $this->assetService->getById($order->currency)->first();
+
         $groupId = $client->asset_group_id;
         $asset->load(['groupAssignments' => function($query) use ($groupId) {
-    $query->where('asset_group', $groupId);  
-}]);
-$assetGroupAssignment = $asset->groupAssignments->first();
+            $query->where('asset_group', $groupId);  
+        }]);
+
+        $assetGroupAssignment = $asset->groupAssignments->first();
 
         if ($order->status == 'active') {
             if(!$commands){
                 $currentPrice = $order->close_price;
             }else{
-            if ($order->type == 1) {
-                $currentPrice = $asset->bid_price;
-            }else{
-                $currentPrice = $asset->ask_price;
-            }
-            }
-            if (!str_starts_with($order->asset->symbol, 'USD') && $order->ref_currency == 'USD') {
                 if ($order->type == 1) {
-                    $def_price = $currentPrice - $order->open_price;
+                    $currentPrice = $asset->bid_price;
                 }else{
-                    $def_price = $order->open_price - $currentPrice;
+                    $currentPrice = $asset->ask_price;
                 }
-                $pnl = $order->amount * $assetGroupAssignment->size * $def_price;
             }
-            else{
-                $pipSize = $order->amount;
-                
-                if ($order->type == 1) {
-                    $pipDiff = ($currentPrice - $order->open_price) / $pipSize;
-                } else {
-                    $pipDiff = ($order->open_price - $currentPrice) / $pipSize;
-                }
-                
-                $standardLot = $assetGroupAssignment?->size;
-                if($standardLot === null){
-                    return 0;
-                }
-                $pipValueJPY = $standardLot * $pipSize;
-                
-                $pipValueStandard = $pipValueJPY / $currentPrice;
-                
-                $pipValue = $pipValueStandard * $order->amount;
-                
-                $pnl = $pipDiff * $pipValue;
-                
-            }
+            
+            $pnl = $this->pnLCalculation($order, $currentPrice, $assetGroupAssignment,$asset);
+            
             if (($order->pnl != $pnl || !$order->pnl) || ($order->close_price != $currentPrice || !$order->close_price)) {
                 $this->update($order->id,[
                     'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
                     'close_price' => $currentPrice,
                 ]);
                 if($commands){
-                if ($order->s_p && (float)$order->pnl >= (float)$order->s_p) {
-                    $this->update($order->id,[
-                        'closed_at' => Carbon::now(),
-                        'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
-                    ]);
-                    Notification::create([
-                        'client_id' => $order->client->id,
-                        'text'      => 'order_closedtp_notification',
-                    ]);
-                }
-                if ($order->s_l && (float)$order->pnl <= -((float)$order->s_l)) {
-                    $this->update($order->id, [
-                        'closed_at' => Carbon::now(),
-                        'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
-                    ]);
-                    Notification::create([
-                        'client_id' => $order->client->id,
-                        'text'      => 'order_closedsl_notification',
-                    ]);
-                }
+                    if ($order->type == 1) {
+                        if ($order->s_p && (float)$currentPrice >= (float)$order->s_p) {
+                            $this->update($order->id,[
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedtp_notification',
+                            ]);
+                        }
+                        if ($order->s_l && (float)$currentPrice <= (float)$order->s_l) {
+                            $this->update($order->id, [
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedsl_notification',
+                            ]);
+                        }
+                    } else {
+                        if ($order->s_p && (float)$currentPrice <= (float)$order->s_p) {
+                            $this->update($order->id,[
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedtp_notification',
+                            ]);
+                        }
+                        if ($order->s_l && (float)$currentPrice >= (float)$order->s_l) {
+                            $this->update($order->id, [
+                                'closed_at' => Carbon::now(),
+                                'pnl' => rtrim(rtrim(sprintf('%f', $pnl), '0'), '.'),
+                            ]);
+                            Notification::create([
+                                'client_id' => $order->client->id,
+                                'text'      => 'order_closedsl_notification',
+                            ]);
+                        }
+                    }
                 }
             }
         }
@@ -185,6 +184,78 @@ $assetGroupAssignment = $asset->groupAssignments->first();
         return 1;
     }
     
+    public function calculatePnlWithoutOrder(int $clientId,float $currentPrice, $asset, $amount, $openPrice, $type): float
+    {
+        $asset  = $this->assetService->getById($asset)->first();
+
+        $client = $this->clientService->getById($clientId)->first();
+       
+        
+        //dd($clientId);
+        $groupId = $client->asset_group_id;
+
+        
+       // dd($groupId);
+        $asset->load(['groupAssignments' => function($query) use ($groupId) {
+            $query->where('asset_group', $groupId);  
+        }]);
+
+        $assetGroupAssignment = $asset->groupAssignments->first();
+
+
+        //dd($assetGroupAssignment);
+
+        $pnl = $this->pnLCalculation(null, $currentPrice,$asset, $assetGroupAssignment, $amount, $openPrice, $type);
+        return $pnl;
+    }
+
+    public function pnLCalculation($order = null, float $currentPrice,$asset, $assetGroupAssignment, $amount = null,$openPrice = null, $type = null): float
+    {
+        $type = $order?->type ?? $type;
+        $openPrice = $order?->open_price ?? $openPrice;
+        $amount = $order?->amount ?? $amount;
+        if (($order == null && !str_starts_with($asset->symbol, 'USD')) || ($order != null &&
+            !str_starts_with($order->asset->symbol, 'USD') &&
+            $order->ref_currency === 'USD') 
+        ) {
+            // Direct calculation
+            if ($type == 1) { // Buy
+                $def_price = $currentPrice - $openPrice;
+            } else { // Sell
+                $def_price = $openPrice - $currentPrice;
+            }
+    
+            $pnl = $amount * $assetGroupAssignment->size * $def_price;
+            return $pnl;
+        } else {
+            // Pip-based calculation
+            $pipSize = $amount;
+    
+            if ($type == 1) { // Buy
+                $pipDiff = ($currentPrice - $openPrice) / $pipSize;
+            } else { // Sell
+                $pipDiff = ($openPrice - $currentPrice) / $pipSize;
+            }
+    
+            $standardLot = $assetGroupAssignment?->size;
+            
+            if ($standardLot === null) {
+                return 0.0;
+            }
+    
+            $pipValueJPY = $standardLot * $pipSize;
+            $pipValueStandard = $pipValueJPY / $currentPrice;
+            $pipValue = $pipValueStandard * $amount;
+    
+            $pnl = $pipDiff * $pipValue;
+           // echo $pipValueStandard .'*'. $currentPrice;
+
+            return $pnl;
+        }
+    }
+
+
+
     public function getClosedOrdersPL(int $brokerId):float
     {
         return $this->orderRepository->getClosedOrdersPL($brokerId);
