@@ -89,6 +89,9 @@ class OrderService implements OrderServiceInterface {
     ->where('asset_group', $groupId)
     ->get();
 
+    echo $asset->id.'-'.$groupId.'<br>';
+    dd($assetGroupAssignment);
+
         if ($order->status == 'active') {
             if(!$commands){
                 $currentPrice = $order->close_price;
@@ -215,8 +218,7 @@ class OrderService implements OrderServiceInterface {
     ->where('asset_group', $groupId)
     ->get();
 
-echo $asset->id.'-'.$groupId.'<br>';
-        dd($assetGroupAssignment);
+
 
         $pnl = $this->pnLCalculation(null, $currentPrice,$asset, $assetGroupAssignment, $amount, $openPrice, $type);
         return $pnl;
