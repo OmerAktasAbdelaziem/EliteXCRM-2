@@ -224,7 +224,7 @@ class OrderService implements OrderServiceInterface {
             } else { // Sell
                 $def_price = $openPrice - $currentPrice;
             }
-    
+    dd($assetGroupAssignment->size);
             $pnl = $amount * $assetGroupAssignment->size * $def_price;
             return $pnl;
         } else {
