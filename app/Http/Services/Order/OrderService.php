@@ -103,7 +103,7 @@ class OrderService implements OrderServiceInterface {
                 }
             }
             
-            $pnl = $this->pnLCalculation($order, $currentPrice, $assetGroupAssignment,$asset);
+            $pnl = $this->pnLCalculation($order, $currentPrice,$asset, $assetGroupAssignment);
             
             if (($order->pnl != $pnl || !$order->pnl) || ($order->close_price != $currentPrice || !$order->close_price)) {
                 $this->update($order->id,[
