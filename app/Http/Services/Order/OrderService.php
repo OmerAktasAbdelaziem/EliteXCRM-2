@@ -240,17 +240,18 @@ class OrderService implements OrderServiceInterface {
                 $def_price = $openPrice - $currentPrice;
             }
     //dd($assetGroupAssignment->size);
-    try{
-            $pnl = $amount * $assetGroupAssignment->size * $def_price;
-    }
-    catch(\Exception $e){
+    if (is_array($assetGroupAssignment->size)) {
         print_r($assetGroupAssignment->size);
         echo '<br>';
         print_r($def_price);
         echo '<br>';
-        print_r($amount);
+        print_r($def_price);
         echo '<br>';
+        die;
     }
+
+            $pnl = $amount * $assetGroupAssignment->size * $def_price;
+   
             return $pnl;
         } else {
             // Pip-based calculation
