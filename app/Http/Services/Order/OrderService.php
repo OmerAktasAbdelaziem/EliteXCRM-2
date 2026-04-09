@@ -77,11 +77,15 @@ class OrderService implements OrderServiceInterface {
         $asset  = $this->assetService->getById($order->currency)->first();
 
         $groupId = $client->asset_group_id;
-        $asset->load(['groupAssignments' => function($query) use ($groupId) {
+       /* $asset->load(['groupAssignments' => function($query) use ($groupId) {
             $query->where('asset_group', $groupId);  
-        }]);
+        }]);*/
 
-        $assetGroupAssignment = $asset->groupAssignments->first();
+       // $assetGroupAssignment = $asset->groupAssignments->first();
+       $assetGroupAssignment = DB::table('asset_group_assignments')
+    ->where('asset', $order->currency)
+    ->where('asset_group', $groupId)
+    ->get();
 
         if ($order->status == 'active') {
             if(!$commands){
@@ -196,11 +200,18 @@ class OrderService implements OrderServiceInterface {
 
         
        // dd($groupId);
-        $asset->load(['groupAssignments' => function($query) use ($groupId) {
+        /*$asset->load(['groupAssignments' => function($query) use ($groupId) {
             $query->where('asset_group', $groupId);  
-        }]);
+        }]);*/
 
-        $assetGroupAssignment = $asset->groupAssignments->first();
+
+
+        //$assetGroupAssignment = $asset->groupAssignments->first();
+
+        $assetGroupAssignment = DB::table('asset_group_assignments')
+    ->where('asset', $asset->id)
+    ->where('asset_group', $groupId)
+    ->get();
 
 
         //dd($assetGroupAssignment);
@@ -224,7 +235,7 @@ class OrderService implements OrderServiceInterface {
             } else { // Sell
                 $def_price = $openPrice - $currentPrice;
             }
-    dd($assetGroupAssignment->size);
+    //dd($assetGroupAssignment->size);
             $pnl = $amount * $assetGroupAssignment->size * $def_price;
             return $pnl;
         } else {
