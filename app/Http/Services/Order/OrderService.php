@@ -240,7 +240,7 @@ class OrderService implements OrderServiceInterface {
                 $def_price = $openPrice - $currentPrice;
             }
     //dd($assetGroupAssignment->size);
-    if (is_array($assetGroupAssignment->size)) {
+   /* if (is_array($assetGroupAssignment->size)) {
         print_r($assetGroupAssignment->size);
         echo '<br>';
         print_r($def_price);
@@ -248,7 +248,7 @@ class OrderService implements OrderServiceInterface {
         print_r($def_price);
         echo '<br>';
         die;
-    }
+    }*/
 
             $pnl = $amount * $assetGroupAssignment->size * $def_price;
    
