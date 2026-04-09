@@ -89,8 +89,8 @@ class OrderService implements OrderServiceInterface {
     ->where('asset_group', $groupId)
     ->first();
 
-    echo $asset->id.'-'.$groupId.'<br>';
-    dd($assetGroupAssignment->size);
+    /*echo $asset->id.'-'.$groupId.'<br>';
+    dd($assetGroupAssignment->size);*/
 
         if ($order->status == 'active') {
             if(!$commands){
