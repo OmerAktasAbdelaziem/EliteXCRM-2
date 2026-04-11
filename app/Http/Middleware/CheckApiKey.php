@@ -28,6 +28,24 @@ class CheckApiKey
         }
 
         // ✅ Rate limiting 60 per minute
+
+        $whitelistedDomains = [
+            'https://webtrader.elitexcrm.com/',
+           // 'my-second-site.com',
+        ];
+    
+        $origin = $request->headers->get('origin') 
+            ?? $request->headers->get('referer');
+    
+        if ($origin) {
+            foreach ($whitelistedDomains as $domain) {
+                if (str_contains($origin, $domain)) {
+             
+                    return $next($request);
+                }
+            }
+        }
+
         $key = 'api-key:' . $apiKey;
 
         if (RateLimiter::tooManyAttempts($key, 60)) {
