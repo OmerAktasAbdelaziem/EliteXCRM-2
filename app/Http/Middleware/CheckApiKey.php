@@ -32,6 +32,8 @@ class CheckApiKey
         // ✅ whitelist domains
     $whitelistedDomains = [
         'webtrader.elitexcrm.com',
+        'webtrader.internationalsecuirities.com',
+        'webtrader.rassanh.com',
     ];
 
     $origin = $request->headers->get('origin') 
