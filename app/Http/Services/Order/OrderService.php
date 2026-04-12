@@ -331,6 +331,7 @@ class OrderService implements OrderServiceInterface {
             $bonusOut = $this->moneyTransactionService->getBonusOut($brokerId);
             $finance['bonus'] = $bonusIn - $bonusOut;
             $finance['withdraw_balance'] = ($finance['totalDeposit'] - $finance['totalWithdrawal'])+$closedOrdersPL;
+            
             if(isset($client->options['canWithdrawalBonus']) && $client->options['canWithdrawalBonus'] == 1){
                 $finance['withdraw_balance'] = $finance['withdraw_balance']+ $finance['bonus'];
             }

@@ -474,7 +474,7 @@
                                                     
                                                         <div class="input-group">
                                                             <select id="asset_group_id" class="single-select form-select @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_asset_group_edit') ) editable @endif" @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_asset_group_edit') ) name="asset_group_id" @endif disabled>
-                                                                <option value="">Select Group</option>
+                                                               
                                                                 @foreach ($asset_groups as $asset_group)
                                                                     <option value="{{$asset_group->id}}" @if ($asset_group->id == $client->asset_group_id) selected @endif>{{$asset_group->name}}</option>
                                                                 @endforeach

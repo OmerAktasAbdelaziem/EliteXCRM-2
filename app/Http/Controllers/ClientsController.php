@@ -39,6 +39,7 @@ use App\Http\Services\Client\Interfaces\ClientServiceInterface;
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 use App\Facades\UserPermission;
+use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
 
 class ClientsController extends Controller {
 
@@ -46,17 +47,20 @@ class ClientsController extends Controller {
     //protected $userService;
     protected $orderService;
     protected $subscriptionService;
+    protected $assetGroupService;
 
     public function __construct(
             ClientServiceInterface $clientService,
             // UserServiceInterface $userService,
             OrderServiceInterface $orderService,
             SubscriptionServiceInterface $subscriptionService,
+            AssetGroupServiceInterface $assetGroupService,
     ) {
         $this->clientService = $clientService;
         // $this->userService = $userService;
         $this->orderService = $orderService;
         $this->subscriptionService = $subscriptionService;
+        $this->assetGroupService = $assetGroupService;
     }
 
     /* public function __construct(
@@ -848,11 +852,18 @@ class ClientsController extends Controller {
             'created_by' => AUTH::user()->username,
         ]);
 
+        
         $id = $this->generateUniqueCode();
 
+
+        $defaultAssetGroup = $this->assetGroupService->getByFilters(
+            [['field'=>'pipeline_id','conditions'=>['='=>Auth::user()->pipeline_id]],['field'=>'default','conditions'=>['='=>1]]]
+        )->first();
+        
         $inputs = array_merge($inputs, [
             'id' => $id,
             'created_by' => AUTH::user()->username,
+            'asset_group_id' => $defaultAssetGroup->id,
         ]);
 
         if ($request->user_id && !empty($request->user_id)) {
