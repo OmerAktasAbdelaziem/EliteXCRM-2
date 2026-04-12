@@ -220,7 +220,7 @@ class ClientsTransferController extends Controller
             }
         }
     
-        $lastBrokerId = Client::max('broker_id');
+        $lastBrokerId = Client::where('broker_id', $pipelineId)->max('broker_id');
         $newBrokerId = $lastBrokerId ? $lastBrokerId + 1 : 1000000*$pipelineId;
     
         $client = new Client();
