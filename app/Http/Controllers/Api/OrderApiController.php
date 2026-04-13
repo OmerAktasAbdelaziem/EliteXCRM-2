@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 //Services
 use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Models\Asset;
+
 
 class OrderApiController extends Controller
 {
