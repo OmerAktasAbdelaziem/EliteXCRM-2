@@ -13,6 +13,7 @@ class AssetGroup extends Model
         'pipeline_id',
         'asset_ids',
         'name',
+        'default'
     ];
 
     protected $casts = [

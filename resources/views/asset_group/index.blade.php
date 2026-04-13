@@ -43,6 +43,7 @@
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>Group Name</th>
+                                                        <th>Default Group</th>
                                                         <th>Assets Count</th>
                                                         <th>Created At</th>
                                                     </tr>
@@ -54,6 +55,11 @@
                                                                 <a href="{{ route('assetGroup.show', $assetGroup->id) }}">
                                                                     {{$assetGroup->name}}
                                                                 </a>
+                                                            </td>
+                                                            <td>
+                                                                
+                                                            {{ $assetGroup->default == 1 ? 'yes' : 'no' }}
+                                                                
                                                             </td>
                                                             <td>
                                                                 {{count($assetGroup->asset_ids??[])}}

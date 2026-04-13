@@ -52,6 +52,18 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-12">
+                                    <label for="default" class="form-label">Default</label>
+                                    <div class="input-group">
+    <select class="form-control" id="default" name="default" required>
+        <option value="1" {{ old('default', $group->default ?? 0) == 1 ? 'selected' : '' }}>yes</option>
+        <option value="0" {{ old('default', $group->default ?? 0) == 0 ? 'selected' : '' }}>no</option>
+    </select>
+</div>
+                                    @error('default')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-12">
                                     <label for="asset_ids" class="form-label">Assets</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="selected_assets_display" placeholder="Selected assets will appear here..." readonly onclick="toggleAssetSelection()">

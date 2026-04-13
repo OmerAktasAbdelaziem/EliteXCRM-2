@@ -184,8 +184,18 @@ class AssetGroupController extends Controller {
 
         $inputs = $request->only([
             'name',
+            'default'
         ]);
         $inputs['pipeline_id'] = auth()->user()->pipeline_id;
+        if($request->default == 1){
+        $ifDefaultExist = $this->assetGroupService->getByFilters([
+            ['field' => 'pipeline_id', 'conditions' => ['=' => auth()->user()->pipeline_id]],
+            ['field' => 'default',   'conditions' => ['=' => 1]],
+        ])->first();
+        if(isset($ifDefaultExist->default) && $ifDefaultExist->default == 1){
+            $this->assetGroupService->update($ifDefaultExist->id,['default'=>0]);
+        }
+        }
 //dd($request->asset_ids);
         $group = $this->assetGroupService->create($inputs)->first();
         if ($asset_ids = $request->asset_ids) {
@@ -334,7 +344,27 @@ class AssetGroupController extends Controller {
 
         $inputs = $request->only([
             'name',
+            'default',
         ]);
+        $inputs['pipeline_id'] = auth()->user()->pipeline_id;
+        if($request->default == 1){
+            $ifDefaultExist = $this->assetGroupService->getByFilters([
+                ['field' => 'pipeline_id', 'conditions' => ['=' => auth()->user()->pipeline_id]],
+                ['field' => 'default',   'conditions' => ['=' => 1]],
+            ])->first();
+            if(isset($ifDefaultExist->default) && $ifDefaultExist->default == 1){
+                $this->assetGroupService->update($ifDefaultExist->id,['default'=>0]);
+            }
+            }else{
+                $ifDefaultExist = $this->assetGroupService->getByFilters([
+                    ['field' => 'pipeline_id', 'conditions' => ['=' => auth()->user()->pipeline_id]],
+                    ['field' => 'default',   'conditions' => ['=' => 1]],
+                    ['field' => 'id',   'conditions' => ['!=' => $id]],
+                ])->count();
+                if($ifDefaultExist == 0){
+                return redirect()->back()->with('error', 'At least one Asset group should be default, choose another default the retry');
+                }
+            }
 
         if ($asset_ids = $request->asset_ids) {
             $is_except = false;
