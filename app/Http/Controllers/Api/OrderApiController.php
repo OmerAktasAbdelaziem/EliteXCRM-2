@@ -68,10 +68,21 @@ class OrderApiController extends Controller
         $request->validate([
             'amount'        => 'required|numeric',
             'open_price'    => 'required|numeric',
+            'asset_group_id'    => 'required|numeric',
+
         ]);
 
-        $size = $asset?->groupAssignments?->first()?->size;
-        $leverage = $asset?->groupAssignments?->first()?->leverage;
+        //$size = $asset?->groupAssignments?->first()?->size;
+        //$leverage = $asset?->groupAssignments?->first()?->leverage;
+
+        $assetGroupAssignment = DB::table('asset_group_assignments')
+        ->where('asset', $asset->id)
+        ->where('asset_group', $request->asset_group_id)
+        ->first();
+
+$size = $assetGroupAssignment->size;
+$leverage = $assetGroupAssignment->leverage;
+
         if ($size === null || $leverage === null) {
             return response()->json([
                 'success' => false,
