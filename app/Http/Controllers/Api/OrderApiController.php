@@ -84,6 +84,8 @@ class OrderApiController extends Controller
 
 $size = $assetGroupAssignment->size;
 $leverage = $assetGroupAssignment->leverage;
+$percentage = $assetGroupAssignment->is_percentage;
+
 
         if ($size === null || $leverage === null) {
             return response()->json([
@@ -97,7 +99,7 @@ $leverage = $assetGroupAssignment->leverage;
         } else {
             $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1 / $request->open_price);
         }
-        if (($asset->groupAssignments->first()->is_percentage ?? 0) == 1) {
+        if (($percentage ?? 0) == 1) {
             $reqMargin = ($request->amount * $request->open_price * $size) / $leverage;
         }
 

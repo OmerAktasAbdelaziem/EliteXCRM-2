@@ -36,7 +36,7 @@ function requiredMargin() {
 		if (percentage == 1) {
 			var reqMargin = (posAmount * posPrice * contractSize) / leverage;
 		}
-	
+		
 		console.log(posAmount, posPrice, leverage, contractSize, reqMargin);
 		$('#reqMargin').val(parseFloat(reqMargin).toFixed(3));
 	}
