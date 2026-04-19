@@ -29,7 +29,7 @@ class ClientImport implements ToModel, WithHeadingRow
         $mappedRow = [];
         
         foreach ($this->headers as $header => $field) {
-            $header = strtolower($header);
+            $header = trim(strtolower($header));
             if(isset($row[$header])){
             $mappedRow[$field] = $row[$header];
             }
