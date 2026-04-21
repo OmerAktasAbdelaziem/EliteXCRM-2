@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AutoLogout
 {
     public function handle(Request $request, Closure $next)
-    {
+    {/*
         if (Auth::check()) {
             $lastActivity = session('last_activity_time');
             $now = now();
@@ -28,6 +28,6 @@ class AutoLogout
             session(['last_activity_time' => $now]);
         }
 
-        return $next($request);
+        return $next($request);*/
     }
 }
