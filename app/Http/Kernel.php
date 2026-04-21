@@ -46,7 +46,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\LastSeenMiddleware::class,
             \App\Http\Middleware\ForceLogoutIfPasswordChanged::class,
-            \App\Http\Middleware\AutoLogout::class,
+            //\App\Http\Middleware\AutoLogout::class,
             \App\Http\Middleware\CheckSubscription::class, // Global subscription check
 
         ],
