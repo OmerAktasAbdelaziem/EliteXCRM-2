@@ -17,12 +17,12 @@ class AutoLogout
             if ($lastActivity) {
                 $inactive = $now->diffInSeconds(\Carbon\Carbon::parse($lastActivity));
 
-                if ($inactive > 1800) {
+                /*if ($inactive > 1800) {
                     Auth::logout();
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
                     return redirect('/login')->with('status', 'تم تسجيل خروجك تلقائياً بسبب عدم النشاط لأكثر من 30 دقيقة');
-                }
+                }*/
             }
 
             session(['last_activity_time' => $now]);
