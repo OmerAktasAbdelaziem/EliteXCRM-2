@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdsController;
 use App\Http\Controllers\Client_CommentController;
 use App\Http\Controllers\ClientsTransferController;
 use App\Http\Controllers\NotificationController;
@@ -514,6 +515,28 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
 
     $router->middleware(['role:emails_sender_emails_delete'])->group(function (Router $router) {
         $router->delete('sender_emails/{id}', [SenderEmailsController::class, 'delete'])->name('sender_emails.delete');
+    });
+
+
+    $router->middleware(['role:ads_create'])->group(function (Router $router) {
+        $router->get('ads/create', [AdsController::class, 'create'])->name('ads.create');
+        $router->post('ads',       [AdsController::class, 'store'])->name('ads.store');
+    });
+
+    $router->middleware(['role:ads_list'])->group(function (Router $router) {
+        $router->get('ads', [AdsController::class, 'index'])->name('ads.index');
+    });
+
+    $router->middleware(['role:ads_view'])->group(function (Router $router) {
+        $router->get('ads/{id}', [AdsController::class, 'show'])->name('ads.show');
+    });
+
+    $router->middleware(['role:ads_edit'])->group(function (Router $router) {
+        $router->put('ads/{id}',              [AdsController::class, 'update'])->name('ads.update');
+    });
+
+    $router->middleware(['role:ads_delete'])->group(function (Router $router) {
+        $router->delete('ads/{id}', [AdsController::class, 'delete'])->name('ads.delete');
     });
 
     $router->get('notification/mark_all_as_read', [NotificationController::class, 'mark_all_as_read'])->name('notification.mark_all_as_read');

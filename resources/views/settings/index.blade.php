@@ -21,10 +21,18 @@
     <div class="col-md-3">
 <div class ="section-area">
     <span class="section-title">General Settings</span>
-    @if($isPipelineAdmin)
+    @if($isPipelineAdmin || $isSuperAdmin)
     <a href = "{{ route('settings.editLogo') }}"><span class="section-text">Edit logo</span></a>
     @endif
 </div>        
+
+
+<div class ="section-area">
+    <span class="section-title">Ad Settings</span>
+    @if($isPipelineAdmin || $isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'ads_list'))
+    <a href = "{{ route('ads.index') }}"><span class="section-text">Google sheet linker</span></a>
+    @endif
+</div>    
     </div>
    
                             </div>

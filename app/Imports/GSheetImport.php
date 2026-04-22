@@ -2,18 +2,29 @@
 
 namespace App\Imports;
 
+use App\Models\AdHandler;
 use App\Models\Client;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Illuminate\Support\Facades\Validator;
 
 class GSheetImport implements ToModel, WithHeadingRow
 {
+    protected AdHandler $ad;
+
+    public function __construct(AdHandler $ad)
+    {
+        $this->ad = $ad;
+    }
+
     public function model(array $row)
     {
-        $lastCapturedTimestamp = Client::where('form_id',$row['form_id'])->max('last_captured_at') ?: '1970-01-01 00:00:00';
+        $lastCapturedTimestamp = Client::where('pipeline_id', $this->ad->pipeline_id)
+            ->where('form_id', $row['form_id'])
+            ->max('last_captured_at') ?: '1970-01-01 00:00:00';
 
-        $originalTimestamp = isset($row['created_at']) ? Carbon::parse($row['created_at']) : null;
+        $originalTimestamp = isset($row['created_time']) ? Carbon::parse($row['created_time']) : null;
 
         if ($originalTimestamp) {
             $istanbulTimestamp = $originalTimestamp->setTimezone('Europe/Istanbul');
@@ -23,29 +34,60 @@ class GSheetImport implements ToModel, WithHeadingRow
         }
 
         if ($leadTimestamp && $leadTimestamp > $lastCapturedTimestamp) {
-            $adMap = [
-                'ag:120223300533320286' => 'Libya',
-                'ag:120223299670150286' => 'Iraq',
-            ];
+
+            $mappedRow = [];
+            $headers = [];
+            foreach ($this->ad->fields as $field) {
+                $header = trim(strtolower($field->sheet_field));
+                $headers[] = $header;
+                if(isset($row[$header])){
+                    $mappedRow[$field->crm_field] = $row[$header];
+                }
+            }
+
+            $mappedRow['country'] = $this->ad->sheet_country;
+
+            $validator = Validator::make($mappedRow, [
+                'first_name' => ['required'],
+                'country'    => ['required'],
+                'phone1'     => ['required'],
+                'email'      => ['required'],
+            ]);
+
+            $validator->validate();
+
             Client::create([
                 'last_captured_at' => $leadTimestamp,
-                'is_have_invest'   => $row['is_have_invest'] === 'نعم' ? 1 : ($row['is_have_invest'] === 'لا' ? 0 : null),
-                'is_have_money'    => $row['is_have_money'] === 'نعم' ? 1 : ($row['is_have_money'] === 'لا' ? 0 : null),
-                'is_have_time'     => $row['is_have_time'] === 'نعم' ? 1 : ($row['is_have_time'] === 'لا' ? 0 : null),
+                'pipeline_id'      => $this->ad->pipeline_id,
+                'is_have_invest'   => $this->yesNoToBool($mappedRow['is_have_invest'] ?? null),
+                'is_have_money'    => $this->yesNoToBool($mappedRow['is_have_money'] ?? null),
+                'is_have_time'     => $this->yesNoToBool($mappedRow['is_have_time'] ?? null),
+                'is_25'            => $this->yesNoToBool($mappedRow['is_25'] ?? null),
                 'created_by'       => 'Google Sheet',
-                'first_name'       => $row['first_name'] ?? null,
+                'first_name'       => $mappedRow['first_name'],
                 'created_at'       => $leadTimestamp,
-                'last_name'        => $row['last_name'] ?? null,
-                'campaign'         => $row['campaign'] ?? null,
-                'country'          => ($row['ad_name'] == '2' && isset($adMap[$row['ad_id']])) ? $adMap[$row['ad_id']] : ($row['ad_name'] ?? null),
-                'phone1'           => $row['phone1'] ?? null,
-                'phone2'           => isset($row['phone2']) ? (substr($row['phone2'], 0, 2) === 'p:' ? substr($row['phone2'], 2) : $row['phone2']) : null,
+                'last_name'        => $mappedRow['last_name'] ?? null,
+                'campaign'         => $mappedRow['campaign'] ?? null,
+                'country'          => $mappedRow['country'],
+                'phone1'           => $mappedRow['phone1'],
+                'phone2'           => $mappedRow['phone2'],
                 'source'           => 'Facebook Form',
-                'email'            => $row['email'] ?? null,
-                'is_25'            => $row['is_25'] === 'نعم' ? 1 : ($row['is_25'] === 'لا' ? 0 : null),
-                'ad'               => $row['ad'] ?? null,
-                'form_id'          => $row['form_id'],
+                'email'            => $mappedRow['email'],
+                'ad'               => $mappedRow['ad'] ?? null,
+                'form_id'          => $mappedRow['form_id'] ?? $row['form_id'] ?? null,
             ]);
         }
+    }
+
+    private function yesNoToBool($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return match ($value) {
+            'نعم' => 1,
+            'Yes' => 1,
+            default => 0,
+        };
     }
 }
