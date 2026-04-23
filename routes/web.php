@@ -47,7 +47,20 @@ Auth::routes();
 //     }
 // });
 Route::get('/test-financial/{broker_id}', [MainTPController::class, 'get_financial_data']);
+Route::get('/php-session-test', function () {
+    return [
+        'gc_maxlifetime' => ini_get('session.gc_maxlifetime'),
+        'cookie_lifetime' => ini_get('session.cookie_lifetime'),
+    ];
+});
 
+Route::get('/auth-check', function () {
+    return [
+        'logged_in' => auth()->check(),
+        'user' => auth()->user(),
+        'session_id' => session()->getId(),
+    ];
+});
 
 Route::get('client/get_pnl/{client_id}/{asset_id?}/{from?}', [ClientsController::class, 'webtrader_get_pnl'])->name('webtrader.get_pnl');
 
