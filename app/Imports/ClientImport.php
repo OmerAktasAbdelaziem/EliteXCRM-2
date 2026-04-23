@@ -49,7 +49,8 @@ class ClientImport implements ToModel, WithHeadingRow
         }
 
         $existingClient = Client::where(function($query) use ($mappedRow) {
-            $phone = str_replace(' ', '', trim($mappedRow['phone1']));
+            //$phone = str_replace(' ', '', trim($mappedRow['phone1']));
+            $phone = $this->normalizePhone($mappedRow['phone1']);
 
             if (strpos($phone, '0') === 0) {
                 $trimmedPhone = substr($phone, 1);
@@ -68,7 +69,7 @@ class ClientImport implements ToModel, WithHeadingRow
                     ->orWhere('phone1', $trimmedPhone)
                     ->orWhere('phone2', $trimmedPhone);
             } else {
-                $trimmedPhone = substr($phone, 3);
+                $trimmedPhone = $phone;//substr($phone, 3);
                 $query->where('phone1', 'like', "%$trimmedPhone%")
                     ->orWhere('phone2', 'like', "%$trimmedPhone%")
                     ->orWhere('phone1', 'like', "%$trimmedPhone")
@@ -92,10 +93,10 @@ class ClientImport implements ToModel, WithHeadingRow
             'how_money'    => $mappedRow['how_money'] ?? null,
             'campaign'     => $mappedRow['campaign'] ?? null,
             'country'      => $mappedRow['country'] ?? null,
-            'phone1'       => $mappedRow['phone1'] ?? null,
+            'phone1'       => isset($mappedRow['phone1']) ? $this->normalizePhone($mappedRow['phone1']) : null,
             'gender'       => $mappedRow['gender'] ?? null,
             'source'       => $mappedRow['source'] ?? null,
-            'phone2'       => $mappedRow['phone2'] ?? null,
+            'phone2'       => isset($mappedRow['phone2']) ? $this->normalizePhone($mappedRow['phone2']) : null,
             'email'        => $mappedRow['email'] ?? null,
             'age'          => $mappedRow['age'] ?? null,
             'ad'           => $mappedRow['ad'] ?? null,
@@ -120,4 +121,20 @@ class ClientImport implements ToModel, WithHeadingRow
 
         return null;
     }
+
+    function normalizePhone($phone)
+{
+    $phone = trim($phone);
+
+    // تحويل الأرقام العربية والهندية إلى إنجليزية
+    $arabic = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    $english = ['0','1','2','3','4','5','6','7','8','9'];
+
+    $phone = str_replace($arabic, $english, $phone);
+
+    // حذف المسافات
+    $phone = str_replace(' ', '', $phone);
+
+    return $phone;
+}
 }
