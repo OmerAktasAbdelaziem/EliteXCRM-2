@@ -78,6 +78,25 @@ class Client extends Model
                 $model->pipeline_id = Auth::user()->pipeline_id;
             }
         });
+        
+        static::creating(function ($client) {
+            if (empty($client->favourite_assets)) {
+               /* $client->favourite_assets = json_encode(Asset::whereIn('currency', ['AUD', 'EUR'])
+                    ->orWhereIn('symbol', ['GOLD', 'Oil', 'SILVER'])
+                    ->pluck('id')
+                    ->unique()
+                    ->values()
+                    ->toArray();)*/
+                    $client->favourite_assets = json_encode(
+    Asset::whereIn('currency', ['AUD', 'EUR'])
+        ->orWhereIn('symbol', ['GOLD', 'Oil', 'SILVER'])
+        ->pluck('id')
+        ->unique()
+        ->values()
+        ->toArray()
+);
+            }
+        });
     }
 
     public function newEloquentBuilder($query)
