@@ -81,12 +81,20 @@ class Client extends Model
         
         static::creating(function ($client) {
             if (empty($client->favourite_assets)) {
-                $client->favourite_assets = Asset::whereIn('currency', ['AUD', 'EUR'])
+               /* $client->favourite_assets = json_encode(Asset::whereIn('currency', ['AUD', 'EUR'])
                     ->orWhereIn('symbol', ['GOLD', 'Oil', 'SILVER'])
                     ->pluck('id')
                     ->unique()
                     ->values()
-                    ->toArray();
+                    ->toArray();)*/
+                    $client->favourite_assets = json_encode(
+    Asset::whereIn('currency', ['AUD', 'EUR'])
+        ->orWhereIn('symbol', ['GOLD', 'Oil', 'SILVER'])
+        ->pluck('id')
+        ->unique()
+        ->values()
+        ->toArray()
+);
             }
         });
     }

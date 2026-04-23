@@ -114,7 +114,17 @@ class ClientImport implements ToModel, WithHeadingRow
             $inputs['is_25'] = $mappedRow['is_25'] === null ? null : (in_array($mappedRow['is_25'], ['Yes', 'نعم']) ? 1 : 0);
         }
 
-        Client::create($inputs);
+     try {
+    Client::create($inputs);
+} catch (\Throwable $e) {
+
+    // اطبع الخطأ + البيانات
+    dd([
+        'error_message' => $e->getMessage(),
+        'inputs' => $inputs,
+    ]);
+
+}
 
         $this->success++;
 
