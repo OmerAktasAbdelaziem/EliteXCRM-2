@@ -3,10 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Imports\GSheetImport;
+
+use App\Models\AdHandler;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 
 class CaptureLeads extends Command
 {
@@ -21,18 +24,14 @@ class CaptureLeads extends Command
 
     public function handle()
     {
-        $sheetIds = [
-            "15vK_tgBTiaWly8U07h1zgOcwiel-9BJU-ZdW3IIEe2g",
-            "1rk2ewMyqg3eyKNfxRWuA1qo8R4IUgkQfIJwsoZIW2r4",
-        ];
-        
+        $ads = AdHandler::all();
+
         $results = [];
-        
-        foreach ($sheetIds as $sheetId) {
+        foreach ($ads as $ad) {
             $filePath = "downloaded_sheet.xlsx";
             $localPath = storage_path('app/temp/' . $filePath);
         
-            $this->downloadGoogleSheet($sheetId, $localPath);
+            $this->downloadGoogleSheet($ad, $localPath);
         
             if (!file_exists($localPath)) {
                 $this->error("Failed to download the Google Sheet.");
@@ -44,7 +43,7 @@ class CaptureLeads extends Command
             $request->files->set('excel_file', $uploadedFile);
         
             try {
-                $results[] = $this->sheetUpload($request);
+                $results[] = $this->sheetUpload($ad, $request);
             } catch (ValidationException $e) {
                 $this->error("Validation Error: " . implode(", ", $e->errors()['excel_file'] ?? ['Unknown error']));
             } catch (\Exception $e) {
@@ -55,11 +54,11 @@ class CaptureLeads extends Command
         return $results;
     }
 
-    public function downloadGoogleSheet($sheetId, $localPath)
+    public function downloadGoogleSheet(AdHandler $ad, $localPath)
     {
-        $url = "https://docs.google.com/spreadsheets/d/$sheetId/export?format=xlsx";
+    
         $client = new \GuzzleHttp\Client();
-        $response = $client->get($url);
+        $response = $client->get($ad->sheet_xlsx_url);
 
         if ($response->getStatusCode() == 200) {
             file_put_contents($localPath, $response->getBody());
@@ -69,13 +68,13 @@ class CaptureLeads extends Command
         }
     }
 
-    public function sheetUpload(Request $request)
+    public function sheetUpload(AdHandler $ad, Request $request)
     {
-        $import = new GSheetImport();
+        $import = new GSheetImport($ad);
 
         $path1 = $request->file('excel_file')->store('temp');
         $path = storage_path('app') . '/' . $path1;
-
+        HeadingRowFormatter::default('none');
         Excel::import($import, $path);
         $this->info("Sheet uploaded and processed successfully.");
     }
