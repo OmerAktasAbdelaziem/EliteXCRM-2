@@ -74,8 +74,10 @@ $this->assetGroupService->cloneAssetGroup($pipelineId);
     public function update(int $id,array $data):int
     {
        // return $this->pipelineRepository->update($id, $data);
-       $adminId = $data['co_id'];
-       unset($data['co_id']);
+        if(isset($data['co_id'])){
+           $adminId = $data['co_id'];
+           unset($data['co_id']);
+        }
    
        $result = $this->pipelineRepository->update($id,$data);
    
@@ -108,13 +110,17 @@ $this->assetGroupService->cloneAssetGroup($pipelineId);
       
      //  $user = User::find($adminId);
      
-     $user = $this->userService->getById($adminId)->first();
+    if(isset($adminId)){
+
+        $user = $this->userService->getById($adminId)->first();
    
-       $user->roles()->attach($role->id,[
-           'pipeline_id'=>$pipelineId,
-           'model_type'=>  \App\Models\User::class
-       ]);
+        $user->roles()->attach($role->id,[
+            'pipeline_id'=>$pipelineId,
+            'model_type'=>  \App\Models\User::class
+        ]);
    
+    }
+
        return $result;
     }
     

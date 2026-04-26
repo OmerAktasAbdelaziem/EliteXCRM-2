@@ -1812,6 +1812,7 @@
                                             Bank Country        : {{$request->bank->country ?? ''}}
                                         @endif
                                         {{$request->usdt ?? ''}}
+                                        {{$request->note ?? ''}}
                                     </td>
                                     <td>
                                         @if ($request->receipt)

@@ -65,7 +65,7 @@ class SettingsController extends Controller
 
         
 
-if($isPipelineAdmin){
+if($isSuperAdmin || $isPipelineAdmin){
         // upload image
         $path = $request->file('logo')->store('pipeline/'.Auth::user()->username.'/logos/', 'public');
 
