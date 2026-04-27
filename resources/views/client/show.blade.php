@@ -1128,6 +1128,15 @@
                                             </a>
                                         </div>
                                     @endif
+                                    @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_create_money_transaction'))
+                                        <div class="col-12">
+                                            @if ($client->broker_id)
+                                                <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#transactionModal" style="background-color: transparent">Create Money Transaction</button>
+                                            @else
+                                                <button type="button" class="btn btn-sm text-primary" disabled style="background-color: transparent">Create Money Transaction</button>
+                                            @endif
+                                        </div>
+                                    @endif
                                     <div class="col-12">
                                         <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#marketingEmailLogsModal" style="background-color: transparent">Marketing Email Log</button>
                                     </div>
@@ -1137,7 +1146,7 @@
                                             <button type="button" class="btn btn-sm text-primary" data-bs-toggle="modal" data-bs-target="#demoModal" style="background-color: transparent">Open Demo</button>
                                         </div>
                                     @endif
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -1423,6 +1432,57 @@
                             <button type="submit" class="btn btn-danger">Renew</button>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if ($client->broker_id && ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_actions_create_money_transaction')))
+        <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionModalLabel">Create Money Transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <form class="ajax-form" method="POST" action="{{ route('main_tp.create_money_transaction', $client->id) }}" data-tab="trx">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="trxType" class="form-label">Money Transaction type</label>
+                                        <div class="input-group">
+                                            <select id="trxType" class="single-select form-select inside-modal" name="type" required>
+                                                <option value="">Select Type</option>
+                                                <option value="credit in">Credit In</option>
+                                                <option value="credit out">Credit Out</option>
+                                                <option value="bonus in">Bonus In</option>
+                                                <option value="bonus out">Bonus Out</option>
+                                                <option value="deposit">Deposit</option>
+                                                <option value="withdraw">Withdraw</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <div class="col">
+                                            <input type="number" name="amount" class="form-control" step="any" placeholder="Amount" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <textarea rows="3" class="form-control" name="comment" placeholder="Type Comment..."></textarea>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <button type="submit" class="btn btn-sm btn-success">Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
                 </div>
             </div>
         </div>
