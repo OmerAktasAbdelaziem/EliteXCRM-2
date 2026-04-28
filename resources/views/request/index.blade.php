@@ -134,6 +134,12 @@
                                                                     <br>
                                                                     Bank Name           : {{$request->bank_details['bank_name'] ?? ''}}
                                                                     <br>
+                                                                    Account Number      : {{$request->bank_details['account_number'] ?? ''}}
+                                                                    <br>
+                                                                    Account Holder Name : {{$request->bank_details['account_holder_name'] ?? ''}}
+                                                                    <br>
+                                                                    Swift Code           : {{$request->bank_details['swift_code'] ?? ''}}
+                                                                    <br>
                                                                     Bank Country        : {{$request->bank_details['bank_country'] ?? ''}}
                                                                     <br>
                                                                     Bank Address        : {{$request->bank_details['bank_address'] ?? ''}}
@@ -152,6 +158,7 @@
                                                                     Bank Country        : {{$request->bank->country??''}}
                                                                 @endif
                                                                 {{$request->usdt}}
+                                                                {{$request->note ?? ''}}
                                                             </td>
                                                             <td>
                                                                 @if ($request->receipt)
