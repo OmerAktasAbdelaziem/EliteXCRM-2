@@ -151,6 +151,12 @@
                                                                     ABA Routing Number  : {{$request->bank_details['aba_routing_number'] ?? ''}}
                                                                     <br>
                                                                     Beneficiary Country : {{$request->bank_details['beneficiary_country'] ?? ''}}
+                                                                    <br>
+                                                                    Note                : {{$request->bank_details['note'] ?? ''}}
+                                                                @endif
+                                                                @if ($request->crypto_details)
+                                                                    crypto type         : {{$request->crypto_details['crypto_type'] ?? ''}}
+                                                                    Note                : {{$request->crypto_details['note'] ?? ''}}
                                                                 @endif
                                                                 @if ($request->bank_id)
                                                                     Bank Name           : {{$request->bank->name??''}}
