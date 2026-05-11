@@ -104,7 +104,7 @@ class Client extends Model
         $builder = parent::newEloquentBuilder($query);
 
         if (Auth::check()) {
-            $builder->where('pipeline_id', Auth::user()->pipeline_id);
+            $builder->where($this->getTable() . '.pipeline_id', Auth::user()->pipeline_id);
         }
 
         return $builder;

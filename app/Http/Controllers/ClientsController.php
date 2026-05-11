@@ -1998,7 +1998,8 @@ class ClientsController extends Controller {
         $pipelineId = Auth::user()->pipeline_id;
         $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         // Check if user is Admin
-        if (Auth::user()->role->name !== 'Admin') {
+        // if (Auth::user()->role->name !== 'Admin') {
+        if(!$isSuperAdmin && !$isPipelineAdmin){
             abort(403, 'Unauthorized access to export functionality.');
         }
 
