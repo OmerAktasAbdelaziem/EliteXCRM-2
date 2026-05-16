@@ -2071,6 +2071,8 @@ class ClientsController extends Controller {
         $callback = function () use ($clients) {
             $file = fopen('php://output', 'w');
 
+            fwrite($file, "\xEF\xBB\xBF");
+            
             // CSV Header
             fputcsv($file, [
                 'ID',
