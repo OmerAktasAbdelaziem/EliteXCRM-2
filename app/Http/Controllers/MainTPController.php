@@ -447,6 +447,7 @@ class MainTPController extends Controller {
         $finance['equity'] = 0.00;
         $finance['bonus'] = 0.00;
         $finance['freeMargin'] = 0.00;
+        $finance['closedOrdersPL'] = 0.00;
 
         $client = Client::where('broker_id', $broker_id)->where('deleted', 0)->first();
 
