@@ -92,7 +92,7 @@
                                                 <div id="assets_list" style="max-height: 250px; overflow-y: auto;">
                                                     @foreach ($assets as $asset)
                                                         <div class="form-check asset-item" data-asset-name="{{strtolower($asset->name)}}">
-                                                            <input class="form-check-input asset-checkbox" type="checkbox" name="asset_ids[]" value="{{$asset->id}}" id="asset_{{$asset->id}}" @if (in_array($asset->id, $group->asset_ids??[]) ) checked @endif>
+                                                            <input class="form-check-input asset-checkbox" type="checkbox" name="asset_ids[]" value="{{$asset->id}}" id="asset_{{$asset->id}}" @if (in_array($asset->id, $assetGroupAssignments->pluck('asset')->toArray()) ) checked @endif>
                                                             <label class="form-check-label" for="asset_{{$asset->id}}">{{$asset->name}}</label>
                                                         </div>
                                                     @endforeach

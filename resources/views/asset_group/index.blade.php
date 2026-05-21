@@ -62,7 +62,7 @@
                                                                 
                                                             </td>
                                                             <td>
-                                                                {{count($assetGroup->asset_ids??[])}}
+                                                                {{count($assetGroup->assetAssignments??[])}}
                                                             </td>
                                                             <td>{{date('d/m/Y H:i', strtotime($assetGroup->created_at))}}</td>
                                                         </tr>

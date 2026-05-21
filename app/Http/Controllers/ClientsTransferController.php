@@ -98,7 +98,7 @@ class ClientsTransferController extends Controller
             $options['forceChangePassword'] = 1;
         }
         $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
-            ->where('name', 'Default')
+            ->where('default', 1)
             ->first();
         $client->update([
             'favourite_assets' => ["1", "2", "3", "4", "5", "6", "20", "22", "10", "73", "74"],
@@ -161,7 +161,7 @@ class ClientsTransferController extends Controller
         }
 
         $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
-            ->where('name', 'Default')
+            ->where('default', 1)
             ->first();
         $client->update([
             'favourite_assets' => ["1","2","3","4","5","6","20","22","10","73","74"],

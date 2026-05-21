@@ -1414,7 +1414,7 @@ class ClientsController extends Controller {
 
             if(!isset($inputs['asset_group_id']) && !$client->asset_group_id){
                 $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
-                ->where('name', 'Default')
+                ->where('default', 1)
                 ->first();
                 $inputs['asset_group_id'] = $asset_group?->id;
             }
