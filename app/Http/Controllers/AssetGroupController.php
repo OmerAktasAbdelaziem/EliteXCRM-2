@@ -48,7 +48,7 @@ class AssetGroupController extends Controller {
 
         $group = new AssetGroup();
         $assets = Asset::select('name', 'id')->get();
-        $groupAssets = Asset::whereIn('id', $group->asset_ids ?? [])->get();
+        $groupAssets = Asset::whereIn('id', $group->assetAssignments->pluck('id') ?? [])->get();
 
         return view('asset_group.show', compact(
                         'groupAssets',

@@ -16,9 +16,9 @@ class AssetGroup extends Model
         'default'
     ];
 
-    protected $casts = [
-        'asset_ids' => 'array',
-    ];
+    // protected $casts = [
+    //     'asset_ids' => 'array',
+    // ];
     
     public function assetAssignments()
 {
