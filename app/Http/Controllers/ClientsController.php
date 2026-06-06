@@ -1759,20 +1759,34 @@ class ClientsController extends Controller {
 
         $repeated = $import->repeated;
         $success = $import->success;
-        $empty = $import->empty;
+        $emptyFirstName = $import->emptyFirstName;
+        $emptyCountry = $import->emptyCountry;
+        $emptyPhone1 = $import->emptyPhone1;
+        $emptyEmail = $import->emptyEmail;
 
-        if ($success > 0) {
+        if (count($success) > 0) {
             $client = Client::first();
             $client_id = $client->id;
-
+    
             Action::create([
                 'client_id' => $client_id,
-                'user_id' => Auth::id(),
-                'text' => '<span class="text-primary">Uploaded ' . $success . ' Leads</span>'
+                'user_id'   => Auth::id(),
+                'text'      => '<span class="text-primary">Uploaded ' .count($success). ' Leads</span>'
             ]);
-            return redirect()->route('client.index')->with('success', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
+            // return redirect()->route('client.index')->with('success', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
         }
-        return redirect()->route('client.index')->with('fail', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
+        // return redirect()->route('client.index')->with('fail', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
+        if(file_exists($path)){
+            unlink($path);
+        }
+        return view('client.results', compact(
+            'repeated',
+            'success',
+            'emptyFirstName',
+            'emptyCountry',
+            'emptyPhone1',
+            'emptyEmail'
+        )); 
     }
 
     function getTeams() {
