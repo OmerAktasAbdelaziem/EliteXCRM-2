@@ -33,7 +33,7 @@ public function cloneAssetGroup(int $newPipelineId): ?AssetGroup
     }
 
     $newItem = AssetGroup::create([
-        'asset_ids'   => $item->assetAssignments->pluck('id'),
+        'asset_ids'   => $item->assetAssignments->pluck('asset'),
         'name'        => $item->name,
         'pipeline_id' => $newPipelineId,
     ]);

@@ -123,10 +123,10 @@ class AdsController extends Controller {
         $response = Http::get($ad->sheet_xlsx_url);
 
         $tempPath = storage_path('app/temp_sheet.xlsx');
-        file_put_contents($tempPath, $response->body());
-
-        $data = Excel::toArray([], $tempPath);
-
+        if(!$response->failed()){
+            file_put_contents($tempPath, $response->body());
+            $data = Excel::toArray([], $tempPath);
+        }
 
         $sheet = $data[0] ?? [];
         $headers = $sheet[0] ?? [];

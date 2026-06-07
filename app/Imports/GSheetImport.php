@@ -71,7 +71,7 @@ class GSheetImport implements ToModel, WithHeadingRow
                 'country'          => $mappedRow['country'],
                 'phone1'           => $mappedRow['phone1'],
                 'phone2'           => $mappedRow['phone2'],
-                'source'           => 'Facebook Form',
+                'source'           => $mappedRow['source'] ?? null,
                 'email'            => $mappedRow['email'],
                 'ad'               => $mappedRow['ad'] ?? null,
                 'form_id'          => $mappedRow['form_id'] ?? $row['form_id'] ?? null,

@@ -334,7 +334,15 @@
                                             <select class="form-select single-select" name="fields[{{$header}}]">
                                                 <option value="">Do Not Insert</option>
                                                 @foreach ($fields as $value => $fieldName)
-                                                    <option value="{{$value}}" @if ($header == $value || strtolower($header) == strtolower($fieldName) || (isset($defaultHeaders[$value]) && $header == $defaultHeaders[$value])) selected @endif>{{$fieldName}}</option>
+                                                    @if($ad->fields->isNotEmpty())                            
+                                                        <option value="{{$value}}" @if($ad->fields->contains(function($field) use ($header, $value) {
+                                                            return $field->sheet_field === $header && $field->crm_field === $value;
+                                                        })) selected @endif>
+                                                            {{$fieldName}}
+                                                        </option>
+                                                    @else
+                                                        <option value="{{$value}}" @if ($header == $value || strtolower($header) == strtolower($fieldName) || (isset($defaultHeaders[$value]) && $header == $defaultHeaders[$value])) selected @endif>{{$fieldName}}</option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>

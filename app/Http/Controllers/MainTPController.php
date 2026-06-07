@@ -652,7 +652,7 @@ class MainTPController extends Controller {
             return [];
         }
 
-        $asset_ids = $client->assetGroup->assetAssignments->pluck('id') ?? [];
+        $asset_ids = $client->assetGroup->assetAssignments->pluck('asset') ?? [];
         //$assets = Asset::whereIn('id', $asset_ids)->whereIn('type', ['Crypto','Forex','Stocks','Indx'])->where('bid_price','!=',0)->get();
         $assets = $this->assetService->getByFilters([
             ['field' => 'id', 'conditions' => ['in' => $asset_ids]],
