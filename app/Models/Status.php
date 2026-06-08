@@ -33,4 +33,10 @@ class Status extends Model
 
         return $builder;
     }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'status_teams');
+    }
+
 }

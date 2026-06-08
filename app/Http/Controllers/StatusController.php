@@ -58,6 +58,7 @@ class StatusController extends Controller
         return view('status.show',compact(
             'status',
             'parts',
+            'teams',
         ));
     }
     
@@ -70,23 +71,35 @@ class StatusController extends Controller
         $inputs = $request->only([
             'name',
         ]);
-        $partIds = $request->input('part_ids');
+        // $partIds = $request->input('part_ids');
 
-        if (is_string($partIds)) {
-            $partIdsArray = array_map('trim', explode(',', $partIds));
-        } elseif (is_array($partIds)) {
-            $partIdsArray = $partIds;
+        // if (is_string($partIds)) {
+        //     $partIdsArray = array_map('trim', explode(',', $partIds));
+        // } elseif (is_array($partIds)) {
+        //     $partIdsArray = $partIds;
+        // } else {
+        //     $partIdsArray = [];
+        // }
+        
+        // $inputs['part_ids'] = json_encode(array_values(array_filter(array_map('strval', $partIdsArray))));
+        
+        $teamIds = $request->input('team_ids');
+        if (is_string($teamIds)) {
+            $teamIdsArray = array_map('trim', explode(',', $teamIds));
+        } elseif (is_array($teamIds)) {
+            $teamIdsArray = $teamIds;
         } else {
-            $partIdsArray = [];
+            $teamIdsArray = [];
         }
-        
-        $inputs['part_ids'] = json_encode(array_values(array_filter(array_map('strval', $partIdsArray))));
-        
+
         $inputs = array_merge($inputs, [
             'pipeline_id' => Auth::user()->pipeline_id,
+            'part_ids' => '[]',
         ]);
 
-        Status::Create($inputs);
+        $status = Status::Create($inputs);
+
+        $status->teams()->sync($teamIdsArray);
 
         return redirect()->route('status.index')->with('success','Status Created Successfully');
     }
@@ -106,6 +119,7 @@ class StatusController extends Controller
         return view('status.show',compact(
             'status',
             'parts',
+            'teams',
         ));
     }
     
@@ -125,12 +139,26 @@ class StatusController extends Controller
 
         $status->update($inputs);
 
+        $teamIds = $request->input('team_ids');
+        if (is_string($teamIds)) {
+            $teamIdsArray = array_map('trim', explode(',', $teamIds));
+        } elseif (is_array($teamIds)) {
+            $teamIdsArray = $teamIds;
+        } else {
+            $teamIdsArray = [];
+        }
+
+        $status->teams()->sync($teamIdsArray);
+
+
+
         return redirect()->back()->with('success','Status Updated Successfully');
     }
 
     public function delete($id)
     {
         $status = Status::findOrFail($id);
+        $status->teams()->detach();
         $status->delete();
 
         return redirect()->route('status.index')->with('success','Status Deleted Successfully');

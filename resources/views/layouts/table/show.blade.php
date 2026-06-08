@@ -5,7 +5,7 @@
             <label class="d-flex align-items-center">
                 Show &nbsp;
                 <select name="limit" class="form-select form-select-sm entries-per-page" style="width: 70px" data-tab="{{$tab}}">
-                    @if (Auth::user()->ledParts->count() > 0 || Auth::user()->ledTeams->count() > 0 || !Auth::user()->team)
+                    @if ($isSuperAdmin || $isPipelineAdmin || Auth::user()->ledParts->count() > 0 || Auth::user()->ledTeams->count() > 0 || !Auth::user()->team)
                         @php
                             $pages = [15,25,50,100]
                         @endphp

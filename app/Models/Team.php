@@ -54,4 +54,9 @@ class Team extends Model
     {
         return $this->belongsTo(OldRole::class, 'role_id');
     }
+
+    public function statuses()
+    {
+        return $this->belongsToMany(Status::class, 'status_teams');
+    }
 }
