@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateClientRequest;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\MarketingEmailLog;
@@ -40,6 +41,7 @@ use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 use App\Facades\UserPermission;
 use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
+use App\Models\ClientQuestion;
 
 class ClientsController extends Controller {
 
@@ -827,12 +829,17 @@ class ClientsController extends Controller {
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
         $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         $client = Client::findOrFail($id);
+        $client->load('questionAnswers');
+        $client->setRelation('questionAnswers', $client->questionAnswers->keyBy('client_question_id'));
+        $allQuestions = ClientQuestion::all(); 
+
         return view('client.more_info', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
-                        'client'
+                        'client',
+                        'allQuestions'
                 ));
     }
 
@@ -1698,11 +1705,6 @@ class ClientsController extends Controller {
 
     public function excelCheck(Request $request) {
         $fields = [
-            'is_have_money' => 'يتطلب الاستثمار في الأسواق العالمية مبلغ 300 دولار على الأقل، هل لديك هذا المبلغ؟',
-            'is_have_time' => 'هل لديك ساعة يوميا للعمل على استثمارك؟',
-            'is_have_invest' => 'هل سبق لك أن حاولت استثمار أموالك؟',
-            'how_money' => 'كم تملك من المال للاستثمار',
-            'is_25' => 'هل عمرك 25 سنة أو أكثر؟',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'campaign' => 'Campaign',
@@ -1716,6 +1718,11 @@ class ClientsController extends Controller {
             'age' => 'Age',
             'ad' => 'Ad',
         ];
+
+        $questions = ClientQuestion::all();
+        foreach ($questions as $question) {
+            $fields[$question->id] = $question->question_text;
+        }
 
         $file = $request->file('excel_file');
         $extension = $file->getClientOriginalExtension();
@@ -1754,7 +1761,7 @@ class ClientsController extends Controller {
         $path = $request->path;
         $headers = $request->input('header', []);
         $import = new ClientImport($headers);
-
+        HeadingRowFormatter::default('none');
         Excel::import($import, $path);
 
         $repeated = $import->repeated;

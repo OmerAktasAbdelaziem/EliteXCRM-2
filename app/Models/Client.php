@@ -178,6 +178,12 @@ class Client extends Model
         return \Carbon\Carbon::parse($this->last_seen_at)->diffForHumans();
     }
 
+
+    public function questionAnswers()
+    {
+        return $this->hasMany(ClientQuestionAnswer::class, 'client_id');
+    }
+
     public function markOnline()
     {
             // \Log::info("Marking client online", ['client_id' => $this->id]);

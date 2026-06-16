@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Facades\UserPermission;
 use App\Http\Services\Ad\Interfaces\AdHandlerServiceInterface;
 use App\Models\AdHandler;
+use App\Models\ClientQuestion;
 use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -79,11 +80,6 @@ class AdsController extends Controller {
         $ad->load(['fields']);
 
         $fields = [
-            'is_have_money'  => 'يتطلب الاستثمار في الأسواق العالمية مبلغ 300 دولار على الأقل، هل لديك هذا المبلغ؟',
-            'is_have_time'   => 'هل لديك ساعة يوميا للعمل على استثمارك؟',
-            'is_have_invest' => 'هل سبق لك أن حاولت استثمار أموالك؟',
-            'how_money'      => 'كم تملك من المال للاستثمار',
-            'is_25'          => 'هل عمرك 25 سنة أو أكثر؟',
             'first_name'     => 'First Name',
             'last_name'      => 'Last Name',
             'campaign'       => 'Campaign',
@@ -99,12 +95,12 @@ class AdsController extends Controller {
             'form_id'             => 'form id',
         ];
 
+        $questions = ClientQuestion::all();
+        foreach ($questions as $question) {
+            $fields[$question->id] = $question->question_text;
+        }
+
         $defaultHeaders = [
-            // 'is_have_money'  => '',
-            // 'is_have_time'   => '',
-            // 'is_have_invest' => '',
-            'how_money'      => '__مبلغ_الأستثمار_',
-            // 'is_25'          => '',
             'first_name'     => '_اسم_حضرتك',
             // 'last_name'      => '',
             // 'campaign'       => '',

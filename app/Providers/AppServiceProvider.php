@@ -36,6 +36,8 @@ use App\Http\Repositories\Action\ActionRepository;
 use App\Http\Repositories\Action\Interfaces\ActionRepositoryInterface;
 use App\Http\Repositories\Ad\AdHandlerRepository;
 use App\Http\Repositories\Ad\Interfaces\AdHandlerRepositoryInterface;
+use App\Http\Repositories\Question\Interfaces\QuestionRepositoryInterface;
+use App\Http\Repositories\Question\QuestionRepository;
 //interfaces & services
 use App\Http\Services\Organization\PipelineService;
 use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
@@ -69,6 +71,8 @@ use App\Http\Services\Action\ActionService;
 use App\Http\Services\Action\Interfaces\ActionServiceInterface;
 use App\Http\Services\Ad\AdHandlerService;
 use App\Http\Services\Ad\Interfaces\AdHandlerServiceInterface;
+use App\Http\Services\Question\Interfaces\QuestionServiceInterface;
+use App\Http\Services\Question\QuestionService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -90,6 +94,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
         $this->app->bind(ActionRepositoryInterface::class, ActionRepository::class);
         $this->app->bind(AdHandlerRepositoryInterface::class, AdHandlerRepository::class);
+        $this->app->bind(QuestionRepositoryInterface::class, QuestionRepository::class);
         
         
         
@@ -109,6 +114,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SubscriptionServiceInterface::class, SubscriptionService::class);
         $this->app->bind(ActionServiceInterface::class, ActionService::class);
         $this->app->bind(AdHandlerServiceInterface::class, AdHandlerService::class);
+        $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
         
         $this->app->singleton(UserPermissionServiceInterface::class, UserPermissionService::class);
       

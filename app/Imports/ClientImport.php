@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Client;
+use App\Models\ClientQuestion;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\Validator;
@@ -35,7 +36,7 @@ class ClientImport implements ToModel, WithHeadingRow
         $mappedRow = [];
         
         foreach ($this->headers as $header => $field) {
-            $header = trim(strtolower($header));
+            // $header = trim(strtolower($header));
             if(isset($row[$header])){
             $mappedRow[$field] = $row[$header];
             }
@@ -98,14 +99,14 @@ class ClientImport implements ToModel, WithHeadingRow
             $this->repeated[] = $this->rowNumber;
             return null;
         }
-
+        
         $inputs = [
             'sales_status' => $mappedRow['sales_status'] ?? 'New',
             'pipeline_id'  => Auth::user()->pipeline_id,
             'created_by'   => Auth::user()->username,
             'first_name'   => $mappedRow['first_name'] ?? null,
             'last_name'    => $mappedRow['last_name'] ?? null,
-            'how_money'    => $mappedRow['how_money'] ?? null,
+            // 'how_money'    => $mappedRow['how_money'] ?? null,
             'campaign'     => $mappedRow['campaign'] ?? null,
             'country'      => $mappedRow['country'] ?? null,
             'phone1'       => isset($mappedRow['phone1']) ? $this->normalizePhone($mappedRow['phone1']) : null,
@@ -117,21 +118,43 @@ class ClientImport implements ToModel, WithHeadingRow
             'ad'           => $mappedRow['ad'] ?? null,
         ];
 
-        if (isset($mappedRow['is_have_invest'])) {
-            $inputs['is_have_invest'] = $mappedRow['is_have_invest'] === null ? null  : (in_array($mappedRow['is_have_invest'], ['Yes', 'نعم']) ? 1 : 0);
-        }
-        if (isset($mappedRow['is_have_money'])) {
-            $inputs['is_have_money'] =  $mappedRow['is_have_money'] === null ? null : (in_array($mappedRow['is_have_money'], ['Yes', 'نعم']) ? 1 : 0);
-        }
-        if (isset($mappedRow['is_have_time'])) {
-            $inputs['is_have_time'] =  $mappedRow['is_have_time'] === null ? null : (in_array($mappedRow['is_have_time'], ['Yes', 'نعم']) ? 1 : 0);
-        }
-        if (isset($mappedRow['is_25'])) {
-            $inputs['is_25'] = $mappedRow['is_25'] === null ? null : (in_array($mappedRow['is_25'], ['Yes', 'نعم']) ? 1 : 0);
-        }
+
+        // if (isset($mappedRow['is_have_invest'])) {
+        //     $inputs['is_have_invest'] = $mappedRow['is_have_invest'] === null ? null  : (in_array($mappedRow['is_have_invest'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
+        // if (isset($mappedRow['is_have_money'])) {
+        //     $inputs['is_have_money'] =  $mappedRow['is_have_money'] === null ? null : (in_array($mappedRow['is_have_money'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
+        // if (isset($mappedRow['is_have_time'])) {
+        //     $inputs['is_have_time'] =  $mappedRow['is_have_time'] === null ? null : (in_array($mappedRow['is_have_time'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
+        // if (isset($mappedRow['is_25'])) {
+        //     $inputs['is_25'] = $mappedRow['is_25'] === null ? null : (in_array($mappedRow['is_25'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
 
      try {
-    Client::create($inputs);
+        $client = Client::create($inputs);
+        
+        $questionIds = array_filter(array_keys($mappedRow), 'is_numeric');
+        $questions = ClientQuestion::whereIn('id', $questionIds)->get()->keyBy('id');
+        $answersData = [];
+        foreach($mappedRow as $key => $value){
+            if(is_numeric($key)){
+                $question = $questions->get($key);
+                if($question->is_text){
+                    $answer = $value;
+                }else{
+                    $answer = $this->yesNoToBool($value ?? null);
+                }
+                $answersData[] = [
+                    'client_question_id' => $key,
+                    'answer' => $answer
+                ];
+            }
+        }
+
+        $client->questionAnswers()->createMany($answersData);
+
 } catch (\Throwable $e) {
 
     // اطبع الخطأ + البيانات
@@ -145,6 +168,20 @@ class ClientImport implements ToModel, WithHeadingRow
         $this->success[] = $this->rowNumber;
 
         return null;
+    }
+
+    private function yesNoToBool($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return match ($value) {
+            'نعم' => 1,
+            'Yes' => 1,
+            'yes' => 1,
+            'YES' => 1,
+            default => 0,
+        };
     }
 
     function normalizePhone($phone)

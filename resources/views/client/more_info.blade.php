@@ -128,61 +128,31 @@
                                         <div class="tab-pane fade active show" id="show" role="tabpanel">
                                             @if (Auth::user()->pipeline->category_id == 1)
                                                 <div class="row" style="font-size: 15px !important;font-weight: bold !important;">
-                                                    <div class="col-md-6">
-                                                        <div class="flex-grow-1">
-                                                            <small class="form-label">يتطلب الاستثمار في الأسواق العالمية مبلغ 300 دولار على الأقل، هل لديك هذا المبلغ؟</small>
-                                                            <h5>
-                                                                <span class="input-group-text bg-transparent" style="justify-content: right">
-                                                                    <i class='bx'></i> &nbsp;
-                                                                    {{ $client->is_have_money !== null ? ($client->is_have_money == 0 ? 'لا' : ($client->is_have_money == 1 ? 'نعم' : '')) : '' }}
-                                                                </span>
-                                                            </h5>
+                                                    @foreach ($allQuestions as $question)
+                                                        @php
+                                                            // Find if the client has an answer for this specific question
+                                                            $existingAnswer = $client->questionAnswers->firstWhere('client_question_id', $question->id);
+                                                        @endphp
+
+                                                        <div class="col-md-6">
+                                                            <div class="flex-grow-1">
+                                                                <small class="form-label">{{$question->question_text}}</small>
+                                                                <h5>
+                                                                    <span class="input-group-text bg-transparent" style="justify-content: right">
+                                                                        @if($existingAnswer)
+                                                                            @if ($question->is_text)
+                                                                                {{ $existingAnswer->answer }}
+                                                                            @else
+                                                                                {{ $existingAnswer->answer == 1 ? 'نعم' : 'لا' }}
+                                                                            @endif
+                                                                        @else
+                                                                            <span class="text-muted font-italic py-2"></span>
+                                                                        @endif
+                                                                    </span>
+                                                                </h5>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="flex-grow-1">
-                                                            <small class="form-label">هل لديك ساعة يوميا للعمل على استثمارك؟</small>
-                                                            <h5>
-                                                                <span class="input-group-text bg-transparent" style="justify-content: right">
-                                                                    <i class='bx'></i> &nbsp;
-                                                                    {{ $client->is_have_time !== null ? ($client->is_have_time == 0 ? 'لا' : ($client->is_have_time == 1 ? 'نعم' : '')) : '' }}
-                                                                </span>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="flex-grow-1">
-                                                            <small class="form-label">هل سبق لك أن حاولت استثمار أموالك؟</small>
-                                                            <h5>
-                                                                <span class="input-group-text bg-transparent" style="justify-content: right">
-                                                                    <i class='bx'></i> &nbsp;
-                                                                    {{ $client->is_have_invest !== null ? ($client->is_have_invest == 0 ? 'لا' : ($client->is_have_invest == 1 ? 'نعم' : '')) : '' }}
-                                                                </span>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="flex-grow-1">
-                                                            <small class="form-label">هل عمرك أكثر من 25؟</small>
-                                                            <h5>
-                                                                <span class="input-group-text bg-transparent" style="justify-content: right">
-                                                                    <i class='bx'></i> &nbsp;
-                                                                    {{ $client->is_25 !== null ? ($client->is_25 == 0 ? 'لا' : ($client->is_25 == 1 ? 'نعم' : '')) : '' }}
-                                                                </span>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div class="flex-grow-1">
-                                                            <small class="form-label">كم تملك من المال للاستثمار</small>
-                                                            <h5>
-                                                                <span class="input-group-text bg-transparent" style="justify-content: right">
-                                                                    <i class='bx'></i> &nbsp;
-                                                                    {{ $client->how_money }}
-                                                                </span>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
+                                                    @endforeach
                                                 </div>
                                             @endif
 

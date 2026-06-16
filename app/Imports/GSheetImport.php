@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\AdHandler;
 use App\Models\Client;
+use App\Models\ClientQuestion;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -56,13 +57,13 @@ class GSheetImport implements ToModel, WithHeadingRow
 
             $validator->validate();
 
-            Client::create([
+            $client = Client::create([
                 'last_captured_at' => $leadTimestamp,
                 'pipeline_id'      => $this->ad->pipeline_id,
-                'is_have_invest'   => $this->yesNoToBool($mappedRow['is_have_invest'] ?? null),
-                'is_have_money'    => $this->yesNoToBool($mappedRow['is_have_money'] ?? null),
-                'is_have_time'     => $this->yesNoToBool($mappedRow['is_have_time'] ?? null),
-                'is_25'            => $this->yesNoToBool($mappedRow['is_25'] ?? null),
+                // 'is_have_invest'   => $this->yesNoToBool($mappedRow['is_have_invest'] ?? null),
+                // 'is_have_money'    => $this->yesNoToBool($mappedRow['is_have_money'] ?? null),
+                // 'is_have_time'     => $this->yesNoToBool($mappedRow['is_have_time'] ?? null),
+                // 'is_25'            => $this->yesNoToBool($mappedRow['is_25'] ?? null),
                 'created_by'       => 'Google Sheet',
                 'first_name'       => $mappedRow['first_name'],
                 'created_at'       => $leadTimestamp,
@@ -76,6 +77,27 @@ class GSheetImport implements ToModel, WithHeadingRow
                 'ad'               => $mappedRow['ad'] ?? null,
                 'form_id'          => $mappedRow['form_id'] ?? $row['form_id'] ?? null,
             ]);
+
+                    
+            $questionIds = array_filter(array_keys($mappedRow), 'is_numeric');
+            $questions = ClientQuestion::whereIn('id', $questionIds)->get()->keyBy('id');
+            $answersData = [];
+            foreach($mappedRow as $key => $value){
+                if(is_numeric($key)){
+                    $question = $questions->get($key);
+                    if($question->is_text){
+                        $answer = $value;
+                    }else{
+                        $answer = $this->yesNoToBool($value ?? null);
+                    }
+                    $answersData[] = [
+                        'client_question_id' => $key,
+                        'answer' => $answer
+                    ];
+                }
+            }
+
+            $client->questionAnswers()->createMany($answersData);
         }
     }
 
@@ -87,6 +109,8 @@ class GSheetImport implements ToModel, WithHeadingRow
         return match ($value) {
             'نعم' => 1,
             'Yes' => 1,
+            'yes' => 1,
+            'YES' => 1,
             default => 0,
         };
     }

@@ -336,7 +336,7 @@
                                                 @foreach ($fields as $value => $fieldName)
                                                     @if($ad->fields->isNotEmpty())                            
                                                         <option value="{{$value}}" @if($ad->fields->contains(function($field) use ($header, $value) {
-                                                            return $field->sheet_field === $header && $field->crm_field === $value;
+                                                            return $field->sheet_field === $header && $field->crm_field == $value;
                                                         })) selected @endif>
                                                             {{$fieldName}}
                                                         </option>
