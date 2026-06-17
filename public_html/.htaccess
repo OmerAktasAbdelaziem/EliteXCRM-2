@@ -4,12 +4,11 @@
     </IfModule>
     
     <IfModule mod_headers.c>
-        SetEnvIf Origin "https?://(www\.)?(internationalsecuirities\.com|webtrader\.internationalsecuirities\.com)$" CaptureOrigin=$0
-        Header always set Access-Control-Allow-Origin "%{CaptureOrigin}e" env=CaptureOrigin
-        Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, HEAD"
-        Header always set Access-Control-Allow-Headers "Authorization, Content-Type, Accept, X-Requested-With, Cache-Control"
-        Header always set Access-Control-Allow-Credentials "true"
+      #  Header always set Access-Control-Allow-Origin "*"
+        Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Header always set Access-Control-Allow-Headers "*"
     </IfModule>
+
 
     RewriteEngine On
 
