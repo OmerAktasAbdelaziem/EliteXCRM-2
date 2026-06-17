@@ -49,11 +49,15 @@ class Client_CommentController extends Controller
             return redirect()->back()->with('success','Comment has been Added successfully.');
         }
 
-        session()->flash('success', 'Comment has been Added successfully.');
+        if ($request->ajax() || $request->wantsJson()) {
+            session()->flash('success', 'Comment has been Added successfully.');
 
-        return response()->json([
-            'success' => true,
-        ]);
+            return response()->json([
+                'success' => true,
+                ]);
+        }
+        return redirect()->back()->with('success','Comment has been Added successfully.');
+
     }
 
     public function show($id)
