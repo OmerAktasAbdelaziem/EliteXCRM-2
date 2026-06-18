@@ -89,7 +89,7 @@ class Client extends Model
                     ->toArray();)*/
                     $client->favourite_assets = json_encode(
     Asset::whereIn('currency', ['AUD', 'EUR'])
-        ->orWhereIn('name', ['GBPAUD', 'Gold', 'Brent crude oil', 'Silver','SPCX'])
+        ->orWhereIn('name', ['GBPAUD', 'Gold', 'Brent crude oil', 'Silver','SpaceX'])
         ->pluck('id')
         ->unique()
         ->values()
