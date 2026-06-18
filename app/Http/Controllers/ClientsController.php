@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateClientRequest;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\MarketingEmailLog;
@@ -40,6 +41,7 @@ use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 use App\Facades\UserPermission;
 use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
+use App\Models\ClientQuestion;
 
 class ClientsController extends Controller {
 
@@ -827,12 +829,17 @@ class ClientsController extends Controller {
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
         $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
         $client = Client::findOrFail($id);
+        $client->load('questionAnswers');
+        $client->setRelation('questionAnswers', $client->questionAnswers->keyBy('client_question_id'));
+        $allQuestions = ClientQuestion::all(); 
+
         return view('client.more_info', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
                         'pipelineId',
                         'userAuth',
-                        'client'
+                        'client',
+                        'allQuestions'
                 ));
     }
 
@@ -1414,7 +1421,7 @@ class ClientsController extends Controller {
 
             if(!isset($inputs['asset_group_id']) && !$client->asset_group_id){
                 $asset_group = AssetGroup::where('pipeline_id', Auth::user()->pipeline_id)
-                ->where('name', 'Default')
+                ->where('default', 1)
                 ->first();
                 $inputs['asset_group_id'] = $asset_group?->id;
             }
@@ -1698,11 +1705,6 @@ class ClientsController extends Controller {
 
     public function excelCheck(Request $request) {
         $fields = [
-            'is_have_money' => 'يتطلب الاستثمار في الأسواق العالمية مبلغ 300 دولار على الأقل، هل لديك هذا المبلغ؟',
-            'is_have_time' => 'هل لديك ساعة يوميا للعمل على استثمارك؟',
-            'is_have_invest' => 'هل سبق لك أن حاولت استثمار أموالك؟',
-            'how_money' => 'كم تملك من المال للاستثمار',
-            'is_25' => 'هل عمرك 25 سنة أو أكثر؟',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'campaign' => 'Campaign',
@@ -1716,6 +1718,11 @@ class ClientsController extends Controller {
             'age' => 'Age',
             'ad' => 'Ad',
         ];
+
+        $questions = ClientQuestion::all();
+        foreach ($questions as $question) {
+            $fields[$question->id] = $question->question_text;
+        }
 
         $file = $request->file('excel_file');
         $extension = $file->getClientOriginalExtension();
@@ -1754,25 +1761,39 @@ class ClientsController extends Controller {
         $path = $request->path;
         $headers = $request->input('header', []);
         $import = new ClientImport($headers);
-
+        HeadingRowFormatter::default('none');
         Excel::import($import, $path);
 
         $repeated = $import->repeated;
         $success = $import->success;
-        $empty = $import->empty;
+        $emptyFirstName = $import->emptyFirstName;
+        $emptyCountry = $import->emptyCountry;
+        $emptyPhone1 = $import->emptyPhone1;
+        $emptyEmail = $import->emptyEmail;
 
-        if ($success > 0) {
+        if (count($success) > 0) {
             $client = Client::first();
             $client_id = $client->id;
-
+    
             Action::create([
                 'client_id' => $client_id,
-                'user_id' => Auth::id(),
-                'text' => '<span class="text-primary">Uploaded ' . $success . ' Leads</span>'
+                'user_id'   => Auth::id(),
+                'text'      => '<span class="text-primary">Uploaded ' .count($success). ' Leads</span>'
             ]);
-            return redirect()->route('client.index')->with('success', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
+            // return redirect()->route('client.index')->with('success', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
         }
-        return redirect()->route('client.index')->with('fail', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
+        // return redirect()->route('client.index')->with('fail', "Leads imported $success successfully. Repeated: $repeated, Empty/Invalid: $empty");
+        if(file_exists($path)){
+            unlink($path);
+        }
+        return view('client.results', compact(
+            'repeated',
+            'success',
+            'emptyFirstName',
+            'emptyCountry',
+            'emptyPhone1',
+            'emptyEmail'
+        )); 
     }
 
     function getTeams() {
@@ -1998,7 +2019,8 @@ class ClientsController extends Controller {
         $pipelineId = Auth::user()->pipeline_id;
         $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
         // Check if user is Admin
-        if (Auth::user()->role->name !== 'Admin') {
+        // if (Auth::user()->role->name !== 'Admin') {
+        if(!$isSuperAdmin && !$isPipelineAdmin){
             abort(403, 'Unauthorized access to export functionality.');
         }
 
@@ -2070,6 +2092,8 @@ class ClientsController extends Controller {
         $callback = function () use ($clients) {
             $file = fopen('php://output', 'w');
 
+            fwrite($file, "\xEF\xBB\xBF");
+            
             // CSV Header
             fputcsv($file, [
                 'ID',

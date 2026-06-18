@@ -134,6 +134,12 @@
                                                                     <br>
                                                                     Bank Name           : {{$request->bank_details['bank_name'] ?? ''}}
                                                                     <br>
+                                                                    Account Number      : {{$request->bank_details['account_number'] ?? ''}}
+                                                                    <br>
+                                                                    Account Holder Name : {{$request->bank_details['account_holder_name'] ?? ''}}
+                                                                    <br>
+                                                                    Swift Code           : {{$request->bank_details['swift_code'] ?? ''}}
+                                                                    <br>
                                                                     Bank Country        : {{$request->bank_details['bank_country'] ?? ''}}
                                                                     <br>
                                                                     Bank Address        : {{$request->bank_details['bank_address'] ?? ''}}
@@ -145,6 +151,12 @@
                                                                     ABA Routing Number  : {{$request->bank_details['aba_routing_number'] ?? ''}}
                                                                     <br>
                                                                     Beneficiary Country : {{$request->bank_details['beneficiary_country'] ?? ''}}
+                                                                    <br>
+                                                                    Note                : {{$request->bank_details['note'] ?? ''}}
+                                                                @endif
+                                                                @if ($request->crypto_details)
+                                                                    crypto type         : {{$request->crypto_details['crypto_type'] ?? ''}}
+                                                                    Note                : {{$request->crypto_details['note'] ?? ''}}
                                                                 @endif
                                                                 @if ($request->bank_id)
                                                                     Bank Name           : {{$request->bank->name??''}}
@@ -152,6 +164,7 @@
                                                                     Bank Country        : {{$request->bank->country??''}}
                                                                 @endif
                                                                 {{$request->usdt}}
+                                                                {{$request->note ?? ''}}
                                                             </td>
                                                             <td>
                                                                 @if ($request->receipt)

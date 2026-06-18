@@ -23,6 +23,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ClientQuestionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\OldRoleController;
 use App\Http\Controllers\TeamController;
@@ -551,6 +552,29 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
     $router->middleware(['role:ads_delete'])->group(function (Router $router) {
         $router->delete('ads/{id}', [AdsController::class, 'delete'])->name('ads.delete');
     });
+
+
+    $router->middleware(['role:question_create'])->group(function (Router $router) {
+        $router->get('question/create', [ClientQuestionController::class, 'create'])->name('question.create');
+        $router->post('question',       [ClientQuestionController::class, 'store'])->name('question.store');
+    });
+
+    $router->middleware(['role:question_list'])->group(function (Router $router) {
+        $router->get('question', [ClientQuestionController::class, 'index'])->name('question.index');
+    });
+
+    $router->middleware(['role:question_view'])->group(function (Router $router) {
+        $router->get('question/{id}', [ClientQuestionController::class, 'show'])->name('question.show');
+    });
+
+    $router->middleware(['role:question_edit'])->group(function (Router $router) {
+        $router->put('question/{id}',              [ClientQuestionController::class, 'update'])->name('question.update');
+    });
+
+    $router->middleware(['role:question_delete'])->group(function (Router $router) {
+        $router->delete('question/{id}', [ClientQuestionController::class, 'delete'])->name('question.delete');
+    });
+
 
     $router->get('notification/mark_all_as_read', [NotificationController::class, 'mark_all_as_read'])->name('notification.mark_all_as_read');
     $router->put('user-profile/{id}',             [UserController::class, 'userprofile'])->name('user.edit');

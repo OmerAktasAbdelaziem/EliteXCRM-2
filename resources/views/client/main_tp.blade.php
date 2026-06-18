@@ -93,6 +93,12 @@
                                     </h3>
                                 </div>
                                 <div class="col">
+                                    <small class="form-label">Total PnL</small>
+                                    <h3 class="mb-3 {{ $finance['closedOrdersPL'] < 0 ? 'text-red' : 'text-green' }}">
+                                        $ {{ number_format($finance['closedOrdersPL'], 3, '.', ',') }}
+                                    </h3>
+                                </div>
+                                <div class="col">
                                     <small class="form-label">Total Deposits</small>
                                     <h3 class="text-white mb-3 totalDeposit">
                                         $ {{number_format($finance['totalDeposit'], 2, '.', ',');}}
@@ -1788,6 +1794,12 @@
                                             <br>
                                             Bank Name           : {{$request->bank_details['bank_name'] ?? ''}}
                                             <br>
+                                            Account Number      : {{$request->bank_details['account_number'] ?? ''}}
+                                            <br>
+                                            Account Holder Name : {{$request->bank_details['account_holder_name'] ?? ''}}
+                                            <br>
+                                            Swift Code           : {{$request->bank_details['swift_code'] ?? ''}}
+                                            <br>
                                             Bank Country        : {{$request->bank_details['bank_country'] ?? ''}}
                                             <br>
                                             Bank Address        : {{$request->bank_details['bank_address'] ?? ''}}
@@ -1799,6 +1811,12 @@
                                             ABA Routing Number  : {{$request->bank_details['aba_routing_number'] ?? ''}}
                                             <br>
                                             Beneficiary Country : {{$request->bank_details['beneficiary_country'] ?? ''}}
+                                            <br>
+                                            Note                : {{$request->bank_details['note'] ?? ''}}
+                                        @endif
+                                        @if ($request->crypto_details)
+                                            crypto type         : {{$request->crypto_details['crypto_type'] ?? ''}}
+                                            Note                : {{$request->crypto_details['note'] ?? ''}}
                                         @endif
                                         @if ($request->bank_id && $request->bank)
                                             Bank Name           : {{$request->bank->name ?? ''}}
@@ -1806,6 +1824,7 @@
                                             Bank Country        : {{$request->bank->country ?? ''}}
                                         @endif
                                         {{$request->usdt ?? ''}}
+                                        {{$request->note ?? ''}}
                                     </td>
                                     <td>
                                         @if ($request->receipt)

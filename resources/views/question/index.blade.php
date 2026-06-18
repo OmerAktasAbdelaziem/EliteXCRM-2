@@ -26,12 +26,12 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <h5 class="mb-1">Our Asset Groups</h5>
+                                        <h5 class="mb-1">Our Questions</h5>
                                     </div>
                                     <div class="font-22 ms-auto">
-                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'asset_groups_create'))
-                                            <a href="{{ route('assetGroup.create') }}" class="btn btn-success btn-sm">
-                                                Add new Asset Group
+                                        @if ($isSuperAdmin || UserPermission::hasPermission($userAuth, 'question_create'))
+                                            <a href="{{ route('question.create') }}" class="btn btn-success btn-sm">
+                                                Add new Question
                                             </a>
                                         @endif
                                     </div>
@@ -42,29 +42,29 @@
                                             <table class="table align-middle mb-0 table-hover data-table">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Group Name</th>
-                                                        <th>Default Group</th>
-                                                        <th>Assets Count</th>
+                                                        <th>Question Text</th>
+                                                        <th>Question Type</th>
                                                         <th>Created At</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($assetGroups as $assetGroup)
+                                                    @foreach ($questions as $question)
                                                         <tr>
                                                             <td>
-                                                                <a href="{{ route('assetGroup.show', $assetGroup->id) }}">
-                                                                    {{$assetGroup->name}}
+                                                                <a href="{{ route('question.show', $question->id) }}">
+                                                                    {{$question->question_text}}
                                                                 </a>
                                                             </td>
+
                                                             <td>
-                                                                
-                                                            {{ $assetGroup->default == 1 ? 'yes' : 'no' }}
-                                                                
+                                                                @if ($question->is_text)
+                                                                    Text Input
+                                                                @else
+                                                                    True / False
+                                                                @endif
                                                             </td>
-                                                            <td>
-                                                                {{count($assetGroup->assetAssignments??[])}}
-                                                            </td>
-                                                            <td>{{date('d/m/Y H:i', strtotime($assetGroup->created_at))}}</td>
+                                                            
+                                                            <td>{{date('d/m/Y H:i', strtotime($question->created_at))}}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

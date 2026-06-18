@@ -50,7 +50,7 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-6">
+                                {{-- <div class="col-6">
                                     <label for="part_ids" class="form-label">Parts</label>
                                     <div class="input-group">
                                         <select class="multiple-select form-select" id="part_ids" name="part_ids[]" multiple>
@@ -65,6 +65,24 @@
                                         </select>
                                     </div>
                                     @error('part_ids')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div> --}}
+                                <div class="col-6">
+                                    <label for="part_ids" class="form-label">Teams</label>
+                                    <div class="input-group">
+                                        <select class="multiple-select form-select" id="team_ids" name="team_ids[]" multiple>
+                                            @foreach ($teams as $team)
+                                                <option value="{{ $team->id }}" 
+                                                    @if($status->getKey() && $status->teams->contains($team->id)) 
+                                                        selected 
+                                                    @endif>
+                                                    {{ $team->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @error('team_ids')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>

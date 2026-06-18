@@ -46,7 +46,7 @@
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>Status Name</th>
-                                                        <th>parts</th>
+                                                        <th>Teams</th>
                                                         <th>Created At</th>
                                                         <th></th>
                                                     </tr>
@@ -60,10 +60,9 @@
                                                                 </a>
                                                             </td>
                                                             <td>
-                                                                @foreach ($parts as $part)
-                                                                    @if(in_array($part->id, $status->part_ids)) 
-                                                                        {{ $part->name }} ||
-                                                                    @endif
+                                                                @foreach ($status->teams as $team)
+                                                                    {{ $team->name }}
+                                                                    @if (!$loop->last) || @endif
                                                                 @endforeach
                                                             </td>
                                                             <td>{{date('d/m/Y H:i', strtotime($status->created_at))}}</td>

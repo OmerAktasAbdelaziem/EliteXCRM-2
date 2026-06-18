@@ -13,7 +13,7 @@
 
                 <div class="col justify-content-end d-flex">
                     @if ($add)
-                        <button type="submit" class="submit_comment btn my-0 px-0 d-none" style="background-color: transparent"><i class="text-success bx bx-check h6 mb-0"></i></button>
+                        <button disabled type="submit" class="submit_comment btn my-0 px-0 d-none" style="background-color: transparent"><i class="text-success bx bx-check h6 mb-0"></i></button>
                         <button type="button" class="plus_comment btn my-0 px-0" style="background-color: transparent"><i class="text-primary bx bx-plus h6 mb-0"></i></button>
                         <button type="button" class="x_comment btn my-0 px-0 d-none" style="background-color: transparent"><i class="text-danger bx bx-x h6 mb-0"></i></button>
                     @endif
@@ -59,3 +59,10 @@
         <hr>
     </div>
 </div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.submit_comment').removeAttribute('disabled');
+});
+</script>

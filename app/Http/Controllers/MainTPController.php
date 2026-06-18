@@ -447,6 +447,7 @@ class MainTPController extends Controller {
         $finance['equity'] = 0.00;
         $finance['bonus'] = 0.00;
         $finance['freeMargin'] = 0.00;
+        $finance['closedOrdersPL'] = 0.00;
 
         $client = Client::where('broker_id', $broker_id)->where('deleted', 0)->first();
 
@@ -651,7 +652,7 @@ class MainTPController extends Controller {
             return [];
         }
 
-        $asset_ids = $client->assetGroup->asset_ids ?? [];
+        $asset_ids = $client->assetGroup->assetAssignments->pluck('asset') ?? [];
         //$assets = Asset::whereIn('id', $asset_ids)->whereIn('type', ['Crypto','Forex','Stocks','Indx'])->where('bid_price','!=',0)->get();
         $assets = $this->assetService->getByFilters([
             ['field' => 'id', 'conditions' => ['in' => $asset_ids]],

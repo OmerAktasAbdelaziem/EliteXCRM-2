@@ -28,6 +28,10 @@ class CaptureLeads extends Command
 
         $results = [];
         foreach ($ads as $ad) {
+            if($ad->fields->isEmpty()){
+                $this->error("Ad with id $ad->id fields are not set yet, not imported");
+                continue;
+            }
             $filePath = "downloaded_sheet.xlsx";
             $localPath = storage_path('app/temp/' . $filePath);
         
@@ -76,6 +80,11 @@ class CaptureLeads extends Command
         $path = storage_path('app') . '/' . $path1;
         HeadingRowFormatter::default('none');
         Excel::import($import, $path);
+
+        if(file_exists($path)){
+            unlink($path);
+        }
+
         $this->info("Sheet uploaded and processed successfully.");
     }
 }

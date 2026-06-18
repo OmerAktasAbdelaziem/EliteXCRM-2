@@ -18,7 +18,7 @@
                     
                         <div class="row">
                            
-    <div class="col-md-3">
+    <div class="col-md-12">
 <div class ="section-area">
     <span class="section-title">General Settings</span>
     @if($isPipelineAdmin || $isSuperAdmin)
@@ -33,6 +33,12 @@
     <a href = "{{ route('ads.index') }}"><span class="section-text">Google sheet linker</span></a>
     @endif
 </div>    
+<div class ="section-area">
+    <span class="section-title">Client Question Settings</span>
+    @if($isSuperAdmin)
+    <a href = "{{ route('question.index') }}"><span class="section-text">Client Questions</span></a>
+    @endif
+</div> 
     </div>
    
                             </div>

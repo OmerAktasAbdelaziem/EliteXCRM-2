@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Client;
+use App\Models\ClientQuestion;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\Validator;
@@ -10,9 +11,14 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ClientImport implements ToModel, WithHeadingRow
 {
-    public $repeated = 0;
-    public $success = 0;
-    public $empty = 0;
+    public $repeated = [];
+    public $success = [];
+    public $emptyFirstName = [];
+    public $emptyCountry = [];
+    public $emptyPhone1 = [];
+    public $emptyEmail = [];
+
+    private $rowNumber = 1;
 
     public $headers = [];
 
@@ -23,13 +29,14 @@ class ClientImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
+        $this->rowNumber ++;
         /*print_r($this->headers);
         echo '<br><br><br><br><br><br>';
         print_r($row);die;*/
         $mappedRow = [];
         
         foreach ($this->headers as $header => $field) {
-            $header = trim(strtolower($header));
+            // $header = trim(strtolower($header));
             if(isset($row[$header])){
             $mappedRow[$field] = $row[$header];
             }
@@ -44,7 +51,16 @@ class ClientImport implements ToModel, WithHeadingRow
 
         if ($validator->fails()) {
           //  print_r($validator->errors());die;
-            $this->empty++;
+            if ($validator->errors()->has('email')) {
+                $this->emptyEmail[] = $this->rowNumber;
+            }else if($validator->errors()->has('phone1')){
+                $this->emptyPhone1[] = $this->rowNumber;
+            }else if($validator->errors()->has('first_name')){
+                $this->emptyFirstName[] = $this->rowNumber;
+            }else if($validator->errors()->has('country')){
+                $this->emptyCountry[] = $this->rowNumber;
+            }
+
             return null;
         }
 
@@ -80,17 +96,17 @@ class ClientImport implements ToModel, WithHeadingRow
         })->where('source', $mappedRow['source'] ?? null)->where('deleted', 0)->first();
 
         if ($existingClient) {
-            $this->repeated++;
+            $this->repeated[] = $this->rowNumber;
             return null;
         }
-
+        
         $inputs = [
             'sales_status' => $mappedRow['sales_status'] ?? 'New',
             'pipeline_id'  => Auth::user()->pipeline_id,
             'created_by'   => Auth::user()->username,
             'first_name'   => $mappedRow['first_name'] ?? null,
             'last_name'    => $mappedRow['last_name'] ?? null,
-            'how_money'    => $mappedRow['how_money'] ?? null,
+            // 'how_money'    => $mappedRow['how_money'] ?? null,
             'campaign'     => $mappedRow['campaign'] ?? null,
             'country'      => $mappedRow['country'] ?? null,
             'phone1'       => isset($mappedRow['phone1']) ? $this->normalizePhone($mappedRow['phone1']) : null,
@@ -102,21 +118,43 @@ class ClientImport implements ToModel, WithHeadingRow
             'ad'           => $mappedRow['ad'] ?? null,
         ];
 
-        if (isset($mappedRow['is_have_invest'])) {
-            $inputs['is_have_invest'] = $mappedRow['is_have_invest'] === null ? null  : (in_array($mappedRow['is_have_invest'], ['Yes', 'نعم']) ? 1 : 0);
-        }
-        if (isset($mappedRow['is_have_money'])) {
-            $inputs['is_have_money'] =  $mappedRow['is_have_money'] === null ? null : (in_array($mappedRow['is_have_money'], ['Yes', 'نعم']) ? 1 : 0);
-        }
-        if (isset($mappedRow['is_have_time'])) {
-            $inputs['is_have_time'] =  $mappedRow['is_have_time'] === null ? null : (in_array($mappedRow['is_have_time'], ['Yes', 'نعم']) ? 1 : 0);
-        }
-        if (isset($mappedRow['is_25'])) {
-            $inputs['is_25'] = $mappedRow['is_25'] === null ? null : (in_array($mappedRow['is_25'], ['Yes', 'نعم']) ? 1 : 0);
-        }
+
+        // if (isset($mappedRow['is_have_invest'])) {
+        //     $inputs['is_have_invest'] = $mappedRow['is_have_invest'] === null ? null  : (in_array($mappedRow['is_have_invest'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
+        // if (isset($mappedRow['is_have_money'])) {
+        //     $inputs['is_have_money'] =  $mappedRow['is_have_money'] === null ? null : (in_array($mappedRow['is_have_money'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
+        // if (isset($mappedRow['is_have_time'])) {
+        //     $inputs['is_have_time'] =  $mappedRow['is_have_time'] === null ? null : (in_array($mappedRow['is_have_time'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
+        // if (isset($mappedRow['is_25'])) {
+        //     $inputs['is_25'] = $mappedRow['is_25'] === null ? null : (in_array($mappedRow['is_25'], ['Yes', 'نعم']) ? 1 : 0);
+        // }
 
      try {
-    Client::create($inputs);
+        $client = Client::create($inputs);
+        
+        $questionIds = array_filter(array_keys($mappedRow), 'is_numeric');
+        $questions = ClientQuestion::whereIn('id', $questionIds)->get()->keyBy('id');
+        $answersData = [];
+        foreach($mappedRow as $key => $value){
+            if(is_numeric($key)){
+                $question = $questions->get($key);
+                if($question->is_text){
+                    $answer = $value;
+                }else{
+                    $answer = $this->yesNoToBool($value ?? null);
+                }
+                $answersData[] = [
+                    'client_question_id' => $key,
+                    'answer' => $answer
+                ];
+            }
+        }
+
+        $client->questionAnswers()->createMany($answersData);
+
 } catch (\Throwable $e) {
 
     // اطبع الخطأ + البيانات
@@ -127,9 +165,23 @@ class ClientImport implements ToModel, WithHeadingRow
 
 }
 
-        $this->success++;
+        $this->success[] = $this->rowNumber;
 
         return null;
+    }
+
+    private function yesNoToBool($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return match ($value) {
+            'نعم' => 1,
+            'Yes' => 1,
+            'yes' => 1,
+            'YES' => 1,
+            default => 0,
+        };
     }
 
     function normalizePhone($phone)

@@ -89,7 +89,7 @@ class Client extends Model
                     ->toArray();)*/
                     $client->favourite_assets = json_encode(
     Asset::whereIn('currency', ['AUD', 'EUR'])
-        ->orWhereIn('symbol', ['GOLD', 'Oil', 'SILVER'])
+        ->orWhereIn('name', ['GBPAUD', 'Gold', 'Brent crude oil', 'Silver'])
         ->pluck('id')
         ->unique()
         ->values()
@@ -104,7 +104,7 @@ class Client extends Model
         $builder = parent::newEloquentBuilder($query);
 
         if (Auth::check()) {
-            $builder->where('pipeline_id', Auth::user()->pipeline_id);
+            $builder->where($this->getTable() . '.pipeline_id', Auth::user()->pipeline_id);
         }
 
         return $builder;
@@ -176,6 +176,12 @@ class Client extends Model
             return 'Never';
         }
         return \Carbon\Carbon::parse($this->last_seen_at)->diffForHumans();
+    }
+
+
+    public function questionAnswers()
+    {
+        return $this->hasMany(ClientQuestionAnswer::class, 'client_id');
     }
 
     public function markOnline()
