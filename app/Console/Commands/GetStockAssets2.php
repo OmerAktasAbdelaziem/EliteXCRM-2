@@ -18,7 +18,7 @@ class GetStockAssets2 extends Command
     public function handle()
     {
         // Fetch Stock symbols from the database
-        $symbols = Asset::where('type', 'Stocks')->orderBy('id', 'desc')->limit(22)->pluck('symbol')->map(fn($s) => strtoupper($s))->toArray();
+        $symbols = Asset::where('type', 'Stocks')->orderBy('id', 'desc')->pluck('symbol')->map(fn($s) => strtoupper($s))->toArray();//limit(22)->
 
         if (empty($symbols)) {
             $this->error('⚠️ No Stocks assets found in the database.');

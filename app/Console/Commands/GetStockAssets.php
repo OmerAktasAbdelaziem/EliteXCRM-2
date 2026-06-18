@@ -18,7 +18,7 @@ class GetStockAssets extends Command
     public function handle()
     {
         // Fetch Stock symbols from the database
-        $symbols = Asset::where('type', 'Stocks')->orderBy('id', 'asc')->limit(20)->pluck('symbol')->map(fn($s) => strtoupper($s))->toArray();
+        $symbols = Asset::where('type', 'Stocks')->orderBy('id', 'asc')->pluck('symbol')->map(fn($s) => strtoupper($s))->toArray();//limit(20)->
 
         if (empty($symbols)) {
             $this->error('⚠️ No Stocks assets found in the database.');
@@ -57,6 +57,8 @@ class GetStockAssets extends Command
                 // Listen for incoming messages
                 $conn->on('message', function ($data) {
                     $response = json_decode($data, true);
+                    
+                    //print_r($response); echo '<br>';
                     
                     static $lastProcessed = [];
                     $symbol = strtoupper($response['s']?? null);
