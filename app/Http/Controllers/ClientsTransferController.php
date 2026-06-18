@@ -101,7 +101,7 @@ class ClientsTransferController extends Controller
             ->where('name', 'Default')
             ->first();
         $client->update([
-            'favourite_assets' => ["1", "2", "3", "4", "5", "6", "20", "22", "10", "73", "74"],
+            'favourite_assets' => ["1", "2", "3", "4", "5", "6", "20", "22", "10", "73", "74","129"],
             'asset_group_id' => $asset_group?->id,
             'password_text' => $request->password,
             'account_type' => 'Demo',
@@ -164,7 +164,7 @@ class ClientsTransferController extends Controller
             ->where('name', 'Default')
             ->first();
         $client->update([
-            'favourite_assets' => ["1","2","3","4","5","6","20","22","10","73","74"],
+            'favourite_assets' => ["1","2","3","4","5","6","20","22","10","73","74","129"],
             'asset_group_id' => $asset_group?->id,
             'password_text'    => $request->password,
             'account_type'     => 'Real',
