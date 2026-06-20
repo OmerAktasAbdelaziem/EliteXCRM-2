@@ -1768,6 +1768,7 @@ class ClientsController extends Controller {
         $success = $import->success;
         $emptyFirstName = $import->emptyFirstName;
         $emptyCountry = $import->emptyCountry;
+        $unknownCountry = $import->unknownCountry;
         $emptyPhone1 = $import->emptyPhone1;
         $emptyEmail = $import->emptyEmail;
 
@@ -1791,6 +1792,7 @@ class ClientsController extends Controller {
             'success',
             'emptyFirstName',
             'emptyCountry',
+            'unknownCountry',
             'emptyPhone1',
             'emptyEmail'
         )); 

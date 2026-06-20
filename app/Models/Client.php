@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\CountryNormalizer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -109,6 +110,12 @@ class Client extends Model
 
         return $builder;
     }
+
+    public function setCountryAttribute($value)
+    {
+        $this->attributes['country'] = CountryNormalizer::normalize($value) ?? $value;
+    }
+
 
     public function user()
     {
