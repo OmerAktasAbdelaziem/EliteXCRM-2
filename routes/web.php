@@ -92,6 +92,8 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->post('client',               [ClientsController::class, 'store'])->name('client.store');
     });
 
+    Route::post('client/clearfilters', [ClientsController::class, 'clearFilters'])->name('client.clearfilters');
+
     $router->middleware(['role:leads_delete'])->group(function (Router $router) {
         $router->post('client/delete', [ClientsController::class, 'destroy'])->name('client.delete');
     });

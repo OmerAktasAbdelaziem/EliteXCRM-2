@@ -73,6 +73,8 @@ use App\Http\Services\Ad\AdHandlerService;
 use App\Http\Services\Ad\Interfaces\AdHandlerServiceInterface;
 use App\Http\Services\Question\Interfaces\QuestionServiceInterface;
 use App\Http\Services\Question\QuestionService;
+use App\Http\Services\SearchFilters\Interfaces\SearchFiltersServiceInterface;
+use App\Http\Services\SearchFilters\SearchFiltersService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -115,6 +117,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ActionServiceInterface::class, ActionService::class);
         $this->app->bind(AdHandlerServiceInterface::class, AdHandlerService::class);
         $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
+
+        $this->app->bind(SearchFiltersServiceInterface::class, SearchFiltersService::class);
+
         
         $this->app->singleton(UserPermissionServiceInterface::class, UserPermissionService::class);
       

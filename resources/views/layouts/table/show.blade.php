@@ -1,7 +1,7 @@
 <form id="filter_form2">
     <input type="hidden" name="tab" value="{{$tab}}">
     <div class="row mt-4">
-        <div class="col-sm-12 col-md-6 align-self-end">
+        <div class="col-sm-12 col-md-4 align-self-end">
             <label class="d-flex align-items-center">
                 Show &nbsp;
                 <select name="limit" class="form-select form-select-sm entries-per-page" style="width: 70px" data-tab="{{$tab}}">
@@ -23,7 +23,7 @@
             </label>
             
         </div>
-        <div class="col-sm-12 col-md-6 justify-content-end d-flex">
+        <div class="col-sm-12 col-md-8 justify-content-end d-flex">
             @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'import_clients'))
                 <div class="ms-auto mx-1">
                     <input class="form-control" type="file" form="excel-{{$check_type}}" name="excel_file" accept=".xls, .xlsx, .csv" onchange="$('#excel-{{$check_type}}').submit();">
@@ -50,6 +50,10 @@
                     Delete
                 </button>
             @endif
+
+            <button type="submit" class="btn btn-danger text-white text-center w-auto modal-btn multi-edit-btn mx-1" form="addemployee" formmethod="POST" formaction="{{ route('client.clearfilters') }}" href="javascript:;">
+                Clear Filters
+            </button>
         </div> 
     </div>
 </form>
