@@ -84,7 +84,7 @@
     <table>
         <thead>
             <tr>
-                <th>Type</th><th>Amount</th><th>Created At</th>
+                <th>Type</th><th>Amount</th><th>Status</th><th>Created At</th>
             </tr>
         </thead>
         <tbody>
@@ -100,6 +100,7 @@
                             <span>${{ number_format($trx->amount, 2) }}</span>
                         @endif
                     </td>
+                    <td>$trx->status</td>
                     <td>{{ $trx->time }}</td>
                 </tr>
             @empty
