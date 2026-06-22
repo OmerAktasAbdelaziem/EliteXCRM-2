@@ -122,7 +122,7 @@ class ClientsController extends Controller {
         $parts = $this->getParts($teams);
         
         $statuses = Status::whereHas('teams', function ($query) {
-            $query->where('teams.id', Auth::user()->team);
+            $query->where('teams.id', Auth::user()->team->id);
         })->latest()->get();
 
         // $statuses = Status::where(function ($query) use ($parts) {
