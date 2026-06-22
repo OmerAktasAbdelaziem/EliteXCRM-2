@@ -85,7 +85,7 @@ class ClientsController extends Controller {
       } */
 
     public function index(Request $request) {
-die;
+
 
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
