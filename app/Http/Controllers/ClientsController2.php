@@ -91,7 +91,7 @@ class ClientsController2 extends Controller
         $users    = $this->getUsers($teams);
         $parts    = $this->getParts($teams);
 
-        /*$statuses = Status::where(function ($query) use ($parts) {
+        $statuses = Status::where(function ($query) use ($parts) {
             $first = true;
             foreach ($parts as $part) {
                 if ($first) {
@@ -101,10 +101,10 @@ class ClientsController2 extends Controller
                     $query->orWhere('part_ids', 'LIKE', '%"'.$part->id.'"%');
                 }
             }
-        })->latest()->get();    */    
-        $statuses = Status::whereHas('teams', function ($query) use ($teams) {
+        })->latest()->get();    
+        /*$statuses = Status::whereHas('teams', function ($query) use ($teams) {
             $query->whereIn('teams.id', $teams->pluck('id'));
-        })->latest()->get();
+        })->latest()->get();*/
 
         $sources = Client::where(function ($query) use ($users, $options) {
             $query->whereIn('user_id', $users->pluck('id'));
