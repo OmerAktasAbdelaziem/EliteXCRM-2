@@ -1682,11 +1682,13 @@ class ClientsController extends Controller {
         $totalDeposits = DB::table('money_trxes')
                 ->where('broker_id', $brokerId)
                 ->where('type', 'deposit')
+                ->where('status', '!=', 'rejected')
                 ->sum('amount');
 
         $totalWithdrawals = DB::table('money_trxes')
                 ->where('broker_id', $brokerId)
                 ->where('type', 'withdraw')
+                ->where('status', '!=', 'rejected')
                 ->sum('amount');
 
         $netDeposits = $totalDeposits - $totalWithdrawals;
@@ -1747,6 +1749,7 @@ class ClientsController extends Controller {
                             DB::raw('"Money Transaction" as record_type'),
                             'created_at as time',
                             'amount',
+                            'status',
                             'type as trx_type'
                     )
                     ->get();
