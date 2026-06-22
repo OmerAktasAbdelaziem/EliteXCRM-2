@@ -160,7 +160,7 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->put('client/mainTp/update_open_order/{id}',             [MainTPController::class, 'update_open_order'])->name('main_tp.update_open_order');
         $router->put('client/mainTp/update_request/{id}',                [MainTPController::class, 'update_request'])->name('main_tp.update_request');
         $router->post('client/mainTp/multi_handle_request',              [MainTPController::class, 'multi_handle_request'])->name('main_tp.multi_handle_request');
-        $router->put('client/mainTp/update_kyc/{id}',                    [MainTPController::class, 'update_kyc'])->name('main_tp.update_kyc');
+        $router->put('client/mainTp/update_document/{id}',               [MainTPController::class, 'update_document'])->name('main_tp.update_document');
         $router->post('client/mainTp/handle_request',                    [MainTPController::class, 'handle_request'])->name('main_tp.handle_request');
         $router->get('client/mainTp/{id}',                               [MainTPController::class, 'show'])->name('main_tp.show');
         $router->get('client/Request/{id}',                              [RequestController::class,'show'])->name('request.show');

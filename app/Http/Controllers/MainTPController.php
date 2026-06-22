@@ -94,6 +94,7 @@ class MainTPController extends Controller {
         $page = $request->query('page', 1);
         $from = Carbon::now()->subYears(10)->format('Y-m-d H:i:s');
         $kycs = ClientDocument::where('client_id', $id)->where('type', 'kyc');
+        $otherDocuments = ClientDocument::where('client_id', $id)->where('type', 'other');
         $tab = $request->input('tab', 'info');
         $to = Carbon::now()->format('Y-m-d H:i:s');
 
@@ -202,6 +203,27 @@ class MainTPController extends Controller {
                 $kycs->where('status', $status_kyc);
             }
 
+            
+            if ($fromDate = Arr::get($filters, 'fromTo_other')) {
+                $dates = preg_split('/\s*-\s*/', trim($fromDate));
+
+                if (isset($dates[0]) && !empty($dates[0])) {
+                    $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '>=', $formattedFromDate);
+                }
+                if (isset($dates[1]) && !empty($dates[1]) && $dates[1] != "") {
+                    $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '<=', $formattedToDate);
+                } else {
+                    $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '<=', $formattedToDate);
+                }
+            }
+
+            if ($status_other = Arr::get($filters, 'status_other')) {
+                $otherDocuments->where('status', $status_other);
+            }
+
             if ($textQuery = Arr::get($filters, 'contacts_history')) {
                 $textQuery = strtolower($textQuery);
                 $textQuery = '%' . $textQuery . '%';
@@ -298,6 +320,12 @@ class MainTPController extends Controller {
             $kycs = $kycs->latest()->paginate($limit, ['*'], 'page', 1);
         }
 
+        if ($tab == 'other') {
+            $otherDocuments = $otherDocuments->latest()->paginate($limit, ['*'], 'page', $page);
+        } else {
+            $otherDocuments = $otherDocuments->latest()->paginate($limit, ['*'], 'page', 1);
+        }
+        
         return view('client.main_tp', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
@@ -330,6 +358,7 @@ class MainTPController extends Controller {
                         'from',
                         'chat',
                         'kycs',
+                        'otherDocuments',
                         'pre',
                         'tab',
                         'to',
@@ -575,17 +604,17 @@ class MainTPController extends Controller {
         return redirect()->back()->with('success', 'Client options has been updated successfully.');
     }
 
-    public function update_kyc(Request $request, $id) {
-        $kyc = ClientDocument::findOrfail($id);
+    public function update_document(Request $request, $id) {
+        $document = ClientDocument::findOrfail($id);
 
         $inputs = $request->only([
             'status',
         ]);
 
-        $kyc->update($inputs);
+        $document->update($inputs);
 
         if ($request->status == 'accepted') {
-            $client = Client::find($kyc->client_id);
+            $client = Client::find($document->client_id);
             $options = $client->options ?? [];
             $options['isVerified'] = 1;
             $client->update([
@@ -593,7 +622,7 @@ class MainTPController extends Controller {
             ]);
         }
 
-        return redirect()->back()->with('success', 'Kyc status has been updated successfully.');
+        return redirect()->back()->with('success', 'Document status has been updated successfully.');
     }
 
     public function get_closed_data($broker_id, $closed_fromTo) {

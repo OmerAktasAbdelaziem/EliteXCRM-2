@@ -640,6 +640,7 @@ class ClientsController extends Controller {
         $changes = null;
         $page = $request->query('page', 1);
         $kycs = ClientDocument::where('client_id', $id)->where('type', 'kyc');
+        $otherDocuments = ClientDocument::where('client_id', $id)->where('type', 'other');
         $next = 1;
         $pre = 1;
         // $options            = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();/
@@ -748,6 +749,28 @@ class ClientsController extends Controller {
                 $kycs->where('status', $status_kyc);
             }
 
+            
+            if ($fromDate = Arr::get($filters, 'fromTo_other')) {
+                $dates = preg_split('/\s*-\s*/', trim($fromDate));
+
+                if (isset($dates[0]) && !empty($dates[0])) {
+                    $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '>=', $formattedFromDate);
+                }
+                if (isset($dates[1]) && !empty($dates[1]) && $dates[1] != "") {
+                    $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '<=', $formattedToDate);
+                } else {
+                    $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '<=', $formattedToDate);
+                }
+            }
+
+            if ($status_other = Arr::get($filters, 'status_other')) {
+                $otherDocuments->where('status', $status_other);
+            }
+
+
             $marketingEmailLogs->where(function ($query) use ($filters) {
                 $query->where(function ($subquery) use ($filters) {
                     if ($textQuery = Arr::get($filters, 'search_marketingEmailLogs')) {
@@ -822,6 +845,12 @@ class ClientsController extends Controller {
         } else {
             $kycs = $kycs->latest()->paginate($limit, ['*'], 'page', 1);
         }
+        
+        if ($tab == 'other') {
+            $otherDocuments = $otherDocuments->latest()->paginate($limit, ['*'], 'page', $page);
+        } else {
+            $otherDocuments = $otherDocuments->latest()->paginate($limit, ['*'], 'page', 1);
+        }
 
         if ($request->from_notifi == 1) {
             $client->update([
@@ -851,6 +880,7 @@ class ClientsController extends Controller {
                         'users',
                         'next',
                         'kycs',
+                        'otherDocuments',
                         'pre',
                         'tab',
              //   'userAuth',

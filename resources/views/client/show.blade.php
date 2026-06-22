@@ -194,6 +194,16 @@
                                                 </div>
                                             </a>
                                         </li>
+                                        
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link @if ($tab == 'other') active @endif tab" data-bs-toggle="tab" href="#other" id="view-tab" role="tab" aria-selected="true">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="tab-icon"><i class="bx bx-file font-18 me-1"></i>
+                                                    </div>
+                                                    <div class="tab-title">Additional Documents</div>
+                                                </div>
+                                            </a>
+                                        </li>
                                     </ul>
                                     <div class="tab-content py-3">
                                         <div class="tab-pane fade @if ($tab == 'info') active show @endif" id="show" role="tabpanel">
@@ -789,10 +799,10 @@
                                                                         </td>
                                                                         <td>
                                                                             @if ($kyc->status == 'pending')
-                                                                                <button type="submit" form="action_kyc" formaction="{{ route('main_tp.update_kyc', ['id' => $kyc->id, 'status' => 'accepted']) }}" class="btn btn-sm text-success text-center w-auto" style="background-color: transparent">
+                                                                                <button type="submit" form="action_kyc" formaction="{{ route('main_tp.update_document', ['id' => $kyc->id, 'status' => 'accepted']) }}" class="btn btn-sm text-success text-center w-auto" style="background-color: transparent">
                                                                                     <i class="bx bx-check"></i>
                                                                                 </button>
-                                                                                <button type="submit" form="action_kyc" formaction="{{ route('main_tp.update_kyc', ['id' => $kyc->id, 'status' => 'rejected']) }}" class="btn btn-sm text-danger text-center w-auto" style="background-color: transparent">
+                                                                                <button type="submit" form="action_kyc" formaction="{{ route('main_tp.update_document', ['id' => $kyc->id, 'status' => 'rejected']) }}" class="btn btn-sm text-danger text-center w-auto" style="background-color: transparent">
                                                                                     <i class="bx bx-x"></i>
                                                                                 </button>
                                                                             @endif
@@ -803,6 +813,87 @@
                                                         </table>
                                                     </div>
                                                     @include("layouts.table.pagination.footer",['model' => $kycs, 'tab' =>'kyc'])
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade @if ($tab == 'other') active show @endif" id="other" role="tabpanel">
+                                            <div class="row">
+                                                <form action="" id="filter_form_other">
+                                                    <input type="hidden" name="tab" value="other">
+                                                </form>
+                                                <form action="" id="action_other" method="POST">
+                                                    @method('PUT')
+                                                    @csrf
+                                                    <input type="hidden" name="tab" value="other">
+                                                </form>
+                                                <div class="col-12">
+                                                    <div class="table-responsive mt-4">
+                                                        <table class="table align-middle pagination_table mb-0 table-hover">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th>Date</th>
+                                                                    <th>File</th>
+                                                                    <th>Status</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-text bg-transparent"><i class='bx bx-calendar-event'></i></span>
+                                                                            <input type="text" class="result form-control from-to-range" form="filter_form_other" placeholder="{{ $filters ? ($filters['fromTo_other'] ?? 'Select Date') : 'Select Date' }}">
+                                                                            <input type="hidden" class="rangeDate" form="filter_form_other" value="{{ $filters ? ($filters['fromTo_other'] ?? '') : '' }}" name="filters[fromTo_other]">
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                    </th>
+                                                                    <th class="max-w-160">
+                                                                        <div class="input-group">
+                                                                            <select class="form-select single-select" name="filters[status_other]" form="filter_form_other">
+                                                                                <option value="">All Status</option>
+                                                                                @foreach (['pending','accepted','rejected'] as $other_status)
+                                                                                    <option value="{{$other_status}}" @if (isset($filters['status_other']) && $filters['status_other'] == $other_status ) selected @endif>{{$other_status}}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <button type="submit" form="filter_form_other" class="btn btn-sm text-primary" style="background-color: transparent">
+                                                                            <i class="bx bx-search"></i>
+                                                                        </button>
+                                                                    </th>
+                                                                </tr>
+                                                                @foreach ($otherDocuments as $other)
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ date('d/m/Y H:i', strtotime($other->created_at)) }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <a href="{{$other->path}}" class="btn btn-sm w-auto" style="background-color: transparent" target="_blank" download>
+                                                                                <i class="bx bx-download"></i>
+                                                                            </a>
+                                                                        </td>
+                                                                        <td class="{{$other->status == 'accepted' ? 'text-success' :''}} {{$other->status == 'rejected' ? 'text-danger' :''}} {{$other->status == 'pending' ? 'text-warning' :''}}">
+                                                                            {{$other->status}}
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($other->status == 'pending')
+                                                                                <button type="submit" form="action_other" formaction="{{ route('main_tp.update_document', ['id' => $other->id, 'status' => 'accepted']) }}" class="btn btn-sm text-success text-center w-auto" style="background-color: transparent">
+                                                                                    <i class="bx bx-check"></i>
+                                                                                </button>
+                                                                                <button type="submit" form="action_other" formaction="{{ route('main_tp.update_document', ['id' => $other->id, 'status' => 'rejected']) }}" class="btn btn-sm text-danger text-center w-auto" style="background-color: transparent">
+                                                                                    <i class="bx bx-x"></i>
+                                                                                </button>
+                                                                            @endif
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    @include("layouts.table.pagination.footer",['model' => $otherDocuments, 'tab' =>'other'])
                                                 </div>
                                             </div>
                                         </div>
