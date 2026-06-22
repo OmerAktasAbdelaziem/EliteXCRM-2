@@ -443,7 +443,7 @@
                             @endif
                         </td>
                     @endif
-                    {{dd($statuses)}}
+                    
                     @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_sales_status_show') )
                         <td>
                             @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_sales_status_edit') )
