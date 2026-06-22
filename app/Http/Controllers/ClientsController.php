@@ -125,7 +125,9 @@ class ClientsController extends Controller {
         $teamId = Auth::user()->team?->id;
 
 $statuses = Status::whereHas('teams', function ($query) use ($teamId) {
+    if(!$isSuperAdmin && !$isPipelineAdmin){
     $query->where('teams.id', $teamId);
+    }
 })->latest()->get();
 
         // $statuses = Status::where(function ($query) use ($parts) {
