@@ -1865,7 +1865,7 @@ class MainTPController extends Controller {
                     ->get();
             $moneyTrxes = MoneyTrx::where('broker_id', $brokerId)->get();
         }
-
+dd($moneyTrxes);
         $closedOrders->transform(function ($order) {
             $order->closed_at = $order->closed_at ?? null;
             return $order;
