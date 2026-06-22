@@ -118,7 +118,7 @@ class OverviewController extends Controller {
             $lastMonthDaysCount += $count;
         }
 
-        $statuses = Status::where(function ($query) use ($parts) {
+       /* $statuses = Status::where(function ($query) use ($parts) {
                     $first = true;
                     foreach ($parts as $part) {
                         if ($first) {
@@ -128,7 +128,17 @@ class OverviewController extends Controller {
                             $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
                         }
                     }
-                })->orwhere('part_ids', '')->orderByRaw('CHAR_LENGTH(name) DESC')->get();
+                })->orwhere('part_ids', '')->orderByRaw('CHAR_LENGTH(name) DESC')->get();*/
+
+                $teamIds = $teams->pluck('id');
+
+$statuses = Status::where(function ($query) use ($teamIds) {
+    $query->whereHas('teams', function ($q) use ($teamIds) {
+        $q->whereIn('teams.id', $teamIds);
+    })->orWhereDoesntHave('teams');
+})
+->orderByRaw('CHAR_LENGTH(name) DESC')
+->get();
 
         foreach ($statuses as $status) {
             $status->leads = Client::where('sales_status', $status->name)->where('deleted', 0)->count();

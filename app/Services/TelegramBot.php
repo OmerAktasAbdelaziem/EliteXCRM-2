@@ -130,7 +130,7 @@ class TelegramBot
             $parts             = $clientService->getParts($teams, Auth::user());//$clientsController->getParts($teams);
             $row               = [];
 
-            $statuses = Status::where(function ($query) use ($parts) {
+            /*$statuses = Status::where(function ($query) use ($parts) {
                 $first = true;
                 foreach ($parts as $part) {
                     if ($first) {
@@ -140,7 +140,10 @@ class TelegramBot
                         $query->orWhere('part_ids', 'LIKE', '%"'.$part->id.'"%');
                     }
                 }
-            })->latest()->get();            
+            })->latest()->get();  */ 
+            $statuses = Status::whereHas('teams', function ($query) use ($teams) {
+                $query->whereIn('teams.id', $teams->pluck('id'));
+            })->latest()->get();         
             
 
             foreach ($statuses as $index => $status) {
