@@ -125,7 +125,7 @@ class ClientsController extends Controller {
         $statuses = Status::whereHas('teams', function ($query) use ($teamIds) {
             $query->whereIn('teams.id', $teamIds);
         })->latest()->get();
-        dd($teams);
+        dd(Auth::user()->team);
 
         // $statuses = Status::where(function ($query) use ($parts) {
         //             $first = true;
