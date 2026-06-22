@@ -1805,10 +1805,12 @@ class MainTPController extends Controller {
 
         $totalDeposits = MoneyTrx::where('broker_id', $brokerId)
                 ->where('type', 'deposit')
+                ->where('status', '!=', 'rejected')
                 ->sum('amount');
 
         $totalWithdrawals = MoneyTrx::where('broker_id', $brokerId)
                 ->where('type', 'withdraw')
+                ->where('status', '!=', 'rejected')
                 ->sum('amount');
 
         $netDeposits = $totalDeposits - $totalWithdrawals;

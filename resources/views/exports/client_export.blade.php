@@ -53,7 +53,7 @@
     <table>
         <thead>
             <tr>
-                <th>Currency</th><th>Type</th><th>Amount</th><th>Open Time</th><th>Closed Time</th>
+                <th>Currency</th><th>Type</th><th>Amount</th><th>Status</th><th>Open Time</th><th>Closed Time</th>
             </tr>
         </thead>
         <tbody>
@@ -70,6 +70,7 @@
                         @endif
                     </td>
                     <td>{{ $order->amount }}</td>
+                    <td>{{ $order->status }}</td>
                     <td>{{ $order->time }}</td>
                     <td>{{ $order->closed_at ?? 'N/A' }}</td>
                 </tr>
