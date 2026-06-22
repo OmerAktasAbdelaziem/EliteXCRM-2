@@ -100,7 +100,7 @@
                             <span>${{ number_format($trx->amount, 2) }}</span>
                         @endif
                     </td>
-                    <td>$trx->status</td>
+                    <td>{{$trx->status }}</td>
                     <td>{{ $trx->time }}</td>
                 </tr>
             @empty
