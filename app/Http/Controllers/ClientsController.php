@@ -41,6 +41,7 @@ use App\Http\Services\Order\Interfaces\OrderServiceInterface;
 use App\Http\Services\Subscription\Interfaces\SubscriptionServiceInterface;
 use App\Facades\UserPermission;
 use App\Http\Services\Asset\Interfaces\AssetGroupServiceInterface;
+use App\Http\Services\SearchFilters\Interfaces\SearchFiltersServiceInterface;
 use App\Models\ClientQuestion;
 
 class ClientsController extends Controller {
@@ -50,6 +51,7 @@ class ClientsController extends Controller {
     protected $orderService;
     protected $subscriptionService;
     protected $assetGroupService;
+    protected SearchFiltersServiceInterface $searchFiltersService;
 
     public function __construct(
             ClientServiceInterface $clientService,
@@ -57,12 +59,14 @@ class ClientsController extends Controller {
             OrderServiceInterface $orderService,
             SubscriptionServiceInterface $subscriptionService,
             AssetGroupServiceInterface $assetGroupService,
+            SearchFiltersServiceInterface $searchFiltersService,
     ) {
         $this->clientService = $clientService;
         // $this->userService = $userService;
         $this->orderService = $orderService;
         $this->subscriptionService = $subscriptionService;
         $this->assetGroupService = $assetGroupService;
+        $this->searchFiltersService = $searchFiltersService;
     }
 
     /* public function __construct(
@@ -116,18 +120,23 @@ class ClientsController extends Controller {
         $teams = $this->getTeams();
         $users = $this->getUsers($teams);
         $parts = $this->getParts($teams);
+        
+        $teamIds = $teams->pluck('id');
+        $statuses = Status::whereHas('teams', function ($query) use ($teamIds) {
+            $query->whereIn('teams.id', $teamIds);
+        })->latest()->get();
 
-        $statuses = Status::where(function ($query) use ($parts) {
-                    $first = true;
-                    foreach ($parts as $part) {
-                        if ($first) {
-                            $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
-                            $first = false;
-                        } else {
-                            $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
-                        }
-                    }
-                })->latest()->get();
+        // $statuses = Status::where(function ($query) use ($parts) {
+        //             $first = true;
+        //             foreach ($parts as $part) {
+        //                 if ($first) {
+        //                     $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
+        //                     $first = false;
+        //                 } else {
+        //                     $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
+        //                 }
+        //             }
+        //         })->latest()->get();
 
         $sources = Client::where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
@@ -252,270 +261,17 @@ class ClientsController extends Controller {
             ${$check_type . '_filters'} = $request->get($check_type . '_filters', []);
 
             $filters = ${$check_type . '_filters'};
+
             if (!empty($filters)) {
-                ${$check_type}->where(function ($query) use ($filters, $isSuperAdmin, $isPipelineAdmin, $pipelineId) {
-
-                    if ($id = Arr::get($filters, 'id')) {
-                        $query->where('id', 'like', $id . '%');
-                    }
-
-                    if ($smart = Arr::get($filters, 'smart')) {
-                        if ($smart == 'Active') {
-                            $query->where('smart_user_id', '!=', null)->where('smart_user_id', '!=', '');
-                        } else {
-                            $query->where(function ($q) {
-                                $q->where('smart_user_id', null)->orWhere('smart_user_id', '');
-                            });
-                        }
-                    }
-
-                    if ($enabled = Arr::get($filters, 'enabled')) {
-                        if ($enabled == 'Active') {
-                            $query->whereNotNull('broker_id')->where('account_type', 'Real');
-                        } else {
-                            $query->where(function ($q) {
-                                $q->whereNull('broker_id')->orWhere('account_type', '!=', 'Real');
-                            });
-                        }
-                    }
-
-                    if ($textQuery = strtolower(Arr::get($filters, 'name'))) {
-                        $query->where(DB::raw("
-                            LOWER(CONCAT_WS(' ', COALESCE(first_name, ''), COALESCE(last_name, '')))
-                        "), 'like', '%' . $textQuery . '%');
-                    }
-
-                    if ($countries = Arr::get($filters, 'country')) {
-                        $countryParts = [];
-                        $isExcept = false;
-
-                        if (is_array($countries)) {
-                            foreach ($countries as $country) {
-                                if (str_contains($country, 'except')) {
-                                    $isExcept = true;
-                                    $country = str_replace('except', '', $country);
-                                }
-                                $countryParts = array_merge($countryParts, explode(',', $country));
-                            }
-                        }
-
-                        if ($isExcept) {
-                            $query->where(function ($q) use ($countryParts) {
-                                $q->whereNotIn('country', array_map('trim', $countryParts))->orWhere('country', null);
-                            });
-                        } else {
-                            $query->whereIn('country', array_map('trim', $countryParts));
-                        }
-                    }
-
-
-                    if ($mail = Arr::get($filters, 'mail')) {
-                        $query->where('email', 'like', '%' . $mail . '%');
-                    }
-
-                    if ($phone = Arr::get($filters, 'phone')) {
-                        $query->where(function ($q) use ($phone) {
-                            $q->where('phone1', 'like', '%' . $phone . '%')->orWhere('phone2', 'like', '%' . $phone . '%');
-                        });
-                    }
-
-                    if ($type = Arr::get($filters, 'type')) {
-                        $query->where('account_type', $type);
-                    }
-
-                    if ($user = Arr::get($filters, 'user')) {
-
-                        $isUnassigned = false;
-                        foreach ($user as $key => $u) {
-                            if (str_contains($u, 'unassigned')) {
-                                unset($user[$key]);
-                                $isUnassigned = true;
-                            }
-                        }
-                        $isExcept = false;
-                        foreach ($user as $key => $u) {
-                            if (str_contains($u, 'except')) {
-                                unset($user[$key]);
-                                $isExcept = true;
-                            }
-                        }
-                        if ($isExcept) {
-                            $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId, $isUnassigned) {
-                                $q->whereNotIn('user_id', $user);
-                                //if (isset($options['leads_data_show_unassigned_leads'])) {
-
-                                if ($isUnassigned || $isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
-                                    $q->where('user_id', '!=' , null);
-                                }
-
-                            });
-                        } else {
-                            $query->where(function ($q) use ($user, $isSuperAdmin, $isPipelineAdmin, $pipelineId, $isUnassigned) {
-                                $q->whereIn('user_id', $user);
-                               /* if ($isUnassigned || $isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
-                                    $q->orWhere('user_id', null);
-                                }*/
-                            });
-
-                        }
-                    }
-
-                    if ($status = Arr::get($filters, 'status')) {
-                        $isExcept = false;
-                        foreach ($status as $s) {
-                            if (str_contains($s, 'except')) {
-                                $isExcept = true;
-                            }
-                        }
-                        if ($isExcept) {
-                            $query->whereNotIn('sales_status', $status);
-                        } else {
-                            $query->whereIn('sales_status', $status);
-                        }
-                    }
-
-                    if ($fromDate = Arr::get($filters, 'ftd_fromTo')) {
-                        $dates = preg_split('/\s*-\s*/', trim($fromDate));
-
-                        if (isset($dates[0]) && !empty($dates[0])) {
-                            $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
-                            $query->where('ftd_date', '>=', $formattedFromDate);
-                        }
-
-                        if (isset($dates[1]) && !empty($dates[1])) {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('ftd_date', '<=', $formattedToDate);
-                        } else {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('ftd_date', '<=', $formattedToDate);
-                        }
-                    }
-
-                    if ($fromDate = Arr::get($filters, 'first_comment_at_fromTo')) {
-                        $dates = preg_split('/\s*-\s*/', trim($fromDate));
-
-                        if (isset($dates[0]) && !empty($dates[0])) {
-                            $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
-                        }
-
-                        if (isset($dates[1]) && !empty($dates[1])) {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
-                        } else {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-                        }
-
-                        $query->whereHas('comments', function ($q) use ($formattedFromDate, $formattedToDate) {
-                            $q->whereBetween('created_at', [$formattedFromDate, $formattedToDate]);
-                        });
-                    }
-
-                    if ($fromDate = Arr::get($filters, 'assigned_at_fromTo')) {
-                        $dates = preg_split('/\s*-\s*/', trim($fromDate));
-
-                        if (isset($dates[0]) && !empty($dates[0])) {
-                            $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
-                            $query->where('assigned_at', '>=', $formattedFromDate);
-                        }
-
-                        if (isset($dates[1]) && !empty($dates[1])) {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('assigned_at', '<=', $formattedToDate);
-                        } else {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('assigned_at', '<=', $formattedToDate);
-                        }
-                    }
-
-                    if ($fromDate = Arr::get($filters, 'modified_at_fromTo')) {
-                        $dates = preg_split('/\s*-\s*/', trim($fromDate));
-
-                        if (isset($dates[0]) && !empty($dates[0])) {
-                            $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
-                            $query->where('updated_at', '>=', $formattedFromDate);
-                        }
-
-                        if (isset($dates[1]) && !empty($dates[1])) {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('updated_at', '<=', $formattedToDate);
-                        } else {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('updated_at', '<=', $formattedToDate);
-                        }
-                    }
-
-                    if ($fromDate = Arr::get($filters, 'reg_at_fromTo')) {
-                        $dates = preg_split('/\s*-\s*/', trim($fromDate));
-
-                        if (isset($dates[0]) && !empty($dates[0])) {
-                            $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
-                            $query->where('reg_date', '>=', $formattedFromDate);
-                        }
-
-                        if (isset($dates[1]) && !empty($dates[1])) {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('reg_date', '<=', $formattedToDate);
-                        } else {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('reg_date', '<=', $formattedToDate);
-                        }
-                    }
-
-                    if ($fromDate = Arr::get($filters, 'created_fromTo')) {
-                        $dates = preg_split('/\s*-\s*/', trim($fromDate));
-
-                        if (isset($dates[0]) && !empty($dates[0])) {
-                            $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
-                            $query->where('created_at', '>=', $formattedFromDate);
-                        }
-                        if (isset($dates[1]) && !empty($dates[1]) && $dates[1] != "") {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('created_at', '<=', $formattedToDate);
-                        } else {
-                            $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
-                            $query->where('created_at', '<=', $formattedToDate);
-                        }
-                    }
-
-                    if ($source = Arr::get($filters, 'source')) {
-                        $isExcept = false;
-                        foreach ($source as $s) {
-                            if (str_contains($s, 'except')) {
-                                $isExcept = true;
-                            }
-                        }
-                        if ($isExcept) {
-                            $query->where(function ($q) use ($source) {
-                                $q->whereNotIn('source', $source)->orWhere('source', null)->orWhere('source', '');
-                            });
-                        } else {
-                            $query->whereIn('source', $source);
-                        }
-                    }
-
-                    if ($teams = Arr::get($filters, 'teams')) {
-                        $query->whereHas('user', function ($query) use ($teams) {
-                            $query->where('team_id', $teams);
-                        });
-                    }
-
-                    if ($created_by = Arr::get($filters, 'created_by')) {
-                        $isExcept = false;
-                        foreach ($created_by as $s) {
-                            if (str_contains($s, 'except')) {
-                                $isExcept = true;
-                            }
-                        }
-                        if ($isExcept) {
-                            $query->where(function ($q) use ($created_by) {
-                                $q->whereNotIn('created_by', $created_by)->orWhere('created_by', null)->orWhere('created_by', '');
-                            });
-                        } else {
-                            $query->whereIn('created_by', $created_by);
-                        }
-                    }
-                });
+                $this->searchFiltersService->getSetFilters($filters);
             }
         }
+
+        foreach ($checktypes as $check_type) {
+            ${$check_type . '_filters'} =  $this->searchFiltersService->getSetFilters();
+            ${$check_type} = $this->searchFiltersService->applyFilters(${$check_type}, $filters);
+        }
+
 
         if ($filters = $request->get('filters', [])) {
             $actions->where(function ($query) use ($filters) {
@@ -631,50 +387,9 @@ class ClientsController extends Controller {
             }
         }
 
-        if ($request->sort == 'created_at' || $request->sort == 'ftd_date' || $request->sort == 'first_name') {
-            if ($contacts) {
-                $contacts = $contacts->orderBy($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
-            }
-            if ($mycontact) {
-                $mycontact = $mycontact->orderBy($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
-            }
-            if ($new) {
-                $new = $new->orderBy($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
-            }
-            if ($hot) {
-                $hot = $hot->orderBy($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
-            }
-            if ($broker) {
-                $broker = $broker->orderBy($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
-            }
-        } elseif ($request->sort == 'team') {
-            if ($contacts) {
-                $contacts = $contacts->leftJoin('users', 'clients.user_id', '=', 'users.id')
-                        ->leftJoin('teams', 'users.team_id', '=', 'teams.id')
-                        ->select('clients.*', DB::raw('COALESCE(teams.name, "") as team_name'))
-                        ->orderBy('team_name', $request->order == 'desc' ? 'desc' : 'asc');
-            }
-
-            if ($new) {
-                $new = $new->leftJoin('users', 'clients.user_id', '=', 'users.id')
-                        ->leftJoin('teams', 'users.team_id', '=', 'teams.id')
-                        ->select('clients.*', DB::raw('COALESCE(teams.name, "") as team_name'))
-                        ->orderBy('team_name', $request->order == 'desc' ? 'desc' : 'asc');
-            }
-
-            if ($hot) {
-                $hot = $hot->leftJoin('users', 'clients.user_id', '=', 'users.id')
-                        ->leftJoin('teams', 'users.team_id', '=', 'teams.id')
-                        ->select('clients.*', DB::raw('COALESCE(teams.name, "") as team_name'))
-                        ->orderBy('team_name', $request->order == 'desc' ? 'desc' : 'asc');
-            }
-
-            if ($broker) {
-                $broker = $broker->leftJoin('users', 'clients.user_id', '=', 'users.id')
-                        ->leftJoin('teams', 'users.team_id', '=', 'teams.id')
-                        ->select('clients.*', DB::raw('COALESCE(teams.name, "") as team_name'))
-                        ->orderBy('team_name', $request->order == 'desc' ? 'desc' : 'asc');
-            }
+        foreach ($checktypes as $check_type) {
+            $this->searchFiltersService->getSetSort($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
+            ${$check_type} = $this->searchFiltersService->applySort(${$check_type});
         }
 
         if ($tab == 'contacts' && $contacts) {
@@ -805,17 +520,22 @@ class ClientsController extends Controller {
         $users = $this->getUsers($teams);
         $parts = $this->getParts($teams);
 
-        $statuses = Status::where(function ($query) use ($parts) {
-                    $first = true;
-                    foreach ($parts as $part) {
-                        if ($first) {
-                            $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
-                            $first = false;
-                        } else {
-                            $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
-                        }
-                    }
-                })->latest()->get();
+        $teamIds = $teams->pluck('id');
+        $statuses = Status::whereHas('teams', function ($query) use ($teamIds) {
+            $query->whereIn('teams.id', $teamIds);
+        })->latest()->get();
+        
+        // $statuses = Status::where(function ($query) use ($parts) {
+        //             $first = true;
+        //             foreach ($parts as $part) {
+        //                 if ($first) {
+        //                     $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
+        //                     $first = false;
+        //                 } else {
+        //                     $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
+        //                 }
+        //             }
+        //         })->latest()->get();
 
         return view('client.create', compact(
                         'statuses',
@@ -920,6 +640,7 @@ class ClientsController extends Controller {
         $changes = null;
         $page = $request->query('page', 1);
         $kycs = ClientDocument::where('client_id', $id)->where('type', 'kyc');
+        $otherDocuments = ClientDocument::where('client_id', $id)->where('type', 'other');
         $next = 1;
         $pre = 1;
         // $options            = $this->userService->getUserOptions(Auth::user());//(new UserController)->get_user_options();/
@@ -937,18 +658,23 @@ class ClientsController extends Controller {
         });
 
         $client = $contacts->findOrfail($id);
+        
+        $teamIds = $teams->pluck('id');
+        $statuses = Status::whereHas('teams', function ($query) use ($teamIds) {
+            $query->whereIn('teams.id', $teamIds);
+        })->latest()->get();
 
-        $statuses = Status::where(function ($query) use ($parts) {
-                    $first = true;
-                    foreach ($parts as $part) {
-                        if ($first) {
-                            $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
-                            $first = false;
-                        } else {
-                            $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
-                        }
-                    }
-                })->latest()->get();
+        // $statuses = Status::where(function ($query) use ($parts) {
+        //             $first = true;
+        //             foreach ($parts as $part) {
+        //                 if ($first) {
+        //                     $query->where('part_ids', 'LIKE', '%"' . $part->id . '"%');
+        //                     $first = false;
+        //                 } else {
+        //                     $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
+        //                 }
+        //             }
+        //         })->latest()->get();
 
         $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
@@ -956,7 +682,7 @@ class ClientsController extends Controller {
                     if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
-                })->orderBy('created_at', 'desc');
+                });
 
         $preClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
@@ -964,7 +690,7 @@ class ClientsController extends Controller {
                     if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
                         $query->orWhere('user_id', null);
                     }
-                })->orderBy('created_at', 'asc');
+                });
 
         if ($filters = $request->get('filters', [])) {
             $actions->where(function ($query) use ($filters) {
@@ -1023,6 +749,28 @@ class ClientsController extends Controller {
                 $kycs->where('status', $status_kyc);
             }
 
+            
+            if ($fromDate = Arr::get($filters, 'fromTo_other')) {
+                $dates = preg_split('/\s*-\s*/', trim($fromDate));
+
+                if (isset($dates[0]) && !empty($dates[0])) {
+                    $formattedFromDate = Carbon::createFromFormat('d/m/Y', $dates[0])->startOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '>=', $formattedFromDate);
+                }
+                if (isset($dates[1]) && !empty($dates[1]) && $dates[1] != "") {
+                    $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[1])->endOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '<=', $formattedToDate);
+                } else {
+                    $formattedToDate = Carbon::createFromFormat('d/m/Y', $dates[0])->endOfDay()->format('Y-m-d H:i:s');
+                    $otherDocuments->where('created_at', '<=', $formattedToDate);
+                }
+            }
+
+            if ($status_other = Arr::get($filters, 'status_other')) {
+                $otherDocuments->where('status', $status_other);
+            }
+
+
             $marketingEmailLogs->where(function ($query) use ($filters) {
                 $query->where(function ($subquery) use ($filters) {
                     if ($textQuery = Arr::get($filters, 'search_marketingEmailLogs')) {
@@ -1061,12 +809,16 @@ class ClientsController extends Controller {
             });
         }
 
-        $nextClient->where('sales_status', $status);
-        $preClient->where('sales_status', $status);
+        // $nextClient->where('sales_status', $status);
+        // $preClient->where('sales_status', $status);
+        
+        $nextClient = $this->searchFiltersService->applyFilters($nextClient);
+        $nextClient = $this->searchFiltersService->getNext($nextClient, $client);
+        $preClient = $this->searchFiltersService->applyFilters($preClient);
+        $preClient = $this->searchFiltersService->getPrev($preClient, $client);
+
 
         $marketingEmailLogs = $marketingEmailLogs->latest()->paginate($limit);
-        $nextClient = $nextClient->where('created_at', '<', $client->created_at)->first();
-        $preClient = $preClient->where('created_at', '>', $client->created_at)->first();
         $actions = $actions->latest()->paginate($limit);
 
         if ($nextClient == null) {
@@ -1092,6 +844,12 @@ class ClientsController extends Controller {
             $kycs = $kycs->latest()->paginate($limit, ['*'], 'page', $page);
         } else {
             $kycs = $kycs->latest()->paginate($limit, ['*'], 'page', 1);
+        }
+        
+        if ($tab == 'other') {
+            $otherDocuments = $otherDocuments->latest()->paginate($limit, ['*'], 'page', $page);
+        } else {
+            $otherDocuments = $otherDocuments->latest()->paginate($limit, ['*'], 'page', 1);
         }
 
         if ($request->from_notifi == 1) {
@@ -1122,6 +880,7 @@ class ClientsController extends Controller {
                         'users',
                         'next',
                         'kycs',
+                        'otherDocuments',
                         'pre',
                         'tab',
              //   'userAuth',
@@ -1150,15 +909,38 @@ class ClientsController extends Controller {
         });
 
         if ($move == 'Next') {
-            $client = $leads->where('created_at', '<', $old_client->created_at)
-                    ->where('sales_status', $status)
-                    ->orderBy('created_at', 'desc')
-                    ->first();
+            // $client = $leads->where('created_at', '<', $old_client->created_at)
+            //         ->where('sales_status', $status)
+            //         ->orderBy('created_at', 'desc')
+            //         ->first();
+
+            $client = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
+                $query->whereIn('user_id', $users->pluck('id'));
+
+                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    $query->orWhere('user_id', null);
+                }
+            });
+
+            $client = $this->searchFiltersService->applyFilters($client);
+            $client = $this->searchFiltersService->getNext($client, $old_client);
+
         } else {
-            $client = $leads->where('created_at', '>', $old_client->created_at)
-                    ->where('sales_status', $status)
-                    ->orderBy('created_at', 'asc')
-                    ->first();
+            // $client = $leads->where('created_at', '>', $old_client->created_at)
+            //         ->where('sales_status', $status)
+            //         ->orderBy('created_at', 'asc')
+            //         ->first();
+
+            $client = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
+                $query->whereIn('user_id', $users->pluck('id'));
+
+                if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), $pipelineId, 'show_unassigned_leads')) {
+                    $query->orWhere('user_id', null);
+                }
+            });
+
+            $client = $this->searchFiltersService->applyFilters($client);
+            $client = $this->searchFiltersService->getPrev($client, $old_client);
         }
 
         if ($client) {
@@ -1768,6 +1550,7 @@ class ClientsController extends Controller {
         $success = $import->success;
         $emptyFirstName = $import->emptyFirstName;
         $emptyCountry = $import->emptyCountry;
+        $unknownCountry = $import->unknownCountry;
         $emptyPhone1 = $import->emptyPhone1;
         $emptyEmail = $import->emptyEmail;
 
@@ -1791,6 +1574,7 @@ class ClientsController extends Controller {
             'success',
             'emptyFirstName',
             'emptyCountry',
+            'unknownCountry',
             'emptyPhone1',
             'emptyEmail'
         )); 
@@ -2206,5 +1990,11 @@ class ClientsController extends Controller {
 
         // Otherwise return the collection
         return $countriesWithCounts;
+    }
+
+    public function clearFilters(){
+        $this->searchFiltersService->clear();
+
+        return redirect('/')->with('success', 'Filters cleard Successfully');
     }
 }

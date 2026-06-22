@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Client;
 use App\Models\ClientQuestion;
+use App\Services\CountryNormalizer;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\Validator;
@@ -15,6 +16,7 @@ class ClientImport implements ToModel, WithHeadingRow
     public $success = [];
     public $emptyFirstName = [];
     public $emptyCountry = [];
+    public $unknownCountry = [];
     public $emptyPhone1 = [];
     public $emptyEmail = [];
 
@@ -61,6 +63,12 @@ class ClientImport implements ToModel, WithHeadingRow
                 $this->emptyCountry[] = $this->rowNumber;
             }
 
+            return null;
+        }
+
+        $country = CountryNormalizer::normalize($mappedRow['country']);
+        if ($country === null) {
+            $this->unknownCountry[] = $this->rowNumber;
             return null;
         }
 

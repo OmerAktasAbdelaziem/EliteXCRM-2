@@ -154,7 +154,7 @@
                     <th class="max-w-160">
                         <div class="input-group">
                             <select class="form-select multiple-select flag_country" name="{{$check_type}}_filters[country][]" form="filter_form-{{$check_type}}" multiple>
-                                <option value="except" data-flag="https://flagcdn.com/w320/cn.png"                      @if (isset($filters['country']) && in_array('except', $filters['country']) ) selected @endif>Except</option>
+                                {{-- <option value="except" data-flag="https://flagcdn.com/w320/cn.png"                      @if (isset($filters['country']) && in_array('except', $filters['country']) ) selected @endif>Except</option>
                                 <option value="Iraq,IQ,عراق,العراق" data-flag="https://flagcdn.com/w320/iq.png"        @if (isset($filters['country']) && in_array('Iraq,IQ,عراق,العراق', $filters['country']) ) selected @endif>IQ</option>
                                 <option value="Libya,LY,ليبيا" data-flag="https://flagcdn.com/w320/ly.png"             @if (isset($filters['country']) && in_array("Libya,LY,ليبيا", $filters['country']) ) selected @endif>LY</option>
                                 <option value="Egypt,مصر" data-flag="https://flagcdn.com/w320/eg.png"                   @if (isset($filters['country']) && in_array("Egypt,مصر", $filters['country']) ) selected @endif>EG</option>
@@ -171,7 +171,13 @@
                                 <option value="Qatar,قطر" data-flag="https://flagcdn.com/w320/qa.png"                 @if (isset($filters['country']) && in_array("Qatar,قطر", $filters['country']) ) selected @endif>QA</option>
                                 <option value="Bahrain,بحرين,البحرين" data-flag="https://flagcdn.com/w320/bh.png"    @if (isset($filters['country']) && in_array("Bahrain,بحرين,البحرين", $filters['country']) ) selected @endif>BH</option>
                                 <option value="Palestine,فلسطين" data-flag="https://flagcdn.com/w320/ps.png"          @if (isset($filters['country']) && in_array("Palestine,فلسطين", $filters['country']) ) selected @endif>PS</option>
-                                <option value="United Arab Emirates,امارات,الامارات" data-flag="https://flagcdn.com/w320/ae.png" @if (isset($filters['country']) && in_array("United Arab Emirates,امارات,الامارات", $filters['country']) ) selected @endif>AE</option>
+                                <option value="United Arab Emirates,امارات,الامارات" data-flag="https://flagcdn.com/w320/ae.png" @if (isset($filters['country']) && in_array("United Arab Emirates,امارات,الامارات", $filters['country']) ) selected @endif>AE</option> --}}
+
+                                @if(isset($countries))
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country }}" data-flag="https://flagcdn.com/w320/{{ $country }}.png" @if (isset($filters['country']) && in_array($country, $filters['country']) ) selected @endif >{{ config("countries.$country") }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                     </th>
@@ -384,7 +390,7 @@
                         </td>
                     @endif
                     @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_country_show') )
-                        <td>{{$contact->country}}</td>
+                        <td>{{ config("countries.$contact->country") }}</td>
                     @endif
                     @if ($contact->email)
                         

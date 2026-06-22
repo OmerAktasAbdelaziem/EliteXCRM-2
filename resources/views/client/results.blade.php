@@ -49,6 +49,12 @@
                                         </tr>
                                         <tr>
                                             <td><span class="badge bg-danger">Failed</span></td>
+                                            <td>Unknown Country</td>
+                                            <td>{{count($unknownCountry)}}</td>
+                                            <td>{{implode(',', $unknownCountry)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-danger">Failed</span></td>
                                             <td>Empty Phone1</td>
                                             <td>{{count($emptyPhone1)}}</td>
                                             <td>{{implode(',', $emptyPhone1)}}</td>
