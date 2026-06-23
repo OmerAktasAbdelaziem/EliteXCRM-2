@@ -99,7 +99,7 @@ class MainTPController extends Controller {
         $to = Carbon::now()->format('Y-m-d H:i:s');
 
         $broker_id = $client->broker_id ?? 0;
-        $statuses = Status::where(function ($query) use ($parts) {
+       /* $statuses = Status::where(function ($query) use ($parts) {
                     $first = true;
                     foreach ($parts as $part) {
                         if ($first) {
@@ -109,10 +109,22 @@ class MainTPController extends Controller {
                             $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
                         }
                     }
-                })->latest()->get();
+                })->latest()->get();*/
                /* $statuses = Status::whereHas('teams', function ($query) use ($teams) {
                     $query->whereIn('teams.id', $teams->pluck('id'));
                 })->latest()->get();*/
+
+                $teamId = Auth::user()->team?->id;
+
+$statuses = Status::query();
+
+if (!$isSuperAdmin && !$isPipelineAdmin && $teamId) {
+    $statuses->whereHas('teams', function ($query) use ($teamId) {
+        $query->where('teams.id', $teamId);
+    });
+}
+
+$statuses = $statuses->latest()->get();
 
         $nextClient = Client::where('clients.deleted', 0)->where(function ($query) use ($users, $isSuperAdmin,$isPipelineAdmin, $pipelineId) {
                     $query->whereIn('user_id', $users->pluck('id'));
@@ -1585,7 +1597,7 @@ class MainTPController extends Controller {
         $to = Carbon::now()->format('Y-m-d H:i:s');
         $tab = $request->input('tab', 'opened');
 
-        $statuses = Status::where(function ($query) use ($parts) {
+        /*$statuses = Status::where(function ($query) use ($parts) {
                     $first = true;
                     foreach ($parts as $part) {
                         if ($first) {
@@ -1595,7 +1607,19 @@ class MainTPController extends Controller {
                             $query->orWhere('part_ids', 'LIKE', '%"' . $part->id . '"%');
                         }
                     }
-                })->latest()->get();
+                })->latest()->get();*/
+
+                $teamId = Auth::user()->team?->id;
+
+$statuses = Status::query();
+
+if (!$isSuperAdmin && !$isPipelineAdmin && $teamId) {
+    $statuses->whereHas('teams', function ($query) use ($teamId) {
+        $query->where('teams.id', $teamId);
+    });
+}
+
+$statuses = $statuses->latest()->get();
 
         if ($id) {
             $client = Client::findOrfail($id);

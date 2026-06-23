@@ -130,7 +130,7 @@ class OverviewController extends Controller {
                     }
                 })->orwhere('part_ids', '')->orderByRaw('CHAR_LENGTH(name) DESC')->get();*/
 
-                $teamIds = $teams->pluck('id');
+             /*   $teamIds = $teams->pluck('id');
 
 $statuses = Status::where(function ($query) use ($teamIds) {
     $query->whereHas('teams', function ($q) use ($teamIds) {
@@ -138,7 +138,23 @@ $statuses = Status::where(function ($query) use ($teamIds) {
     })->orWhereDoesntHave('teams');
 })
 ->orderByRaw('CHAR_LENGTH(name) DESC')
-->get();
+->get();*/
+
+$teamId = Auth::user()->team?->id;
+
+$statuses = Status::query();
+
+if (!$isSuperAdmin && !$isPipelineAdmin) {
+    $statuses->where(function ($query) use ($teamId) {
+        $query->whereHas('teams', function ($q) use ($teamId) {
+            $q->where('teams.id', $teamId);
+        })->orWhereDoesntHave('teams');
+    });
+}
+
+$statuses = $statuses
+    ->orderByRaw('CHAR_LENGTH(name) DESC')
+    ->get();
 
         foreach ($statuses as $status) {
             $status->leads = Client::where('sales_status', $status->name)->where('deleted', 0)->count();

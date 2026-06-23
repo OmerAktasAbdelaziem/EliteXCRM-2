@@ -141,9 +141,21 @@ class TelegramBot
                     }
                 }
             })->latest()->get();  */ 
-            $statuses = Status::whereHas('teams', function ($query) use ($teams) {
+           /* $statuses = Status::whereHas('teams', function ($query) use ($teams) {
                 $query->whereIn('teams.id', $teams->pluck('id'));
-            })->latest()->get();         
+            })->latest()->get(); */     
+            
+            $teamId = Auth::user()->team?->id;
+
+            $statuses = Status::query();
+            
+            if (!$isSuperAdmin && !$isPipelineAdmin && $teamId) {
+                $statuses->whereHas('teams', function ($query) use ($teamId) {
+                    $query->where('teams.id', $teamId);
+                });
+            }
+            
+            $statuses = $statuses->latest()->get();
             
 
             foreach ($statuses as $index => $status) {
