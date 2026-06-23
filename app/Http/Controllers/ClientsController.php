@@ -663,9 +663,17 @@ class ClientsController extends Controller {
 
         $client = $contacts->findOrfail($id);
         
-        $teamIds = $teams->pluck('id');
+       /* $teamIds = $teams->pluck('id');
         $statuses = Status::whereHas('teams', function ($query) use ($teamIds) {
             $query->whereIn('teams.id', $teamIds);
+        })->latest()->get();*/
+
+        $teamId = Auth::user()->team?->id;
+
+        $statuses = Status::whereHas('teams', function ($query) use ($teamId, $isSuperAdmin, $isPipelineAdmin) {
+            if (!$isSuperAdmin && !$isPipelineAdmin) {
+                $query->where('teams.id', $teamId);
+            }
         })->latest()->get();
 
         // $statuses = Status::where(function ($query) use ($parts) {
@@ -861,7 +869,7 @@ class ClientsController extends Controller {
                 'is_notified' => 0,
             ]);
         }
-echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
         return view('client.show', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
