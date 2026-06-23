@@ -200,7 +200,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <div class="tab-icon"><i class="bx bx-file font-18 me-1"></i>
                                                     </div>
-                                                    <div class="tab-title">Additional Documents</div>
+                                                    <div class="tab-title">Additional Documentss</div>
                                                 </div>
                                             </a>
                                         </li>
