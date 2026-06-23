@@ -345,7 +345,7 @@
                                 <input class="form-check-input me-3 check-{{$check_type}} check-number" type="checkbox" form="addemployee" name="clientid[]" value="{{$contact->id}}" aria-label="...">
                             </div>
                             @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_lead_id_show') )
-                                <a @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
+                                <a @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'filters' => $filters, 'sort' => $sort, 'order' => $order]) }}" @endif rel="noopener noreferrer">
                                     #{{$contact->id}}
                                 </a>
                             @endif
@@ -361,7 +361,7 @@
                     @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'field_last_name_show'))
                         <td style="width: fit-content">
                             <div class="ms-2">
-                                <a @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'status' => $contact->sales_status]) }}" @endif rel="noopener noreferrer">
+                                <a @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'leads_show') ) href="{{ route('client.show', ['client' => $contact->id , 'filters' => $filters, 'sort' => $sort, 'order' => $order]) }}" @endif rel="noopener noreferrer">
                                     <h6 class="mb-1 font-14">
                                         @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'field_first_name_show') )
                                             {{$contact->first_name}}

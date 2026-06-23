@@ -267,15 +267,9 @@ class ClientsController extends Controller {
             $filters = ${$check_type . '_filters'};
 
             if (!empty($filters)) {
-                $this->searchFiltersService->getSetFilters($filters);
+                ${$check_type} = $this->searchFiltersService->applyFilters(${$check_type}, $filters);
             }
         }
-
-        foreach ($checktypes as $check_type) {
-            ${$check_type . '_filters'} =  $this->searchFiltersService->getSetFilters();
-            ${$check_type} = $this->searchFiltersService->applyFilters(${$check_type}, $filters);
-        }
-
 
         if ($filters = $request->get('filters', [])) {
             $actions->where(function ($query) use ($filters) {
@@ -487,6 +481,8 @@ class ClientsController extends Controller {
         // Get countries that have clients for export dropdown
         $countries = $this->getCountriesWithClients();
 
+        $sort = $request->sort;
+        $order = $request->order;
         return view('client.index', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
@@ -514,6 +510,8 @@ class ClientsController extends Controller {
                         'tab',
                         'hot',
                         'new',
+                        'sort',
+                        'order',
                 ));
     }
 
@@ -824,9 +822,10 @@ class ClientsController extends Controller {
         // $nextClient->where('sales_status', $status);
         // $preClient->where('sales_status', $status);
         
-        $nextClient = $this->searchFiltersService->applyFilters($nextClient);
+        $this->searchFiltersService->getSetSort($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
+        $nextClient = $this->searchFiltersService->applyFilters($nextClient, $request->filters);
         $nextClient = $this->searchFiltersService->getNext($nextClient, $client);
-        $preClient = $this->searchFiltersService->applyFilters($preClient);
+        $preClient = $this->searchFiltersService->applyFilters($preClient, $request->filters);
         $preClient = $this->searchFiltersService->getPrev($preClient, $client);
 
 
@@ -870,6 +869,8 @@ class ClientsController extends Controller {
             ]);
         }
 
+        $sort = $request->sort;
+        $order = $request->order;
         return view('client.show', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
@@ -895,6 +896,8 @@ class ClientsController extends Controller {
                         'otherDocuments',
                         'pre',
                         'tab',
+                        'sort', 
+                        'order',
              //   'userAuth',
           //      'pipelineId',
              //   'isSuperAdmin',
@@ -902,7 +905,7 @@ class ClientsController extends Controller {
         
     }
 
-    public function slides($status, $move, $id) {
+    public function slides(Request $request, $status, $move, $id) {
         $isSuperAdmin = UserPermission::isSuperAdmin(Auth::user());
         $pipelineId = Auth::user()->pipeline_id;
         $isPipelineAdmin = UserPermission::isPipelineAdmin(Auth::user(), $pipelineId);
@@ -920,6 +923,8 @@ class ClientsController extends Controller {
             }
         });
 
+        $this->searchFiltersService->getSetSort($request->sort, $request->order == 'desc' ? 'desc' : 'asc');
+
         if ($move == 'Next') {
             // $client = $leads->where('created_at', '<', $old_client->created_at)
             //         ->where('sales_status', $status)
@@ -934,7 +939,7 @@ class ClientsController extends Controller {
                 }
             });
 
-            $client = $this->searchFiltersService->applyFilters($client);
+            $client = $this->searchFiltersService->applyFilters($client, $request->filters);
             $client = $this->searchFiltersService->getNext($client, $old_client);
 
         } else {
@@ -951,14 +956,14 @@ class ClientsController extends Controller {
                 }
             });
 
-            $client = $this->searchFiltersService->applyFilters($client);
+            $client = $this->searchFiltersService->applyFilters($client, $request->filters);
             $client = $this->searchFiltersService->getPrev($client, $old_client);
         }
 
         if ($client) {
-            return redirect()->route('client.show', ['client' => $client->id, 'status' => $status]);
+            return redirect()->route('client.show', ['client' => $client->id, 'filters' => $request->filters, 'sort' => $request->sort, 'order' => $request->order]);
         } else {
-            return redirect()->route('client.show', ['client' => $client->id, 'status' => $status])->with('fail', 'No Leads found');
+            return redirect()->route('client.show', ['client' => $client->id, 'filters' => $request->filters, 'sort' => $request->sort, 'order' => $request->order])->with('fail', 'No Leads found');
         }
     }
 

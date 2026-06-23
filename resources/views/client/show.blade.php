@@ -118,7 +118,7 @@
             <div class="row mb-1 mt-0">
                 <div class="col-6">
                     @if ($pre == 1)
-                        <a href="{{ route('client.slides', ['id'=>$client->id, 'move'=>'Previous', 'status' => $status]) }}" class="btn btn-primary text-center text-white w-auto" style="border-radius: 0 0 0.25rem 0.25rem">
+                        <a href="{{ route('client.slides', ['id'=>$client->id, 'move'=>'Previous', 'status' => $status, 'filters' => $filters, 'sort' => $sort, 'order' => $order]) }}" class="btn btn-primary text-center text-white w-auto" style="border-radius: 0 0 0.25rem 0.25rem">
                             <i class="bx bx-left-arrow-alt me-2"></i>
                             Previous
                         </a>
@@ -130,7 +130,7 @@
                 </div>
                 <div class="col-6 text-end">
                     @if ($next == 1)
-                        <a href="{{ route('client.slides', ['id'=>$client->id,'move'=>'Next', 'status' => $status]) }}" class="btn btn-primary text-center text-white w-auto" style="border-radius: 0 0 0.25rem 0.25rem">
+                        <a href="{{ route('client.slides', ['id'=>$client->id,'move'=>'Next', 'status' => $status, 'filters' => $filters, 'sort' => $sort, 'order' => $order]) }}" class="btn btn-primary text-center text-white w-auto" style="border-radius: 0 0 0.25rem 0.25rem">
                             Next
                             <i class="bx bx-right-arrow-alt me-2"></i>
                         </a>

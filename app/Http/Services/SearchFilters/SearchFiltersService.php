@@ -15,10 +15,12 @@ class SearchFiltersService implements SearchFiltersServiceInterface {
 
     protected string $filtersSessionKey = 'search_filters';
     protected string $sortSessionKey = 'search_sort';
+    protected array $order = [
+        'by' => 'created_at', 
+        'dir' => 'desc', 
+    ];
 
-    public function applyFilters(Builder $query, ?array $filters = null): Builder {
-        $filters = $this->getSetFilters($filters);
-
+    public function applyFilters(Builder $query, ?array $filters = []): Builder {
         $userAuth = Auth::user();
         $pipelineId = $userAuth->pipeline_id;
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
@@ -288,21 +290,6 @@ class SearchFiltersService implements SearchFiltersServiceInterface {
         return $query;
     }
 
-    public function getSetFilters(?array $filters = null): array
-    {
-        if ($filters) {
-            Session::put($this->filtersSessionKey, $filters);
-
-            return $filters;
-        }
-
-        if (Session::has($this->filtersSessionKey)) {
-            return Session::get($this->filtersSessionKey, []);
-        }
-
-        return [];
-    }
-
     public function applySort(Builder $query): Builder {
 
         $sort = $this->getSetSort();
@@ -329,23 +316,18 @@ class SearchFiltersService implements SearchFiltersServiceInterface {
     public function getSetSort(?string $by = null, string $dir = 'desc'): array
     {
         if ($by) {
-            $order = [
+            $this->order = [
                 'by' => $by, 
                 'dir' => $dir, 
             ];
-            Session::put($this->sortSessionKey, $order);
-
-            return $order;
+            // Session::put($this->sortSessionKey, $order);
         }
 
-        if (Session::has($this->sortSessionKey)) {
-            return Session::get($this->sortSessionKey, []);
-        }
+        // if (Session::has($this->sortSessionKey)) {
+        //     return Session::get($this->sortSessionKey, []);
+        // }
 
-        return [
-            'by' => 'created_at', 
-            'dir' => 'desc', 
-        ];
+        return $this->order;
     }
 
 
