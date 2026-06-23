@@ -861,7 +861,7 @@ class ClientsController extends Controller {
                 'is_notified' => 0,
             ]);
         }
-
+echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
         return view('client.show', compact(
                         'isSuperAdmin',
                         'isPipelineAdmin',
