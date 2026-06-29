@@ -169,9 +169,15 @@ class Client extends Model
 
     public function orders()
     {
-        return $this->hasMany(Client_comment::class, 'client_id', 'broker_id');
+        return $this->hasMany(Order::class, 'broker_id', 'broker_id');
     }
-        public function createdBy()
+
+    public function moneyTrx()
+    {
+        return $this->hasMany(MoneyTrx::class, 'broker_id', 'broker_id');
+    }
+
+    public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by', 'username');
 

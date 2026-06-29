@@ -13,17 +13,31 @@ class HandleDemo extends Command
 
     public function handle()
     {
-        $loop = true;
-        
-            $clients = Client::where('account_type','Demo')->where('loggedAt', '<', Carbon::now()->subDays(15))->get();
-            foreach ($clients as $client) {
-               // if ($client->is_online == 1) {
-                    $client->broker_id = null;
-                    $client->account_type = null;
-                    $client->save();
-                //}
+        $clients = Client::where('account_type', 'Demo')
+            ->whereNotNull('broker_id')
+            ->where(function($query) {
+                $query->where('loggedAt', '<', Carbon::now()->subDays(15))
+                    ->orWhere(function($subQuery) {
+                        $subQuery->whereNull('loggedAt')
+                                ->where('updated_at', '<', Carbon::now()->subDays(15));
+                    });
+            })
+            ->get();
+
+        foreach ($clients as $client) {
+
+            $client->orders()->delete();
+            
+            foreach ($client->moneyTrx as $trx) {
+                $trx->details()->delete();
+                $trx->delete();
             }
-       
+
+            $client->broker_id = null;
+            $client->account_type = null;
+            $client->save();
+        }
+
+        $this->info('Demo accounts cleaned up successfully.');
     }
-    
 }
