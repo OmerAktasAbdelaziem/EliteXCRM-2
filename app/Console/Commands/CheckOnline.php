@@ -12,7 +12,7 @@ class CheckOnline extends Command
     protected $description = 'check who is online from clients';
 
     public function handle()
-    {
+    {die;
         $loop = true;
         while($loop){
             $clients = Client::where('is_online', 1)->where('loggedAt', '<', Carbon::now()->subSeconds(10))->get();

@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -87,40 +87,11 @@ $lastProcessed[$symbol] = $now;
                                 ]);
  //following code will add values to asset_history, which will be used to retrieve data in range of 10 minutes in case of websocket failed,
                         //this is wrong logic but requested by company, and should be handeled in another way someday
-                                AssetsHistory::create([
-                                    'name' => $asset->name,
-                                    'type' => $asset->type,
-                                    'category' => $asset->category,
-                                    'symbol' => $asset->symbol,
-                                    'currency' => $asset->currency,
-                                    'bid_price' => $bidPrice,
-                                    'ask_price' => $askPrice,
-                                    'last_bid' => $asset->bid_price,
-                                    'last_ask' => $asset->ask_price,
-                                ]);
-                                 //end of adding to assets_history
+                          
+                              
                             }
                         }
-                    } else {
-                        //this code added to get data from history in case of websocket didn't work, it's wrong logic but requested by Walid
-                        $assets = Asset::where('type', 'Crypto')->where('is_active', 1)->get();
-                        foreach ($assets as $asset) {
-                            $assetHistory = AssetsHistory::where('type', 'Crypto')
-                                ->where('symbol', $asset->symbol)
-                                ->where('created_at', '>=', Carbon::now()->subMinutes(10))
-                                ->first();
-
-                            if (isset($assetHistory->bid_price) && isset($assetHistory->ask_price)) {
-                                $asset->update([
-                                    'bid_price' => $assetHistory->bid_price,
-                                    'ask_price' => $assetHistory->ask_price,
-                                    'last_bid' => $asset->bid_price,
-                                    'last_ask' => $asset->ask_price,
-                                ]);
-                            }
-                        }
-                        // end of retrieve data from history
-                    }
+                    } 
                 });
 
                 $conn->on('close', function () use ($wsUrl, $connector, $loop, $subscribeMessage) {
@@ -131,5 +102,93 @@ $lastProcessed[$symbol] = $now;
                 $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
             }
         );
+    }
+}
+*/
+
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Ratchet\Client\WebSocket;
+use Ratchet\Client\Connector;
+use App\Models\Asset;
+use React\EventLoop\Factory;
+
+class GetAssets extends Command
+{
+    protected $signature = 'get:assets';
+    protected $description = 'Listen to Bitget WebSocket with optimized DB handling';
+
+    protected $assetsCache = [];
+
+    public function handle()
+    {
+        // 1. جلب الأصول وتخزينها في الذاكرة مرة واحدة
+        $assets = Asset::where('type', 'Crypto')->where('is_active', 1)->get();
+        foreach ($assets as $asset) {
+            $this->assetsCache[strtoupper($asset->symbol)] = $asset;
+        }
+
+        if (empty($this->assetsCache)) {
+            $this->error('No Crypto assets found.');
+            return;
+        }
+
+        $wsUrl = "wss://ws.bitget.com/v2/ws/public";
+        $loop = Factory::create();
+
+        $loop->addTimer(1.0, function () use ($loop, $wsUrl) {
+            $connector = new Connector($loop);
+            
+            $args = array_map(fn($symbol) => [
+                'instType' => 'SPOT',
+                'channel' => 'ticker',
+                'instId' => $symbol,
+            ], array_keys($this->assetsCache));
+
+            $subscribeMessage = json_encode(["op" => "subscribe", "args" => $args]);
+            $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+        });
+
+        $loop->run();
+    }
+
+    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    {
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($subscribeMessage) {
+            $conn->send($subscribeMessage);
+
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+                if (!isset($response['data'][0])) return;
+
+                $data = $response['data'][0];
+                $symbol = strtoupper($data['instId'] ?? '');
+                $bidPrice = $data['bidPr'] ?? null;
+                $askPrice = $data['askPr'] ?? null;
+
+                // 2. البحث في الذاكرة (RAM) فقط
+                if ($bidPrice && $askPrice && isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
+
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                        ]);
+                        
+                        // تحديث الذاكرة
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
+                    }
+                }
+            });
+        }, function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+        });
     }
 }

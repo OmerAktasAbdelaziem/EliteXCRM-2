@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -68,9 +68,7 @@ class GetStockAssets2 extends Command
                     //$now = microtime(true);
 
                     // Process messages only every 0.5 seconds to reduce DB load
-                   /* if (($now - $lastProcessed[$symbol]) < 0.5) {
-                        return;
-                    }*/
+                  
 
                     //$lastProcessed = $now;
 
@@ -98,39 +96,9 @@ class GetStockAssets2 extends Command
                             // following code will add values to asset_history, which will be used to retrieve data in range of 10 minutes in case of websocket failed,
                             // this is wrong logic but requested by company, and should be handeled in another way someday
                             
-                            AssetsHistory::create([
-                                'name' => $asset->name,
-                                'type' => $asset->type,
-                                'category' => $asset->category,
-                                'symbol' => $asset->symbol,
-                                'currency' => $asset->currency,
-                                'bid_price' => $bidPrice,
-                                'ask_price' => $askPrice,
-                                'last_bid' => $asset->bid_price,
-                                'last_ask' => $asset->ask_price,
-                            ]);
-                            // end of adding to assets_history
+                 
                         }
-                    } else {
-                        // this code added to get data from history in case of websocket didn't work, it's wrong logic but requested by Walid
-                        $assets = Asset::where('type', 'Stocks')->where('is_active', 1)->get();
-                        foreach ($assets as $asset) {
-                            $assetHistory = AssetsHistory::where('type', 'Stocks')
-                                ->where('symbol', $asset->symbol)
-                                ->where('created_at', '>=', Carbon::now()->subMinutes(10))
-                                ->first();
-
-                            if (isset($assetHistory->bid_price) && isset($assetHistory->ask_price)) {
-                                $asset->update([
-                                    'bid_price' => $assetHistory->bid_price,
-                                    'ask_price' => $assetHistory->ask_price,
-                                    'last_bid' => $asset->bid_price,
-                                    'last_ask' => $asset->ask_price,
-                                ]);
-                            }
-                        }
-                        // end of retrieve data from history
-                    }
+                    } 
                 });
 
                 // Handle WebSocket disconnection
@@ -149,5 +117,76 @@ class GetStockAssets2 extends Command
                 $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
             }
         );
+    }
+}
+*/
+
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Ratchet\Client\WebSocket;
+use Ratchet\Client\Connector;
+use App\Models\Asset;
+use React\EventLoop\Factory;
+
+class GetStockAssets2 extends Command
+{
+    protected $signature = 'get:stock-assets2';
+    protected $description = 'Listen to EOD WebSocket with optimized DB handling';
+
+    // نضع البيانات في الذاكرة لتجنب الاستعلام المتكرر
+    protected $assetsCache = [];
+
+    public function handle()
+    {
+        // جلب الأصول مرة واحدة فقط وتخزينها في مصفوفة
+        $assets = Asset::where('type', 'Stocks')->get();
+        foreach ($assets as $asset) {
+            $this->assetsCache[strtoupper($asset->symbol)] = $asset;
+        }
+
+        $wsUrl = "wss://ws.eodhistoricaldata.com/ws/us-quote?api_token=67f4cea78e4f60.22404437";
+        $loop = Factory::create();
+        $connector = new Connector($loop);
+
+        $this->startWebSocket($wsUrl, $connector, $loop);
+        $loop->run();
+    }
+
+    private function startWebSocket($wsUrl, $connector, $loop)
+    {
+        $connector($wsUrl)->then(function (WebSocket $conn) {
+            // جلب الرموز للاشتراك
+            $symbols = implode(",", array_keys($this->assetsCache));
+            $conn->send(json_encode(["action" => "subscribe", "symbols" => $symbols]));
+
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+                if (!isset($response['s'], $response['bp'], $response['ap'])) return;
+
+                $symbol = strtoupper($response['s']);
+                $bidPrice = $response['bp'];
+                $askPrice = $response['ap'];
+
+                // التحديث فقط إذا وجدنا الأصل في الذاكرة
+                if (isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
+                    
+                    // تحديث القيم في الذاكرة أولاً
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                        ]);
+                    }
+                }
+            });
+        }, function ($e) use ($wsUrl, $connector, $loop) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop);
+        });
     }
 }

@@ -48,7 +48,7 @@ class CheckSubscription
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+   /* public function handle(Request $request, Closure $next)
     {
 
         // Only check subscription for authenticated users
@@ -121,5 +121,50 @@ class CheckSubscription
   
 
     return $next($request);
+    }*/
+    
+    public function handle(Request $request, Closure $next)
+{
+    if (!Auth::check() || $request->routeIs(['login', 'logout', 'password.*', 'register', 'subscription.*'])) {
+        return $next($request);
     }
+
+    $pipelineId = Auth::user()->pipeline_id;
+
+    // 1. استخدام الـ Cache للاشتراك (لأنه لا يتغير كل ثانية)
+    $subscription = \Illuminate\Support\Facades\Cache::remember("sub_pipeline_{$pipelineId}", 600, function () use ($pipelineId) {
+        return \App\Models\Subscription::where('pipeline', $pipelineId)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+    });
+
+    if (!$subscription) {
+        view()->share('subscription_inactive', true);
+        return $next($request);
+    }
+    
+    view()->share('subscription_inactive', false);
+
+    // 2. معالجة القيود فقط إذا كانت الصفحة المطلوبة هي صفحة "إنشاء"
+    if ($request->routeIs(['user.create', 'user.store', 'part.create', 'part.store', 'team.create', 'team.store', 'clients.real', 'clients.demo'])) {
+        
+        $this->checkLimit($request, $subscription, $pipelineId);
+    }
+
+    return $next($request);
+}
+
+private function checkLimit($request, $subscription, $pipelineId)
+{
+    // استخدام Cache للعدادات أيضاً، لن يتم حساب الـ count إلا مرة كل 10 دقائق
+    if ($request->routeIs(['user.create', 'user.store'])) {
+        $count = \Illuminate\Support\Facades\Cache::remember("users_count_{$pipelineId}", 600, function() use ($pipelineId) {
+            return count($this->userService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipelineId]]]));
+        });
+        if ($count >= $subscription->users_count) abort(403, 'You have reached your maximum count of users');
+    }
+    // ... كرر نفس المنطق لبقية الـ if ...
+}
 }

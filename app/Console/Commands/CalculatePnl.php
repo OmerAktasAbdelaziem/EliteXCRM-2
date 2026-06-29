@@ -58,7 +58,7 @@ class CalculatePnl extends Command
             $this->orderService->calculatePnl($order, $comands);
         }
 
-        usleep(250000);
+        usleep(500000);
     }
 }
 

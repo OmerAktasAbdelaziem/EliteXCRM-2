@@ -94,6 +94,16 @@ $percentage = $assetGroupAssignment->is_percentage;
             ]);
         }
 
+$reqMargin = 0;
+if ($leverage > 0 && $request->open_price > 0) {
+    //updated001 $reqMargin = 0;if ($leverage > 0 && $request->open_price > 0) {}else {
+    
+   // \Log::warning('Zero leverage or open_price detected in OrderApiController', [
+     //   'leverage' => $leverage,
+     //   'open_price' => $request->open_price,
+     //   'asset' => $asset->symbol
+   // ]);
+//} end of updated001
         if (str_starts_with($asset->symbol, 'USD') || (!strpos($asset->symbol, 'USD') && $asset->currency !== "USD")) {
             $reqMargin = (($request->amount * $request->open_price * $size) / $leverage) * (1 / $request->open_price);
         } else {
@@ -102,6 +112,14 @@ $percentage = $assetGroupAssignment->is_percentage;
         if (($percentage ?? 0) == 1) {
             $reqMargin = ($request->amount * $request->open_price * $size) / $leverage;
         }
+}else {
+    
+    \Log::warning('Zero leverage or open_price detected in OrderApiController', [
+        'leverage' => $leverage,
+        'open_price' => $request->open_price,
+        'asset' => $asset->symbol
+    ]);
+}
 
         return response()->json([
             'success' => true,

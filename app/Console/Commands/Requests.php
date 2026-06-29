@@ -14,7 +14,7 @@ class Requests extends Command
     protected $description = 'check requests and send notifications';
 
     public function handle()
-    {
+    {/*
         $request_data = (new RequestController)->get_all_request_data();
         foreach ($request_data as $request) {
             $exist = Notification::firstWhere('partner_id', $request->id);
@@ -61,6 +61,6 @@ class Requests extends Command
                     'partner_id' => $request->id,
                 ]);
             }
-        }
+        }*/
     }
 }

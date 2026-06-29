@@ -27,8 +27,8 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-php_value upload_max_filesize 6144M
-php_value post_max_size 6144M
-php_value memory_limit 6144M
-php_value max_input_time 480
-php_value max_execution_time 480
+#php_value upload_max_filesize 6144M
+#php_value post_max_size 6144M
+#php_value memory_limit 6144M
+#php_value max_input_time 480
+#php_value max_execution_time 480

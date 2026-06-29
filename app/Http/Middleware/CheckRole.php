@@ -19,7 +19,7 @@ class CheckRole
         $this->userService = $userService;
         
     }*/
-    public function handle(Request $request, Closure $next, ...$roles)
+    /*public function handle(Request $request, Closure $next, ...$roles)
     {//dd();
         $pipelineId = Auth::user()->pipeline_id;
         $hasPermission = false;
@@ -38,18 +38,44 @@ class CheckRole
     //dd($roles);
     //dd($next($request));
         //$user_controller = new UserController;
-        /*$options         = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
+    
 
-        if (!Auth::check()) {
-            abort(403, 'Unauthorized');
-        }*/
-
-       /* foreach ($roles as $role) {
-            if (isset($options[$role])) {*/
-                //return $next($request);
-           /* }
-        }*/
+     
 
         abort(403, 'Unauthorized');
     }
+    */
+    public function handle(Request $request, Closure $next, ...$roles)
+{
+    $user = Auth::user();
+    if (!$user) abort(403, 'Unauthorized');
+
+    $pipelineId = $user->pipeline_id;
+    
+    // استخدام Cache لتخزين صلاحيات المستخدم لمدة 60 دقيقة
+    $cacheKey = "user_permissions_{$user->id}_{$pipelineId}";
+    
+    $isAuthorized = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($user, $pipelineId, $roles) {
+        
+        // التحقق من الصلاحيات الأساسية
+        foreach($roles as $role){
+            if (UserPermission::hasPermissionInPipeline($user, $pipelineId, $role)) {
+                return true;
+            }
+        }
+
+        // التحقق من الأدوار الإدارية
+        if (UserPermission::isSuperAdmin($user) || UserPermission::isPipelineAdmin($user, $pipelineId)) {
+            return true;
+        }
+
+        return false;
+    });
+
+    if ($isAuthorized) {
+        return $next($request);
+    }
+
+    abort(403, 'Unauthorized');
+}
 }

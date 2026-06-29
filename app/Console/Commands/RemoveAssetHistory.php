@@ -39,7 +39,9 @@ class RemoveAssetHistory extends Command
      */
     public function handle()
     {
-        AssetsHistory::where('created_at', '<', Carbon::now()->subMinutes(10))->delete();
+     //   AssetsHistory::where('created_at', '<', Carbon::now()->subMinutes(10))->delete();
         //return 0;
+        
+        //not needed anymore
     }
 }

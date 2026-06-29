@@ -17,7 +17,7 @@ class Check_git extends Command
     }
 
     public function handle()
-    {
+    {die;
         // Perform deployment tasks (e.g., pull the latest changes from the main branch, build the project, etc.)
         chdir('/home/u420350257/domains/elitexcrm.com/public_html/NewEliteXCRM');
         

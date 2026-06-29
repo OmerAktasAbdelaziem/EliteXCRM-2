@@ -251,7 +251,7 @@ $users = $this->userService->getByFilters($filters, $with);
             }
         }
         $this->updateBulk($clientIds, $inputs);
-        if ($request->user_id && !empty($request->user_id)) {
+        if ($request->user_id && !empty($request->user_id) && $request->user_id != 'no') {//updated001 && $request->user_id != 'no' this should be checked later to check why there is no in user_id
             //TODO:this update should be handeled at repository
             Client::whereIn('id', $clientIds)->whereNull('first_owner')->update([
                 'first_owner' => $request->user_id,

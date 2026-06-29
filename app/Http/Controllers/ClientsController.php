@@ -1126,7 +1126,7 @@ class ClientsController extends Controller {
 
         Client::whereIn('id', $clientIds)->update($inputs);
 
-        if ($request->user_id && !empty($request->user_id)) {
+        if ($request->user_id && !empty($request->user_id) && $request->user_id != 'no') {//updated001 && $request->user_id != 'no' this should be checked later to check why there is no in user_id
             Client::whereIn('id', $clientIds)->whereNull('first_owner')->update([
                 'first_owner' => $request->user_id,
                 'assigned_at' => Carbon::now(),

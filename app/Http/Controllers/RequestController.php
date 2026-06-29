@@ -11,10 +11,10 @@ class RequestController extends Controller
 {
     protected $userService;
 
-    public function __construct(
+  /*  public function __construct(
     ClientServiceInterface $clientService) {
 $this->clientService = $clientService;
-}
+}*/
 
     public function index()
     {
@@ -24,7 +24,9 @@ $this->clientService = $clientService;
             'request_data',
         ));
     }
-
+//updated001
+//stopped calling $this->clientService in constructor
+//end of updated001
     /*public function get_all_request_data()
     {
         $user = auth()->user();
@@ -42,9 +44,16 @@ $this->clientService = $clientService;
 
     public function get_all_request_data()
     {
+        $clientService = app(ClientServiceInterface::class);
         $user = auth()->user();
-        $pipelineId = $user->pipeline_id;
-        $teams = $this->clientService->getTeams($user);
+        //updated001 return here to check if user exist, but in case it called from cronjob uesr auth will not be exist so it should be resolved
+if (!$user) {
+    return collect();
+}
+        
+        
+        $pipelineId = $user->pipeline_id ?? 0;
+        $teams = $clientService->getTeams($user);
     
         $isSuperAdmin = UserPermission::isSuperAdmin($user);
         $isPipelineAdmin = UserPermission::isPipelineAdmin($user, $pipelineId);

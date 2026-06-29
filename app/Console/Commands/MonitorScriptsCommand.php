@@ -20,7 +20,7 @@ class MonitorScriptsCommand extends Command
     ];
 
     public function handle()
-    {
+    {/*
         $this->info("🔍 Starting script monitoring...");
 
         $phpPath = trim(shell_exec('which php'));
@@ -49,7 +49,7 @@ class MonitorScriptsCommand extends Command
             }
 
             sleep(10);
-        }
+        }*/
     }
 
     protected function isScriptRunning(string $pidFile): bool

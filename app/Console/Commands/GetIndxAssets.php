@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Console\Commands;
 
 use App\Models\Asset;
@@ -45,44 +45,76 @@ class GetIndxAssets extends Command
                             //following code will add values to asset_history, which will be used to retrieve data in range of 10 minutes in case of websocket failed,
                         //this is wrong logic but requested by company, and should be handeled in another way someday
                             
-                            AssetsHistory::create([
-        'name' => $asset->name,
-        'type' => $asset->type,
-        'category' => $asset->category,
-        'symbol' => $asset->symbol,
-        'currency' => $asset->currency,
-        'bid_price' => $price['close'],
-        'ask_price' => (int)$price['close']+$spreads[$price['code']],
-        'last_bid' => $asset->bid_price,
-        'last_ask' => $asset->ask_price,
-        
-    ]);
-                           
-                            //end of adding to assets_history
+                  
                         }
                     }
                 }
-            }else{
-                        
-                        //this code added to get data from history in case of websocket didn't work, it's wrong logic but requested by Walid
-                        $assets = Asset::where('type', 'Indx')->where('is_active',1)->get();
-                        foreach($assets as $asset){
-                            $assetHistory = AssetsHistory::where('type', 'Indx')
-                                    ->where('symbol',$asset->symbol)
-                                    ->where('created_at', '>=', Carbon::now()->subMinutes(10))
-                                    ->first();
-                            if(isset($assetHistory->bid_price) && isset($assetHistory->ask_price)){
-                            $asset->update([
-                                'bid_price' => $assetHistory->bid_price,
-                                    'ask_price' => $assetHistory->ask_price,
-                                    'last_bid'  => $asset->bid_price,
-                                    'last_ask'  => $asset->ask_price,
-                            ]);
-                            }
-                        }
-                        // end of retrieve data from history
-                    }
+            }
             sleep($number);
+        }
+    }
+}
+*/
+
+
+namespace App\Console\Commands;
+
+use App\Models\Asset;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
+
+class GetIndxAssets extends Command
+{
+    protected $signature = 'get:indx-assets';
+    protected $description = 'Listen to EOD API for real-time Index prices with optimized DB updates';
+
+    protected $assetsCache = [];
+
+    public function handle()
+    {
+        // 1. جلب الأصول النشطة وتخزينها في الذاكرة
+        $assets = Asset::where('type', 'Indx')->where('is_active', 1)->get();
+        foreach ($assets as $asset) {
+            $this->assetsCache[$asset->symbol] = $asset;
+        }
+
+        $symbols = implode(',', array_keys($this->assetsCache));
+        $spreads = [
+            'GDAXI.INDX' => 1.4, 'FCHI.INDX' => 1.2, 'IBEX.INDX' => 5,
+            'GSPC.INDX' => 1.4, 'DJI.INDX' => 1.4, 'NDX.INDX' => 1.4,
+        ];
+
+        while (true) {
+            $response = Http::timeout(10)->get("https://eodhd.com/api/real-time/{$symbols}?api_token=67f4cea78e4f60.22404437&fmt=json");
+
+            if ($response->successful()) {
+                foreach ($response->json() as $price) {
+                    $code = $price['code'];
+                    $newPrice = $price['close'];
+
+                    if (isset($this->assetsCache[$code]) && $newPrice != 'NA') {
+                        $asset = $this->assetsCache[$code];
+                        
+                        // 2. تحديث الذاكرة وقاعدة البيانات فقط إذا تغير السعر فعلياً
+                        if ($asset->bid_price != $newPrice) {
+                            $spread = $spreads[$code] ?? 1.0;
+                            
+                            $asset->update([
+                                'bid_price' => $newPrice,
+                                'ask_price' => (float)$newPrice + $spread,
+                                'last_bid'  => $asset->bid_price,
+                                'last_ask'  => $asset->ask_price,
+                            ]);
+
+                            // تحديث الذاكرة لتعكس السعر الجديد
+                            $asset->bid_price = $newPrice;
+                        }
+                    }
+                }
+            }
+            
+            // 3. تأخير منطقي
+            sleep(5); 
         }
     }
 }
