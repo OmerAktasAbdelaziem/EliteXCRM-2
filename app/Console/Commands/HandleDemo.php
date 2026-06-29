@@ -13,9 +13,15 @@ class HandleDemo extends Command
 
     public function handle()
     {
-        $clients = Client::where('account_type','Demo')
-            ->where('broker_id', '!=', null)
-            ->where('loggedAt', '<', Carbon::now()->subDays(15))
+        $clients = Client::where('account_type', 'Demo')
+            ->whereNotNull('broker_id')
+            ->where(function($query) {
+                $query->where('loggedAt', '<', Carbon::now()->subDays(15))
+                    ->orWhere(function($subQuery) {
+                        $subQuery->whereNull('loggedAt')
+                                ->where('updated_at', '<', Carbon::now()->subDays(15));
+                    });
+            })
             ->get();
 
         foreach ($clients as $client) {
