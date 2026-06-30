@@ -250,9 +250,14 @@ class OrderService implements OrderServiceInterface {
         die;
     }*/
 
-            $pnl = $amount * $assetGroupAssignment->size * $def_price;
-   
-            return $pnl;
+    if ($assetGroupAssignment) {
+        $pnl = $amount * $assetGroupAssignment->size * $def_price;
+        return $pnl;
+    } else {
+      
+        \Log::error("Missing asset group assignment for order.");
+        return 0; 
+    }
         } else {
             // Pip-based calculation
             $pipSize = $amount;
