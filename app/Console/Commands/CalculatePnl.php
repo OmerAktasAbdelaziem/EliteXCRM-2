@@ -50,12 +50,17 @@ class CalculatePnl extends Command
         $orders = Order::whereNull('closed_at')->orderBy('pnl')->get();
 
         foreach ($orders as $order) {
+            try {
             if (!isset($order->client) || !isset($order->client->asset_group_id)) {
                 continue;
             }
 
             $comands = 1;
             $this->orderService->calculatePnl($order, $comands);
+        } catch (\Exception $e) {
+            \Log::error("Error calculating PnL for order " . $order->id . ": " . $e->getMessage());
+            continue; // أكمل للطلب التالي ولا تتوقف
+        }
         }
 
         usleep(500000);
