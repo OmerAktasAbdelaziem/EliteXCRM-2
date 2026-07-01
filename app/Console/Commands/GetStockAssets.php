@@ -159,7 +159,7 @@ class GetStockAssets extends Command
         $loop->run();
     }
 
-    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    /*private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
     {
         $connector($wsUrl)->then(function (WebSocket $conn) use ($subscribeMessage) {
             $conn->send($subscribeMessage);
@@ -190,6 +190,55 @@ class GetStockAssets extends Command
                     }
                 }
             });
+        }, function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+        });
+    }*/
+    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    {
+        // 1. أضفنا المتغيرات المطلوبة لإعادة الاتصال هنا في use
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            $conn->send($subscribeMessage);
+
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+                if (!isset($response['s'], $response['bp'], $response['ap'])) return;
+
+                $symbol = strtoupper($response['s']);
+                $bidPrice = $response['bp'];
+                $askPrice = $response['ap'];
+
+                // 2. البحث في الذاكرة (RAM) وليس في قاعدة البيانات
+                if (isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
+
+                    // تحديث فقط في حال تغير السعر
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                        ]);
+                        // تحديث النسخة الموجودة في الذاكرة أيضاً
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
+                    }
+                }
+            });
+
+            // 2. ⚠️ إضافة حدث إعادة الاتصال عند انقطاع السوكيت
+            $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+                sleep(2); // الانتظار قليلاً قبل المحاولة لتجنب الحظر
+                $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage); 
+            });
+
+            // (اختياري) إضافة التقاط الأخطاء كما كان في الكود القديم
+            $conn->on('error', function ($e) {
+                \Log::error("Stock WebSocket Error: {$e->getMessage()}");
+            });
+
         }, function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
             sleep(5);
             $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);

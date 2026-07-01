@@ -151,7 +151,7 @@ class GetAssetsBinance extends Command
         $loop->run();
     }
 
-    private function startWebSocket($wsUrl, $connector, $loop)
+    /*private function startWebSocket($wsUrl, $connector, $loop)
     {
         $connector($wsUrl)->then(function (WebSocket $conn) {
             $conn->on('message', function ($data) {
@@ -181,6 +181,50 @@ class GetAssetsBinance extends Command
                     }
                 }
             });
+        }, function ($e) use ($wsUrl, $connector, $loop) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop);
+        });
+    }*/
+    private function startWebSocket($wsUrl, $connector, $loop)
+    {
+        // 1. أضفنا المتغيرات المطلوبة لإعادة الاتصال هنا في use
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop) {
+            $conn->on('message', function ($data) {
+                $message = json_decode($data, true);
+                if (!isset($message['data'])) return;
+
+                $data = $message['data'];
+                $symbol = $data['s']; // الرمز كما يأتي من بينانس
+                $bidPrice = $data['b'] ?? null;
+                $askPrice = $data['askPr'] ?? null; // تصحيح بسيط: Binance تستخدم 'a' لـ ask price وليس 'askPr' كما في Bitget.
+                $askPrice = $data['a'] ?? null; // التعديل الصحيح
+
+                // 2. البحث في الذاكرة (RAM)
+                if ($bidPrice && $askPrice && isset($this->assetsCache[strtolower($symbol)])) {
+                    $asset = $this->assetsCache[strtolower($symbol)];
+
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        $asset->update([
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                        ]);
+
+                        // تحديث النسخة في الذاكرة
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
+                    }
+                }
+            });
+
+            // 2. ⚠️ إضافة حدث إعادة الاتصال عند انقطاع السوكيت
+            $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop) {
+                sleep(2); // الانتظار قليلاً قبل المحاولة
+                $this->startWebSocket($wsUrl, $connector, $loop);
+            });
+
         }, function ($e) use ($wsUrl, $connector, $loop) {
             sleep(5);
             $this->startWebSocket($wsUrl, $connector, $loop);

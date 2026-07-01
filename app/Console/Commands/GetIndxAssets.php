@@ -78,6 +78,11 @@ class GetIndxAssets extends Command
             $this->assetsCache[$asset->symbol] = $asset;
         }
 
+        if (empty($this->assetsCache)) {
+            $this->error('No Index assets found.');
+            return;
+        }
+
         $symbols = implode(',', array_keys($this->assetsCache));
         $spreads = [
             'GDAXI.INDX' => 1.4, 'FCHI.INDX' => 1.2, 'IBEX.INDX' => 5,
@@ -85,35 +90,42 @@ class GetIndxAssets extends Command
         ];
 
         while (true) {
-            $response = Http::timeout(10)->get("https://eodhd.com/api/real-time/{$symbols}?api_token=67f4cea78e4f60.22404437&fmt=json");
+            try {
+                $response = Http::timeout(10)->get("https://eodhd.com/api/real-time/{$symbols}?api_token=67f4cea78e4f60.22404437&fmt=json");
 
-            if ($response->successful()) {
-                foreach ($response->json() as $price) {
-                    $code = $price['code'];
-                    $newPrice = $price['close'];
+                if ($response->successful()) {
+                    foreach ($response->json() as $price) {
+                        $code = $price['code'];
+                        $newPrice = $price['close'];
 
-                    if (isset($this->assetsCache[$code]) && $newPrice != 'NA') {
-                        $asset = $this->assetsCache[$code];
-                        
-                        // 2. تحديث الذاكرة وقاعدة البيانات فقط إذا تغير السعر فعلياً
-                        if ($asset->bid_price != $newPrice) {
-                            $spread = $spreads[$code] ?? 1.0;
+                        if (isset($this->assetsCache[$code]) && $newPrice != 'NA') {
+                            $asset = $this->assetsCache[$code];
                             
-                            $asset->update([
-                                'bid_price' => $newPrice,
-                                'ask_price' => (float)$newPrice + $spread,
-                                'last_bid'  => $asset->bid_price,
-                                'last_ask'  => $asset->ask_price,
-                            ]);
+                            // 2. تحديث الذاكرة وقاعدة البيانات فقط إذا تغير السعر فعلياً
+                            if ($asset->bid_price != $newPrice) {
+                                $spread = $spreads[$code] ?? 1.0;
+                                $newAskPrice = (float)$newPrice + $spread;
+                                
+                                $asset->update([
+                                    'bid_price' => $newPrice,
+                                    'ask_price' => $newAskPrice,
+                                    'last_bid'  => $asset->bid_price,
+                                    'last_ask'  => $asset->ask_price,
+                                ]);
 
-                            // تحديث الذاكرة لتعكس السعر الجديد
-                            $asset->bid_price = $newPrice;
+                                // 3. تحديث الذاكرة لتعكس السعر الجديد للـ bid والـ ask معاً
+                                $asset->bid_price = $newPrice;
+                                $asset->ask_price = $newAskPrice; 
+                            }
                         }
                     }
                 }
+            } catch (\Exception $e) {
+                // في حال انقطاع الشبكة أو تأخر الاستجابة من EOD، لا تنهار، فقط سجل الخطأ وأكمل الحلقة
+                \Log::error("Index Fetch Error: " . $e->getMessage());
             }
             
-            // 3. تأخير منطقي
+            // 4. تأخير منطقي
             sleep(5); 
         }
     }

@@ -144,7 +144,7 @@ class GetForexAssets extends Command
         $loop->run();
     }
 
-    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    /*private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
     {
         $connector($wsUrl)->then(function (WebSocket $conn) use ($subscribeMessage) {
             $conn->send($subscribeMessage);
@@ -188,5 +188,61 @@ class GetForexAssets extends Command
             sleep(5);
             $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
         });
+    }*/
+
+    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    {
+        // لاحظ أننا مررنا المتغيرات هنا لاستخدامها في إعادة الاتصال
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            $conn->send($subscribeMessage);
+
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+                if (!isset($response['s'], $response['b'], $response['a'])) return;
+
+                $symbol = strtoupper($response['s']);
+                $bidPrice = $response['b'];
+                $askPrice = $response['a'];
+
+                // معالجة تنسيق أرقام الـ Forex قبل المقارنة لزيادة الدقة
+                if (strlen(substr(strrchr((string)$askPrice, "."), 1)) > 5) {
+                    $askPrice = number_format((float)$askPrice, 5, '.', '');
+                }
+                if (strlen(substr(strrchr((string)$bidPrice, "."), 1)) > 5) {
+                    $bidPrice = number_format((float)$bidPrice, 5, '.', '');
+                }
+
+                // البحث في الذاكرة (RAM) فقط
+                if (isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
+
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                        ]);
+
+                        // تحديث الذاكرة
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
+                    }
+                }
+            });
+
+            // ⚠️ الجزء الذي كان مفقوداً: إعادة الاتصال عند انقطاع السوكيت
+            $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+                // ننتظر ثانيتين ثم نعيد الاتصال لتجنب الحظر
+                sleep(2);
+                $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage); 
+            });
+
+        }, function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+        });
     }
+    
 }
