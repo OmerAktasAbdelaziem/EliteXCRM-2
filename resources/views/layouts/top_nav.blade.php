@@ -5,8 +5,8 @@
         }
     }
 </style>
-<div class="nav-container" style="top: 0;z-index: 10;">
-    <div class="mobile-topbar-header">
+<div class="nav-container" style="top: 0;z-index: 20;">
+    {{-- <div class="mobile-topbar-header">
         <div>
             <img src="{{ url('assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon">
         </div>
@@ -15,7 +15,7 @@
         </div>
         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
         </div>
-    </div>
+    </div> --}}
     <nav class="topbar-nav">
         <ul class="metismenu" id="menu">
             @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::isPipelineAdmin(Auth::user(), Auth::user()->pipeline_id) ||  UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_list') || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'leads_create'))
