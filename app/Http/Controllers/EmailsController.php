@@ -52,7 +52,7 @@ class EmailsController extends Controller {
         $teams = $this->clientService->getTeams(Auth::user()); //$clientsController->getTeams($options);
         $limit = $request->input('limit', 6);
 
-        $leads = Client::select('id', 'first_name', 'last_name', 'email', 'phone1', 'phone2', 'country', 'sales_status')
+        $leads = Client::select('id', 'first_name', 'last_name', 'email', 'phone1', 'phone2', 'country', 'sales_status','created_at')
                 ->whereNotNull('email')
                 ->where('email', '!=', "")
                 ->where('email', '!=', " ")
