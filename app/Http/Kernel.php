@@ -92,6 +92,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LastSeenMiddleware::class, // يكفي وجوده هنا فقط
             \App\Http\Middleware\ForceLogoutIfPasswordChanged::class,
             \App\Http\Middleware\CheckSubscription::class,
+            \App\Http\Middleware\AutoLogout::class,
         ],
 
         'api' => [
