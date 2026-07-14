@@ -21,6 +21,9 @@ class Pipeline extends Model
         'name',
         'webtrader_url',
         'usdt',
+        'webtrader_message_en',
+        'webtrader_message_ar',
+        'show_webtrader_message_icon',
     ];
 
     protected $casts = [
