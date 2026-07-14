@@ -49,8 +49,8 @@ class AutoLogout
 
             if ($lastActivity) {
                 $inactiveSeconds = $currentTime - $lastActivity;
-
-                if ($inactiveSeconds > 28800) { // 8 ساعات
+//28800
+                if ($inactiveSeconds > 3600 ) { // 8 ساعات  
                     Auth::logout();
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
