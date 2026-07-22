@@ -35,7 +35,7 @@
 </div>    
 <div class ="section-area" style="padding-top: calc(100px - 5vw);">
     <span class="section-title">Client Question Settings</span>
-    @if($isSuperAdmin)
+    @if($isPipelineAdmin || $isSuperAdmin)
     <a href = "{{ route('question.index') }}"><span class="section-text">Client Questions</span></a>
     @endif
 </div> 
