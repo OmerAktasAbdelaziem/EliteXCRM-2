@@ -72,22 +72,59 @@
                                         @enderror
                                     </div>
 
-
-                                    <div class="col-md-6">
-                                        <label for="category_id" class="form-label">Webtrader URL</label>
-                                        <div class="input-group">
-                                        <input type="text" class="form-control" id="webtrader_url" name="webtrader_url" value="{{ old('webtrader_url',$pipeline->webtrader_url) }}" placeholder="Webtrader URL" />
-                                            
-                                        </div>
-                                        @error('category_id')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                   
                                 </div>
                             </div>
                             
-                            
+                                 
+                            <div class ="section-area">
+                                <span class="section-title">Webtrader</span>
+                                <div class="row g-3">
+                                    
+                                    <div class="col-md-6">
+                                        <label for="webtrader_url" class="form-label">Webtrader URL</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="webtrader_url" name="webtrader_url" value="{{ old('webtrader_url',$pipeline->webtrader_url) }}" placeholder="Webtrader URL" />
+                                        </div>
+                                        @error('webtrader_url')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    
+                                    <div class="col-md-6">
+                                        <label for="show_webtrader_message_icon" class="form-label">Show Message Icon</label>
+                                        <div class="input-group">
+                                            <label for="show_webtrader_message_icon" class="form-label">show check Icon with the message</label>
+                                            <input class="form-check-input ms-2" style="border-radius: .25em;" type="checkbox" id="show_webtrader_message_icon" name="show_webtrader_message_icon" {{ old('show_webtrader_message_icon',$pipeline->show_webtrader_message_icon) ? 'checked' : '' }}>
+                                        </div>
+                                        @error('show_webtrader_message_icon')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="webtrader_message_ar" class="form-label">Arabic Message</label>
+                                        <div class="input-group">
+                                            <textarea dir="rtl" class="form-control" id="webtrader_message_ar" name="webtrader_message_ar" placeholder="Arabic Message">{{ old('webtrader_message_ar', $pipeline->webtrader_message_ar) }}</textarea>
+                                        </div>
+                                        @error('webtrader_message_ar')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label for="webtrader_message_en" class="form-label">English Message</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" id="webtrader_message_en" name="webtrader_message_en" placeholder="English Message">{{ old('webtrader_message_en', $pipeline->webtrader_message_en) }}</textarea>
+                                        </div>
+                                        @error('webtrader_message_en')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                </div>
+                            </div>
+
                             <div class ="section-area">
                                  <span class="section-title">Support Details</span>
                                 <div class="row g-3">

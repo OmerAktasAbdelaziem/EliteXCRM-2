@@ -161,9 +161,13 @@ class PipelineController extends Controller
             'co_id',
             'name',
             'webtrader_url',
+            'webtrader_message_en',
+            'webtrader_message_ar',
         ]);
 
-        
+        $inputs = array_merge($inputs, [
+            'show_webtrader_message_icon' => (bool) $request->show_webtrader_message_icon,
+        ]);
 
         $inputs = array_merge($inputs, [
             'support_ids' => json_encode($request->support_ids),
