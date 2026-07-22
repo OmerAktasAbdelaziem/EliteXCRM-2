@@ -35,7 +35,7 @@
 </div>    
 <div class ="section-area" style="padding-top: calc(100px - 5vw);">
     <span class="section-title">Client Question Settings</span>
-    @if($isPipelineAdmin || $isSuperAdmin)
+    @if($isPipelineAdmin || $isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'ads_list'))
     <a href = "{{ route('question.index') }}"><span class="section-text">Client Questions</span></a>
     @endif
 </div> 
