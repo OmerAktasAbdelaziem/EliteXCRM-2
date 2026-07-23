@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Console\Commands;
 
 use App\Imports\GSheetImport;
@@ -88,8 +88,8 @@ class CaptureLeads extends Command
         $this->info("Sheet uploaded and processed successfully.");
     }
 }
+*/
 
-/*
 namespace App\Console\Commands;
 
 use App\Imports\GSheetImport;
@@ -173,4 +173,3 @@ class CaptureLeads extends Command
         Excel::import($import, $request->file('excel_file')->getPathname());
     }
 }
-*/
