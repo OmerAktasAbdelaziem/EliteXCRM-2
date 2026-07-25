@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('handle:demo')->dailyAt('00:00');
+        $schedule->command('capture:leads')->everyMinute()->withoutOverlapping();
         // $schedule->command('capture:leads')->everyFiveMinutes();
         //remove following line when go online
         //$schedule->command('calculate:pnl')->withoutOverlapping();
