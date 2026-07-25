@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class GSheetImport implements ToModel, WithHeadingRow
 {
@@ -51,11 +52,24 @@ class GSheetImport implements ToModel, WithHeadingRow
             $validator = Validator::make($mappedRow, [
                 'first_name' => ['required'],
                 'country'    => ['required'],
-                'phone1'     => ['required'],
-                'email'      => ['required'],
+                'phone1'     => [
+                    'required', 
+                    Rule::unique('clients', 'phone1')->where(function ($query) {
+                        return $query->where('pipeline_id', $this->ad->pipeline_id);
+                    }),
+                ],
+                'email'      => [
+                    'required',
+                    Rule::unique('clients', 'email')->where(function ($query) {
+                        return $query->where('pipeline_id', $this->ad->pipeline_id);
+                    }),
+                ],
             ]);
 
-            $validator->validate();
+            // $validator->validate();
+            if ($validator->fails()) {
+                return null;
+            }
 
             $client = Client::create([
                 'last_captured_at' => $leadTimestamp,
@@ -104,7 +118,7 @@ class GSheetImport implements ToModel, WithHeadingRow
     private function yesNoToBool($value)
     {
         if(!$value){
-            return null;
+            return 0;
         }
         return match ($value) {
             'نعم' => 1,

@@ -181,7 +181,7 @@ class ClientImport implements ToModel, WithHeadingRow
     private function yesNoToBool($value)
     {
         if(!$value){
-            return null;
+            return 0;
         }
         return match ($value) {
             'نعم' => 1,

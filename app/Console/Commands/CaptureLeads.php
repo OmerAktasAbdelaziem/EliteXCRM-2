@@ -1,5 +1,5 @@
 <?php
-/*
+
 namespace App\Console\Commands;
 
 use App\Imports\GSheetImport;
@@ -47,7 +47,7 @@ class CaptureLeads extends Command
             $request->files->set('excel_file', $uploadedFile);
         
             try {
-                $results[] = $this->sheetUpload($ad, $request);
+                $this->sheetUpload($ad, $request);
             } catch (ValidationException $e) {
                 $this->error("Validation Error: " . implode(", ", $e->errors()['excel_file'] ?? ['Unknown error']));
             } catch (\Exception $e) {
@@ -88,8 +88,8 @@ class CaptureLeads extends Command
         $this->info("Sheet uploaded and processed successfully.");
     }
 }
-*/
 
+/*
 namespace App\Console\Commands;
 
 use App\Imports\GSheetImport;
@@ -173,3 +173,4 @@ class CaptureLeads extends Command
         Excel::import($import, $request->file('excel_file')->getPathname());
     }
 }
+*/
