@@ -52,11 +52,19 @@ class CheckRole
 
     $pipelineId = $user->pipeline_id;
     
+    $rolesKey = implode('_', $roles);
     // استخدام Cache لتخزين صلاحيات المستخدم لمدة 60 دقيقة
-    $cacheKey = "user_permissions_{$user->id}_{$pipelineId}";
+    $cacheKey = "user_permissions_{$user->id}_{$pipelineId}_{$rolesKey}";
     
     $isAuthorized = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($user, $pipelineId, $roles) {
         
+// التحقق من الأدوار الإدارية
+if (UserPermission::isSuperAdmin($user) || UserPermission::isPipelineAdmin($user, $pipelineId)) {
+    return true;
+}
+
+
+
         // التحقق من الصلاحيات الأساسية
         foreach($roles as $role){
             if (UserPermission::hasPermissionInPipeline($user, $pipelineId, $role)) {
@@ -64,10 +72,7 @@ class CheckRole
             }
         }
 
-        // التحقق من الأدوار الإدارية
-        if (UserPermission::isSuperAdmin($user) || UserPermission::isPipelineAdmin($user, $pipelineId)) {
-            return true;
-        }
+        
 
         return false;
     });
