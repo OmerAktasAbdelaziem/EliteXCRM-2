@@ -108,7 +108,6 @@ class UserController extends Controller
 $role   = $request->input('role');
  $user->assignRole($role, Auth::user()->pipeline_id);
         }
-        \Illuminate\Support\Facades\Cache::increment("user_permission_version_{$user->id}");
         Text::create([
             'user_id' => $id,
             'text' => $Password
@@ -250,7 +249,7 @@ $role   = $request->input('role');
  $employee->assignRole($role, Auth::user()->pipeline_id);
 
         }
-        \Illuminate\Support\Facades\Cache::increment("user_permission_version_{$employee->id}");
+        \Illuminate\Support\Facades\Cache::put("user_permission_version_{$employee->id}", time(), now()->addDays(30));
         $employee->update($inputs);
 
         if ($employee->text) {
