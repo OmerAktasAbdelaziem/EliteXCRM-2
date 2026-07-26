@@ -24,6 +24,7 @@ class Pipeline extends Model
         'webtrader_message_en',
         'webtrader_message_ar',
         'show_webtrader_message_icon',
+        'is_main',
     ];
 
     protected $casts = [

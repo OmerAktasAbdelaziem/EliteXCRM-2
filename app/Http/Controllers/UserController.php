@@ -67,9 +67,15 @@ class UserController extends Controller
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
+
         $roles = $this->roleService->getByFilters([
-            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
-            ['field'=>'guard_name','conditions'=>['='=>'web']],
+            [
+                'group' => [
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Auth::user()->pipeline_id]],
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id, 'or' => true]],
+                ],
+            ],
+            ['field' => 'guard_name', 'conditions' => ['=' => 'web']],
         ]);
 
         return view('user.create',compact(
@@ -128,8 +134,13 @@ $role   = $request->input('role');
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         //$roles              = OldRole::latest()->get();
         $roles = $this->roleService->getByFilters([
-            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
-            ['field'=>'guard_name','conditions'=>['='=>'web']],
+            [
+                'group' => [
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Auth::user()->pipeline_id]],
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id, 'or' => true]],
+                ],
+            ],
+            ['field' => 'guard_name', 'conditions' => ['=' => 'web']],
         ]);
 
      
