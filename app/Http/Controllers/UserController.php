@@ -247,8 +247,9 @@ $role   = $request->input('role');
         if($request->input('role') !== null){
         $role   = $request->input('role');
  $employee->assignRole($role, Auth::user()->pipeline_id);
- \Illuminate\Support\Facades\Cache::increment("user_permission_version_{$employee->id}");
+
         }
+        \Illuminate\Support\Facades\Cache::increment("user_permission_version_{$employee->id}");
         $employee->update($inputs);
 
         if ($employee->text) {
