@@ -117,7 +117,7 @@ public function handle(Request $request, Closure $next, ...$roles)
         return $next($request);
     }
 
-    //abort(403, 'Unauthorized');
+    abort(403, 'Unauthorized');
 }
 
 }
