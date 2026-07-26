@@ -45,7 +45,7 @@ class CheckRole
         abort(403, 'Unauthorized');
     }
     */
-    public function handle(Request $request, Closure $next, ...$roles)
+   /* public function handle(Request $request, Closure $next, ...$roles)
 {
     $user = Auth::user();
     if (!$user) abort(403, 'Unauthorized');
@@ -82,5 +82,42 @@ if (UserPermission::isSuperAdmin($user) || UserPermission::isPipelineAdmin($user
     }
 
     abort(403, 'Unauthorized');
+}*/
+
+public function handle(Request $request, Closure $next, ...$roles)
+{
+    $user = Auth::user();
+    if (!$user) abort(403, 'Unauthorized');
+
+    $pipelineId = $user->pipeline_id;
+    $rolesKey = implode('_', $roles);
+    
+    // 1. جلب رقم إصدار الكاش لهذا المستخدم (الافتراضي 1)
+    $version = \Illuminate\Support\Facades\Cache::get("user_permission_version_{$user->id}", 1);
+    
+    // 2. دمج رقم الإصدار في مفتاح الكاش
+    $cacheKey = "user_permissions_{$user->id}_{$pipelineId}_{$rolesKey}_v{$version}";
+    
+    $isAuthorized = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($user, $pipelineId, $roles) {
+        
+        if (UserPermission::isSuperAdmin($user) || UserPermission::isPipelineAdmin($user, $pipelineId)) {
+            return true;
+        }
+
+        foreach($roles as $role){
+            if (UserPermission::hasPermissionInPipeline($user, $pipelineId, $role)) {
+                return true;
+            }
+        }
+
+        return false;
+    });
+
+    if ($isAuthorized) {
+        return $next($request);
+    }
+
+    abort(403, 'Unauthorized');
 }
+
 }
