@@ -44,7 +44,7 @@
         </tr>
         <tr>
             <td><strong>Total Deposits:   </strong> <span style="color: green;">$ {{ $totalDeposits }}</span></td>
-            <td><strong>Total Withdrawals:</strong> <span style="color: red;">- $ {{ $totalWithdrawals }}</span></td>
+            <td><strong>Total Withdrawals:</strong> <span style="color: green;">$ {{ $totalWithdrawals }}</span></td>
             <td><strong>Free Margin:     </strong> <span>$ {{ number_format($freeMargin, 2) }}</span></td>
         </tr>
     </table>

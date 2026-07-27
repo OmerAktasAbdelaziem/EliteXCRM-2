@@ -10,7 +10,7 @@ class Status extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'pipeline_id', 'part_ids'];
+    protected $fillable = ['name', 'pipeline_id', 'part_ids', 'status_key', 'is_default'];
 
     protected static function boot()
     {
@@ -20,6 +20,10 @@ class Status extends Model
             if (Auth::check()) {
                 $model->pipeline_id = Auth::user()->pipeline_id;
             }
+
+            // if (empty($model->status_key) && !empty($model->name)) {
+                $model->status_key = strtolower(str_replace(' ', '_', trim($model->name)));
+            // }
         });
     }
 

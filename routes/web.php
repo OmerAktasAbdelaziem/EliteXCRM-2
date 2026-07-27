@@ -24,6 +24,7 @@ use App\Http\Controllers\PartController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientQuestionController;
+use App\Http\Controllers\DefaultStatusController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\OldRoleController;
 use App\Http\Controllers\TeamController;
@@ -577,6 +578,16 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->delete('question/{id}', [ClientQuestionController::class, 'delete'])->name('question.delete');
     });
 
+        
+    $router->group(['prefix' => 'default-status'], function (Router $router) {
+        $router->get('/',       [DefaultStatusController::class, 'index'])->name('default-status.index');
+        $router->get('create',  [DefaultStatusController::class, 'create'])->name('default-status.create');
+        $router->post('store',  [DefaultStatusController::class, 'store'])->name('default-status.store');
+        $router->get('{id}',    [DefaultStatusController::class, 'show'])->name('default-status.show');
+        $router->put('{id}',    [DefaultStatusController::class, 'update'])->name('default-status.update');
+        $router->delete('{id}', [DefaultStatusController::class, 'delete'])->name('default-status.delete');
+    });
+    
 
     $router->get('notification/mark_all_as_read', [NotificationController::class, 'mark_all_as_read'])->name('notification.mark_all_as_read');
     $router->put('user-profile/{id}',             [UserController::class, 'userprofile'])->name('user.edit');

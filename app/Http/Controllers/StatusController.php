@@ -132,11 +132,17 @@ class StatusController extends Controller
             return redirect()->back()->with('fail','This name already exist');
         }
 
-        $inputs = $request->only([
-            'part_ids', 
-            'name',
-        ]);
-
+        if($status->is_default){
+            $inputs = $request->only([
+                'part_ids'
+            ]);
+        }else{
+            $inputs = $request->only([
+                'part_ids', 
+                'name',
+            ]);
+        }
+        
         $status->update($inputs);
 
         $teamIds = $request->input('team_ids');

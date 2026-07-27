@@ -36,6 +36,8 @@ use App\Http\Repositories\Action\ActionRepository;
 use App\Http\Repositories\Action\Interfaces\ActionRepositoryInterface;
 use App\Http\Repositories\Ad\AdHandlerRepository;
 use App\Http\Repositories\Ad\Interfaces\AdHandlerRepositoryInterface;
+use App\Http\Repositories\DefaultStatus\DefaultStatusRepository;
+use App\Http\Repositories\DefaultStatus\Interfaces\DefaultStatusRepositoryInterface;
 use App\Http\Repositories\Question\Interfaces\QuestionRepositoryInterface;
 use App\Http\Repositories\Question\QuestionRepository;
 //interfaces & services
@@ -71,6 +73,8 @@ use App\Http\Services\Action\ActionService;
 use App\Http\Services\Action\Interfaces\ActionServiceInterface;
 use App\Http\Services\Ad\AdHandlerService;
 use App\Http\Services\Ad\Interfaces\AdHandlerServiceInterface;
+use App\Http\Services\DefaultStatus\DefaultStatusService;
+use App\Http\Services\DefaultStatus\Interfaces\DefaultStatusServiceInterface;
 use App\Http\Services\Question\Interfaces\QuestionServiceInterface;
 use App\Http\Services\Question\QuestionService;
 use App\Http\Services\SearchFilters\Interfaces\SearchFiltersServiceInterface;
@@ -97,6 +101,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ActionRepositoryInterface::class, ActionRepository::class);
         $this->app->bind(AdHandlerRepositoryInterface::class, AdHandlerRepository::class);
         $this->app->bind(QuestionRepositoryInterface::class, QuestionRepository::class);
+        $this->app->bind(DefaultStatusRepositoryInterface::class, DefaultStatusRepository::class);
         
         
         
@@ -117,6 +122,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ActionServiceInterface::class, ActionService::class);
         $this->app->bind(AdHandlerServiceInterface::class, AdHandlerService::class);
         $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
+        $this->app->bind(DefaultStatusServiceInterface::class, DefaultStatusService::class);
 
         $this->app->bind(SearchFiltersServiceInterface::class, SearchFiltersService::class);
 
