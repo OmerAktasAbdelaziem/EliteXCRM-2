@@ -67,6 +67,10 @@ class SubscriptionController extends Controller {
         }
 
         $this->subscriptionService->create($inputs);
+
+        $pipelineId = Auth::user()->pipeline_id;
+        \Illuminate\Support\Facades\Cache::delete("sub_pipeline_{$pipelineId}");
+        
         return redirect()->route('pipeline.show', ['id' => $inputs['pipeline']])->with('success', 'Pipeline created successfully');
     }
 
@@ -110,6 +114,9 @@ class SubscriptionController extends Controller {
         }
         $this->subscriptionService->update($id, $inputs);
             
+        $pipelineId = Auth::user()->pipeline_id;
+        \Illuminate\Support\Facades\Cache::delete("sub_pipeline_{$pipelineId}");
+        
         return redirect()->route('pipeline.show', $subscription->pipeline)->with('success', 'Subscription updated successfully');
         //}
     }
@@ -123,6 +130,10 @@ class SubscriptionController extends Controller {
         $subscription = $this->subscriptionService->getById($id)->first();
         if(isset($subscription->id)){
         $this->subscriptionService->update($subscription->id, $inputs);
+        
+        $pipelineId = Auth::user()->pipeline_id;
+        \Illuminate\Support\Facades\Cache::delete("sub_pipeline_{$pipelineId}");
+
         return redirect()->route('pipeline.show', $subscription->pipeline)->with('success', 'Subscription deleted successfully');
         
         }

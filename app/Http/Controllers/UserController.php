@@ -119,6 +119,9 @@ $role   = $request->input('role');
             'text' => $Password
         ]);
 
+        $pipelineId = Auth::user()->pipeline_id;
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+
         return redirect()->route('user.index')->with('success','User Created Successfully');
     }
     
@@ -346,14 +349,16 @@ $role   = $request->input('role');
                 }
             }
         }
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+
         return redirect()->route('user.index');
     }
 
     public function restore(Request $request)
     {
         $userids = $request->input('userid', []);
-
-        $subscription = \App\Models\Subscription::where('pipeline', Auth::user()->pipeline->id)
+        $pipelineId = Auth::user()->pipeline_id;
+        $subscription = \App\Models\Subscription::where('pipeline', $pipelineId)
             ->where('active', 1)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
@@ -368,6 +373,7 @@ $role   = $request->input('role');
             $user ->deleted = false;
             $user ->save();
         }
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
         return redirect()->route('user.index')->with('success','User Restored Successfully');;
     }
 
