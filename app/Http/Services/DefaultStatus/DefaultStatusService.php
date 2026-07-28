@@ -39,12 +39,22 @@ class DefaultStatusService implements DefaultStatusServiceInterface
     {
         $newDefaultStatus = $this->defaultStatusRepository->create($data);
 
-        // add this new status to all piplines 
+        // add this new status to all piplines
+        // 1. Update existing statuses for this key to become default
+        DB::update("
+            UPDATE statuses 
+            SET is_default = 1, name = ?, updated_at = NOW() 
+            WHERE status_key = ?
+        ", [$newDefaultStatus[0]->name, $newDefaultStatus[0]->status_key]);
+
+        // 2. Insert ONLY into pipelines that do not have this status_key yet
         DB::insert("
             INSERT INTO statuses (name, pipeline_id, status_key, is_default, part_ids, created_at, updated_at)
-            SELECT ?, id, ?, 1, '[]', NOW(), NOW()
-            FROM pipelines
-        ", [$newDefaultStatus[0]->name, $newDefaultStatus[0]->status_key]);
+            SELECT ?, p.id, ?, 1, '[]', NOW(), NOW()
+            FROM pipelines p
+            LEFT JOIN statuses s ON s.pipeline_id = p.id AND s.status_key = ?
+            WHERE s.id IS NULL
+        ", [$newDefaultStatus[0]->name, $newDefaultStatus[0]->status_key, $newDefaultStatus[0]->status_key]);
 
         return $newDefaultStatus;
     }
@@ -59,6 +69,17 @@ class DefaultStatusService implements DefaultStatusServiceInterface
         if ($done) {
             $defaultStatus = $this->defaultStatusRepository->getById($id)->first();
 
+            // 1. Update existing statuses for the new key that are not default to become Deprecated
+            DB::update("
+                UPDATE statuses 
+                SET name = CONCAT(name, ' Deprecated'), 
+                    status_key = CONCAT(status_key, '_deprecated'), 
+                    updated_at = NOW()
+                WHERE status_key = ?
+                AND is_default = 0
+            ", [$defaultStatus->status_key]);
+
+            // 2. Update existing statuses for the old key that are default to the new key and name
             DB::table('statuses')
             ->where('status_key', $oldStatusKey)
             ->where('is_default', 1)

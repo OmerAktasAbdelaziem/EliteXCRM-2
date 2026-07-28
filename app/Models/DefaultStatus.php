@@ -22,7 +22,7 @@ class DefaultStatus extends Model
 
         static::saving(function ($model) {
             // if (empty($model->status_key) && !empty($model->name)) {
-                $model->status_key = strtolower(str_replace(' ', '_', trim('default_' . $model->name)));
+                $model->status_key = strtolower(str_replace(' ', '_', trim($model->name)));
             // }
         });
     }

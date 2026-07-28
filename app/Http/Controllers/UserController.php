@@ -353,12 +353,22 @@ $role   = $request->input('role');
     {
         $userids = $request->input('userid', []);
 
+        $subscription = \App\Models\Subscription::where('pipeline', Auth::user()->pipeline->id)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+
         foreach ($userids as $userid) {
+            if ($subscription && $subscription->users_count <= User::where('pipeline_id', Auth::user()->pipeline_id)->where('deleted', 0)->count()) {
+                return redirect()->route('user.index')->with('fail','User Limit Reached');
+            }
+
             $user = User::find($userid);
             $user ->deleted = false;
             $user ->save();
         }
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with('success','User Restored Successfully');;
     }
 
     public function userprofile()

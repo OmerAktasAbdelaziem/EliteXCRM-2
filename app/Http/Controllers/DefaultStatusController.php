@@ -43,6 +43,10 @@ class DefaultStatusController extends Controller {
     }
 
     public function store(Request $request) {
+        if (DefaultStatus::whereRaw('LOWER(name) = ?', [strtolower($request->name)])->exists()) {
+            return redirect()->back()->with('fail','This name already exist');
+        }
+
         $inputs = $request->only([
             'name',
         ]);
@@ -65,7 +69,11 @@ class DefaultStatusController extends Controller {
         ));
     }
 
-    public function update(Request $request, $id) {     
+    public function update(Request $request, $id) {  
+        if (DefaultStatus::whereRaw('LOWER(name) = ?', [strtolower($request->name)])->where('id', '!=', $id)->exists()) {
+            return redirect()->back()->with('fail','This name already exist');
+        }
+
         $inputs = $request->only([
             'name',
         ]);
