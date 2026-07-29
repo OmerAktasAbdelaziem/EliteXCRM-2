@@ -48,6 +48,15 @@
     @endif
 </div> 
 
+ 
+<div class ="section-area" >
+    <span class="section-title">IP Restriction</span>
+    @if($isPipelineAdmin || $isSuperAdmin)
+    <a href = "{{ route('ip-restrict.show') }}"><span class="section-text">Manage IP Restriction</span></a>
+    @endif
+</div> 
+
+
     </div>
    
                             </div>

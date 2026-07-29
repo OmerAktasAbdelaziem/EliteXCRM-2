@@ -25,6 +25,7 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientQuestionController;
 use App\Http\Controllers\DefaultStatusController;
+use App\Http\Controllers\IpRestrictController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\OldRoleController;
 use App\Http\Controllers\TeamController;
@@ -586,6 +587,11 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->get('{id}',    [DefaultStatusController::class, 'show'])->name('default-status.show');
         $router->put('{id}',    [DefaultStatusController::class, 'update'])->name('default-status.update');
         $router->delete('{id}', [DefaultStatusController::class, 'delete'])->name('default-status.delete');
+    });
+
+    $router->group(['middleware' => ['role:ip_restrict'], 'prefix' => 'ip-restrict'], function (Router $router) {
+        $router->get('/',    [IpRestrictController::class, 'show'])->name('ip-restrict.show');
+        $router->post('/',    [IpRestrictController::class, 'store'])->name('ip-restrict.store');
     });
     
 

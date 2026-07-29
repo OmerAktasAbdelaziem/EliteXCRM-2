@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class Pipeline extends Model
@@ -64,4 +66,22 @@ class Pipeline extends Model
     {
         return $this->hasMany(Subscription::class, 'pipeline');
     }
+
+    /**
+     * Get all whitelisted IP addresses for this pipeline.
+     */
+    public function allowedIps(): HasMany
+    {
+        return $this->hasMany(IpRestriction::class, 'pipeline_id');
+    }
+    
+    /**
+     * Get all users exempted from IP rules for this pipeline.
+     */
+    public function exemptedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'ip_exemptions', 'pipeline_id', 'user_id')
+                    ->withTimestamps();
+    }
+
 }
