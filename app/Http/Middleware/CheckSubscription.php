@@ -161,7 +161,10 @@ private function checkLimit($request, $subscription, $pipelineId)
     // استخدام Cache للعدادات أيضاً، لن يتم حساب الـ count إلا مرة كل 10 دقائق
     if ($request->routeIs(['user.create', 'user.store'])) {
         $count = \Illuminate\Support\Facades\Cache::remember("users_count_{$pipelineId}", 600, function() use ($pipelineId) {
-            return count($this->userService->getByFilters([['field'=>'pipeline_id','conditions'=>['='=>$pipelineId]]]));
+            return count($this->userService->getByFilters([
+                ['field'=>'pipeline_id','conditions'=>['='=>$pipelineId]],
+                ['field'=>'deleted','conditions'=>['='=>0]]
+            ]));
         });
         if ($count >= $subscription->users_count) abort(403, 'You have reached your maximum count of users');
     }

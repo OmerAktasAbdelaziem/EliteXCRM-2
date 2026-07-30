@@ -54,7 +54,7 @@
                                                                 @endif
                                                             </a></tFd>
                                                             <td>{{$team->leader?->username}}</td>
-                                                            <td>{{$team->members->count()}}</td>
+                                                            <td>{{$team->members->where('deleted', false)->count()}}</td>
                                                             <td>{{date('d/m/Y H:i', strtotime($team->created_at))}}</td>
                                                         </tr>
                                                     @endforeach

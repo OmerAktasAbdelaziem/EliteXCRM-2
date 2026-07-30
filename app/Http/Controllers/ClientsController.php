@@ -1647,7 +1647,7 @@ class ClientsController extends Controller {
 
         $users = collect();
      
-                $users = User::WithPipeline()->where(function ($query) use ($teams) {
+                $users = User::WithPipeline()->where('deleted', false)->where(function ($query) use ($teams) {
                     $query->whereIn('team_id', $teams->pluck('id'))
                             ->orWhere('id', Auth::id());
                 })->latest()->get();
@@ -1656,7 +1656,7 @@ class ClientsController extends Controller {
         $pipelineSupportIds = json_decode(Auth::user()->pipeline?->support_ids, true) ?? [];
 
         if (in_array(Auth::id(), $pipelineSupportIds) || $isPipelineAdmin) {
-            $users = User::WithPipeline()->latest()->get();
+            $users = User::WithPipeline()->where('deleted', false)->latest()->get();
         }
 
         return $users;

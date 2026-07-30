@@ -15,13 +15,7 @@ use App\Http\Services\Role\Interfaces\RoleServiceInterface;
 use App\Http\Services\Role\Interfaces\PermissionServiceInterface;
 
 use App\Facades\UserPermission;
-    
-
-
-    
-
-
-
+use App\Models\Pipeline;
 
 class RoleController extends Controller
 {
@@ -45,9 +39,18 @@ class RoleController extends Controller
         $roles = $this->roleService->getByFilters([
             ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]]
         ]);
+
+        $pipeline = Pipeline::find(Auth::user()->pipeline_id);
+        if(!$pipeline->is_main){
+            $mainPipelineRoles = $this->roleService->getByFilters([
+                ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id]]
+            ]);
+        }else{
+            $mainPipelineRoles = [];
+        }
         
         return view('role.index',compact(
-            'roles'
+            'roles', 'mainPipelineRoles'
         ));
     }
     
@@ -157,6 +160,9 @@ dd('a');
         $pipelineId = Auth::user()->pipeline_id;
         $role = $this->roleService->getById($id)->first();
      
+        if($role->pipeline != $pipelineId){
+            return redirect()->route('role.edit', $id)->with('fail', 'no permission to update this role');
+        }
 
         $this->roleService->update($id,['name'=>$request->name]);
        

@@ -68,10 +68,11 @@
                                                             <td>{{date('d/m/Y H:i', strtotime($status->created_at))}}</td>
                                                             <td class="text-end">
                                                                 @if (UserPermission::isSuperAdmin(Auth::user()) || UserPermission::isPipelineAdmin(Auth::user(), Auth::user()->pipeline_id)  || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'status_delete') )
-                                                                
-                                                                    <button type="button" formaction="{{ route('status.delete', $status->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent"  data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                                        <i class="bx bx-trash"></i>
-                                                                    </button>
+                                                                    @if (!$status->is_default)
+                                                                        <button type="button" formaction="{{ route('status.delete', $status->id) }}" class="btn btn-sm text-danger text-center w-auto modal-btn deleteForm" style="background-color: transparent"  data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                                            <i class="bx bx-trash"></i>
+                                                                        </button>
+                                                                    @endif
                                                                 @endif
                                                             </td>
                                                         </tr>

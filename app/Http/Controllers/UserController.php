@@ -44,15 +44,17 @@ class UserController extends Controller
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
  
-        if($isSuperAdmin || $isPipelineAdmin){
-            $deleted_users = User::where('deleted',true)->get();
+	if($isSuperAdmin || $isPipelineAdmin){
+		$pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+		$pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);//urgentEdit
+            $deleted_users = User::where('deleted',true)->where('pipeline_id', $pipelineId)->whereNotIn('id',$pipelineSupportIds)->get();
             $users         = $this->clientService->getUsers($teams, Auth::user())->where('deleted', '!=', true);//$clients_controller->getUsers($teams);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);//urgentEdit
             $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds)->where('deleted', '!=', true);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
             
-            $deleted_users = User::where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
+            $deleted_users = User::where('deleted',true)->where('pipeline_id', $pipelineId)->whereNotIn('id',$pipelineSupportIds)->get();
         }
 
         return view('user.index',compact(
@@ -67,9 +69,15 @@ class UserController extends Controller
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
+
         $roles = $this->roleService->getByFilters([
-            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
-            ['field'=>'guard_name','conditions'=>['='=>'web']],
+            [
+                'group' => [
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Auth::user()->pipeline_id]],
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id, 'or' => true]],
+                ],
+            ],
+            ['field' => 'guard_name', 'conditions' => ['=' => 'web']],
         ]);
 
         return view('user.create',compact(
@@ -113,6 +121,9 @@ $role   = $request->input('role');
             'text' => $Password
         ]);
 
+        $pipelineId = Auth::user()->pipeline_id;
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+
         return redirect()->route('user.index')->with('success','User Created Successfully');
     }
     
@@ -128,8 +139,13 @@ $role   = $request->input('role');
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         //$roles              = OldRole::latest()->get();
         $roles = $this->roleService->getByFilters([
-            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
-            ['field'=>'guard_name','conditions'=>['='=>'web']],
+            [
+                'group' => [
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Auth::user()->pipeline_id]],
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id, 'or' => true]],
+                ],
+            ],
+            ['field' => 'guard_name', 'conditions' => ['=' => 'web']],
         ]);
 
      
@@ -335,19 +351,32 @@ $role   = $request->input('role');
                 }
             }
         }
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+
         return redirect()->route('user.index');
     }
 
     public function restore(Request $request)
     {
         $userids = $request->input('userid', []);
+        $pipelineId = Auth::user()->pipeline_id;
+        $subscription = \App\Models\Subscription::where('pipeline', $pipelineId)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
 
         foreach ($userids as $userid) {
+            if ($subscription && $subscription->users_count <= User::where('pipeline_id', Auth::user()->pipeline_id)->where('deleted', 0)->count()) {
+                return redirect()->route('user.index')->with('fail','User Limit Reached');
+            }
+
             $user = User::find($userid);
             $user ->deleted = false;
             $user ->save();
         }
-        return redirect()->route('user.index');
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+        return redirect()->route('user.index')->with('success','User Restored Successfully');;
     }
 
     public function userprofile()

@@ -9,6 +9,21 @@
     <div class="page-wrapper">
             <div class="page-content">
                 <div class="row">
+                    <div class="col">
+                        @if(session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if(session('fail'))
+                            <div class="alert alert-danger">
+                                {{ session('fail') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-xl-12 d-flex">
                         <div class="card radius-10 w-100">
                             <div class="card-body">
