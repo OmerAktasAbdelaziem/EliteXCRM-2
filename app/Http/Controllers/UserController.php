@@ -44,15 +44,17 @@ class UserController extends Controller
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
  
-        if($isSuperAdmin || $isPipelineAdmin){
-            $deleted_users = User::where('deleted',true)->get();
+	if($isSuperAdmin || $isPipelineAdmin){
+		$pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
+		$pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);//urgentEdit
+            $deleted_users = User::where('deleted',true)->where('pipeline_id', $pipelineId)->whereNotIn('id',$pipelineSupportIds)->get();
             $users         = $this->clientService->getUsers($teams, Auth::user())->where('deleted', '!=', true);//$clients_controller->getUsers($teams);
         }else{
             $pipelineSupportIds = json_decode(Auth::user()->pipeline->support_ids, true) ?? [];
             $pipelineSupportIds = array_merge($pipelineSupportIds, [644033,298274]);//urgentEdit
             $users = $this->clientService->getUsers($teams, Auth::user())->whereNotIn('id',$pipelineSupportIds)->where('deleted', '!=', true);//$clients_controller->getUsers($teams)->whereNotIn('id',$pipelineSupportIds);
             
-            $deleted_users = User::where('deleted',true)->whereNotIn('id',$pipelineSupportIds)->get();
+            $deleted_users = User::where('deleted',true)->where('pipeline_id', $pipelineId)->whereNotIn('id',$pipelineSupportIds)->get();
         }
 
         return view('user.index',compact(

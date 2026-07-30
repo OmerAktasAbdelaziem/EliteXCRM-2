@@ -94,8 +94,8 @@
                                 </div>
                                 <div class="col">
                                     <small class="form-label">Total PnL</small>
-                                    <h3 class="mb-3 {{ $finance['closedOrdersPL'] < 0 ? 'text-red' : 'text-green' }}">
-                                        $ {{ number_format($finance['closedOrdersPL'], 3, '.', ',') }}
+                                    <h3 class="mb-3 {{ $finance['closedOrdersPL']??0 < 0 ? 'text-red' : 'text-green' }}">
+                                        $ {{ number_format($finance['closedOrdersPL']??0, 3, '.', ',') }}
                                     </h3>
                                 </div>
                                 <div class="col">

@@ -45,13 +45,13 @@ class PipelineService implements PipelineServiceInterface {
         return $results;
     }
     public function create(array $data): Collection {
-        $adminId = $data['co_id'];
+        $adminId = $data['co_id']??null;
         unset($data['co_id']);
         //dd($data)
         $pipeline = $this->pipelineRepository->create($data)->first();
         $pipelineId = $pipeline->id;
 
-   $user = $this->userService->getById($adminId)->first();
+ 
    /*$role = Role::firstOrCreate([
     'name' => 'pipeline_admin',
     'guard_name' => 'web',
@@ -59,9 +59,12 @@ class PipelineService implements PipelineServiceInterface {
 ]);*/
 $this->roleService->create('pipeline_admin',$pipelineId);
 $this->assetGroupService->cloneAssetGroup($pipelineId);
+if($adminId){
+$user = $this->userService->getById($adminId)->first();
         $user->assignRoleWithPipeline('pipeline_admin', $pipelineId);
         $user->pipeline_id = $pipelineId;
         $user->save();
+}
  
 
   /*  $user->roles()->attach($role->id, [
