@@ -39,6 +39,24 @@
     <a href = "{{ route('question.index') }}"><span class="section-text">Client Questions</span></a>
     @endif
 </div> 
+
+ 
+<div class ="section-area" >
+    <span class="section-title">Default Statuses</span>
+    @if($isSuperAdmin)
+    <a href = "{{ route('default-status.index') }}"><span class="section-text">Manage Default Statuses</span></a>
+    @endif
+</div> 
+
+ 
+<div class ="section-area" >
+    <span class="section-title">IP Restriction</span>
+    @if($isPipelineAdmin || $isSuperAdmin)
+    <a href = "{{ route('ip-restrict.show') }}"><span class="section-text">Manage IP Restriction</span></a>
+    @endif
+</div> 
+
+
     </div>
    
                             </div>

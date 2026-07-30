@@ -69,9 +69,15 @@ class UserController extends Controller
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
+
         $roles = $this->roleService->getByFilters([
-            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
-            ['field'=>'guard_name','conditions'=>['='=>'web']],
+            [
+                'group' => [
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Auth::user()->pipeline_id]],
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id, 'or' => true]],
+                ],
+            ],
+            ['field' => 'guard_name', 'conditions' => ['=' => 'web']],
         ]);
 
         return view('user.create',compact(
@@ -115,6 +121,9 @@ $role   = $request->input('role');
             'text' => $Password
         ]);
 
+        $pipelineId = Auth::user()->pipeline_id;
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+
         return redirect()->route('user.index')->with('success','User Created Successfully');
     }
     
@@ -130,8 +139,13 @@ $role   = $request->input('role');
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
         //$roles              = OldRole::latest()->get();
         $roles = $this->roleService->getByFilters([
-            ['field'=>'pipeline','conditions'=>['='=>Auth::user()->pipeline_id]],
-            ['field'=>'guard_name','conditions'=>['='=>'web']],
+            [
+                'group' => [
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Auth::user()->pipeline_id]],
+                    ['field' => 'pipeline', 'conditions' => [ '=' => Pipeline::where('is_main', true)->first()->id, 'or' => true]],
+                ],
+            ],
+            ['field' => 'guard_name', 'conditions' => ['=' => 'web']],
         ]);
 
      
@@ -337,19 +351,32 @@ $role   = $request->input('role');
                 }
             }
         }
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+
         return redirect()->route('user.index');
     }
 
     public function restore(Request $request)
     {
         $userids = $request->input('userid', []);
+        $pipelineId = Auth::user()->pipeline_id;
+        $subscription = \App\Models\Subscription::where('pipeline', $pipelineId)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
 
         foreach ($userids as $userid) {
+            if ($subscription && $subscription->users_count <= User::where('pipeline_id', Auth::user()->pipeline_id)->where('deleted', 0)->count()) {
+                return redirect()->route('user.index')->with('fail','User Limit Reached');
+            }
+
             $user = User::find($userid);
             $user ->deleted = false;
             $user ->save();
         }
-        return redirect()->route('user.index');
+        \Illuminate\Support\Facades\Cache::delete("users_count_{$pipelineId}");
+        return redirect()->route('user.index')->with('success','User Restored Successfully');;
     }
 
     public function userprofile()

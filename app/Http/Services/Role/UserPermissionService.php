@@ -5,6 +5,7 @@ namespace App\Http\Services\Role;
 //Interfaces
 use App\Http\Services\Role\Interfaces\UserPermissionServiceInterface;
 //Other
+use App\Models\Pipeline;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -113,7 +114,10 @@ public function getNotPipelineAdminUsers(int $pipelineAdmin = 0): Collection{
     $result = $user->rolesInPipeline($pipelineId)
                 ->whereHas('permissions', function ($q) use ($permissionName, $pipelineId) {
                     $q->where('name', $permissionName)
-                      ->where('pipeline', $pipelineId);
+                    ->where(function($q) use($pipelineId){
+                        $q->where('pipeline', $pipelineId)
+                        ->orWhere('pipeline', Pipeline::where('is_main', true)->first()->id);
+                    });
                 })
                 ->exists();
                 return self::$cache[$cacheKey] = $result;
@@ -124,7 +128,10 @@ public function hasPermissionOfMultiInPipeline(User $user, int $pipelineId, arra
     return $user->rolesInPipeline($pipelineId)
                 ->whereHas('permissions', function ($q) use ($permissionNames, $pipelineId) {
                     $q->whereIn('name', $permissionNames) 
-                      ->where('pipeline', $pipelineId);
+                       ->where(function($q) use($pipelineId){
+                            $q->where('pipeline', $pipelineId)
+                            ->orWhere('pipeline', Pipeline::where('is_main', true)->first()->id);
+                        });
                 })
                 ->exists();
 }

@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Services\User\Interfaces\UserServiceInterface;
-use UserPermission;
+use App\Facades\UserPermission;
 
 class CheckRole
 {

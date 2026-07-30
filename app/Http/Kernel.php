@@ -93,6 +93,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\ForceLogoutIfPasswordChanged::class,
             \App\Http\Middleware\CheckSubscription::class,
             \App\Http\Middleware\AutoLogout::class,
+            \App\Http\Middleware\RestrictPipelineIp::class,
         ],
 
         'api' => [

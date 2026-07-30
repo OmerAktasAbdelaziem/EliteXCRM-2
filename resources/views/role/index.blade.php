@@ -38,6 +38,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+
+                                                @foreach ($mainPipelineRoles as $role)
+                                                    <tr>
+                                                        <td> {{$role->name}} </td>
+                                                        <td> {{date('d/m/Y H:i', strtotime($role->created_at))}} </td>
+                                                        <td> </td>
+                                                    </tr>
+                                                @endforeach
+
                                                 @foreach ($roles as $role)
                                                     <tr>
                                                         <td>@if($role->name != 'system_super_admin' && $role->name != 'pipeline_admin')<a href="{{ route('role.edit', $role->id) }}">{{$role->name}}</a>@else {{$role->name}} @endif</td>

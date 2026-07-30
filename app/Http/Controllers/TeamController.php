@@ -40,7 +40,7 @@ class TeamController extends Controller
     public function create()
     {
         //$clients_controller = new ClientsController;
-        $usersWithoutTeam   = User::WithPipeline()->whereNull('team_id')->get();
+        $usersWithoutTeam   = User::WithPipeline()->whereNull('team_id')->where('deleted', false)->get();
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);
@@ -82,7 +82,7 @@ class TeamController extends Controller
     {
         $team  = Team::findOrfail($id);
         //$clients_controller = new ClientsController;
-        $usersWithoutTeam   = User::WithPipeline()->whereNull('team_id')->get();
+        $usersWithoutTeam   = User::WithPipeline()->whereNull('team_id')->where('deleted', false)->get();
         //$user_controller    = new UserController;
         //$options            = $this->userService->getUserOptions(Auth::user());//$user_controller->get_user_options();
         $teams              = $this->clientService->getTeams(Auth::user());//$clients_controller->getTeams($options);

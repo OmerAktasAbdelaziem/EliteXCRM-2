@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 //use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasRolesWithPipeline;
+use Illuminate\Support\Facades\DB;
+
 //use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -175,5 +177,16 @@ class User extends Authenticatable
     public function co_pipeline()
     {
         return $this->hasMany(Pipeline::class, 'co_id');
+    }
+
+    /**
+     * Check if this user is exempted from IP checking.
+     */
+    public function isIpExempted(): bool
+    {
+        return DB::table('ip_exemptions')
+            ->where('user_id', $this->id)
+            ->where('pipeline_id', $this->pipeline_id)
+            ->exists();
     }
 }

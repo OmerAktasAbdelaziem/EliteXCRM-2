@@ -64,7 +64,7 @@ class StatusController extends Controller
     
     public function store(Request $request)
     {
-        if (Status::where('name',$request->name)->exists()) {
+        if (Status::whereRaw('LOWER(name) = ?', [strtolower($request->name)])->exists()) {
             return redirect()->back()->with('fail','This name already exist');
         }
         
@@ -125,18 +125,24 @@ class StatusController extends Controller
     
     public function update(Request $request, $id)
     {
-        $exist_status = Status::where('name',$request->name)->where('id','!=',$id)->exists();
+        $exist_status = Status::whereRaw('LOWER(name) = ?', [strtolower($request->name)])->where('id','!=',$id)->exists();
         $status       = Status::findOrFail($id);
 
         if ($exist_status) {
             return redirect()->back()->with('fail','This name already exist');
         }
 
-        $inputs = $request->only([
-            'part_ids', 
-            'name',
-        ]);
-
+        if($status->is_default){
+            $inputs = $request->only([
+                'part_ids'
+            ]);
+        }else{
+            $inputs = $request->only([
+                'part_ids', 
+                'name',
+            ]);
+        }
+        
         $status->update($inputs);
 
         $teamIds = $request->input('team_ids');

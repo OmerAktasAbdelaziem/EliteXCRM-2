@@ -1,8 +1,6 @@
 @extends("layouts.app")
 @section("style")
     <link href="{{ url('assets/plugins/datatable/css/dataTables.bootstrap5.min.css?v2.944') }}" rel="stylesheet" />
-    <link href="{{ url('assets/plugins/select2/css/select2.min.css?v2.944') }}" rel="stylesheet" />
-	<link href="{{ url('assets/plugins/select2/css/select2-bootstrap4.min.css?v2.944') }}" rel="stylesheet" />
 @endsection
 
 @section("wrapper")
@@ -28,9 +26,14 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <h5 class="mb-1">Our Teams</h5>
+                                        <h5 class="mb-1">Default Statuses</h5>
                                     </div>
-                                    <div class="font-22 ms-auto"><i class='bx bx-dots-horizontal-rounded'></i>
+                                    <div class="font-22 ms-auto">
+                                        @if ($isSuperAdmin)
+                                            <a href="{{ route('default-status.create') }}" class="btn btn-success btn-sm">
+                                                Add new Default Status
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="tab-content py-3">
@@ -39,23 +42,23 @@
                                             <table class="table align-middle mb-0 table-hover data-table">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Team Name</th>
-                                                        <th>Team Leader</th>
-                                                        <th>Number of members</th>
+                                                        <th>name</th>
+                                                        <th>key</th>
                                                         <th>Created At</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($teams as $team)
+                                                    @foreach ($defaultStatuses as $defaultStatus)
                                                         <tr>
-                                                            <td><a href="{{ route('team.show', $team->id) }}">{{$team->name}}
-                                                                @if ($team->main_team)
-                                                                    ({{$team->main_team->name}})
-                                                                @endif
-                                                            </a></tFd>
-                                                            <td>{{$team->leader?->username}}</td>
-                                                            <td>{{$team->members->where('deleted', false)->count()}}</td>
-                                                            <td>{{date('d/m/Y H:i', strtotime($team->created_at))}}</td>
+                                                            <td>
+                                                                <a href="{{ route('default-status.show', $defaultStatus->id) }}">
+                                                                    {{$defaultStatus->name}}
+                                                                </a>
+                                                            </td>
+
+                                                            <td> {{$defaultStatus->status_key}} </td>
+                                                            
+                                                            <td> {{date('d/m/Y H:i', strtotime($defaultStatus->created_at))}} </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -75,5 +78,4 @@
     <script src="{{ url('assets/plugins/datatable/js/jquery.dataTables.min.js?v2.944') }}"></script>
     <script src="{{ url('assets/plugins/datatable/js/dataTables.bootstrap5.min.js?v2.944') }}"></script>
     <script src="{{ url('assets/js/table-datatable.min.js?v2.944') }}"></script>
-    <script src="{{ url('assets/js/new.min.js?v2.944') }}"></script>
 @endsection

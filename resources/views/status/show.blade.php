@@ -44,7 +44,7 @@
                                 <div class="col-md-6">
                                     <label for="name" class="form-label">Name</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="name" name="name" value="{{ $status->name??old('name') }}" placeholder="Status Name" required />
+                                        <input @if($status?->is_default) disabled @endif type="text" class="form-control" id="name" name="name" value="{{ $status->name??old('name') }}" placeholder="Status Name" required />
                                     </div>
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
