@@ -8,7 +8,7 @@ use Ratchet\Client\Connector;
 use App\Models\Asset;
 use React\EventLoop\Factory;
 
-class GetStockAssets2 extends Command
+class GetAlltickAssets extends Command
 {
     protected $signature = 'get:alltick-assets';
     protected $description = 'Listen to EOD WebSocket with optimized DB handling';
