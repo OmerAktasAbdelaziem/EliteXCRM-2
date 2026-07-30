@@ -700,7 +700,7 @@ $statuses = $statuses->latest()->get();
         //$assets = Asset::whereIn('id', $asset_ids)->whereIn('type', ['Crypto','Forex','Stocks','Indx'])->where('bid_price','!=',0)->get();
         $assets = $this->assetService->getByFilters([
             ['field' => 'id', 'conditions' => ['in' => $asset_ids]],
-            ['field' => 'type', 'conditions' => ['in' => ['Crypto', 'Forex', 'Stocks', 'Indx']]],
+            ['field' => 'type', 'conditions' => ['in' => ['Crypto', 'Forex', 'Stocks', 'Indx','alltick']]],
             ['field' => 'bid_price', 'conditions' => ['!=' => 0]],
         ]);
         $asset_group_id = $client->asset_group_id;
@@ -727,7 +727,7 @@ $statuses = $statuses->latest()->get();
           'leverage'        => $asset->leverage[$asset_group_id] ?? 0,
           'size'            => $asset->size[$asset_group_id] ?? 0,
           ]));
-          } */
+          } *///
 
         return $assets;
     }
