@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Facades\UserPermission;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -59,6 +60,12 @@ class LoginController extends Controller
 
     protected function attemptLogin(Request $request)
     {
+        $user = User::where('username', $request->get('username'))->first();
+
+        if($user && $user->deleted && !UserPermission::isSuperAdmin($user)){
+            return false;
+        }
+
         return $this->guard()->attempt(
             $this->credentials($request), $request->filled('remember')
         );
