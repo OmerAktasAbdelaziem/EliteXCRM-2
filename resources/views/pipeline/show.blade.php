@@ -122,6 +122,17 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-6">
+                                        <label for="show_in_universal_login" class="form-label">Show In Universal login page</label>
+                                        <div class="input-group">
+                                            <label for="show_in_universal_login" class="form-label">Show this pipeline in universal login page</label>
+                                            <input class="form-check-input ms-2" style="border-radius: .25em;" type="checkbox" id="show_in_universal_login" name="show_in_universal_login" {{ old('show_in_universal_login',$pipeline->show_in_universal_login) ? 'checked' : '' }}>
+                                        </div>
+                                        @error('show_in_universal_login')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                 </div>
                             </div>
 

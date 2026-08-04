@@ -106,6 +106,11 @@ class PipelineController extends Controller
         $inputs = array_merge($inputs, [
             'support_ids' => json_encode($request->support_ids),
         ]);
+        
+        $inputs = array_merge($inputs, [
+            'show_webtrader_message_icon' => (bool) $request->show_webtrader_message_icon,
+            'show_in_universal_login' => (bool) $request->show_in_universal_login,
+        ]);
 
         //Pipeline::Create($inputs);
         $this->pipelineService->create($inputs);
@@ -167,6 +172,7 @@ class PipelineController extends Controller
 
         $inputs = array_merge($inputs, [
             'show_webtrader_message_icon' => (bool) $request->show_webtrader_message_icon,
+            'show_in_universal_login' => (bool) $request->show_in_universal_login,
         ]);
 
         $inputs = array_merge($inputs, [
