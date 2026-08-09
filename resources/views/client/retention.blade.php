@@ -1969,8 +1969,8 @@
         </script>
         <script src="{{ url('assets/js/main_tp.min.js?v2.944') }}"></script>
         <script>
-            var broker_id          = {{ $client->broker_id ?? 'null' }};
-            var client_id          = {{ $client->id }};
+            var broker_id = {{ $client?->broker_id ?? 'null' }};
+            var client_id = {{ $client?->id ?? 'null' }};
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
         @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $pipelineId, 'mainTp_can_update') )
