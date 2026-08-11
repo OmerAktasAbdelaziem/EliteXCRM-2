@@ -65,7 +65,13 @@ class TeamController extends Controller
             'name',
         ]);
 
-        if (Auth::user()->pipeline->team_limit &&Auth::user()->pipeline->team_limit <= Team::where('pipeline_id', Auth::user()->pipeline_id)->count()) {
+        $subscription = \App\Models\Subscription::where('pipeline', Auth::user()->pipeline_id)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+
+        if ($subscription && $subscription->teams_count <= Team::where('pipeline_id', Auth::user()->pipeline_id)->count()) {
             return redirect()->route('team.index')->with('fail','Team Limit Reached');
         }
 

@@ -42,8 +42,13 @@ class PartController extends Controller
             'role_id',
             'name',
         ]);
+        $subscription = \App\Models\Subscription::where('pipeline', Auth::user()->pipeline_id)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
 
-        if (Auth::user()->pipeline->part_limit && Auth::user()->pipeline->part_limit <= Part::where('pipeline_id', Auth::user()->pipeline_id)->count()) {
+        if ($subscription && $subscription->parts_count <= Part::where('pipeline_id', Auth::user()->pipeline_id)->count()) {
             return redirect()->route('part.index')->with('fail','Part Limit Reached');
         }
 

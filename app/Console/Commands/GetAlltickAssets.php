@@ -19,9 +19,11 @@ class GetAlltickAssets extends Command
     public function handle()
     {
         // جلب الأصول مرة واحدة فقط وتخزينها في مصفوفة
-        $assets = Asset::where('type', 'alltick')->get();
+        // $assets = Asset::where('type', 'alltick')->get();
+        $assets = Asset::all();
+
         foreach ($assets as $asset) {
-            $this->assetsCache[strtoupper($asset->symbol)] = $asset;
+            $this->assetsCache[$asset->symbol] = $asset;
         }
 
         $wsUrl = "wss://quote.alltick.co/quote-b-ws-api?token=5cec652a95a61e8cd8d380a4b286d282-c-app";
@@ -63,7 +65,7 @@ class GetAlltickAssets extends Command
 
                 $response = $response['data'];
 
-                $symbol = strtoupper($response['code']);
+                $symbol = $response['code'];
                 $bidPrice = $response['bids'][0]['price'];
                 $askPrice = $response['asks'][0]['price'];
 
