@@ -23,7 +23,7 @@ class GetAlltickAssets extends Command
             $this->assetsCache[$asset->symbol] = $asset;
         }
 
-        $wsUrl = "wss://quote.alltick.co/quote-b-ws-api?token=5fthfth4567567ytjtyj86d282-c-app";
+        $wsUrl = "wss://quote.alltick.co/quote-b-ws-api?token=5cec652a95a61e8cd8d380a4b286d282-c-app";
         $loop = Factory::create();
         $connector = new Connector($loop);
 
