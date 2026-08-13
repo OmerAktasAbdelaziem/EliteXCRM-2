@@ -13,10 +13,13 @@ class GetAlltickAssets extends Command
     protected $signature = 'get:alltick-assets';
     protected $description = 'Listen to EOD WebSocket with optimized DB handling';
 
+    // نضع البيانات في الذاكرة لتجنب الاستعلام المتكرر
     protected $assetsCache = [];
 
     public function handle()
     {
+        // جلب الأصول مرة واحدة فقط وتخزينها في مصفوفة
+        // $assets = Asset::where('type', 'alltick')->get();
         $assets = Asset::all();
 
         foreach ($assets as $asset) {
@@ -33,66 +36,63 @@ class GetAlltickAssets extends Command
 
     private function startWebSocket($wsUrl, $connector, $loop)
     {
+        // 1. تمرير المتغيرات المطلوبة في use
         $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop) {
-            
+            // جلب الرموز للاشتراك وإرسالها
+
             $symbols = [];
             foreach (array_keys($this->assetsCache) as $symbol) {
-                $symbols[] = ['code' => $symbol];
+                $symbols[] = [
+                    'code' => $symbol
+                ];
             }
 
-            // 1. تقسيم الرموز إلى دفعات (مثلاً 30 رمز في كل طلب) لتجنب قيود السيرفر
-            $chunks = array_chunk($symbols, 30);
-            $seqId = 1;
-
-            foreach ($chunks as $chunk) {
-                $subscribeMessage = json_encode([
-                    "cmd_id" => 22002,
-                    "seq_id" => $seqId++, // زيادة الـ seq_id لكل طلب
-                    "trace"  => "202607301140",
-                    "data"   => [
-                        "symbol_list" => $chunk
-                    ]
-                ]);
-                
-                $conn->send($subscribeMessage);
-            }
+            $subscribeMessage = json_encode([
+                "cmd_id" => 22002,
+                "seq_id" => 1,
+                "trace" => "202607301140",
+                "data" => [
+                    "symbol_list" => $symbols
+                ]
+            ]);
+            
+            $conn->send($subscribeMessage);
 
             $conn->on('message', function ($data) {
                 $response = json_decode($data, true);
 
-                if (!isset($response['data'])) return;
+                if(!isset($response['data'])) return;
 
-                $responseData = $response['data'];
-                $symbol = $responseData['code'] ?? null;
+                $response = $response['data'];
 
-                // 2. التحقق من وجود بيانات الأسعار لتجنب توقف السكربت (Crash)
-                if (!$symbol || empty($responseData['bids']) || empty($responseData['asks'])) {
-                    return; 
-                }
+                $symbol = $response['code'];
+                $bidPrice = $response['bids'][0]['price'];
+                $askPrice = $response['asks'][0]['price'];
 
-                $bidPrice = $responseData['bids'][0]['price'];
-                $askPrice = $responseData['asks'][0]['price'];
-
+                // التحديث فقط إذا وجدنا الأصل في الذاكرة
                 if (isset($this->assetsCache[$symbol])) {
                     $asset = $this->assetsCache[$symbol];
                     
+                    // التحديث فقط إذا تغير السعر فعلياً
                     if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
                         
                         $asset->update([
                             'bid_price' => $bidPrice,
                             'ask_price' => $askPrice,
-                            'last_bid'  => $asset->bid_price,
+                            'last_bid'  => $asset->bid_price, // يأخذ القيمة القديمة من الذاكرة
                             'last_ask'  => $asset->ask_price,
                         ]);
 
+                        // 3. ⚠️ هذا السطر كان مفقوداً وهو الأهم: تحديث الذاكرة لتجنب الـ Loop اللانهائي
                         $asset->bid_price = $bidPrice;
                         $asset->ask_price = $askPrice;
                     }
                 }
             });
 
+            // 2. ⚠️ إضافة حدث إعادة الاتصال عند انقطاع السوكيت
             $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop) {
-                sleep(2);
+                sleep(2); // تأخير بسيط قبل المحاولة لتجنب الحظر
                 $this->startWebSocket($wsUrl, $connector, $loop);
             });
 
