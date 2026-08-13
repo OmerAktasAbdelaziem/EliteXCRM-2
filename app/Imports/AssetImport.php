@@ -30,7 +30,7 @@ class AssetImport implements ToModel, WithHeadingRow
         }
         if ($category !== '') {
             $updateData['category'] = $category;
-            $updateData['type'] = $category;
+            $updateData['type'] = $category . '_2';
         }
 
         // If there are no values to update or insert, skip the row

@@ -21,11 +21,12 @@ class GetAlltickAssets extends Command
         // جلب الأصول مرة واحدة فقط وتخزينها في مصفوفة
         // $assets = Asset::where('type', 'alltick')->get();
         $assets = Asset::whereIn('type', [
-    'FOREX',
-    'STOCK',
-    'Commodity',
-    'INDEX',
-])->get();
+            'FOREX_2',
+            'STOCK_2',
+            'Commodity_2',
+            'INDEX_2',
+        ])->get();
+
 
         foreach ($assets as $asset) {
             $this->assetsCache[$asset->symbol] = $asset;
