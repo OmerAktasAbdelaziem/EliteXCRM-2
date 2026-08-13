@@ -13,18 +13,22 @@ class GetAlltickAssets extends Command
     protected $signature = 'get:alltick-assets';
     protected $description = 'Listen to EOD WebSocket with optimized DB handling';
 
+    // نضع البيانات في الذاكرة لتجنب الاستعلام المتكرر
     protected $assetsCache = [];
 
     public function handle()
     {
-        $assets = Asset::all();
+        // جلب الأصول مرة واحدة فقط وتخزينها في مصفوفة
+        // $assets = Asset::where('type', 'alltick')->get();
+        $assets = Asset::whereIn('type', [
+    'FOREX',
+    'STOCK',
+    'Commodity',
+    'INDEX',
+])->get();
 
-        // للتأكد من أننا لا نرسل أكثر من 100 رمز (لتجنب حظر الخطة)
-        $count = 0;
         foreach ($assets as $asset) {
-            if ($count >= 100) break; // أمان إضافي للتأكد من عدم تجاوز الخطة
             $this->assetsCache[$asset->symbol] = $asset;
-            $count++;
         }
 
         $wsUrl = "wss://quote.alltick.co/quote-b-ws-api?token=5cec652a95a61e8cd8d380a4b286d282-c-app";
@@ -37,92 +41,67 @@ class GetAlltickAssets extends Command
 
     private function startWebSocket($wsUrl, $connector, $loop)
     {
+        // 1. تمرير المتغيرات المطلوبة في use
         $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop) {
-            
-            $this->info("Connected to WebSocket successfully!");
+            // جلب الرموز للاشتراك وإرسالها
 
             $symbols = [];
             foreach (array_keys($this->assetsCache) as $symbol) {
-                $symbols[] = ['code' => $symbol];
+                $symbols[] = [
+                    'code' => $symbol
+                ];
             }
 
-            // تقسيم الرموز إلى 5 دفعات (كل دفعة 20 رمز)
-            $chunks = array_chunk($symbols, 20);
-            $seqId = 1;
-            $delay = 0;
-
-            foreach ($chunks as $index => $chunk) {
-                $subscribeMessage = json_encode([
-                    "cmd_id" => 22002,
-                    "seq_id" => $seqId++,
-                    "trace"  => "chunk_" . $index, // وضعنا اسم الدفعة هنا لنتتبعها
-                    "data"   => [
-                        "symbol_list" => $chunk
-                    ]
-                ]);
-                
-                // إرسال الدفعات بفاصل ثانية كاملة بين كل دفعة
-                if ($delay === 0) {
-                    $conn->send($subscribeMessage);
-                    $this->info("Sent Chunk 0 (20 symbols)");
-                } else {
-                    $loop->addTimer($delay, function () use ($conn, $subscribeMessage, $index) {
-                        $conn->send($subscribeMessage);
-                        $this->info("Sent Chunk {$index} (20 symbols)");
-                    });
-                }
-                $delay += 1.0; 
-            }
+            $subscribeMessage = json_encode([
+                "cmd_id" => 22002,
+                "seq_id" => 1,
+                "trace" => "202607301140",
+                "data" => [
+                    "symbol_list" => $symbols
+                ]
+            ]);
+            
+            $conn->send($subscribeMessage);
 
             $conn->on('message', function ($data) {
                 $response = json_decode($data, true);
 
-                // ==========================================
-                // جزء الديباج (Debugging) - هذا سيكشف لك المشكلة
-                // ==========================================
-                // إذا كان الرد عبارة عن رسالة اشتراك أو خطأ وليس أسعاراً
-                if (isset($response['cmd_id']) && $response['cmd_id'] !== 22004) {
-                     $this->warn("Server Response: " . $data);
-                }
+                if(!isset($response['data'])) return;
 
-                if (!isset($response['data'])) return;
-                
-                $responseData = $response['data'];
-                $symbol = $responseData['code'] ?? null;
+                $response = $response['data'];
 
-                if (!$symbol || empty($responseData['bids']) || empty($responseData['asks'])) {
-                    return; 
-                }
+                $symbol = $response['code'];
+                $bidPrice = $response['bids'][0]['price'];
+                $askPrice = $response['asks'][0]['price'];
 
-                $bidPrice = $responseData['bids'][0]['price'];
-                $askPrice = $responseData['asks'][0]['price'];
-
+                // التحديث فقط إذا وجدنا الأصل في الذاكرة
                 if (isset($this->assetsCache[$symbol])) {
                     $asset = $this->assetsCache[$symbol];
                     
+                    // التحديث فقط إذا تغير السعر فعلياً
                     if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
                         
                         $asset->update([
                             'bid_price' => $bidPrice,
                             'ask_price' => $askPrice,
-                            'last_bid'  => $asset->bid_price,
+                            'last_bid'  => $asset->bid_price, // يأخذ القيمة القديمة من الذاكرة
                             'last_ask'  => $asset->ask_price,
                         ]);
 
+                        // 3. ⚠️ هذا السطر كان مفقوداً وهو الأهم: تحديث الذاكرة لتجنب الـ Loop اللانهائي
                         $asset->bid_price = $bidPrice;
                         $asset->ask_price = $askPrice;
                     }
                 }
             });
 
+            // 2. ⚠️ إضافة حدث إعادة الاتصال عند انقطاع السوكيت
             $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop) {
-                $this->error("Connection closed. Reason: {$reason}");
-                sleep(2);
+                sleep(2); // تأخير بسيط قبل المحاولة لتجنب الحظر
                 $this->startWebSocket($wsUrl, $connector, $loop);
             });
 
         }, function ($e) use ($wsUrl, $connector, $loop) {
-            $this->error("Connection Failed. Retrying...");
             sleep(5);
             $this->startWebSocket($wsUrl, $connector, $loop);
         });
