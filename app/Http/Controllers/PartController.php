@@ -27,6 +27,18 @@ class PartController extends Controller
         $teams = Team::latest()->get();
         $users = User::WithPipeline()->latest()->where('deleted', false)->get();
       //  $roles = OldRole::latest()->get();
+
+        $subscription = \App\Models\Subscription::where('pipeline', Auth::user()->pipeline_id)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+
+        if (!$subscription || $subscription->parts_count <= Part::where('pipeline_id', Auth::user()->pipeline_id)->count()) {
+            abort(403, 'You have reached your maximum count of parts');
+        }
+
+
         return view('part.show',compact(
           //  'roles',
             'teams',

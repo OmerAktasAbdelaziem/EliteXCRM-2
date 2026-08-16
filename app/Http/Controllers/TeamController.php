@@ -50,6 +50,17 @@ class TeamController extends Controller
         $team               = new Team;
         $users              = $users->merge($usersWithoutTeam);
 
+        $subscription = \App\Models\Subscription::where('pipeline', Auth::user()->pipeline_id)
+            ->where('active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+
+        if (!$subscription || $subscription->teams_count <= Team::where('pipeline_id', Auth::user()->pipeline_id)->count()) {
+            abort(403, 'You have reached your maximum count of teams');
+        }
+
+        
         return view('team.show',compact(
             'parts',
             'users',
