@@ -1,5 +1,104 @@
 <?php
+namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
+use Ratchet\Client\WebSocket;
+use Ratchet\Client\Connector;
+use App\Models\Asset;
+use React\EventLoop\Factory;
+
+class GetAlltickAssets extends Command
+{
+    protected $signature = 'get:alltick-assets';
+    protected $description = 'Listen to EOD WebSocket with optimized DB handling';
+
+    // ﻦﻀﻋ ﺎﻠﺒﻳﺎﻧﺎﺗ ﻒﻳ ﺎﻟﺫﺎﻛﺭﺓ ﻞﺘﺠﻨﺑ ﺍﻼﺴﺘﻋﻼﻣ ﺎﻠﻤﺘﻛﺭﺭ
+    protected $assetsCache = [];
+
+    public function handle()
+    {
+        // ﺞﻠﺑ ﺍﻸﺻﻮﻟ ﻡﺭﺓ ﻭﺎﺣﺩﺓ ﻒﻘﻃ ﻮﺘﺧﺰﻴﻨﻫﺍ ﻒﻳ ﻢﺼﻓﻮﻓﺓ
+        $assets = Asset::where('type', 'alltick')->get();
+        foreach ($assets as $asset) {
+            $this->assetsCache[strtoupper($asset->symbol)] = $asset;
+        }
+
+        $wsUrl = "wss://quote.alltick.co/quote-b-ws-api?token=5cec652a95a61e8cd8d380a4b286d282-c-app";
+        $loop = Factory::create();
+        $connector = new Connector($loop);
+
+        $this->startWebSocket($wsUrl, $connector, $loop);
+        $loop->run();
+    }
+    private function startWebSocket($wsUrl, $connector, $loop)
+    {
+        // 1. ﺖﻣﺮﻳﺭ ﺎﻠﻤﺘﻐﻳﺭﺎﺗ ﺎﻠﻤﻄﻟﻮﺑﺓ ﻒﻳ use
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop) {
+            // ﺞﻠﺑ ﺎﻟﺮﻣﻭﺯ ﻝﻼﺸﺗﺭﺎﻛ ﻭﺇﺮﺳﺎﻠﻫﺍ
+
+            $symbols = [];
+            foreach (array_keys($this->assetsCache) as $symbol) {
+                $symbols[] = [
+                    'code' => $symbol
+                ];
+            }
+
+            $subscribeMessage = json_encode([
+                "cmd_id" => 22002,
+                "seq_id" => 1,
+                "trace" => "202607301140",
+                "data" => [
+                    "symbol_list" => $symbols
+                ]
+            ]);
+
+            $conn->send($subscribeMessage);
+
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+
+                if(!isset($response['data'])) return;
+
+                $response = $response['data'];
+
+                $symbol = strtoupper($response['code']);
+                $bidPrice = $response['bids'][0]['price'];
+                $askPrice = $response['asks'][0]['price'];
+
+                // ﺎﻠﺘﺣﺪﻴﺛ ﻒﻘﻃ ﺇﺫﺍ ﻮﺟﺪﻧﺍ ﺍﻸﺼﻟ ﻒﻳ ﺎﻟﺫﺎﻛﺭﺓ
+                if (isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
+
+                    // ﺎﻠﺘﺣﺪﻴﺛ ﻒﻘﻃ ﺇﺫﺍ ﺖﻐﻳﺭ ﺎﻠﺴﻋﺭ ﻒﻌﻠﻳﺍً
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price, // ﻱﺄﺧﺫ ﺎﻠﻘﻴﻣﺓ ﺎﻠﻗﺪﻴﻣﺓ ﻢﻧ ﺎﻟﺫﺎﻛﺭﺓ
+                            'last_ask'  => $asset->ask_price,
+                        ]);
+
+                        // 3. ⚠️ ﻩﺫﺍ ﺎﻠﺴﻃﺭ ﻙﺎﻧ ﻢﻔﻗﻭﺩﺍً ﻮﻫﻭ ﺍﻸﻬﻣ: ﺖﺣﺪﻴﺛ ﺎﻟﺫﺎﻛﺭﺓ ﻞﺘﺠﻨﺑ ﺎﻠـ Loop ﺎﻟﻼﻨﻫﺎﺌﻳ
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
+                    }
+                }
+            });
+
+            // 2. ⚠️ ﺈﺿﺎﻓﺓ ﺡﺪﺛ ﺈﻋﺍﺩﺓ ﺍﻼﺘﺻﺎﻟ ﻊﻧﺩ ﺎﻨﻘﻃﺎﻋ ﺎﻠﺳﻮﻜﻴﺗ
+            $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop) {
+                sleep(2); // ﺕﺄﺨﻳﺭ ﺐﺴﻴﻃ ﻖﺒﻟ ﺎﻠﻤﺣﺍﻮﻟﺓ ﻞﺘﺠﻨﺑ ﺎﻠﺤﻇﺭ
+                $this->startWebSocket($wsUrl, $connector, $loop);
+            });
+
+        }, function ($e) use ($wsUrl, $connector, $loop) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop);
+        });
+    }
+}
+/*
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -107,4 +206,4 @@ class GetAlltickAssets extends Command
             $this->startWebSocket($wsUrl, $connector, $loop);
         });
     }
-}
+}*/
