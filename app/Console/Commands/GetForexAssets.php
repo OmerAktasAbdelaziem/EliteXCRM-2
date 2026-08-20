@@ -133,7 +133,7 @@ class GetForexAssets extends Command
             return;
         }
 
-        $symbols = implode(",", array_keys($this->assetsCache));
+        $symbols =  'XAUUSD';
         $subscribeMessage = json_encode(["action" => "subscribe", "symbols" => $symbols]);
         $wsUrl = "wss://ws.eodhistoricaldata.com/ws/forex?api_token=67f4cea78e4f60.22404437";
 
