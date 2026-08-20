@@ -1,4 +1,109 @@
 <?php
+/*
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Ratchet\Client\WebSocket;
+use Ratchet\Client\Connector;
+use App\Models\Asset;
+use App\Models\AssetsHistory;
+use React\EventLoop\Factory;
+use Carbon\Carbon;
+
+class GetForexAssets extends Command
+{
+    protected $signature = 'get:forex-assets';
+    protected $description = 'Listen to EOD Historical Data WebSocket for real-time Forex bid/ask prices';
+
+    public function handle()
+    {
+        $symbols = Asset::where('type', 'Forex')->where('is_active', 1)->pluck('symbol')->map(fn($s) => strtoupper($s))->toArray();
+
+//        if (empty($symbols)) {
+//            $this->error('No Forex assets found in the database.');
+//            return;
+//        }
+
+        $symbolsString = implode(",", $symbols);
+        $subscribeMessage = json_encode([
+            "action"  => "subscribe",
+            "symbols" => $symbolsString
+        ]);
+
+        $wsUrl = "wss://ws.eodhistoricaldata.com/ws/forex?api_token=67f4cea78e4f60.22404437";
+
+        $loop = Factory::create();
+        $connector = new Connector($loop);
+
+        $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+
+        $loop->run();
+    }
+
+    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    {
+        $connector($wsUrl)->then(
+            function (WebSocket $conn) use ($wsUrl, $subscribeMessage, $connector, $loop) {
+
+                $conn->send($subscribeMessage);
+
+                $conn->on('message', function ($data) {
+                    //static $lastProcessed = [];
+                    $symbol = strtoupper($response['s']?? null);
+                    //$now = microtime(true);
+
+
+//$lastProcessed[$symbol] = $now;
+
+                    $response = json_decode($data, true);
+
+                    if (isset($response['s'], $response['b'], $response['a'])) { // && 1 == 2
+                        $symbol = strtoupper($response['s']);
+                        $bidPrice = $response['b'];
+                        $askPrice = $response['a'];
+
+                        $asset = Asset::where('symbol', $symbol)->first();
+                        if ($asset && ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice)) {
+                            if ($asset->category === 'Forex') {
+                                if (strlen(substr(strrchr($askPrice, "."), 1)) > 5) {
+                                    $askPrice = number_format((float)$askPrice, 5, '.', '');
+                                }
+
+                                if (strlen(substr(strrchr($bidPrice, "."), 1)) > 5) {
+                                    $bidPrice = number_format((float)$bidPrice, 5, '.', '');
+                                }
+                            }
+
+                            $asset->update([
+                                'bid_price' => $bidPrice,
+                                'ask_price' => $askPrice,
+                                'last_bid'  => $asset->bid_price,
+                                'last_ask'  => $asset->ask_price,
+                            ]);
+
+                            // following code will add values to asset_history, which will be used to retrieve data in range of 10 minutes in case of websocket failed,
+                            // this is wrong logic but requested by company, and should be handeled in another way someday
+
+                           
+                        }
+
+                    } 
+                });
+
+                $conn->on('close', function () use ($wsUrl, $connector, $loop, $subscribeMessage) {
+                    $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage); // Reconnect
+                });
+            },
+            function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+                $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage); // Reconnect on error
+            }
+        );
+    }
+}
+
+*/
+
+
 
 namespace App\Console\Commands;
 
@@ -11,279 +116,133 @@ use React\EventLoop\Factory;
 class GetForexAssets extends Command
 {
     protected $signature = 'get:forex-assets';
+    protected $description = 'Listen to Forex WebSocket with optimized performance';
 
-    protected $description = 'Listen to XAUUSD Forex WebSocket';
-
-    protected $asset;
+    protected $assetsCache = [];
 
     public function handle()
     {
-        $this->info('==========================================');
-        $this->info('🚀 Starting XAUUSD WebSocket...');
-        $this->info('==========================================');
-
-        /*
-         * جلب الذهب من قاعدة البيانات مرة واحدة فقط
-         */
-        $this->asset = Asset::where('symbol', 'XAUUSD')
-            ->where('is_active', 1)
-            ->first();
-
-        if (!$this->asset) {
-            $this->error('❌ XAUUSD not found or not active in database.');
-
-            return Command::FAILURE;
+        // 1. جلب أصول الـ Forex وتخزينها في الذاكرة
+        $assets = Asset::where('type', 'Forex')->where('is_active', 1)->get();
+        foreach ($assets as $asset) {
+            $this->assetsCache[strtoupper($asset->symbol)] = $asset;
         }
 
-        $this->info("📊 Asset found: {$this->asset->symbol}");
+        if (empty($this->assetsCache)) {
+            $this->error('⚠️ No active Forex assets found.');
+            return;
+        }
 
-        /*
-         * الاشتراك فقط في الذهب
-         */
-        $subscribeMessage = json_encode([
-            'action'  => 'subscribe',
-            'symbols' => 'XAUUSD',
-        ]);
-
-        /*
-         * Forex WebSocket
-         */
-        $wsUrl = 'wss://ws.eodhistoricaldata.com/ws/forex?api_token=67f4cea78e4f60.22404437';
+        $symbols = implode(",", array_keys($this->assetsCache));
+        $subscribeMessage = json_encode(["action" => "subscribe", "symbols" => $symbols]);
+        $wsUrl = "wss://ws.eodhistoricaldata.com/ws/forex?api_token=67f4cea78e4f60.22404437";
 
         $loop = Factory::create();
-
         $connector = new Connector($loop);
 
-        $this->startWebSocket(
-            $wsUrl,
-            $connector,
-            $loop,
-            $subscribeMessage
-        );
-
+        $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
         $loop->run();
-
-        return Command::SUCCESS;
     }
 
-    private function startWebSocket(
-        string $wsUrl,
-        Connector $connector,
-        $loop,
-        string $subscribeMessage
-    ) {
-        $this->info('🔌 Connecting to WebSocket...');
+    /*private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    {
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($subscribeMessage) {
+            $conn->send($subscribeMessage);
 
-        $connector($wsUrl)->then(
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+                if (!isset($response['s'], $response['b'], $response['a'])) return;
 
-            function (WebSocket $conn) use (
-                $wsUrl,
-                $connector,
-                $loop,
-                $subscribeMessage
-            ) {
-                $this->info('✅ Connected successfully!');
+                $symbol = strtoupper($response['s']);
+                $bidPrice = $response['b'];
+                $askPrice = $response['a'];
 
-                /*
-                 * إرسال الاشتراك
-                 */
-                $conn->send($subscribeMessage);
+                // 2. البحث في الذاكرة (RAM) فقط
+                if (isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
 
-                $this->info(
-                    '📨 Subscribed to XAUUSD'
-                );
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        
+                        // معالجة تنسيق أرقام الـ Forex
+                        if (strlen(substr(strrchr((string)$askPrice, "."), 1)) > 5) {
+                            $askPrice = number_format((float)$askPrice, 5, '.', '');
+                        }
+                        if (strlen(substr(strrchr((string)$bidPrice, "."), 1)) > 5) {
+                            $bidPrice = number_format((float)$bidPrice, 5, '.', '');
+                        }
 
-                /*
-                 * استقبال البيانات
-                 */
-                $conn->on('message', function ($data) {
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                        ]);
 
-                    $response = json_decode($data, true);
-
-                    /*
-                     * التأكد من صحة JSON
-                     */
-                    if (json_last_error() !== JSON_ERROR_NONE) {
-                        $this->warn(
-                            '⚠️ Invalid JSON: ' . $data
-                        );
-
-                        return;
+                        // تحديث الذاكرة
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
                     }
+                }
+            });
+        }, function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+        });
+    }*/
 
-                    /*
-                     * رسائل النظام مثل Authorized
-                     */
-                    if (isset($response['status_code'])) {
+    private function startWebSocket($wsUrl, $connector, $loop, $subscribeMessage)
+    {
+        // لاحظ أننا مررنا المتغيرات هنا لاستخدامها في إعادة الاتصال
+        $connector($wsUrl)->then(function (WebSocket $conn) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            $conn->send($subscribeMessage);
 
-                        $this->info(
-                            "📡 {$response['message']}"
-                        );
+            $conn->on('message', function ($data) {
+                $response = json_decode($data, true);
+                if (!isset($response['s'], $response['b'], $response['a'])) return;
 
-                        return;
+                $symbol = strtoupper($response['s']);
+                $bidPrice = $response['b'];
+                $askPrice = $response['a'];
+
+                // معالجة تنسيق أرقام الـ Forex قبل المقارنة لزيادة الدقة
+                if (strlen(substr(strrchr((string)$askPrice, "."), 1)) > 5) {
+                    $askPrice = number_format((float)$askPrice, 5, '.', '');
+                }
+                if (strlen(substr(strrchr((string)$bidPrice, "."), 1)) > 5) {
+                    $bidPrice = number_format((float)$bidPrice, 5, '.', '');
+                }
+
+                // البحث في الذاكرة (RAM) فقط
+                if (isset($this->assetsCache[$symbol])) {
+                    $asset = $this->assetsCache[$symbol];
+
+                    if ($asset->bid_price != $bidPrice || $asset->ask_price != $askPrice) {
+                        
+                        $asset->update([
+                            'bid_price' => $bidPrice,
+                            'ask_price' => $askPrice,
+                            'last_bid'  => $asset->bid_price,
+                            'last_ask'  => $asset->ask_price,
+                        ]);
+
+                        // تحديث الذاكرة
+                        $asset->bid_price = $bidPrice;
+                        $asset->ask_price = $askPrice;
                     }
+                }
+            });
 
-                    /*
-                     * التأكد من وجود بيانات السعر
-                     */
-                    if (
-                        !isset($response['s']) ||
-                        !isset($response['b']) ||
-                        !isset($response['a'])
-                    ) {
-                        return;
-                    }
+            // ⚠️ الجزء الذي كان مفقوداً: إعادة الاتصال عند انقطاع السوكيت
+            $conn->on('close', function ($code = null, $reason = null) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+                // ننتظر ثانيتين ثم نعيد الاتصال لتجنب الحظر
+                sleep(2);
+                $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage); 
+            });
 
-                    $symbol = strtoupper($response['s']);
-
-                    /*
-                     * نتأكد أننا نستقبل الذهب فقط
-                     */
-                    if ($symbol !== 'XAUUSD') {
-                        return;
-                    }
-
-                    $bidPrice = $response['b'];
-                    $askPrice = $response['a'];
-
-                    /*
-                     * عرض البيانات القادمة
-                     */
-                    $this->line(
-                        "📈 {$symbol} | BID: {$bidPrice} | ASK: {$askPrice}"
-                    );
-
-                    /*
-                     * حفظ الأسعار القديمة
-                     */
-                    $oldBid = $this->asset->bid_price;
-                    $oldAsk = $this->asset->ask_price;
-
-                    /*
-                     * لا تحدث قاعدة البيانات إذا لم يتغير شيء
-                     */
-                    if (
-                        (string) $oldBid === (string) $bidPrice &&
-                        (string) $oldAsk === (string) $askPrice
-                    ) {
-                        return;
-                    }
-
-                    /*
-                     * تحديث قاعدة البيانات
-                     */
-                    $this->asset->update([
-                        'bid_price' => $bidPrice,
-                        'ask_price' => $askPrice,
-                        'last_bid'  => $oldBid,
-                        'last_ask'  => $oldAsk,
-                    ]);
-
-                    /*
-                     * تحديث البيانات الموجودة في RAM
-                     */
-                    $this->asset->bid_price = $bidPrice;
-                    $this->asset->ask_price = $askPrice;
-
-                    $this->info(
-                        "💾 UPDATED XAUUSD | " .
-                        "BID: {$oldBid} → {$bidPrice} | " .
-                        "ASK: {$oldAsk} → {$askPrice}"
-                    );
-                });
-
-                /*
-                 * عند حدوث خطأ
-                 */
-                $conn->on('error', function ($e) {
-
-                    $this->error(
-                        '❌ WebSocket Error: ' . $e->getMessage()
-                    );
-
-                    \Log::error(
-                        'XAUUSD WebSocket Error: ' . $e->getMessage()
-                    );
-                });
-
-                /*
-                 * عند انقطاع الاتصال
-                 */
-                $conn->on(
-                    'close',
-                    function (
-                        $code = null,
-                        $reason = null
-                    ) use (
-                        $wsUrl,
-                        $connector,
-                        $loop,
-                        $subscribeMessage
-                    ) {
-
-                        $this->warn(
-                            "⚠️ Connection closed. Code: {$code}"
-                        );
-
-                        $this->warn(
-                            '🔄 Reconnecting in 2 seconds...'
-                        );
-
-                        $loop->addTimer(
-                            2,
-                            function () use (
-                                $wsUrl,
-                                $connector,
-                                $loop,
-                                $subscribeMessage
-                            ) {
-                                $this->startWebSocket(
-                                    $wsUrl,
-                                    $connector,
-                                    $loop,
-                                    $subscribeMessage
-                                );
-                            }
-                        );
-                    }
-                );
-            },
-
-            /*
-             * إذا فشل الاتصال
-             */
-            function ($e) use (
-                $wsUrl,
-                $connector,
-                $loop,
-                $subscribeMessage
-            ) {
-
-                $this->error(
-                    '❌ Connection failed: ' . $e->getMessage()
-                );
-
-                $this->warn(
-                    '🔄 Retrying in 5 seconds...'
-                );
-
-                $loop->addTimer(
-                    5,
-                    function () use (
-                        $wsUrl,
-                        $connector,
-                        $loop,
-                        $subscribeMessage
-                    ) {
-                        $this->startWebSocket(
-                            $wsUrl,
-                            $connector,
-                            $loop,
-                            $subscribeMessage
-                        );
-                    }
-                );
-            }
-        );
+        }, function ($e) use ($wsUrl, $connector, $loop, $subscribeMessage) {
+            sleep(5);
+            $this->startWebSocket($wsUrl, $connector, $loop, $subscribeMessage);
+        });
     }
+    
 }
