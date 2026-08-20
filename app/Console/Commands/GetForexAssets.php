@@ -12,89 +12,48 @@ class GetForexAssets extends Command
 {
     protected $signature = 'get:forex-assets';
 
-    protected $description = 'Listen to Forex WebSocket with optimized performance and auto reconnect';
+    protected $description = 'Listen to XAUUSD Forex WebSocket';
 
-    /**
-     * تخزين الأصول في الذاكرة
-     *
-     * الشكل:
-     * [
-     *     'XAUUSD' => Asset Object,
-     *     'EURUSD' => Asset Object,
-     * ]
-     */
-    protected $assetsCache = [];
-
+    protected $asset;
 
     public function handle()
     {
         $this->info('==========================================');
-        $this->info('🚀 Starting Forex WebSocket...');
+        $this->info('🚀 Starting XAUUSD WebSocket...');
         $this->info('==========================================');
 
         /*
-         * جلب جميع أصول الفوركس الفعالة مرة واحدة فقط
+         * جلب الذهب من قاعدة البيانات مرة واحدة فقط
          */
-        $assets = Asset::where('type', 'Forex')
+        $this->asset = Asset::where('symbol', 'XAUUSD')
             ->where('is_active', 1)
-            ->get();
+            ->first();
 
-        foreach ($assets as $asset) {
-
-            $symbol = strtoupper($asset->symbol);
-
-            $this->assetsCache[$symbol] = $asset;
-        }
-
-
-        /*
-         * التأكد من وجود أصول
-         */
-        if (empty($this->assetsCache)) {
-
-            $this->error('⚠️ No active Forex assets found.');
+        if (!$this->asset) {
+            $this->error('❌ XAUUSD not found or not active in database.');
 
             return Command::FAILURE;
         }
 
+        $this->info("📊 Asset found: {$this->asset->symbol}");
 
         /*
-         * إنشاء قائمة الرموز
-         */
-        $symbols = implode(',', array_keys($this->assetsCache));
-
-
-        /*
-         * رسالة الاشتراك
+         * الاشتراك فقط في الذهب
          */
         $subscribeMessage = json_encode([
             'action'  => 'subscribe',
-            'symbols' => $symbols,
+            'symbols' => 'XAUUSD',
         ]);
 
-
         /*
-         * WebSocket URL
+         * Forex WebSocket
          */
         $wsUrl = 'wss://ws.eodhistoricaldata.com/ws/forex?api_token=67f4cea78e4f60.22404437';
 
-
-        $this->info('📊 Symbols loaded: ' . count($this->assetsCache));
-        $this->line('📡 Symbols: ' . $symbols);
-        $this->line('');
-
-
-        /*
-         * إنشاء Event Loop
-         */
         $loop = Factory::create();
 
         $connector = new Connector($loop);
 
-
-        /*
-         * بدء الاتصال
-         */
         $this->startWebSocket(
             $wsUrl,
             $connector,
@@ -102,241 +61,139 @@ class GetForexAssets extends Command
             $subscribeMessage
         );
 
-
-        /*
-         * تشغيل Event Loop
-         */
         $loop->run();
 
         return Command::SUCCESS;
     }
 
-
-    /**
-     * الاتصال بـ WebSocket
-     */
     private function startWebSocket(
         string $wsUrl,
         Connector $connector,
         $loop,
         string $subscribeMessage
     ) {
-        $this->info('🔌 Connecting to Forex WebSocket...');
-
+        $this->info('🔌 Connecting to WebSocket...');
 
         $connector($wsUrl)->then(
 
-            /*
-             * نجح الاتصال
-             */
             function (WebSocket $conn) use (
                 $wsUrl,
                 $connector,
                 $loop,
                 $subscribeMessage
             ) {
-
                 $this->info('✅ Connected successfully!');
-                $this->info('📨 Sending subscription...');
 
                 /*
                  * إرسال الاشتراك
                  */
                 $conn->send($subscribeMessage);
 
+                $this->info(
+                    '📨 Subscribed to XAUUSD'
+                );
 
                 /*
                  * استقبال البيانات
                  */
                 $conn->on('message', function ($data) {
 
-                    /*
-                     * تحويل JSON إلى Array
-                     */
                     $response = json_decode($data, true);
 
-
                     /*
-                     * في حال كانت البيانات غير صالحة
+                     * التأكد من صحة JSON
                      */
                     if (json_last_error() !== JSON_ERROR_NONE) {
-
                         $this->warn(
-                            '⚠️ Invalid JSON received: ' . $data
+                            '⚠️ Invalid JSON: ' . $data
                         );
 
                         return;
                     }
 
-
                     /*
-                     * عرض البيانات الخام
+                     * رسائل النظام مثل Authorized
                      */
-                    $this->line('');
-                    $this->line('------------------------------------------');
-                    $this->line('📥 RAW DATA: ' . $data);
+                    if (isset($response['status_code'])) {
 
+                        $this->info(
+                            "📡 {$response['message']}"
+                        );
+
+                        return;
+                    }
 
                     /*
-                     * التأكد من وجود البيانات المطلوبة
+                     * التأكد من وجود بيانات السعر
                      */
                     if (
                         !isset($response['s']) ||
                         !isset($response['b']) ||
                         !isset($response['a'])
                     ) {
-
-                        $this->warn(
-                            '⚠️ Message does not contain symbol/bid/ask'
-                        );
-
                         return;
                     }
 
-
-                    /*
-                     * استخراج البيانات
-                     */
                     $symbol = strtoupper($response['s']);
 
-                    $bidPrice = $response['b'];
+                    /*
+                     * نتأكد أننا نستقبل الذهب فقط
+                     */
+                    if ($symbol !== 'XAUUSD') {
+                        return;
+                    }
 
+                    $bidPrice = $response['b'];
                     $askPrice = $response['a'];
 
-
                     /*
-                     * عرض الأسعار القادمة
+                     * عرض البيانات القادمة
                      */
-                    $this->info(
+                    $this->line(
                         "📈 {$symbol} | BID: {$bidPrice} | ASK: {$askPrice}"
                     );
-
-
-                    /*
-                     * تنسيق السعر إلى 5 منازل عشرية
-                     * إذا كان يحتوي على أكثر من 5
-                     */
-                    if (
-                        strpos((string) $askPrice, '.') !== false &&
-                        strlen(
-                            substr(
-                                strrchr((string) $askPrice, '.'),
-                                1
-                            )
-                        ) > 5
-                    ) {
-
-                        $askPrice = number_format(
-                            (float) $askPrice,
-                            5,
-                            '.',
-                            ''
-                        );
-                    }
-
-
-                    if (
-                        strpos((string) $bidPrice, '.') !== false &&
-                        strlen(
-                            substr(
-                                strrchr((string) $bidPrice, '.'),
-                                1
-                            )
-                        ) > 5
-                    ) {
-
-                        $bidPrice = number_format(
-                            (float) $bidPrice,
-                            5,
-                            '.',
-                            ''
-                        );
-                    }
-
-
-                    /*
-                     * البحث عن الأصل في RAM
-                     */
-                    if (!isset($this->assetsCache[$symbol])) {
-
-                        $this->warn(
-                            "⚠️ {$symbol} received but not found in assetsCache"
-                        );
-
-                        return;
-                    }
-
-
-                    /*
-                     * الحصول على Asset من الذاكرة
-                     */
-                    $asset = $this->assetsCache[$symbol];
-
-
-                    /*
-                     * إذا لم يتغير السعر
-                     */
-                    if (
-                        (string) $asset->bid_price === (string) $bidPrice &&
-                        (string) $asset->ask_price === (string) $askPrice
-                    ) {
-
-                        $this->line(
-                            "➖ NO CHANGE: {$symbol}"
-                        );
-
-                        return;
-                    }
-
 
                     /*
                      * حفظ الأسعار القديمة
                      */
-                    $oldBid = $asset->bid_price;
+                    $oldBid = $this->asset->bid_price;
+                    $oldAsk = $this->asset->ask_price;
 
-                    $oldAsk = $asset->ask_price;
-
+                    /*
+                     * لا تحدث قاعدة البيانات إذا لم يتغير شيء
+                     */
+                    if (
+                        (string) $oldBid === (string) $bidPrice &&
+                        (string) $oldAsk === (string) $askPrice
+                    ) {
+                        return;
+                    }
 
                     /*
                      * تحديث قاعدة البيانات
                      */
-                    $asset->update([
+                    $this->asset->update([
                         'bid_price' => $bidPrice,
                         'ask_price' => $askPrice,
                         'last_bid'  => $oldBid,
                         'last_ask'  => $oldAsk,
                     ]);
 
-
                     /*
-                     * تحديث النسخة الموجودة في RAM
+                     * تحديث البيانات الموجودة في RAM
                      */
-                    $asset->bid_price = $bidPrice;
+                    $this->asset->bid_price = $bidPrice;
+                    $this->asset->ask_price = $askPrice;
 
-                    $asset->ask_price = $askPrice;
-
-
-                    /*
-                     * طباعة نتيجة التحديث
-                     */
                     $this->info(
-                        "💾 UPDATED {$symbol}"
+                        "💾 UPDATED XAUUSD | " .
+                        "BID: {$oldBid} → {$bidPrice} | " .
+                        "ASK: {$oldAsk} → {$askPrice}"
                     );
-
-                    $this->line(
-                        "   BID: {$oldBid} → {$bidPrice}"
-                    );
-
-                    $this->line(
-                        "   ASK: {$oldAsk} → {$askPrice}"
-                    );
-
-                    $this->line('------------------------------------------');
                 });
 
-
                 /*
-                 * عند حدوث خطأ في الاتصال
+                 * عند حدوث خطأ
                  */
                 $conn->on('error', function ($e) {
 
@@ -345,10 +202,9 @@ class GetForexAssets extends Command
                     );
 
                     \Log::error(
-                        'Forex WebSocket Error: ' . $e->getMessage()
+                        'XAUUSD WebSocket Error: ' . $e->getMessage()
                     );
                 });
-
 
                 /*
                  * عند انقطاع الاتصال
@@ -366,18 +222,13 @@ class GetForexAssets extends Command
                     ) {
 
                         $this->warn(
-                            "⚠️ WebSocket closed. Code: {$code}, Reason: {$reason}"
+                            "⚠️ Connection closed. Code: {$code}"
                         );
 
                         $this->warn(
                             '🔄 Reconnecting in 2 seconds...'
                         );
 
-
-                        /*
-                         * إعادة الاتصال بعد ثانيتين
-                         * بدون sleep()
-                         */
                         $loop->addTimer(
                             2,
                             function () use (
@@ -386,7 +237,6 @@ class GetForexAssets extends Command
                                 $loop,
                                 $subscribeMessage
                             ) {
-
                                 $this->startWebSocket(
                                     $wsUrl,
                                     $connector,
@@ -399,9 +249,8 @@ class GetForexAssets extends Command
                 );
             },
 
-
             /*
-             * فشل الاتصال
+             * إذا فشل الاتصال
              */
             function ($e) use (
                 $wsUrl,
@@ -415,13 +264,9 @@ class GetForexAssets extends Command
                 );
 
                 $this->warn(
-                    '🔄 Retrying connection in 5 seconds...'
+                    '🔄 Retrying in 5 seconds...'
                 );
 
-
-                /*
-                 * إعادة المحاولة بدون إيقاف الـ Event Loop
-                 */
                 $loop->addTimer(
                     5,
                     function () use (
@@ -430,7 +275,6 @@ class GetForexAssets extends Command
                         $loop,
                         $subscribeMessage
                     ) {
-
                         $this->startWebSocket(
                             $wsUrl,
                             $connector,
