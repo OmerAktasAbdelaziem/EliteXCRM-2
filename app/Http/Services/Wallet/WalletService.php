@@ -40,9 +40,11 @@ class WalletService implements WalletServiceInterface
         $userAuth = Auth::user();
         
         $walletInputs = [
-            'pipeline_id' => $userAuth->pipeline_id,
-            'address'     => $data['address'],
-            'network'     => $data['network'],
+            'pipeline_id'   => $userAuth->pipeline_id,
+            'type'          => $data['type'],
+            'name'          => $data['name'],
+            'address'       => $data['address'],
+            'network'       => $data['network'],
         ];
 
         $wallet = DB::transaction(function () use ($walletInputs, $data) {
@@ -61,8 +63,10 @@ class WalletService implements WalletServiceInterface
     public function update(int $id, array $data): int
     {
         $walletInputs = [
-            'address' => $data['address'],
-            'network' => $data['network'],
+            'type'      => $data['type'],
+            'name'      => $data['name'],
+            'address'   => $data['address'],
+            'network'   => $data['network'],
         ];
      
         $done = DB::transaction(function () use ($id, $walletInputs, $data) {

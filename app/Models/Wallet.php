@@ -10,6 +10,8 @@ class Wallet extends Model
 {
     protected $fillable = [
         'pipeline_id',
+        'type',
+        'name',
         'address',
         'network',
     ];

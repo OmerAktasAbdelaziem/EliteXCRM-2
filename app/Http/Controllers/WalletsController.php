@@ -54,6 +54,8 @@ class WalletsController extends Controller {
     public function store(Request $request) {
 
         $validated = $request->validate([
+            'type'                 => 'required|string|in:deposit,withdrawal',
+            'name'                 => 'required|string|max:255',
             'address'              => 'required|string|max:255',
             'network'              => 'required|string|max:255',
             'countries'            => 'required|array',
@@ -92,6 +94,8 @@ class WalletsController extends Controller {
     public function update(Request $request, $id) {  
 
         $validated = $request->validate([
+            'type'                 => 'required|string|in:deposit,withdrawal',
+            'name'                 => 'required|string|max:255',
             'address'              => 'required|string|max:255',
             'network'              => 'required|string|max:255',
             'countries'            => 'required|array',

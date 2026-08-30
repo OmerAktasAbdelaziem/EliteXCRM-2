@@ -42,8 +42,10 @@
                                             <table class="table align-middle mb-0 table-hover data-table">
                                                 <thead class="table-light">
                                                     <tr>
+                                                        <th>Name</th>
                                                         <th>Address</th>
                                                         <th>Network</th>
+                                                        <th>Type</th>
                                                         <th>Created At</th>
                                                     </tr>
                                                 </thead>
@@ -52,11 +54,19 @@
                                                         <tr>
                                                             <td>
                                                                 <a href="{{ route('wallets.show', $wallet->id) }}">
+                                                                    {{$wallet->name}}
+                                                                </a>
+                                                            </td>
+
+                                                            <td>
+                                                                <a href="{{ route('wallets.show', $wallet->id) }}">
                                                                     {{$wallet->address}}
                                                                 </a>
                                                             </td>
 
                                                             <td>{{$wallet->network}}</td>
+
+                                                            <td>{{$wallet->type}}</td>
                                                             
                                                             <td>{{date('d/m/Y H:i', strtotime($wallet->created_at))}}</td>
                                                         </tr>

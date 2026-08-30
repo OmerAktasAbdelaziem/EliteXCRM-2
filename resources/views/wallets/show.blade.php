@@ -49,7 +49,34 @@
                                     @method('PUT')
                                 @endif
 
-                                <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Name</label>
+                                    <div class="input-group">
+                                        <input class="form-control" id="name" name="name" type="text" placeholder="Enter name here..." required value="{{ old('name', $wallet->name) }}">
+                                    </div>
+                                    @error('name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="type" class="form-label">Type</label>
+                                    <div class="input-group">
+                                        <select class="form-select" name="type">
+                                            <option value="deposit" {{ (old('type', $wallet->type) == 'deposit') ? 'selected' : '' }}>
+                                                Deposit
+                                            </option>
+                                            <option value="withdrawal" {{ (old('type', $wallet->type) == 'withdrawal') ? 'selected' : '' }}>
+                                                Withdrawal
+                                            </option>
+                                        </select>
+                                    </div>
+                                    @error('type')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
                                     <label for="address" class="form-label">Address</label>
                                     <div class="input-group">
                                         <input class="form-control" id="address" name="address" type="text" placeholder="Enter address here..." required value="{{ old('address', $wallet->address) }}">
@@ -59,7 +86,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label for="network" class="form-label">Network</label>
                                     <div class="input-group">
                                         <input class="form-control" id="network" name="network" type="text" placeholder="Enter network here..." required value="{{ old('network', $wallet->network) }}">
