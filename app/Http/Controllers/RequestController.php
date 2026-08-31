@@ -77,7 +77,7 @@ if (!$user) {
         }
     
         return $query
-            ->with(['client','client.user'])
+            ->with(['client','client.user', 'extraFieldAnswers.walletField'])
             ->latest()
             ->get();
     }

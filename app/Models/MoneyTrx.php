@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MoneyTrx extends Model
 {
@@ -41,5 +42,14 @@ class MoneyTrx extends Model
 {
     return $this->hasMany(MoneyTrxDetail::class, 'money_trx', 'id');
 }
+
+
+    /**
+     * Get all extra field answers for the transaction.
+     */
+    public function extraFieldAnswers(): HasMany
+    {
+        return $this->hasMany(MoneyTrxesExtraFieldAnswer::class, 'money_trxes_id', 'id');
+    }
 }
 

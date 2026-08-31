@@ -138,6 +138,17 @@
                         @isset ($data['paymentDetailsInfo']['beneficiaryCountry'])
                             {{ $data['paymentDetailsInfo']['beneficiaryCountry']??'' }}
                         @endif
+
+                        asd
+                        @isset ($data['extraFieldAnswers'])
+                            @foreach ($data['extraFieldAnswers'] as $answer)
+                                Extra field text: {{$answer->field_text}}<br>
+                                Client answer: {{$answer->client_answer}}<br>
+                                @if (!$loop->last)
+                                    ----------------------<br>
+                                @endif
+                            @endforeach
+                        @endif
                     </td>
                 </tr>
                 <tr>
