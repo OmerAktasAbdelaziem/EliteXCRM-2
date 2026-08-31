@@ -1009,35 +1009,35 @@
                                                                             {!! $money_trx->comment !!}
                                                                         </td>
                                                                         <td>
-                                                                            @if ($request->bank_details)
-                                                                                Iban                : {{$request->bank_details['iban'] ?? ''}}
+                                                                            @if ($money_trx->bank_details)
+                                                                                Iban                : {{$money_trx->bank_details['iban'] ?? ''}}
                                                                                 <br>
-                                                                                Swift               : {{$request->bank_details['swift'] ?? ''}}
+                                                                                Swift               : {{$money_trx->bank_details['swift'] ?? ''}}
                                                                                 <br>
-                                                                                Currency            : {{$request->bank_details['currency'] ?? ''}}
+                                                                                Currency            : {{$money_trx->bank_details['currency'] ?? ''}}
                                                                                 <br>
-                                                                                Bank Name           : {{$request->bank_details['bank_name'] ?? ''}}
+                                                                                Bank Name           : {{$money_trx->bank_details['bank_name'] ?? ''}}
                                                                                 <br>
-                                                                                Bank Country        : {{$request->bank_details['bank_country'] ?? ''}}
+                                                                                Bank Country        : {{$money_trx->bank_details['bank_country'] ?? ''}}
                                                                                 <br>
-                                                                                Bank Address        : {{$request->bank_details['bank_address'] ?? ''}}
+                                                                                Bank Address        : {{$money_trx->bank_details['bank_address'] ?? ''}}
                                                                                 <br>
-                                                                                Beneficiary Name    : {{$request->bank_details['beneficiary_name'] ?? ''}}
+                                                                                Beneficiary Name    : {{$money_trx->bank_details['beneficiary_name'] ?? ''}}
                                                                                 <br>
-                                                                                Beneficiary Address : {{$request->bank_details['beneficiary_address'] ?? ''}}
+                                                                                Beneficiary Address : {{$money_trx->bank_details['beneficiary_address'] ?? ''}}
                                                                                 <br>
-                                                                                ABA Routing Number  : {{$request->bank_details['aba_routing_number'] ?? ''}}
+                                                                                ABA Routing Number  : {{$money_trx->bank_details['aba_routing_number'] ?? ''}}
                                                                                 <br>
-                                                                                Beneficiary Country : {{$request->bank_details['beneficiary_country'] ?? ''}}
+                                                                                Beneficiary Country : {{$money_trx->bank_details['beneficiary_country'] ?? ''}}
                                                                             @endif
-                                                                            @if ($request->bank_id && $request->bank)
-                                                                                Bank Name           : {{$request->bank->name ?? ''}}
+                                                                            @if ($money_trx->bank_id && $money_trx->bank)
+                                                                                Bank Name           : {{$money_trx->bank->name ?? ''}}
                                                                                 <br>
-                                                                                Bank Country        : {{$request->bank->country ?? ''}}
+                                                                                Bank Country        : {{$money_trx->bank->country ?? ''}}
                                                                             @endif
-                                                                            {{$request->usdt ?? ''}}
-                                                                            @isset ($request->extraFieldAnswers)
-                                                                                @foreach ($request->extraFieldAnswers as $answer)
+                                                                            {{$money_trx->usdt ?? ''}}
+                                                                            @isset ($money_trx->extraFieldAnswers)
+                                                                                @foreach ($money_trx->extraFieldAnswers as $answer)
                                                                                     Extra field text: {{$answer->field_text}}<br>
                                                                                     Client answer: {{$answer->client_answer}}<br>
                                                                                     @if (!$loop->last)
