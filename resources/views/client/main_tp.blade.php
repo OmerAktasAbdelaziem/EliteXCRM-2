@@ -1036,6 +1036,15 @@
                                                                                 Bank Country        : {{$request->bank->country ?? ''}}
                                                                             @endif
                                                                             {{$request->usdt ?? ''}}
+                                                                            @isset ($request->extraFieldAnswers)
+                                                                                @foreach ($request->extraFieldAnswers as $answer)
+                                                                                    Extra field text: {{$answer->field_text}}<br>
+                                                                                    Client answer: {{$answer->client_answer}}<br>
+                                                                                    @if (!$loop->last)
+                                                                                        ----------------------<br>
+                                                                                    @endif
+                                                                                @endforeach
+                                                                            @endif
                                                                         </td>
                                                                         <td>
                                                                             @if ($money_trx->receipt)
