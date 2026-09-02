@@ -23,7 +23,9 @@ class WalletsController extends Controller {
         $isSuperAdmin = UserPermission::isSuperAdmin($userAuth);
         $isPipelineAdmin = UserPermission::isPipelineAdmin($userAuth, $pipelineId);
 
-        $wallets = $this->walletService->getByFilters([]);
+        $wallets = $this->walletService->getByFilters([
+            ['field' => 'pipeline_id', 'conditions' => ['=' => $pipelineId]],
+        ]);
 
         return view('wallets.index', compact(
             'isSuperAdmin',
