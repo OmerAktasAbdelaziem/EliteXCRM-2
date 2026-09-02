@@ -12,6 +12,8 @@ class WalletField extends Model
         'wallet_id',
         'arabic_field_name',
         'english_field_name',
+        'arabic_field_value',
+        'english_field_value',
         'order',
     ];
 

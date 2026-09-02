@@ -43,8 +43,8 @@
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th>Name</th>
-                                                        <th>Address</th>
-                                                        <th>Network</th>
+                                                        {{-- <th>Address</th>
+                                                        <th>Network</th> --}}
                                                         <th>Type</th>
                                                         <th>Created At</th>
                                                     </tr>
@@ -58,13 +58,13 @@
                                                                 </a>
                                                             </td>
 
-                                                            <td>
+                                                            {{-- <td>
                                                                 <a href="{{ route('wallets.show', $wallet->id) }}">
                                                                     {{$wallet->address}}
                                                                 </a>
                                                             </td>
 
-                                                            <td>{{$wallet->network}}</td>
+                                                            <td>{{$wallet->network}}</td> --}}
 
                                                             <td>{{$wallet->type}}</td>
                                                             

@@ -3,6 +3,35 @@
     <link href="{{ url('assets/plugins/datatable/css/dataTables.bootstrap5.min.css?v2.944') }}" rel="stylesheet" />
     <link href="{{ url('assets/plugins/select2/css/select2.min.css?v2.944') }}" rel="stylesheet" />
     <link href="{{ url('assets/plugins/select2/css/select2-bootstrap4.min.css?v2.944') }}" rel="stylesheet" />
+    <style>
+        .deposit-only {
+            display: none;
+        }
+        .type-deposit .deposit-only {
+            display: flex !important;
+        }
+        .field-row {
+            flex-wrap: wrap;
+        }
+        .field-row .input-group {
+            flex: 1 1 auto;
+        }
+        .field-value-group {
+            display: flex;
+            flex-wrap: wrap;
+            /* gap: 0.25rem; */
+            margin-top: 0.25rem;
+            width: 100%;
+        }
+        .field-value-group .input-group {
+            flex: 1 1 45%;
+        }
+        @media (max-width: 576px) {
+            .field-value-group .input-group {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
 @endsection
 @section("wrapper")
     <div class="page-wrapper">
@@ -62,7 +91,7 @@
                                 <div class="col-md-6">
                                     <label for="type" class="form-label">Type</label>
                                     <div class="input-group">
-                                        <select class="form-select" name="type">
+                                        <select class="form-select" name="type" id="wallet-type">
                                             <option value="deposit" {{ (old('type', $wallet->type) == 'deposit') ? 'selected' : '' }}>
                                                 Deposit
                                             </option>
@@ -76,7 +105,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label for="address" class="form-label">Address</label>
                                     <div class="input-group">
                                         <input class="form-control" id="address" name="address" type="text" placeholder="Enter address here..." required value="{{ old('address', $wallet->address) }}">
@@ -94,7 +123,7 @@
                                     @error('network')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div> --}}
 
                                 <div class="col-12">
                                     <label class="form-label">Countries</label>
@@ -124,6 +153,8 @@
                                         @php
                                             $oldEnglish = old('english_field_names', []);
                                             $oldArabic = old('arabic_field_names', []);
+                                            $oldEnglishVals  = old('english_field_values', []);
+                                            $oldArabicVals   = old('arabic_field_values', []);
                                             $hasOldInput = count($oldEnglish) > 0;
                                             
                                             $loopItems = $hasOldInput ? $oldEnglish : ($wallet->fields ?? []);
@@ -133,35 +164,64 @@
                                             @php
                                                 $englishValue = $hasOldInput ? $item : $item->english_field_name;
                                                 $arabicValue = $hasOldInput ? $oldArabic[$index] : $item->arabic_field_name;
+                                                $englishVal = $hasOldInput ? ($oldEnglishVals[$index] ?? '') : ($item->english_field_value ?? '');
+                                                $arabicVal  = $hasOldInput ? ($oldArabicVals[$index] ?? '') : ($item->arabic_field_value ?? '');
                                             @endphp
-                                            <div class="field-row input-group">
-                                                <span class="input-group-text bg-light text-muted small fw-bold">EN</span>
-                                                <input type="text" class="form-control" name="english_field_names[]" value="{{ $englishValue }}" placeholder="Field Name (English)">
-                                                
-                                                <span class="input-group-text bg-light text-muted small fw-bold">AR</span>
-                                                <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_names[]" value="{{ $arabicValue }}" placeholder="Field Name (Arabic)">
-                                                
-                                                <button type="button" class="btn btn-outline-danger" onclick="removeWalletField(this)">
-                                                    <i class="bx bx-trash"></i>
-                                                </button>
+                                            <div class="field-row">
+                                                @if (!$loop->first)
+                                                    <hr>
+                                                @endif
+                                                <div class="fields-group d-flex gap-1">
+                                                    <div class="field-row input-group">
+                                                        <span class="input-group-text bg-light text-muted small fw-bold">EN</span>
+                                                        <input type="text" class="form-control" name="english_field_names[]" value="{{ $englishValue }}" placeholder="Field Name (English)">
+                                                        
+                                                        <span class="input-group-text bg-light text-muted small fw-bold">AR</span>
+                                                        <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_names[]" value="{{ $arabicValue }}" placeholder="Field Name (Arabic)">
+                                                        
+                                                        {{-- Value inputs – only for deposit --}}
+                                                        <div class="field-value-group deposit-only input-group">
+                                                            <span class="input-group-text bg-light text-muted small fw-bold">EN Value</span>
+                                                            <input type="text" class="form-control" name="english_field_values[]" value="{{ $englishVal }}" placeholder="Value (English)">
+                                                            <span class="input-group-text bg-light text-muted small fw-bold">AR Value</span>
+                                                            <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_values[]" value="{{ $arabicVal }}" placeholder="Value (Arabic)">
+                                                        </div>
+                                                    </div>
+
+                                                    <button type="button" class="btn btn-outline-danger" onclick="removeWalletField(this)">
+                                                        <i class="bx bx-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         @empty
                                             <!-- Default Single Empty Row if no data exists -->
-                                            <div class="field-row input-group">
-                                                <span class="input-group-text bg-light text-muted small fw-bold">EN</span>
-                                                <input type="text" class="form-control" name="english_field_names[]" placeholder="Field Name (English)">
-                                                
-                                                <span class="input-group-text bg-light text-muted small fw-bold">AR</span>
-                                                <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_names[]" placeholder="Field Name (Arabic)">
-                                                
-                                                <button type="button" class="btn btn-outline-danger" onclick="removeWalletField(this)">
-                                                    <i class="bx bx-trash"></i>
-                                                </button>
+                                            
+                                            <div class="field-row">
+                                                <div class="fields-group d-flex gap-1">
+                                                    <div class="field-row input-group">
+                                                        <span class="input-group-text bg-light text-muted small fw-bold">EN</span>
+                                                        <input type="text" class="form-control" name="english_field_names[]" placeholder="Field Name (English)">
+                                                        
+                                                        <span class="input-group-text bg-light text-muted small fw-bold">AR</span>
+                                                        <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_names[]" placeholder="Field Name (Arabic)">
+            
+                                                        <div class="field-value-group deposit-only input-group">
+                                                            <span class="input-group-text bg-light text-muted small fw-bold">EN Value</span>
+                                                            <input type="text" class="form-control" name="english_field_values[]" placeholder="Value (English)">
+                                                            <span class="input-group-text bg-light text-muted small fw-bold">AR Value</span>
+                                                            <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_values[]" placeholder="Value (Arabic)">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <button type="button" class="btn btn-outline-danger" onclick="removeWalletField(this)">
+                                                        <i class="bx bx-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         @endforelse
                                     </div>    
 
-                                    @if($errors->has('english_field_names.*') || $errors->has('arabic_field_names.*'))
+                                    @if($errors->has('english_field_names.*') || $errors->has('arabic_field_names.*') || $errors->has('english_field_values.*') || $errors->has('arabic_field_values.*'))
                                         <div class="text-danger small mt-1">Please ensure all field entries are filled correctly.</div>
                                     @endif
                                 </div>
@@ -215,21 +275,54 @@
     <script>
         function addNewWalletField() {
             let wrapper = document.getElementById('fields-wrapper');
+
+            const rows = document.querySelector('.field-row');
+            let hr = '<hr>';
+            if(!rows){
+                hr = '';
+            }
+
             let div = document.createElement('div');
-            div.className = 'field-row input-group';
+            div.className = 'field-row';
+
+            let isDeposit = document.getElementById('wallet-type').value === 'deposit';
             
-            div.innerHTML = `
-                <span class="input-group-text bg-light text-muted small fw-bold">EN</span>
-                <input type="text" class="form-control" name="english_field_names[]" placeholder="Field Name (English)">
-                
-                <span class="input-group-text bg-light text-muted small fw-bold">AR</span>
-                <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_names[]" placeholder="Field Name (Arabic)">
-                
-                <button type="button" class="btn btn-outline-danger" onclick="removeWalletField(this)">
-                    <i class="bx bx-trash"></i>
-                </button>
+            let valueHtml = isDeposit ? `
+                <div class="field-value-group deposit-only input-group" style="display:flex !important;">
+                    <span class="input-group-text bg-light text-muted small fw-bold">EN Value</span>
+                    <input type="text" class="form-control" name="english_field_values[]" placeholder="Value (English)">
+                    <span class="input-group-text bg-light text-muted small fw-bold">AR Value</span>
+                    <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_values[]" placeholder="Value (Arabic)">
+                </div>
+            ` : `
+                <div class="field-value-group deposit-only input-group" style="display:none;">
+                    <span class="input-group-text bg-light text-muted small fw-bold">EN Value</span>
+                    <input type="text" class="form-control" name="english_field_values[]" placeholder="Value (English)">
+                    <span class="input-group-text bg-light text-muted small fw-bold">AR Value</span>
+                    <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_values[]" placeholder="Value (Arabic)">
+                </div>
             `;
-            
+
+            div.innerHTML = `
+                ${hr}
+                
+                <div class="fields-group d-flex gap-1">
+                    <div class="field-row input-group">
+                        <span class="input-group-text bg-light text-muted small fw-bold">EN</span>
+                        <input type="text" class="form-control" name="english_field_names[]" placeholder="Field Name (English)">
+                        
+                        <span class="input-group-text bg-light text-muted small fw-bold">AR</span>
+                        <input type="text" class="form-control text-end" dir="rtl" name="arabic_field_names[]" placeholder="Field Name (Arabic)">
+                        
+                        ${valueHtml}
+                    </div>
+                                                
+                    <button type="button" class="btn btn-outline-danger" onclick="removeWalletField(this)">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
+            `;
+
             wrapper.appendChild(div);
             div.querySelector('input[name="english_field_names[]"]').focus();
         }
@@ -239,6 +332,32 @@
             row.remove();
         }
 
+        // Toggle visibility of value fields based on type selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('wallet-type');
+            const allRows = document.querySelectorAll('.field-row');
+            
+            function toggleValueFields(show) {
+                document.querySelectorAll('.field-row .field-value-group').forEach(group => {
+                    group.style.display = show ? 'flex !important' : 'none';
+                });
+                // Also toggle the container class to allow CSS override
+                const form = typeSelect.closest('form');
+                if (show) {
+                    form.classList.add('type-deposit');
+                } else {
+                    form.classList.remove('type-deposit');
+                }
+            }
+            
+            // Initial state
+            toggleValueFields(typeSelect.value === 'deposit');
+            
+            // On change
+            typeSelect.addEventListener('change', function() {
+                toggleValueFields(this.value === 'deposit');
+            });
+        });
     </script>
 
     <script src="{{ url('assets/plugins/datatable/js/jquery.dataTables.min.js?v2.944') }}"></script>

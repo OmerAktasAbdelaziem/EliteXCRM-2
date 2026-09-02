@@ -43,8 +43,8 @@ class WalletService implements WalletServiceInterface
             'pipeline_id'   => $userAuth->pipeline_id,
             'type'          => $data['type'],
             'name'          => $data['name'],
-            'address'       => $data['address'],
-            'network'       => $data['network'],
+            // 'address'       => $data['address'],
+            // 'network'       => $data['network'],
         ];
 
         $wallet = DB::transaction(function () use ($walletInputs, $data) {
@@ -65,8 +65,8 @@ class WalletService implements WalletServiceInterface
         $walletInputs = [
             'type'      => $data['type'],
             'name'      => $data['name'],
-            'address'   => $data['address'],
-            'network'   => $data['network'],
+            // 'address'   => $data['address'],
+            // 'network'   => $data['network'],
         ];
      
         $done = DB::transaction(function () use ($id, $walletInputs, $data) {
@@ -103,6 +103,8 @@ class WalletService implements WalletServiceInterface
 
         $englishFields = $validated['english_field_names'] ?? [];
         $arabicFields  = $validated['arabic_field_names'] ?? [];
+        $englishVal  = $validated['english_field_values'] ?? [];
+        $arabicVal  = $validated['arabic_field_values'] ?? [];
 
         $preparedFields = [];
         foreach ($englishFields as $index => $englishName) {
@@ -112,11 +114,13 @@ class WalletService implements WalletServiceInterface
             }
 
             $preparedFields[] = [
-                'arabic_field_name'  => $arabicFields[$index],
-                'english_field_name' => $englishName,
-                'order'              => $index,
-                'created_at'         => now(),
-                'updated_at'         => now(),
+                'arabic_field_name'     => $arabicFields[$index],
+                'english_field_name'    => $englishName,
+                'english_field_value'  => $englishVal ? $englishVal[$index] : null,
+                'arabic_field_value'   => $arabicVal ? $arabicVal[$index] : null,
+                'order'                 => $index,
+                'created_at'            => now(),
+                'updated_at'            => now(),
             ];
         }
 

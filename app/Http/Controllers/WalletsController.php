@@ -56,14 +56,18 @@ class WalletsController extends Controller {
         $validated = $request->validate([
             'type'                 => 'required|string|in:deposit,withdrawal',
             'name'                 => 'required|string|max:255',
-            'address'              => 'required|string|max:255',
-            'network'              => 'required|string|max:255',
+            // 'address'              => 'required|string|max:255',
+            // 'network'              => 'required|string|max:255',
             'countries'            => 'required|array',
             'countries.*'          => 'exists:countries,id',
             'english_field_names'  => 'nullable|array',
             'english_field_names.*'=> 'required_with:arabic_field_names.*|string',
             'arabic_field_names'   => 'nullable|array',
             'arabic_field_names.*' => 'required_with:english_field_names.*|string',
+            'english_field_values'  => 'required_if:type,deposit|array',
+            'english_field_values.*'=> 'nullable|required_if:type,deposit|string',
+            'arabic_field_values'   => 'required_if:type,deposit|array',
+            'arabic_field_values.*' => 'nullable|required_if:type,deposit|string',
         ]);
 
         $wallet = $this->walletService->create($validated)->first();
@@ -96,14 +100,18 @@ class WalletsController extends Controller {
         $validated = $request->validate([
             'type'                 => 'required|string|in:deposit,withdrawal',
             'name'                 => 'required|string|max:255',
-            'address'              => 'required|string|max:255',
-            'network'              => 'required|string|max:255',
+            // 'address'              => 'required|string|max:255',
+            // 'network'              => 'required|string|max:255',
             'countries'            => 'required|array',
             'countries.*'          => 'exists:countries,id',
             'english_field_names'  => 'nullable|array',
             'english_field_names.*'=> 'required_with:arabic_field_names.*|string',
             'arabic_field_names'   => 'nullable|array',
             'arabic_field_names.*' => 'required_with:english_field_names.*|string',
+            'english_field_values'  => 'required_if:type,deposit|array',
+            'english_field_values.*'=> 'nullable|required_if:type,deposit|string',
+            'arabic_field_values'   => 'required_if:type,deposit|array',
+            'arabic_field_values.*' => 'nullable|required_if:type,deposit|string',
         ]);
 
         $this->walletService->update($id, $validated);
