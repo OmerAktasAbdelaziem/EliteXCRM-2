@@ -179,7 +179,8 @@ class OrderService implements OrderServiceInterface {
             }
         }
 
-        if (!isset($client->options['ignoreLiquidation']) && $client->source == 'BNC') {
+        // if (!isset($client->options['ignoreLiquidation']) && $client->source == 'BNC') {
+        if (!isset($client->options['ignoreLiquidation'])) {
             $finance = $this->getFinancialData($order->broker_id);//(new MainTPController)->get_financial_data($client->broker_id,1);
             if ($finance['equity'] < 0) {
                 foreach ($client->orders as $order) {

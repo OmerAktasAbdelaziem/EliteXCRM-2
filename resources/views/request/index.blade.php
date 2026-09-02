@@ -163,6 +163,17 @@
                                                                     <br>
                                                                     Bank Country        : {{$request->bank->country??''}}
                                                                 @endif
+                                                                
+                                                                @isset ($request->extraFieldAnswers)
+                                                                    @foreach ($request->extraFieldAnswers as $answer)
+                                                                        Extra field text: {{$answer->field_text}}<br>
+                                                                        Client answer: {{$answer->client_answer}}<br>
+                                                                        @if (!$loop->last)
+                                                                            ----------------------<br>
+                                                                        @endif
+                                                                    @endforeach
+                                                                @endif
+                                                                
                                                                 {{$request->usdt}}
                                                                 {{$request->note ?? ''}}
                                                             </td>

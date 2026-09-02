@@ -32,6 +32,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserStatsController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\WalletsController;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -594,6 +595,15 @@ Route::middleware(['auth', 'check.subscription'])->group(function (Router $route
         $router->post('/',    [IpRestrictController::class, 'store'])->name('ip-restrict.store');
     });
     
+    $router->group(['prefix' => 'wallets'], function (Router $router) {
+        $router->get('/',       [WalletsController::class, 'index'])->name('wallets.index');
+        $router->get('create',  [WalletsController::class, 'create'])->name('wallets.create');
+        $router->post('store',  [WalletsController::class, 'store'])->name('wallets.store');
+        $router->get('{id}',    [WalletsController::class, 'show'])->name('wallets.show');
+        $router->put('{id}',    [WalletsController::class, 'update'])->name('wallets.update');
+        $router->delete('{id}', [WalletsController::class, 'delete'])->name('wallets.delete');
+    });
+
 
     $router->get('notification/mark_all_as_read', [NotificationController::class, 'mark_all_as_read'])->name('notification.mark_all_as_read');
     $router->put('user-profile/{id}',             [UserController::class, 'userprofile'])->name('user.edit');

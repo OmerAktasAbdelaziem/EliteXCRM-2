@@ -44,6 +44,8 @@ use App\Http\Repositories\IpRestrict\Interfaces\IpRestrictRepositoryInterface;
 use App\Http\Repositories\IpRestrict\IpRestrictRepository;
 use App\Http\Repositories\Question\Interfaces\QuestionRepositoryInterface;
 use App\Http\Repositories\Question\QuestionRepository;
+use App\Http\Repositories\Wallet\Interfaces\WalletRepositoryInterface;
+use App\Http\Repositories\Wallet\WalletRepository;
 //interfaces & services
 use App\Http\Services\Organization\PipelineService;
 use App\Http\Services\Organization\Interfaces\PipelineServiceInterface;
@@ -85,6 +87,8 @@ use App\Http\Services\Question\Interfaces\QuestionServiceInterface;
 use App\Http\Services\Question\QuestionService;
 use App\Http\Services\SearchFilters\Interfaces\SearchFiltersServiceInterface;
 use App\Http\Services\SearchFilters\SearchFiltersService;
+use App\Http\Services\Wallet\Interfaces\WalletServiceInterface;
+use App\Http\Services\Wallet\WalletService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -110,6 +114,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DefaultStatusRepositoryInterface::class, DefaultStatusRepository::class);
         $this->app->bind(IpRestrictRepositoryInterface::class, IpRestrictRepository::class);
         $this->app->bind(IpExemptionRepositoryInterface::class, IpExemptionRepository::class);
+        $this->app->bind(WalletRepositoryInterface::class, WalletRepository::class);
         
         
         
@@ -132,6 +137,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
         $this->app->bind(DefaultStatusServiceInterface::class, DefaultStatusService::class);
         $this->app->bind(IpRestrictServiceInterface::class, IpRestrictService::class);
+        $this->app->bind(WalletServiceInterface::class, WalletService::class);
 
         $this->app->bind(SearchFiltersServiceInterface::class, SearchFiltersService::class);
 
