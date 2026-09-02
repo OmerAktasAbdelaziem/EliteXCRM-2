@@ -42,7 +42,8 @@
                                             <table class="table align-middle mb-0 table-hover data-table">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Name</th>
+                                                        <th>English Name</th>
+                                                        <th>Arabic Name</th>
                                                         {{-- <th>Address</th>
                                                         <th>Network</th> --}}
                                                         <th>Type</th>
@@ -54,7 +55,13 @@
                                                         <tr>
                                                             <td>
                                                                 <a href="{{ route('wallets.show', $wallet->id) }}">
-                                                                    {{$wallet->name}}
+                                                                    {{$wallet->name_en}}
+                                                                </a>
+                                                            </td>
+
+                                                            <td>
+                                                                <a href="{{ route('wallets.show', $wallet->id) }}">
+                                                                    {{$wallet->name_ar}}
                                                                 </a>
                                                             </td>
 

@@ -79,11 +79,21 @@
                                 @endif
 
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label">Name</label>
+                                    <label for="name_en" class="form-label">English Name</label>
                                     <div class="input-group">
-                                        <input class="form-control" id="name" name="name" type="text" placeholder="Enter name here..." required value="{{ old('name', $wallet->name) }}">
+                                        <input class="form-control" id="name_en" name="name_en" type="text" placeholder="Enter English name here..." required value="{{ old('name_en', $wallet->name_en) }}">
                                     </div>
-                                    @error('name')
+                                    @error('name_en')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="name_ar" class="form-label">Arabic Name</label>
+                                    <div class="input-group">
+                                        <input class="form-control" id="name_ar" name="name_ar" type="text" placeholder="Enter Arabic name here..." required value="{{ old('name_ar', $wallet->name_ar) }}">
+                                    </div>
+                                    @error('name_ar')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -91,7 +101,7 @@
                                 <div class="col-md-6">
                                     <label for="type" class="form-label">Type</label>
                                     <div class="input-group">
-                                        <select class="form-select" name="type" id="wallet-type">
+                                        <select class="form-select" name="type" id="wallet-type" @if ($wallet->getKey()) disabled @endif>
                                             <option value="deposit" {{ (old('type', $wallet->type) == 'deposit') ? 'selected' : '' }}>
                                                 Deposit
                                             </option>
@@ -100,6 +110,11 @@
                                             </option>
                                         </select>
                                     </div>
+                                    @if ($wallet->getKey())
+                                        {{-- <p class="form-select">{{$wallet->type}}</p> --}}
+                                        <p class="small text-muted">type can't be changed</p>
+                                    @endif
+
                                     @error('type')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -125,7 +140,7 @@
                                     @enderror
                                 </div> --}}
 
-                                <div class="col-12">
+                                <div class="col-6">
                                     <label class="form-label">Countries</label>
                                     <div class="input-group">
                                         <select class="multiple-select form-select" name="countries[]" multiple>

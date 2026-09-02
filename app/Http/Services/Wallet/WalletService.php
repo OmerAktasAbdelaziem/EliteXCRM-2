@@ -42,7 +42,8 @@ class WalletService implements WalletServiceInterface
         $walletInputs = [
             'pipeline_id'   => $userAuth->pipeline_id,
             'type'          => $data['type'],
-            'name'          => $data['name'],
+            'name_en'       => $data['name_en'],
+            'name_ar'       => $data['name_ar'],
             // 'address'       => $data['address'],
             // 'network'       => $data['network'],
         ];
@@ -63,8 +64,9 @@ class WalletService implements WalletServiceInterface
     public function update(int $id, array $data): int
     {
         $walletInputs = [
-            'type'      => $data['type'],
-            'name'      => $data['name'],
+            // 'type'      => $data['type'],
+            'name_en'      => $data['name_en'],
+            'name_ar'      => $data['name_ar'],
             // 'address'   => $data['address'],
             // 'network'   => $data['network'],
         ];
