@@ -66,7 +66,7 @@
 
                                     <div class ="section-area">
                                         <span class="section-title">Wallets</span>
-                                        @if ($isPipelineAdmin || $isSuperAdmin)
+                                        @if ($isPipelineAdmin || $isSuperAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'wallet_list'))
                                             <a href = "{{ route('wallets.index') }}">
                                                 <span class="section-text">Manage Wallets</span>
                                             </a>

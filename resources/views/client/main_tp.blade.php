@@ -1036,6 +1036,13 @@
                                                                                 Bank Country        : {{$money_trx->bank->country ?? ''}}
                                                                             @endif
                                                                             {{$money_trx->usdt ?? ''}}
+                                                                            @isset ($money_trx->wallet_id)
+                                                                                @php
+                                                                                    $wallet = \App\Models\Wallet::find($money_trx->wallet_id);
+                                                                                @endphp
+                                                                                Wallet Name: {{$wallet->name_en}}<br>
+                                                                                ----------------------<br>
+                                                                            @endisset
                                                                             @isset ($money_trx->extraFieldAnswers)
                                                                                 @foreach ($money_trx->extraFieldAnswers as $answer)
                                                                                     Extra field text: {{$answer->field_text}}<br>
@@ -1685,7 +1692,13 @@
                                         @endif
                                         {{$request->usdt ?? ''}}
                                         {{$request->note ?? ''}}
-                                        
+                                        @isset ($request->wallet_id)
+                                            @php
+                                                $wallet = \App\Models\Wallet::find($request->wallet_id);
+                                            @endphp
+                                            Wallet Name: {{$wallet->name_en}}<br>
+                                            ----------------------<br>
+                                        @endisset
                                         @isset ($request->extraFieldAnswers)
                                             @foreach ($request->extraFieldAnswers as $answer)
                                                 Extra field text: {{$answer->field_text}}<br>

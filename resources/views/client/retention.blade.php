@@ -1179,7 +1179,14 @@
                                                     Bank Country        : {{$request->bank->country}}
                                                 @endif
                                                 {{$request->usdt}}
-                                                
+
+                                                @isset ($request->wallet_id)
+                                                    @php
+                                                        $wallet = \App\Models\Wallet::find($request->wallet_id);
+                                                    @endphp
+                                                    Wallet Name: {{$wallet->name_en}}<br>
+                                                    ----------------------<br>
+                                                @endisset
                                                 @isset ($request->extraFieldAnswers)
                                                     @foreach ($request->extraFieldAnswers as $answer)
                                                         Extra field text: {{$answer->field_text}}<br>

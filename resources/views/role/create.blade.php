@@ -1822,6 +1822,80 @@
                                 </div>
                             </div>
 
+                            <!-- wallets Management -->
+                            <div class="permission-item" data-permission="wallets">
+                                <div class="permission-header">
+                                    <div class="permission-info">
+                                        <div class="permission-icon">
+                                            <!-- New icon: Bank/Building -->
+                                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 2C9.447 2 9 2.447 9 3v1.382l-6.447 2.684A1 1 0 002 8v1a1 1 0 001 1h1v6H3a1 1 0 100 2h14a1 1 0 100-2h-1v-6h1a1 1 0 001-1V8a1 1 0 00-.553-.934L11 4.382V3c0-.553-.447-1-1-1zm0 2.236L16.382 7H3.618L10 4.236zM5 10h2v6H5v-6zm4 0h2v6H9v-6zm4 0h2v6h-2v-6z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="permission-details">
+                                            <h4>Wallets Management</h4>
+                                            <p>Manage Wallets</p>
+                                        </div>
+                                    </div>
+                                    <div class="permission-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" class="permission-master-toggle" data-target="wallets">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <svg class="expand-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="permission-actions">
+                                    <div class="actions-grid">
+                                        <div class="action-item list-permission"><div class="action-label">Wallets List</div><input type="checkbox" class="custom-checkbox" name="roles[wallet_list]"></div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- New icon: Eye -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                View wallets
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[wallet_view]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- New icon: Plus -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Create wallet
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[wallet_create]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- New icon: Pencil/Edit -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9A2 2 0 004 14v2a2 2 0 002 2h2a2 2 0 001.414-.586l9.9-9.9a2 2 0 000-2.828l-2-2zM5 16v-2.586l9-9L16.586 7l-9 9H5z"/>
+                                                </svg>
+                                                Edit wallet
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[wallet_edit]">
+                                        </div>
+                                        <div class="action-item dependent-permission dependency-tooltip">
+                                            <div class="action-label">
+                                                <!-- New icon: Trash/Delete -->
+                                                <svg class="action-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6 8a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 0a1 1 0 011 1v6a1 1 0 11-2 0V9a1 1 0 011-1zm4 1a1 1 0 10-2 0v6a1 1 0 102 0V9z" clip-rule="evenodd"/>
+                                                    <path fill-rule="evenodd" d="M4 6a1 1 0 011-1h10a1 1 0 011 1v1H4V6zm2-3a1 1 0 00-1 1v1h10V4a1 1 0 00-1-1H6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Delete wallet
+                                            </div>
+                                            <input type="checkbox" class="custom-checkbox" name="roles[wallet_delete]">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Assets Management -->
                             <div class="permission-item" data-permission="assets">
                                 <div class="permission-header">
@@ -3388,6 +3462,12 @@
                     'roles[banks_edit]': 'roles[banks_list]',
                     'roles[banks_delete]': 'roles[banks_list]',
                     
+                    // wallets Dependencies
+                    'roles[wallet_view]': 'roles[wallet_list]',
+                    'roles[wallet_create]': 'roles[wallet_list]',
+                    'roles[wallet_edit]': 'roles[wallet_list]',
+                    'roles[wallet_delete]': 'roles[wallet_list]',
+
                     // Assets Dependencies
                     'roles[assets_view]': 'roles[assets_list]',
                     'roles[assets_create]': 'roles[assets_list]',
@@ -3571,6 +3651,11 @@
                     'roles[banks_create]': 'Create Banks',
                     'roles[banks_edit]': 'Edit Banks',
                     'roles[banks_delete]': 'Delete Banks',
+                    'roles[wallet_list]': 'List Wallets',
+                    'roles[wallet_view]': 'View Wallets',
+                    'roles[wallet_create]': 'Create Wallets',
+                    'roles[wallet_edit]': 'Edit Wallets',
+                    'roles[wallet_delete]': 'Delete Wallets',
                     'roles[assets_view]': 'View Assets',
                     'roles[assets_create]': 'Create Assets',
                     'roles[assets_edit]': 'Edit Assets',

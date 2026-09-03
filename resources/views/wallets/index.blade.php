@@ -29,7 +29,7 @@
                                         <h5 class="mb-1">Our Wallets</h5>
                                     </div>
                                     <div class="font-22 ms-auto">
-                                        @if ($isSuperAdmin || $isPipelineAdmin)
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline(Auth::user(), Auth::user()->pipeline_id, 'wallet_create'))
                                             <a href="{{ route('wallets.create') }}" class="btn btn-success btn-sm">
                                                 Add new Wallet
                                             </a>

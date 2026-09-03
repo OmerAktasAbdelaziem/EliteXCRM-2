@@ -16,6 +16,7 @@ class MoneyTrx extends Model
         'broker_id',
         'is_admin',
         'bank_id',
+        'wallet_id',
         'comment',
         'receipt',
         'amount',

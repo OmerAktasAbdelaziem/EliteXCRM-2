@@ -65,7 +65,7 @@
                                         @endif
                                     </h5>                                    
                                 </div>
-                                @if ($wallet->getKey() && ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermission($userAuth, 'wallet_delete')))
+                                @if ($wallet->getKey() && ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $userAuth->pipeline_id, 'wallet_delete')))
                                     <button type="button" class="btn btn-sm btn-danger"data-bs-toggle="modal" data-bs-target="#deleteModal">
                                         <i class="bx bx-trash"></i> Delete
                                     </button>
@@ -245,11 +245,11 @@
 
                                 <div class="col-12">
                                     @if ($wallet->getKey())
-                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermission($userAuth, 'wallet_edit'))
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $userAuth->pipeline_id, 'wallet_edit'))
                                             <button type="submit" class="btn btn-danger px-5">Update</button>
                                         @endif
                                     @else
-                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermission($userAuth, 'wallet_create'))
+                                        @if ($isSuperAdmin || $isPipelineAdmin || UserPermission::hasPermissionInPipeline($userAuth, $userAuth->pipeline_id, 'wallet_create'))
                                             <button type="submit" class="btn btn-danger px-5">Register</button>
                                         @endif
                                     @endif

@@ -139,7 +139,15 @@
                             {{ $data['paymentDetailsInfo']['beneficiaryCountry']??'' }}
                         @endif
 
-                        asd
+                        
+                        @isset ($data['wallet_id'])
+                            @php
+                                $wallet = \App\Models\Wallet::find($data['wallet_id']);
+                            @endphp
+                            Wallet Name: {{$wallet->name_en}}<br>
+                            ----------------------<br>
+                        @endisset
+
                         @isset ($data['extraFieldAnswers'])
                             @foreach ($data['extraFieldAnswers'] as $answer)
                                 Extra field text: {{$answer->field_text}}<br>
